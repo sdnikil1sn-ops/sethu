@@ -7,6 +7,7 @@ from celery.schedules import crontab
 from app.audit import service as audit
 from app.core.config import get_settings
 from app.db.session import SYSTEM, session_for
+from app.modules.institutions import service as institutions
 
 log = logging.getLogger("sethu.worker")
 settings = get_settings()
@@ -21,6 +22,7 @@ celery.conf.update(
     timezone="Asia/Kolkata",
     beat_schedule={
         "audit-chain-nightly": {"task": "sethu.audit.verify_chain", "schedule": crontab(hour=2, minute=0)},
+        "resolve-institutions": {"task": "sethu.institutions.resolve_pending", "schedule": 300.0},
     },
 )
 
@@ -33,3 +35,10 @@ def verify_chain() -> dict:
     if not result.ok:
         log.error("AUDIT CHAIN BROKEN at seq %s: %s", result.broken_seq, result.reason)
     return {"ok": result.ok, "checked": result.checked, "broken_seq": result.broken_seq}
+
+
+@celery.task(name="sethu.institutions.resolve_pending")
+def resolve_pending() -> dict:
+    """Link newly arrived complaints to institutions; what cannot be linked waits in the officer queue."""
+    with session_for(SYSTEM) as session:
+        return institutions.resolve_pending(session, SYSTEM)

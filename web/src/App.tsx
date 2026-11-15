@@ -1,29 +1,57 @@
 import { useEffect, useState } from "react";
+import { useLoad } from "./api";
+import { logout } from "./auth";
+import { InstitutionList } from "./features/institutions/InstitutionList";
+import { InstitutionProfile } from "./features/institutions/InstitutionProfile";
+import { ResolutionQueue } from "./features/institutions/ResolutionQueue";
 
-type Ready = { status: string; database?: string };
+type Me = { name: string; role: string };
+const CAN_RESOLVE = ["officer", "bureau_head", "admin"];
 
-// Platform shell only: shows whether the API and database are reachable.
-// Feature screens are added under src/features/<feature>/.
-export function App() {
-  const [ready, setReady] = useState<Ready | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
+function useHashRoute(): string {
+  const [route, setRoute] = useState(window.location.hash.slice(1) || "/");
   useEffect(() => {
-    fetch("/health/ready")
-      .then(async (r) => setReady((await r.json()) as Ready))
-      .catch((e: unknown) => setError(e instanceof Error ? e.message : "request failed"));
+    const onChange = () => setRoute(window.location.hash.slice(1) || "/");
+    window.addEventListener("hashchange", onChange);
+    return () => window.removeEventListener("hashchange", onChange);
   }, []);
+  return route;
+}
+
+// Feature screens live under src/features/<feature>/ and are routed here by URL hash.
+export function App() {
+  const route = useHashRoute();
+  const { data: me } = useLoad<Me>("/me");
+  const profileId = route.match(/^\/institutions\/([0-9a-f-]{36})$/)?.[1];
 
   return (
-    <main style={{ fontFamily: "system-ui, sans-serif", margin: "3rem auto", maxWidth: 640 }}>
-      <h1>SETHU</h1>
-      <p>AICTE cross-bureau complaint monitoring</p>
-      <dl>
-        <dt>API</dt>
-        <dd>{error ? `unreachable (${error})` : ready ? ready.status : "checking..."}</dd>
-        <dt>Database</dt>
-        <dd>{ready?.database ?? "-"}</dd>
-      </dl>
-    </main>
+    <>
+      <header>
+        <strong>SETHU</strong>
+        <nav aria-label="Main">
+          <a href="#/" aria-current={route === "/" || profileId ? "page" : undefined}>
+            Institutions
+          </a>
+          <a href="#/queue" aria-current={route === "/queue" ? "page" : undefined}>
+            Unmatched names
+          </a>
+        </nav>
+        <span>
+          {me && `${me.name} (${me.role.replace("_", " ")})`}{" "}
+          <button type="button" onClick={logout}>
+            Sign out
+          </button>
+        </span>
+      </header>
+      <main>
+        {profileId ? (
+          <InstitutionProfile id={profileId} />
+        ) : route === "/queue" ? (
+          <ResolutionQueue canResolve={!!me && CAN_RESOLVE.includes(me.role)} />
+        ) : (
+          <InstitutionList />
+        )}
+      </main>
+    </>
   );
 }

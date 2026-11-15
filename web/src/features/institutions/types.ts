@@ -1,0 +1,50 @@
+// Mirrors backend/app/modules/institutions/schemas.py
+export type Institution = {
+  id: string;
+  permanent_id: string | null;
+  name: string;
+  state: string | null;
+  district: string | null;
+};
+
+export type InstitutionRow = Institution & {
+  complaints: number | null;
+  open: number | null;
+  score: number | null;
+  matched: string | null;
+};
+
+export type Candidate = Institution & { score: number; reason: string };
+
+export type CaseSummary = {
+  id: string;
+  ref: string;
+  bureau: string;
+  category: string | null;
+  status: string;
+  filed_at: string;
+  due_at: string | null;
+  closed_at: string | null;
+};
+
+export type Profile = Institution & {
+  aliases: { alias: string; source: string }[];
+  bureaus: string[];
+  open: number;
+  closed: number;
+  oldest_open: CaseSummary | null;
+  complaints: CaseSummary[];
+};
+
+export type QueueItem = {
+  id: string;
+  ref: string;
+  bureau: string;
+  institution_name_raw: string;
+  filed_at: string;
+  candidates: Candidate[];
+};
+
+export const place = (i: Institution) => [i.district, i.state].filter(Boolean).join(", ");
+export const day = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { dateStyle: "medium" });
+export const daysSince = (iso: string) => Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);

@@ -3,9 +3,9 @@
 Each line has an acceptance test. Tick it only when the test passes on the seeded data.
 
 ## 1. Institution profile
-- [ ] Open "Greenfield Institute of Technology" and see all its complaints from every bureau on one page
-- [ ] Alias search ("Greenfield Inst. of Tech", "GIT Pune") lands on the same profile
-- [ ] Profile shows bureaus involved, open and closed counts, oldest open case
+- [x] Open "Greenfield Institute of Technology" and see all its complaints from every bureau on one page
+- [x] Alias search ("Greenfield Inst. of Tech", "GIT Pune") lands on the same profile
+- [x] Profile shows bureaus involved, open and closed counts, oldest open case
 
 ## 2. Case tracking
 - [ ] Each case shows status, owner bureau, filed date, due date, days remaining
