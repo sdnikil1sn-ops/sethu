@@ -1,0 +1,126 @@
+{
+  "snapshot_id": "sha256:5f1da23306c123517a444c743296acf5f7b370c239db0a770f24b306b7707007",
+  "format_version": 1,
+  "enola_version": "0.4.21",
+  "extractor_version": "v270",
+  "generated_at": "2026-11-15T19:50:23Z",
+  "duration": "759.8708ms",
+  "repo_path": "E:\\App\\Project\\SETHU",
+  "git": {
+    "ref": "main",
+    "commit": "734ab849156da5b510e8304225442068fbc2a0cc",
+    "dirty": false,
+    "remote": "github.com/sdnikil1sn-ops/sethu"
+  },
+  "extractors": [
+    "manifests",
+    "mdintent",
+    "python",
+    "typescript"
+  ],
+  "explainers": [
+    "cycles",
+    "layers",
+    "crossrepo",
+    "coverage",
+    "unused-routes",
+    "domain",
+    "query-loops",
+    "dead-methods",
+    "entry-points",
+    "messaging-coverage",
+    "god-class",
+    "hotspots",
+    "dependency-depth",
+    "exported-surface",
+    "complexity-outliers",
+    "intent",
+    "constraints",
+    "vendored-candidates",
+    "import-closure",
+    "package-metrics",
+    "dead-code",
+    "performance"
+  ],
+  "renderers": [
+    "llm_context"
+  ],
+  "config_hash": "sha256:73d78ea79f51e19979d4c7d00bd9463ae684ebcb909116abad86675323c32c05",
+  "ignore_glob_hash": "sha256:7523cc6397a498e151125a682d28fbf6df20c6f51f6dfaf18fd8f5239a20d2d8",
+  "output_hashes": {
+    "facts.jsonl": "sha256:1962164cf0fe62c142ac6db53f97220f86aaba54fdcb8580d0b966c60a3a32a1",
+    "insights.json": "sha256:9cdd1e0b964d677a92074a5daeaf962292604f35466b4830aff7e2be4e7832fd",
+    "llm_context.md": "sha256:5491a0d8ee5623052be8b757095d1d56333449f9d31e13076c65981901bbd9f6"
+  },
+  "fact_count": 650,
+  "insight_count": 31,
+  "quality": {
+    "files_seen": 146,
+    "files_parsed": 77,
+    "files_skipped": 12,
+    "dirs_skipped": 3,
+    "skipped_sample": [
+      ".claude/worktrees/mock-data-generator-loader-5238d1/.git (glob: **/.git/**)",
+      ".claude/worktrees/mock-data-generator-loader-5238d1/backend/.pytest_cache/ (glob: **/.pytest_cache/**)",
+      ".claude/worktrees/mock-data-generator-loader-5238d1/backend/.ruff_cache/ (glob: **/.ruff_cache/**)",
+      ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/__init__.py (glob: **/tests/**/*.py)",
+      ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/conftest.py (glob: **/conftest.py)",
+      ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/test_audit.py (glob: **/test_*.py)",
+      ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/test_auth_and_api.py (glob: **/test_*.py)",
+      ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/test_rls.py (glob: **/test_*.py)",
+      ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/test_seed.py (glob: **/test_*.py)",
+      ".git/ (glob: **/.git/**)",
+      "backend/tests/__init__.py (glob: **/tests/**/*.py)",
+      "backend/tests/conftest.py (glob: **/conftest.py)",
+      "backend/tests/test_audit.py (glob: **/test_*.py)",
+      "backend/tests/test_auth_and_api.py (glob: **/test_*.py)",
+      "backend/tests/test_rls.py (glob: **/test_*.py)"
+    ],
+    "parse_errors": 0,
+    "heuristic_insights": 30,
+    "coverage": {
+      "services_total": 0,
+      "coverage_gaps": 0,
+      "unresolved_edges": 0,
+      "extractors_reporting": 1,
+      "extraction_unresolved": 143
+    },
+    "census": {
+      "files_walked": 158,
+      "parsed": 77,
+      "excluded_by_ignore": 12,
+      "excluded_by_kind": 53,
+      "excluded_kinds": {
+        "(no extension)": 8,
+        ".conf": 4,
+        ".csv": 4,
+        ".dockerignore": 4,
+        ".env": 1,
+        ".example": 2,
+        ".gitattributes": 2,
+        ".gitignore": 2,
+        ".graphify_version": 2,
+        ".ini": 2,
+        ".json": 6,
+        ".sh": 2,
+        ".txt": 8,
+        ".yml": 6
+      },
+      "skipped_with_cause": 16,
+      "top_skip_causes": [
+        {
+          "cause": "claimed by python, no facts emitted",
+          "count": 10
+        },
+        {
+          "cause": "claimed by manifests, no facts emitted",
+          "count": 4
+        },
+        {
+          "cause": "claimed by typescript, no facts emitted",
+          "count": 2
+        }
+      ]
+    }
+  }
+}

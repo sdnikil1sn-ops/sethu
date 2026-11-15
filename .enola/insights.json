@@ -1,0 +1,1068 @@
+[
+  {
+    "title": "Domain findings do not apply to this repository",
+    "source": "domain",
+    "description": "Three of this explainer's four findings read declarations only Rails writes — associations, controller#action handlers, and a model's table — and this repository declares none of them. That is not a clean result on those three; they were not asked. Outbound integrations, the fourth, is language-agnostic and did run.",
+    "confidence": 1,
+    "evidence": [
+      {
+        "detail": "examined: 0 associations, 0 controller handlers, 0 model tables"
+      }
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: docs/ARCHITECTURE.md (fan-in 7, fan-out 13)",
+    "source": "hotspots",
+    "description": "\"docs/ARCHITECTURE.md\" is a pinch point: 7 symbols call into it and it calls out to 13 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "symbol": "docs/ARCHITECTURE.md",
+        "detail": "fan-in 7 × fan-out 13 = score 91",
+        "line": 1,
+        "fact_id": "570d1f811b4f7c54125056763a66b84e"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/05-NEXT-CLAUDE-CODE-PROMPT.md#05-next-claude-code-prompts",
+        "detail": "calls into docs/ARCHITECTURE.md",
+        "fact_id": "5d7582ee3d9bd846177b0d6572a53d33"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/05-NEXT-CLAUDE-CODE-PROMPT.md#prompt-1-bring-the-stack-up",
+        "detail": "calls into docs/ARCHITECTURE.md",
+        "fact_id": "52740fa2e1c98b23c80e4a435e6e791d"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/05-NEXT-CLAUDE-CODE-PROMPT.md#prompt-3-first-feature-institutions-and-resolution",
+        "detail": "calls into docs/ARCHITECTURE.md",
+        "fact_id": "b013102051c4e2dd86a98ec786290bf0"
+      },
+      {
+        "symbol": "CLAUDE.md#read-first",
+        "detail": "calls into docs/ARCHITECTURE.md",
+        "fact_id": "e538e6c43fcb6b2060ca274bd9620d7d"
+      },
+      {
+        "symbol": "docs/05-NEXT-CLAUDE-CODE-PROMPT.md#05-next-claude-code-prompts",
+        "detail": "calls into docs/ARCHITECTURE.md",
+        "fact_id": "023d78a8e2e00cd2df856614a8607976"
+      },
+      {
+        "symbol": "docs",
+        "detail": "called by docs/ARCHITECTURE.md"
+      },
+      {
+        "symbol": "docs/ARCHITECTURE.md#1-shape",
+        "detail": "called by docs/ARCHITECTURE.md",
+        "fact_id": "7c58e9ed4de129df339f2e03b9b5aee9"
+      },
+      {
+        "symbol": "docs/ARCHITECTURE.md#10-scaling-path-after-the-hackathon",
+        "detail": "called by docs/ARCHITECTURE.md",
+        "fact_id": "fd12de07f16afdd099cca28629d3a55c"
+      },
+      {
+        "symbol": "docs/ARCHITECTURE.md#11-what-has-been-verified",
+        "detail": "called by docs/ARCHITECTURE.md",
+        "fact_id": "659eb9a5f774eb92aef05b273b555db2"
+      },
+      {
+        "symbol": "docs/ARCHITECTURE.md#2-components",
+        "detail": "called by docs/ARCHITECTURE.md",
+        "fact_id": "aba8de0e40d5a4a00fea4de7a225117a"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: docs/RUNBOOK.md (fan-in 7, fan-out 10)",
+    "source": "hotspots",
+    "description": "\"docs/RUNBOOK.md\" is a pinch point: 7 symbols call into it and it calls out to 10 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "docs/RUNBOOK.md",
+        "symbol": "docs/RUNBOOK.md",
+        "detail": "fan-in 7 × fan-out 10 = score 70",
+        "line": 1,
+        "fact_id": "d655d08a79738fd7b654480cba904d26"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/05-NEXT-CLAUDE-CODE-PROMPT.md#prompt-1-bring-the-stack-up",
+        "detail": "calls into docs/RUNBOOK.md",
+        "fact_id": "52740fa2e1c98b23c80e4a435e6e791d"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/ARCHITECTURE.md#11-what-has-been-verified",
+        "detail": "calls into docs/RUNBOOK.md",
+        "fact_id": "89b9c3f5673c2457bab76c7f2a7c254a"
+      },
+      {
+        "symbol": "CLAUDE.md#commands",
+        "detail": "calls into docs/RUNBOOK.md",
+        "fact_id": "96d30d8aa2c0552c5155d23fac29bd58"
+      },
+      {
+        "symbol": "CLAUDE.md#read-first",
+        "detail": "calls into docs/RUNBOOK.md",
+        "fact_id": "e538e6c43fcb6b2060ca274bd9620d7d"
+      },
+      {
+        "symbol": "README.md#quick-start-windows-powershell",
+        "detail": "calls into docs/RUNBOOK.md",
+        "fact_id": "d34e7fb435c82adaf3f647045aad9b77"
+      },
+      {
+        "symbol": "docs",
+        "detail": "called by docs/RUNBOOK.md"
+      },
+      {
+        "symbol": "docs/RUNBOOK.md#1-first-start",
+        "detail": "called by docs/RUNBOOK.md",
+        "fact_id": "e69215ddb7473a50af275be7ddc5a079"
+      },
+      {
+        "symbol": "docs/RUNBOOK.md#2-daily-use",
+        "detail": "called by docs/RUNBOOK.md",
+        "fact_id": "2c38f6ba22c2e827136956767cf587ea"
+      },
+      {
+        "symbol": "docs/RUNBOOK.md#3-database",
+        "detail": "called by docs/RUNBOOK.md",
+        "fact_id": "80c07bcae10ef7ecd22097aa0db2fd7c"
+      },
+      {
+        "symbol": "docs/RUNBOOK.md#4-backup-and-restore",
+        "detail": "called by docs/RUNBOOK.md",
+        "fact_id": "4fc9a7c1a1eee1c7753653a27e18a470"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: backend/app/core/auth.get_principal (fan-in 5, fan-out 10)",
+    "source": "hotspots",
+    "description": "\"backend/app/core/auth.get_principal\" is a pinch point: 5 symbols call into it and it calls out to 10 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "backend/app/core/auth.py",
+        "symbol": "backend/app/core/auth.get_principal",
+        "detail": "fan-in 5 × fan-out 10 = score 50",
+        "line": 85,
+        "fact_id": "3e10e1363649ede5f39e5f4a898a800b"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/api/routes.me",
+        "detail": "calls into backend/app/core/auth.get_principal",
+        "fact_id": "3743f6476120f641d1445805572a527e"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/db/session.get_session",
+        "detail": "calls into backend/app/core/auth.get_principal",
+        "fact_id": "b971b24fb457b9d4c7386502248821e3"
+      },
+      {
+        "symbol": "backend/app/api/routes.me",
+        "detail": "calls into backend/app/core/auth.get_principal",
+        "fact_id": "c11d641ab4af68163f83db28f6515ac5"
+      },
+      {
+        "symbol": "backend/app/core/auth.require_roles",
+        "detail": "calls into backend/app/core/auth.get_principal",
+        "fact_id": "75ec5405b2614b88abbf278590cfeef7"
+      },
+      {
+        "symbol": "backend/app/db/session.get_session",
+        "detail": "calls into backend/app/core/auth.get_principal",
+        "fact_id": "63a3f02e4bd845e10e3afe05af473c3c"
+      },
+      {
+        "symbol": "AuthError",
+        "detail": "called by backend/app/core/auth.get_principal"
+      },
+      {
+        "symbol": "Depends",
+        "detail": "called by backend/app/core/auth.get_principal"
+      },
+      {
+        "symbol": "HTTPException",
+        "detail": "called by backend/app/core/auth.get_principal"
+      },
+      {
+        "symbol": "app.core.config.Settings.oidc_audience",
+        "detail": "called by backend/app/core/auth.get_principal"
+      },
+      {
+        "symbol": "app.core.config.Settings.oidc_issuer",
+        "detail": "called by backend/app/core/auth.get_principal"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: docs/02-PS-COVERAGE-CHECKLIST.md (fan-in 4, fan-out 12)",
+    "source": "hotspots",
+    "description": "\"docs/02-PS-COVERAGE-CHECKLIST.md\" is a pinch point: 4 symbols call into it and it calls out to 12 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "docs/02-PS-COVERAGE-CHECKLIST.md",
+        "symbol": "docs/02-PS-COVERAGE-CHECKLIST.md",
+        "detail": "fan-in 4 × fan-out 12 = score 48",
+        "line": 1,
+        "fact_id": "7e3a6412e60378fd0084fe7ab786f7cf"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/05-NEXT-CLAUDE-CODE-PROMPT.md#prompt-3-first-feature-institutions-and-resolution",
+        "detail": "calls into docs/02-PS-COVERAGE-CHECKLIST.md",
+        "fact_id": "b013102051c4e2dd86a98ec786290bf0"
+      },
+      {
+        "symbol": "CLAUDE.md#read-first",
+        "detail": "calls into docs/02-PS-COVERAGE-CHECKLIST.md",
+        "fact_id": "e538e6c43fcb6b2060ca274bd9620d7d"
+      },
+      {
+        "symbol": "CLAUDE.md#working-agreements",
+        "detail": "calls into docs/02-PS-COVERAGE-CHECKLIST.md",
+        "fact_id": "1a95a1c2bdb3631b9dd4201288e6a2de"
+      },
+      {
+        "symbol": "docs/05-NEXT-CLAUDE-CODE-PROMPT.md#prompt-3-first-feature-institutions-and-resolution",
+        "detail": "calls into docs/02-PS-COVERAGE-CHECKLIST.md",
+        "fact_id": "ec227a856a6d730ebfa875977d51ca61"
+      },
+      {
+        "symbol": "docs",
+        "detail": "called by docs/02-PS-COVERAGE-CHECKLIST.md"
+      },
+      {
+        "symbol": "docs/02-PS-COVERAGE-CHECKLIST.md#02-ps-coverage-checklist-sih26264",
+        "detail": "called by docs/02-PS-COVERAGE-CHECKLIST.md",
+        "fact_id": "d1ca93157da5f1129e6535b99070a4cc"
+      },
+      {
+        "symbol": "docs/02-PS-COVERAGE-CHECKLIST.md#1-institution-profile",
+        "detail": "called by docs/02-PS-COVERAGE-CHECKLIST.md",
+        "fact_id": "05991dc8aa4aa304b14d029d914619cc"
+      },
+      {
+        "symbol": "docs/02-PS-COVERAGE-CHECKLIST.md#2-case-tracking",
+        "detail": "called by docs/02-PS-COVERAGE-CHECKLIST.md",
+        "fact_id": "4c7e0b87c310861a454d3a69b1ab8d65"
+      },
+      {
+        "symbol": "docs/02-PS-COVERAGE-CHECKLIST.md#3-overlap-detection",
+        "detail": "called by docs/02-PS-COVERAGE-CHECKLIST.md",
+        "fact_id": "cf34519c118b33002bac6175b292fa66"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: .claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md (fan-in 3, fan-out 11)",
+    "source": "hotspots",
+    "description": "\".claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md\" is a pinch point: 3 symbols call into it and it calls out to 11 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+        "detail": "fan-in 3 × fan-out 11 = score 33",
+        "line": 1,
+        "fact_id": "596ca9c3c1aa4a0ef3a074b75cf1a61e"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/CLAUDE.md#commands",
+        "detail": "calls into .claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+        "fact_id": "c63aa71e1601299cb397834ce2bec0fa"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/CLAUDE.md#read-first",
+        "detail": "calls into .claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+        "fact_id": "6776c09d53328df27b7583b9a15267e3"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/README.md#quick-start-windows-powershell",
+        "detail": "calls into .claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+        "fact_id": "68df3390cad9913545a9bb58bc8e32c4"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs",
+        "detail": "called by .claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md#1-first-start",
+        "detail": "called by .claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+        "fact_id": "f4a799d0af0a799010c0b0a1ac24886d"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md#2-daily-use",
+        "detail": "called by .claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+        "fact_id": "ed726e4a21255fc64df96f1e1f85b4df"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md#3-database",
+        "detail": "called by .claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+        "fact_id": "f14814179793c8c8b1fe76ee5deaadaf"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md#4-backup-and-restore",
+        "detail": "called by .claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+        "fact_id": "610a56af8e62ae19248266346a1e7f05"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: docs/04-MOCK-DATA-SPEC.md (fan-in 4, fan-out 8)",
+    "source": "hotspots",
+    "description": "\"docs/04-MOCK-DATA-SPEC.md\" is a pinch point: 4 symbols call into it and it calls out to 8 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "docs/04-MOCK-DATA-SPEC.md",
+        "symbol": "docs/04-MOCK-DATA-SPEC.md",
+        "detail": "fan-in 4 × fan-out 8 = score 32",
+        "line": 1,
+        "fact_id": "04eedf06a718213d903b373737515eed"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/05-NEXT-CLAUDE-CODE-PROMPT.md#prompt-2-mock-data",
+        "detail": "calls into docs/04-MOCK-DATA-SPEC.md",
+        "fact_id": "321708d31bfaef64d183ff0dea481e80"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/README.md#seed-data",
+        "detail": "calls into docs/04-MOCK-DATA-SPEC.md",
+        "fact_id": "6baa14205cd772387a8af8b874554af9"
+      },
+      {
+        "symbol": "CLAUDE.md#read-first",
+        "detail": "calls into docs/04-MOCK-DATA-SPEC.md",
+        "fact_id": "e538e6c43fcb6b2060ca274bd9620d7d"
+      },
+      {
+        "symbol": "docs/05-NEXT-CLAUDE-CODE-PROMPT.md#prompt-2-mock-data",
+        "detail": "calls into docs/04-MOCK-DATA-SPEC.md",
+        "fact_id": "be5827437f5b4ff7273a4ea02cd2c4e1"
+      },
+      {
+        "symbol": "docs",
+        "detail": "called by docs/04-MOCK-DATA-SPEC.md"
+      },
+      {
+        "symbol": "docs/04-MOCK-DATA-SPEC.md#04-mock-data-spec",
+        "detail": "called by docs/04-MOCK-DATA-SPEC.md",
+        "fact_id": "dd01ce9adc909c10bae6168da47e8335"
+      },
+      {
+        "symbol": "docs/04-MOCK-DATA-SPEC.md#deliberate-patterns-to-seed",
+        "detail": "called by docs/04-MOCK-DATA-SPEC.md",
+        "fact_id": "141ce2ae3ee70e4e2edae1e5e6b05a3c"
+      },
+      {
+        "symbol": "docs/04-MOCK-DATA-SPEC.md#expected-detections-used-by-tests",
+        "detail": "called by docs/04-MOCK-DATA-SPEC.md",
+        "fact_id": "13e06d9dc2854433ece4c392fad09ab1"
+      },
+      {
+        "symbol": "docs/04-MOCK-DATA-SPEC.md#files-to-generate",
+        "detail": "called by docs/04-MOCK-DATA-SPEC.md",
+        "fact_id": "b220932e80344999e84e1331078c3a19"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: backend/app/db/session.session_for (fan-in 6, fan-out 4)",
+    "source": "hotspots",
+    "description": "\"backend/app/db/session.session_for\" is a pinch point: 6 symbols call into it and it calls out to 4 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "backend/app/db/session.py",
+        "symbol": "backend/app/db/session.session_for",
+        "detail": "fan-in 6 × fan-out 4 = score 24",
+        "line": 40,
+        "fact_id": "4c1c21be4020e1b5c683c2de3b94a814"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/api/routes.ready",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "0ab7583c58543d50966f004a59e4dd39"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/worker.verify_chain",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "ff5e6d036e4fa05ccf0de7eb2fff65cf"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      },
+      {
+        "symbol": "backend/app/api/routes.ready",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "2abbf1edd32ff14bac9f77b08e1b9289"
+      },
+      {
+        "symbol": "backend/app/db/session.get_session",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "63a3f02e4bd845e10e3afe05af473c3c"
+      },
+      {
+        "symbol": "Session",
+        "detail": "called by backend/app/db/session.session_for"
+      },
+      {
+        "symbol": "backend/app/db",
+        "detail": "called by backend/app/db/session.session_for",
+        "fact_id": "d9b5ae4dddec30d50558e9b39181a40d"
+      },
+      {
+        "symbol": "backend/app/db/session.apply_context",
+        "detail": "called by backend/app/db/session.session_for",
+        "fact_id": "f1a74f361e90c50ad9e4a97eb5826c98"
+      },
+      {
+        "symbol": "backend/app/db/session.get_engine",
+        "detail": "called by backend/app/db/session.session_for",
+        "fact_id": "80edbf2a1f503a766a6ecd189cc7f7bf"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: docs/03-DEMO-STORY.md (fan-in 3, fan-out 8)",
+    "source": "hotspots",
+    "description": "\"docs/03-DEMO-STORY.md\" is a pinch point: 3 symbols call into it and it calls out to 8 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "docs/03-DEMO-STORY.md",
+        "symbol": "docs/03-DEMO-STORY.md",
+        "detail": "fan-in 3 × fan-out 8 = score 24",
+        "line": 1,
+        "fact_id": "7997935dd8b86fd98cfd5c7231eaffa6"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md#6-demo-day",
+        "detail": "calls into docs/03-DEMO-STORY.md",
+        "fact_id": "8ef5c7e73150d468b693c28d57ae9401"
+      },
+      {
+        "symbol": "CLAUDE.md#read-first",
+        "detail": "calls into docs/03-DEMO-STORY.md",
+        "fact_id": "e538e6c43fcb6b2060ca274bd9620d7d"
+      },
+      {
+        "symbol": "docs/RUNBOOK.md#6-demo-day",
+        "detail": "calls into docs/03-DEMO-STORY.md",
+        "fact_id": "08ed311cafed56e3d93f0f31ecf7eb0c"
+      },
+      {
+        "symbol": "docs",
+        "detail": "called by docs/03-DEMO-STORY.md"
+      },
+      {
+        "symbol": "docs/03-DEMO-STORY.md#03-demo-story-institution-a",
+        "detail": "called by docs/03-DEMO-STORY.md",
+        "fact_id": "4b45e0075147d2d17e8bb60b5f9011d8"
+      },
+      {
+        "symbol": "docs/03-DEMO-STORY.md#characters-fictional",
+        "detail": "called by docs/03-DEMO-STORY.md",
+        "fact_id": "c34c2b9b0e5e855a7e5ecd992070d8e9"
+      },
+      {
+        "symbol": "docs/03-DEMO-STORY.md#cut-list-if-the-demo-runs-long",
+        "detail": "called by docs/03-DEMO-STORY.md",
+        "fact_id": "f2d77d6492fa33523261bbe5c192dc23"
+      },
+      {
+        "symbol": "docs/03-DEMO-STORY.md#rehearsal-checklist",
+        "detail": "called by docs/03-DEMO-STORY.md",
+        "fact_id": "9000792589a927875f8b9e582cebd752"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: backend/app/audit/service.record (fan-in 6, fan-out 3)",
+    "source": "hotspots",
+    "description": "\"backend/app/audit/service.record\" is a pinch point: 6 symbols call into it and it calls out to 3 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "backend/app/audit/service.py",
+        "symbol": "backend/app/audit/service.record",
+        "detail": "fan-in 6 × fan-out 3 = score 18",
+        "line": 24,
+        "fact_id": "fe96df61844d3fc0018f96cd1d7df48c"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/api/routes.audit_verify",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "758df660d91ae2e389c1580198a5beb9"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/worker.verify_chain",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "ff5e6d036e4fa05ccf0de7eb2fff65cf"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.insert",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "ba52125140ce82c0c013746165516de1"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      },
+      {
+        "symbol": "backend/app/api/routes.audit_verify",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "59a4b0e31566455800f07a799286440b"
+      },
+      {
+        "symbol": "app.core.auth.Principal.role",
+        "detail": "called by backend/app/audit/service.record"
+      },
+      {
+        "symbol": "app.core.auth.Principal.subject",
+        "detail": "called by backend/app/audit/service.record"
+      },
+      {
+        "symbol": "backend/app/audit",
+        "detail": "called by backend/app/audit/service.record",
+        "fact_id": "552fca117ae9c768e3d75a31204698d0"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Large public surface:  exports 34 of 36 symbols (94%)",
+    "source": "exported-surface",
+    "description": "Module \"\" exports 34 of its 36 symbols (94%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/env.run_migrations_online",
+        "detail": "exported",
+        "fact_id": "d30848f6df23518dddc822670bd64b18"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.downgrade",
+        "detail": "exported",
+        "fact_id": "5ebfa1f209c9a35b2ffd51138959da93"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.upgrade",
+        "detail": "exported",
+        "fact_id": "6130ff0a55ac89004a3c5ce576abc2ee"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/api/routes.audit_verify",
+        "detail": "exported",
+        "fact_id": "758df660d91ae2e389c1580198a5beb9"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/api/routes.live",
+        "detail": "exported",
+        "fact_id": "26f1b55b7d6e74138679f804ed9f9005"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/api/routes.me",
+        "detail": "exported",
+        "fact_id": "3743f6476120f641d1445805572a527e"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/api/routes.ready",
+        "detail": "exported",
+        "fact_id": "0ab7583c58543d50966f004a59e4dd39"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/audit/service.ChainStatus",
+        "detail": "exported",
+        "fact_id": "4f53b6313a8fe4469e739c8664b72066"
+      }
+    ],
+    "suggested_actions": [
+      "Unexport symbols that are only used within the module",
+      "Define a small, intentional public API and hide the rest",
+      "Split the module if it has several independent public responsibilities"
+    ]
+  },
+  {
+    "title": "High cyclomatic complexity: .claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.build (27)",
+    "source": "complexity-outliers",
+    "description": "\".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.build\" has a cyclomatic complexity of 27 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.build",
+        "detail": "cyclomatic complexity 27 at line 148",
+        "line": 148,
+        "fact_id": "facf7be20804469708cf8a21d91e19fa"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
+    "title": "High cyclomatic complexity: .claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load (13)",
+    "source": "complexity-outliers",
+    "description": "\".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load\" has a cyclomatic complexity of 13 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": "cyclomatic complexity 13 at line 44",
+        "line": 44,
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
+    "title": "High cyclomatic complexity: .claude/worktrees/mock-data-generator-loader-5238d1/backend/app/core/auth.principal_from_claims (11)",
+    "source": "complexity-outliers",
+    "description": "\".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/core/auth.principal_from_claims\" has a cyclomatic complexity of 11 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/core/auth.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/core/auth.principal_from_claims",
+        "detail": "cyclomatic complexity 11 at line 38",
+        "line": 38,
+        "fact_id": "7015cd4b6d81e0da178a7ff01f328a15"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
+    "title": "High cyclomatic complexity: backend/app/core/auth.principal_from_claims (11)",
+    "source": "complexity-outliers",
+    "description": "\"backend/app/core/auth.principal_from_claims\" has a cyclomatic complexity of 11 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "backend/app/core/auth.py",
+        "symbol": "backend/app/core/auth.principal_from_claims",
+        "detail": "cyclomatic complexity 11 at line 38",
+        "line": 38,
+        "fact_id": "a6998ac96f67ccaa3d87ff9b7ac4ebfb"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
+    "title": "Off main sequence: backend/app/core (D=1.00)",
+    "source": "package-metrics",
+    "description": "Package \"backend/app/core\" sits 1.00 from the main sequence (I=0.00, A=0.00) — rigid (zone of pain: stable + concrete — many packages depend on it, so it is hard to change without editing dependents).",
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "fact": "backend/app/core",
+        "detail": "Ca=10 Ce=0 N=4 I=0.00 A=0.00 D=1.00",
+        "fact_id": "f9f65072bf896cda0ecc29288d517109"
+      }
+    ],
+    "suggested_actions": [
+      "Stable hub: keep its public contract small, cohesive and stable; split it if it spans multiple responsibilities. (Abstractness is only an approximation for dynamically-typed languages, so \"extract interfaces\" may not apply.)"
+    ]
+  },
+  {
+    "title": "Most depended-upon package: backend/app/core (Ca=10)",
+    "source": "package-metrics",
+    "description": "\"backend/app/core\" is depended upon by 10 other packages — a change-risk concentrator. Edits ripple across dependents, so keep its public contract stable.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "fact": "backend/app/core",
+        "detail": "Ca=10 I=0.00",
+        "fact_id": "f9f65072bf896cda0ecc29288d517109"
+      }
+    ],
+    "suggested_actions": [
+      "Stabilize the package's public contract; split it if it spans multiple responsibilities"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function .claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.downgrade",
+    "source": "dead-code",
+    "description": "function \".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.downgrade\" is isolated — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.downgrade",
+        "detail": "function · isolated · .claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.py:310",
+        "line": 310,
+        "fact_id": "5ebfa1f209c9a35b2ffd51138959da93"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.downgrade",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "5ebfa1f209c9a35b2ffd51138959da93"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function backend/alembic/versions/0001_core_schema.downgrade",
+    "source": "dead-code",
+    "description": "function \"backend/alembic/versions/0001_core_schema.downgrade\" is isolated — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": "backend/alembic/versions/0001_core_schema.py",
+        "symbol": "backend/alembic/versions/0001_core_schema.downgrade",
+        "detail": "function · isolated · backend/alembic/versions/0001_core_schema.py:310",
+        "line": 310,
+        "fact_id": "f8a824b825599a4b05a570961c760257"
+      },
+      {
+        "symbol": "backend/alembic/versions/0001_core_schema.downgrade",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "f8a824b825599a4b05a570961c760257"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function .claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.upgrade",
+    "source": "dead-code",
+    "description": "function \".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.upgrade\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.upgrade",
+        "detail": "function · unreferenced · .claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.py:305",
+        "line": 305,
+        "fact_id": "6130ff0a55ac89004a3c5ce576abc2ee"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.upgrade",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "6130ff0a55ac89004a3c5ce576abc2ee"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function .claude/worktrees/mock-data-generator-loader-5238d1/backend/app/worker.verify_chain",
+    "source": "dead-code",
+    "description": "function \".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/worker.verify_chain\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/worker.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/worker.verify_chain",
+        "detail": "function · unreferenced · .claude/worktrees/mock-data-generator-loader-5238d1/backend/app/worker.py:29",
+        "line": 29,
+        "fact_id": "ff5e6d036e4fa05ccf0de7eb2fff65cf"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/worker.verify_chain",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "ff5e6d036e4fa05ccf0de7eb2fff65cf"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function backend/alembic/versions/0001_core_schema.upgrade",
+    "source": "dead-code",
+    "description": "function \"backend/alembic/versions/0001_core_schema.upgrade\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": "backend/alembic/versions/0001_core_schema.py",
+        "symbol": "backend/alembic/versions/0001_core_schema.upgrade",
+        "detail": "function · unreferenced · backend/alembic/versions/0001_core_schema.py:305",
+        "line": 305,
+        "fact_id": "8a70166a46cb2c454ee8ba4c17b1739b"
+      },
+      {
+        "symbol": "backend/alembic/versions/0001_core_schema.upgrade",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "8a70166a46cb2c454ee8ba4c17b1739b"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function backend/app/worker.verify_chain",
+    "source": "dead-code",
+    "description": "function \"backend/app/worker.verify_chain\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": "backend/app/worker.py",
+        "symbol": "backend/app/worker.verify_chain",
+        "detail": "function · unreferenced · backend/app/worker.py:29",
+        "line": 29,
+        "fact_id": "20e03f4d10467336d4e35a4996e3d51e"
+      },
+      {
+        "symbol": "backend/app/worker.verify_chain",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "20e03f4d10467336d4e35a4996e3d51e"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function .claude/worktrees/mock-data-generator-loader-5238d1/web.ViteConfig",
+    "source": "dead-code",
+    "description": "function \".claude/worktrees/mock-data-generator-loader-5238d1/web.ViteConfig\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/web/vite.config.ts",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/web.ViteConfig",
+        "detail": "function · unreferenced · .claude/worktrees/mock-data-generator-loader-5238d1/web/vite.config.ts:5",
+        "line": 5,
+        "fact_id": "896dcff93c03b0e43996c22e9dcef003"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/web.ViteConfig",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "896dcff93c03b0e43996c22e9dcef003"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function web.ViteConfig",
+    "source": "dead-code",
+    "description": "function \"web.ViteConfig\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "file": "web/vite.config.ts",
+        "symbol": "web.ViteConfig",
+        "detail": "function · unreferenced · web/vite.config.ts:5",
+        "line": 5,
+        "fact_id": "50e676c5a06a8656ad3769562391352f"
+      },
+      {
+        "symbol": "web.ViteConfig",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "50e676c5a06a8656ad3769562391352f"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Additional dead-code candidates: 353 more (see find_orphans)",
+    "source": "dead-code",
+    "description": "0 further high/medium-confidence orphan(s) were omitted from individual insights and 353 low-confidence orphan(s) (methods/types/consts/vars — usage not edge-tracked) were not surfaced individually. Use the find_orphans tool (output_mode=full) for the complete list.",
+    "confidence": 0.4,
+    "evidence": null,
+    "suggested_actions": [
+      "Run find_orphans with confidence=high and visibility=unexported for the safest cleanup set"
+    ]
+  },
+  {
+    "title": "Performance risk (call-in-loop, O(n³)): .claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+    "source": "performance",
+    "description": "Calls .claude/worktrees/mock-data-generator-loader-5238d1/seed/load.insert, .claude/worktrees/mock-data-generator-loader-5238d1/seed/load.rows inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": "Calls .claude/worktrees/mock-data-generator-loader-5238d1/seed/load.insert, .claude/worktrees/mock-data-generator-loader-5238d1/seed/load.rows inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
+        "line": 44,
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": "call_in_loop=.claude/worktrees/mock-data-generator-loader-5238d1/seed/load.insert",
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": "call_in_loop=.claude/worktrees/mock-data-generator-loader-5238d1/seed/load.rows",
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
+    "title": "Performance risk (compounded, O(n³)): .claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.build",
+    "source": "performance",
+    "description": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n³). Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.55,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.build",
+        "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n³).",
+        "line": 148,
+        "fact_id": "facf7be20804469708cf8a21d91e19fa"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.build",
+        "detail": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.variant (loop_depth=1)",
+        "fact_id": "facf7be20804469708cf8a21d91e19fa"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
+    "title": "Performance risk (compounded, O(n³)): .claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+    "source": "performance",
+    "description": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n³). Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.55,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n³).",
+        "line": 44,
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.insert (loop_depth=1)",
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
+    "title": "Performance risk (nested-loop, O(n²)): .claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.build",
+    "source": "performance",
+    "description": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.build",
+        "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
+        "line": 148,
+        "fact_id": "facf7be20804469708cf8a21d91e19fa"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.build",
+        "detail": "loop_depth=2, loop_count=19, cyclomatic=27",
+        "fact_id": "facf7be20804469708cf8a21d91e19fa"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
+    "title": "Performance risk (nested-loop, O(n²)): .claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+    "source": "performance",
+    "description": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.py",
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
+        "line": 44,
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      },
+      {
+        "symbol": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.load",
+        "detail": "loop_depth=2, loop_count=7, cyclomatic=13",
+        "fact_id": "9c1063b35c699bdd0d0c5d46aaa43b06"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  }
+]

@@ -1,0 +1,868 @@
+{
+  "repo_path": "E:\\App\\Project\\SETHU",
+  "repo_label": "sethu",
+  "generated_at": "2026-11-15T19:50:23Z",
+  "duration": "759.8708ms",
+  "extractors": [
+    "manifests",
+    "mdintent",
+    "python",
+    "typescript"
+  ],
+  "explainers": [
+    "cycles",
+    "layers",
+    "crossrepo",
+    "coverage",
+    "unused-routes",
+    "domain",
+    "query-loops",
+    "dead-methods",
+    "entry-points",
+    "messaging-coverage",
+    "god-class",
+    "hotspots",
+    "dependency-depth",
+    "exported-surface",
+    "complexity-outliers",
+    "intent",
+    "constraints",
+    "vendored-candidates",
+    "import-closure",
+    "package-metrics",
+    "dead-code",
+    "performance"
+  ],
+  "renderers": [
+    "llm_context"
+  ],
+  "file_hashes": [
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/infra/postgres/init/01-roles.sh",
+      "hash": "07654c97096e2973d0e4e00f0d4ffab3c7c817995b66c8005cb7a5376d233381",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "docs/04-MOCK-DATA-SPEC.md",
+      "hash": "5c8dfa88843aa55be5e021411b163e2e8a4b96dc72301b4d15ca5a54639cabb0",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/package-lock.json",
+      "hash": "1112dd77f95aa6cd12463767561aea895267eafeb84f5e339f55af9ee931b46e",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.env.example",
+      "hash": "7676803b89285ef2e5673a0ecbba40738241f458c1d66728fc4eddeff0a3de5c",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/institutions.csv",
+      "hash": "ccb4f940f0e97cca89049df86b50c768b4681be5a6e980475a0e24ab7a66d89c",
+      "mod_time": "2026-11-15T19:48:45Z"
+    },
+    {
+      "path": "backend/app/api/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/core/logging.py",
+      "hash": "0d30e6d41ad2c79c838a993c40a9f30874f23e49a50d04880cf3ce6173bfeacf",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docs/02-PS-COVERAGE-CHECKLIST.md",
+      "hash": "b3006a019b75b45146a48c7fbd28aab61d84c025b7c62b84bce760f85390e00c",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docs/05-NEXT-CLAUDE-CODE-PROMPT.md",
+      "hash": "122c5afa6cf567da9f4965b2ab504d9366ac3324f7787dfa063a9ad707d48124",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/CLAUDE.md",
+      "hash": "62232e3b673be110041901069d92e4aef568e92fca2e89a00d492d5514d0ea80",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docker-compose.test.yml",
+      "hash": "9ede4a56c8f6d1a32e16dd9f5d964dfcd7d12517df7dd49faf23c8e2a363d0b1",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/PKG-INFO",
+      "hash": "c68ca729f9111153fb4f74bb90d21b73508fd5de20c424b088ef05d44b894a0a",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/references/extraction-spec.md",
+      "hash": "6982c2f6067adedb87c420734ad4fb57ad0e25db0cd9dc1ba73669394cc11165",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/env.py",
+      "hash": "8d54e53b2fdddf955ec9e589802d2636282fd385ff4b6dd7e8d64a246086b2da",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/api/routes.py",
+      "hash": "f135aac05a1aebd3eccdc949d6f9929b5da6bb70e7f8a9a3891d45f270f21e33",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/core/auth.py",
+      "hash": "3825e1029a76c81d4ce36cb31f6cc95df0b7efe023d093f21ef7aaaf2abcb9eb",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/03-DEMO-STORY.md",
+      "hash": "0244ea2505a50334f5fabc12a948072ad2378be645cf29d608dc3f6a6fe50d06",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/requires.txt",
+      "hash": "d6dccd1e3e78701cde0bbdfd94a64b0aee0b2c79988c3e315c6988c8e7384e0b",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/query.md",
+      "hash": "f10b5aa8a0621d2ed7e85eb655cdc45ce39fa85e34ff3fddbb211b59ceb03a62",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/audit/service.py",
+      "hash": "b5f99ce37b81fb25cf8aab57d3d300b8dfef748eec8e9f8849e60168071ce4c7",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/pyproject.toml",
+      "hash": "fc284dabc83271c26ba28a69abdab8d3c7ffb9a6ce639f2894393e5abbf95a95",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "docker-compose.yml",
+      "hash": "8043e0136ce322be554508d3f261b8e2903c9e7868becf1c468780993e0bf3c6",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docs/RUNBOOK.md",
+      "hash": "0bc7eeccffa665e02ce00060bb779cf3c68f2ca3ca43a2a7424458275a6612e9",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/hooks.md",
+      "hash": "0a0d59a5f7582bf93f7afc00319b12166db156b47366e860e6ab6d73e405b29b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/update.md",
+      "hash": "582b4c23a1d3e2c0989a0c5dfc2f7c6bf17ad19087aece2c78eb03c0a202bb88",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/infra/keycloak/sethu-realm.json",
+      "hash": "1f6fb283180df4147a2d6c6d2e232986904770baac5b55ae18a6d847d1da9166",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/README.md",
+      "hash": "accae5c4165852df857b47c40d838d4505b45612ce788417a8f2ed012d72653d",
+      "mod_time": "2026-11-15T19:49:13Z"
+    },
+    {
+      "path": "backend/app/api/routes.py",
+      "hash": "f135aac05a1aebd3eccdc949d6f9929b5da6bb70e7f8a9a3891d45f270f21e33",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/db/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/exports.md",
+      "hash": "f1debd1003b168c3c1c9fe284bf3018609372740ae8856bea2b10bba0a07b34b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/settings.json",
+      "hash": "a0032d1f5ee02653efb0b45214efbd392778393379d1542535dc8bf27a793367",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "web/Dockerfile",
+      "hash": "afbe5d58f0ecd538bdcfcef4293b1058aa29168c20d62c8094d7419ade9693e5",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docs/SECURITY.md",
+      "hash": "35bc682d885d862fde39f049ee17139bb9ad88668a17379deeb1bc0a58a46e55",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/SKILL.md",
+      "hash": "c1e9d4da644d57cd3e3c8290ec26be140aed19f44a67ccb2eecc10568ae4443a",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/web/.dockerignore",
+      "hash": "8dddd5bb92e96a3ba01bbf50fcbaebe72b7816695816f212e21d29022c6c11b7",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/web/src/App.tsx",
+      "hash": "6e308fb12d0222bf00ce5b135b6b2e7490c6124a3411f9603d24dec89badf276",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/references/hooks.md",
+      "hash": "0a0d59a5f7582bf93f7afc00319b12166db156b47366e860e6ab6d73e405b29b",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docker-compose.yml",
+      "hash": "8043e0136ce322be554508d3f261b8e2903c9e7868becf1c468780993e0bf3c6",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/generate.py",
+      "hash": "72a1b9af58547157cfb3a9fddcc8bc7ce46c2aae42469bd557ea5df757dae93e",
+      "mod_time": "2026-11-15T19:48:20Z"
+    },
+    {
+      "path": "backend/app/core/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/core/auth.py",
+      "hash": "3825e1029a76c81d4ce36cb31f6cc95df0b7efe023d093f21ef7aaaf2abcb9eb",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "hash": "f773d468bef46d36df4b78bed0f8835edcaa4d4827bf591bff7af495b8ce5876",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/db/session.py",
+      "hash": "b50f8d33bedbd2fc38505b7e80e5d9753075bf5b23bc116797138a581158aa96",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/core/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/references/github-and-merge.md",
+      "hash": "1b36d67bd92de0f5ea76ec3b84d1c1103a197c6093b9954995cbaf0abac9fac3",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/04-MOCK-DATA-SPEC.md",
+      "hash": "5c8dfa88843aa55be5e021411b163e2e8a4b96dc72301b4d15ca5a54639cabb0",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/infra/web/nginx.prod.conf",
+      "hash": "8237efeaf1f8bada6d8b80519a6da263675af5bb3643bef095bc01e3f873fb3b",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "hash": "fc284dabc83271c26ba28a69abdab8d3c7ffb9a6ce639f2894393e5abbf95a95",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/api/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/db/session.py",
+      "hash": "b50f8d33bedbd2fc38505b7e80e5d9753075bf5b23bc116797138a581158aa96",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/worker.py",
+      "hash": "58079a31a8263dfb752302b0b4769cb1572f7e09499023e01e157ef2ee451f3e",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/01-SCOPE-LOCK.md",
+      "hash": "4e5701233076dffc099b9199f1890fa82f6d4197d5ff25cbb2a435cd6c07e180",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "backend/app/worker.py",
+      "hash": "58079a31a8263dfb752302b0b4769cb1572f7e09499023e01e157ef2ee451f3e",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/.dockerignore",
+      "hash": "8dddd5bb92e96a3ba01bbf50fcbaebe72b7816695816f212e21d29022c6c11b7",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/github-and-merge.md",
+      "hash": "1b36d67bd92de0f5ea76ec3b84d1c1103a197c6093b9954995cbaf0abac9fac3",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/web/package.json",
+      "hash": "4993df7f9c06a70cb5739c3b62a7e4f536483de1c664154a71a506f6fd8516ff",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/web/tsconfig.json",
+      "hash": "8b99f3adc5a2c56775f1e2747d0c19474f474ae3a875a35a6f78b906a84614fb",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/extraction-spec.md",
+      "hash": "6982c2f6067adedb87c420734ad4fb57ad0e25db0cd9dc1ba73669394cc11165",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/.graphify_version",
+      "hash": "3b6233c7b84f0aa2342452dd876d61beef0b164516ba92e25629ba004e90358f",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "docker-compose.prod.yml",
+      "hash": "cd2884206cfb3ad3ccf554f2da8415e1b07d3588c806dca1e22a908c1ec69dfc",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "scripts/init_env.py",
+      "hash": "e5c6943c5fa7285542be21cd28e9af285a4bd6b5a7afbc18da57d9aaf94eab8a",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/src/main.tsx",
+      "hash": "2307b5e5ed2a631d98dc322b3b8ba917e2ce0490cb32ee2420f08d1a7b851510",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.gitignore",
+      "hash": "0ca75fe213c3ec591b104f359b5ded508b4d6e7afda0f908d40f30e01a49f2fa",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/SECURITY.md",
+      "hash": "35bc682d885d862fde39f049ee17139bb9ad88668a17379deeb1bc0a58a46e55",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/adr/README.md",
+      "hash": "425b42c88c8ae030ee470fe0b8eaebf951bd13983a447b87f8f5ea49674a7820",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/scripts/init_env.py",
+      "hash": "e5c6943c5fa7285542be21cd28e9af285a4bd6b5a7afbc18da57d9aaf94eab8a",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "docker-compose.test.yml",
+      "hash": "9ede4a56c8f6d1a32e16dd9f5d964dfcd7d12517df7dd49faf23c8e2a363d0b1",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/package.json",
+      "hash": "4993df7f9c06a70cb5739c3b62a7e4f536483de1c664154a71a506f6fd8516ff",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/.graphify_version",
+      "hash": "3b6233c7b84f0aa2342452dd876d61beef0b164516ba92e25629ba004e90358f",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/web/vite.config.ts",
+      "hash": "0ba8cacdd7a8e61bc4bf54cbaea4ef09d6c37c07f34b4ead44615c18ee582111",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "LICENSE",
+      "hash": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+      "mod_time": "2026-11-15T17:00:50Z"
+    },
+    {
+      "path": "backend/app/audit/service.py",
+      "hash": "b5f99ce37b81fb25cf8aab57d3d300b8dfef748eec8e9f8849e60168071ce4c7",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/dependency_links.txt",
+      "hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "hash": "e193527082c37f5c0a88af3f70c44d65ac433ab3908996c3f467a1c6abb06d2d",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/references/add-watch.md",
+      "hash": "7fd565a4b049c647ca30e736f121becaf97c300887ef0d6418c3f06bdb28649b",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/references/exports.md",
+      "hash": "f1debd1003b168c3c1c9fe284bf3018609372740ae8856bea2b10bba0a07b34b",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/audit/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/RUNBOOK.md",
+      "hash": "4b2ddc7527c903e312957f639618bd473afe64e00cac552f74c86b74e563e7df",
+      "mod_time": "2026-11-15T19:49:14Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/web/package-lock.json",
+      "hash": "1112dd77f95aa6cd12463767561aea895267eafeb84f5e339f55af9ee931b46e",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "docs/DATA-MODEL.md",
+      "hash": "92317bd811188f3b40e46388123d6f0dc1901fb4d0c007ff15dc8cb56672ee59",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/LICENSE",
+      "hash": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/README.md",
+      "hash": "ab0719399a83525b889b60a60ec19d6446f12ed87012303eec21dfd05399f90e",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/Dockerfile",
+      "hash": "cc112a445213d74aab467ac5b52afe42c9f3cc2db14379927181f399c59160cb",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/sethu_backend.egg-info/top_level.txt",
+      "hash": "8a8f60ecb09b7e64c6d5214a8043865e608507db8c3f61f995eae6d078875901",
+      "mod_time": "2026-11-15T19:44:59Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/infra/web/nginx.conf",
+      "hash": "15220fedcbd673f2183786247c5a602c95336be5a29449beef7be1e9af570f97",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/complaints.csv",
+      "hash": "e7a0932f7cb7b02ad496605ce2152a08920f8664dd18488bd0aae3912b5a8ba8",
+      "mod_time": "2026-11-15T19:48:45Z"
+    },
+    {
+      "path": ".claude/settings.json",
+      "hash": "a0032d1f5ee02653efb0b45214efbd392778393379d1542535dc8bf27a793367",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/SKILL.md",
+      "hash": "c1e9d4da644d57cd3e3c8290ec26be140aed19f44a67ccb2eecc10568ae4443a",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/.dockerignore",
+      "hash": "b30b9dee256d94045955ca3716a3a36f75c07076dd0ea53b8c1a748e8ebb6dc1",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docs/03-DEMO-STORY.md",
+      "hash": "0244ea2505a50334f5fabc12a948072ad2378be645cf29d608dc3f6a6fe50d06",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/index.html",
+      "hash": "940dcfb95360b54f2c0ac2022a4657b914b834cf316db5c6cc524f481739c211",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/references/update.md",
+      "hash": "582b4c23a1d3e2c0989a0c5dfc2f7c6bf17ad19087aece2c78eb03c0a202bb88",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "infra/postgres/init/01-roles.sh",
+      "hash": "07654c97096e2973d0e4e00f0d4ffab3c7c817995b66c8005cb7a5376d233381",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/CLAUDE.md",
+      "hash": "62232e3b673be110041901069d92e4aef568e92fca2e89a00d492d5514d0ea80",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/references/transcribe.md",
+      "hash": "dbdd2b2733734f46c369cfe98322a9a53a77fa56b6728cb2e76f1452a7b71103",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic/versions/0001_core_schema.py",
+      "hash": "b95015e1672265640e8161e37973a6593e79dfe6b5e2fe5b69d131494bea902d",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/sethu_backend.egg-info/dependency_links.txt",
+      "hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "mod_time": "2026-11-15T19:44:59Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docker-compose.prod.yml",
+      "hash": "cd2884206cfb3ad3ccf554f2da8415e1b07d3588c806dca1e22a908c1ec69dfc",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/ARCHITECTURE.md",
+      "hash": "e193527082c37f5c0a88af3f70c44d65ac433ab3908996c3f467a1c6abb06d2d",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/web/index.html",
+      "hash": "940dcfb95360b54f2c0ac2022a4657b914b834cf316db5c6cc524f481739c211",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "CLAUDE.md",
+      "hash": "a0fe594f28ebb57e01515dc23afc49704282b96c414ecf66eb13750f4c82c679",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/add-watch.md",
+      "hash": "7fd565a4b049c647ca30e736f121becaf97c300887ef0d6418c3f06bdb28649b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".gitignore",
+      "hash": "0ca75fe213c3ec591b104f359b5ded508b4d6e7afda0f908d40f30e01a49f2fa",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "README.md",
+      "hash": "ab0719399a83525b889b60a60ec19d6446f12ed87012303eec21dfd05399f90e",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "infra/keycloak/sethu-realm.json",
+      "hash": "1f6fb283180df4147a2d6c6d2e232986904770baac5b55ae18a6d847d1da9166",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/src/App.tsx",
+      "hash": "6e308fb12d0222bf00ce5b135b6b2e7490c6124a3411f9603d24dec89badf276",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/core/logging.py",
+      "hash": "0d30e6d41ad2c79c838a993c40a9f30874f23e49a50d04880cf3ce6173bfeacf",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/02-PS-COVERAGE-CHECKLIST.md",
+      "hash": "b3006a019b75b45146a48c7fbd28aab61d84c025b7c62b84bce760f85390e00c",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/05-NEXT-CLAUDE-CODE-PROMPT.md",
+      "hash": "122c5afa6cf567da9f4965b2ab504d9366ac3324f7787dfa063a9ad707d48124",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/top_level.txt",
+      "hash": "8a8f60ecb09b7e64c6d5214a8043865e608507db8c3f61f995eae6d078875901",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": "docs/adr/README.md",
+      "hash": "425b42c88c8ae030ee470fe0b8eaebf951bd13983a447b87f8f5ea49674a7820",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "infra/web/nginx.prod.conf",
+      "hash": "8237efeaf1f8bada6d8b80519a6da263675af5bb3643bef095bc01e3f873fb3b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/tsconfig.json",
+      "hash": "8b99f3adc5a2c56775f1e2747d0c19474f474ae3a875a35a6f78b906a84614fb",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/vite.config.ts",
+      "hash": "0ba8cacdd7a8e61bc4bf54cbaea4ef09d6c37c07f34b4ead44615c18ee582111",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/.dockerignore",
+      "hash": "b30b9dee256d94045955ca3716a3a36f75c07076dd0ea53b8c1a748e8ebb6dc1",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/core/config.py",
+      "hash": "f773d468bef46d36df4b78bed0f8835edcaa4d4827bf591bff7af495b8ce5876",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/main.py",
+      "hash": "3f5f07ce299a6a92103ee1036a30ec868cf7dd476fa83ad06cf210bb5b0df678",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/docs/DATA-MODEL.md",
+      "hash": "92317bd811188f3b40e46388123d6f0dc1901fb4d0c007ff15dc8cb56672ee59",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "backend/alembic/versions/0001_core_schema.py",
+      "hash": "b95015e1672265640e8161e37973a6593e79dfe6b5e2fe5b69d131494bea902d",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/audit/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/transcribe.md",
+      "hash": "dbdd2b2733734f46c369cfe98322a9a53a77fa56b6728cb2e76f1452a7b71103",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.claude/skills/graphify/references/query.md",
+      "hash": "f10b5aa8a0621d2ed7e85eb655cdc45ce39fa85e34ff3fddbb211b59ceb03a62",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/sethu_backend.egg-info/SOURCES.txt",
+      "hash": "3985fd4b6e61d1cd4b3caf9058f5dcb7060cc73825651e5e32e01f380becf280",
+      "mod_time": "2026-11-15T19:44:59Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/actions.csv",
+      "hash": "da2dcbd36f191618134ef4ce0e936c2bfe5fff251aee3e4c63d56b1f51a214a9",
+      "mod_time": "2026-11-15T19:48:45Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/load.py",
+      "hash": "3b6c9f302563f978d7e2175cdb993a2dddc585c7ff284d4ebfe0739c0834611f",
+      "mod_time": "2026-11-15T19:44:38Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/web/src/main.tsx",
+      "hash": "2307b5e5ed2a631d98dc322b3b8ba917e2ce0490cb32ee2420f08d1a7b851510",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "backend/Dockerfile",
+      "hash": "cc112a445213d74aab467ac5b52afe42c9f3cc2db14379927181f399c59160cb",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/alembic/env.py",
+      "hash": "8d54e53b2fdddf955ec9e589802d2636282fd385ff4b6dd7e8d64a246086b2da",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/CLAUDE.md",
+      "hash": "dbbd5b756cb3af854612d885d0ff843e9e4f7612f3645c08181a3bbd9e266b36",
+      "mod_time": "2026-11-15T19:49:14Z"
+    },
+    {
+      "path": ".env",
+      "hash": "a976bda31ecf0f80009c74d20331109cfd8155352f2049a79c915afb5fc3745c",
+      "mod_time": "2026-11-15T15:02:41Z"
+    },
+    {
+      "path": ".env.example",
+      "hash": "7676803b89285ef2e5673a0ecbba40738241f458c1d66728fc4eddeff0a3de5c",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/alembic.ini",
+      "hash": "fdacda19d394cd705fffe539585c9d6b3510809da415c08618dda2a17b68340b",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/app/db/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/seed/users.csv",
+      "hash": "487d5fccc0d6eeb6fa30086db6e317079884114e678fbd125a4b8b843f481795",
+      "mod_time": "2026-11-15T19:48:45Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/web/Dockerfile",
+      "hash": "afbe5d58f0ecd538bdcfcef4293b1058aa29168c20d62c8094d7419ade9693e5",
+      "mod_time": "2026-11-15T19:37:22Z"
+    },
+    {
+      "path": "infra/web/nginx.conf",
+      "hash": "15220fedcbd673f2183786247c5a602c95336be5a29449beef7be1e9af570f97",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/sethu_backend.egg-info/requires.txt",
+      "hash": "d6dccd1e3e78701cde0bbdfd94a64b0aee0b2c79988c3e315c6988c8e7384e0b",
+      "mod_time": "2026-11-15T19:44:59Z"
+    },
+    {
+      "path": "backend/alembic.ini",
+      "hash": "fdacda19d394cd705fffe539585c9d6b3510809da415c08618dda2a17b68340b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docs/01-SCOPE-LOCK.md",
+      "hash": "4e5701233076dffc099b9199f1890fa82f6d4197d5ff25cbb2a435cd6c07e180",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/.gitattributes",
+      "hash": "4de884430f9643fd324eee884d5dde1a45728bf70b50203799ec68bad7499f5e",
+      "mod_time": "2026-11-15T19:44:40Z"
+    },
+    {
+      "path": ".gitattributes",
+      "hash": "641e22e74704438ac1e1404800cdaa287cc3cab88bc3ae5c9f2b4f43098b0d58",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/main.py",
+      "hash": "3f5f07ce299a6a92103ee1036a30ec868cf7dd476fa83ad06cf210bb5b0df678",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/SOURCES.txt",
+      "hash": "00f7558cdf97cf180bad83f8e1f005c890ec08d1771a4f7ebb534821d4ddf9c0",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": ".claude/worktrees/mock-data-generator-loader-5238d1/backend/sethu_backend.egg-info/PKG-INFO",
+      "hash": "c68ca729f9111153fb4f74bb90d21b73508fd5de20c424b088ef05d44b894a0a",
+      "mod_time": "2026-11-15T19:44:59Z"
+    }
+  ],
+  "fact_count": 650,
+  "insight_count": 31,
+  "enola_version": "0.4.21",
+  "snapshot_id": "sha256:5f1da23306c123517a444c743296acf5f7b370c239db0a770f24b306b7707007",
+  "git": {
+    "ref": "main",
+    "commit": "734ab849156da5b510e8304225442068fbc2a0cc",
+    "dirty": false,
+    "remote": "github.com/sdnikil1sn-ops/sethu"
+  },
+  "config_hash": "sha256:73d78ea79f51e19979d4c7d00bd9463ae684ebcb909116abad86675323c32c05",
+  "extractor_version": "v270",
+  "files_seen": 146,
+  "files_parsed": 77,
+  "source_bytes": 397308,
+  "files_skipped": 12,
+  "dirs_skipped": 3,
+  "skipped_sample": [
+    ".claude/worktrees/mock-data-generator-loader-5238d1/.git (glob: **/.git/**)",
+    ".claude/worktrees/mock-data-generator-loader-5238d1/backend/.pytest_cache/ (glob: **/.pytest_cache/**)",
+    ".claude/worktrees/mock-data-generator-loader-5238d1/backend/.ruff_cache/ (glob: **/.ruff_cache/**)",
+    ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/__init__.py (glob: **/tests/**/*.py)",
+    ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/conftest.py (glob: **/conftest.py)",
+    ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/test_audit.py (glob: **/test_*.py)",
+    ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/test_auth_and_api.py (glob: **/test_*.py)",
+    ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/test_rls.py (glob: **/test_*.py)",
+    ".claude/worktrees/mock-data-generator-loader-5238d1/backend/tests/test_seed.py (glob: **/test_*.py)",
+    ".git/ (glob: **/.git/**)",
+    "backend/tests/__init__.py (glob: **/tests/**/*.py)",
+    "backend/tests/conftest.py (glob: **/conftest.py)",
+    "backend/tests/test_audit.py (glob: **/test_*.py)",
+    "backend/tests/test_auth_and_api.py (glob: **/test_*.py)",
+    "backend/tests/test_rls.py (glob: **/test_*.py)"
+  ],
+  "ignore_glob_hash": "sha256:7523cc6397a498e151125a682d28fbf6df20c6f51f6dfaf18fd8f5239a20d2d8",
+  "heuristic_insights": 30,
+  "coverage": {
+    "services_total": 0,
+    "coverage_gaps": 0,
+    "unresolved_edges": 0,
+    "extractors_reporting": 1,
+    "extraction_unresolved": 143
+  },
+  "census": {
+    "files_walked": 158,
+    "parsed": 77,
+    "excluded_by_ignore": 12,
+    "excluded_by_kind": 53,
+    "excluded_kinds": {
+      "(no extension)": 8,
+      ".conf": 4,
+      ".csv": 4,
+      ".dockerignore": 4,
+      ".env": 1,
+      ".example": 2,
+      ".gitattributes": 2,
+      ".gitignore": 2,
+      ".graphify_version": 2,
+      ".ini": 2,
+      ".json": 6,
+      ".sh": 2,
+      ".txt": 8,
+      ".yml": 6
+    },
+    "skipped_with_cause": 16,
+    "top_skip_causes": [
+      {
+        "cause": "claimed by python, no facts emitted",
+        "count": 10
+      },
+      {
+        "cause": "claimed by manifests, no facts emitted",
+        "count": 4
+      },
+      {
+        "cause": "claimed by typescript, no facts emitted",
+        "count": 2
+      }
+    ]
+  },
+  "output_hashes": {
+    "facts.jsonl": "sha256:1962164cf0fe62c142ac6db53f97220f86aaba54fdcb8580d0b966c60a3a32a1",
+    "insights.json": "sha256:9cdd1e0b964d677a92074a5daeaf962292604f35466b4830aff7e2be4e7832fd",
+    "llm_context.md": "sha256:5491a0d8ee5623052be8b757095d1d56333449f9d31e13076c65981901bbd9f6"
+  },
+  "unseen": {
+    "files_excluded_by_ignore": 12,
+    "dirs_excluded_by_ignore": 3,
+    "outside_graph": {
+      "imports": 104
+    },
+    "outside_graph_prefixes": {
+      "react-dom": 2
+    },
+    "dead_exemptions": 0,
+    "dynamic_feature_classes": 0
+  }
+}
