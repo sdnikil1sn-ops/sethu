@@ -52,7 +52,7 @@ backend/alembic/       migrations (run as sethu_owner)
 backend/tests/         run against real PostgreSQL
 web/src/               React app; features under src/features/<feature>/
 infra/                 postgres init, nginx, keycloak realm
-seed/                  deterministic mock data generators (to be built)
+seed/                  deterministic mock data: generate.py, load.py, CSV files (see seed/README.md)
 ```
 
 Feature module shape: `backend/app/modules/<feature>/{api.py, service.py, repo.py, schemas.py}`.

@@ -52,6 +52,16 @@ cd backend; alembic revision -m "describe change"; cd ..
 docker compose up --build migrate
 ```
 
+### Seeding the demo data
+
+Load into an empty database only (after a first start or a reset, section 5). The files and the patterns they contain are described in `seed/README.md`.
+
+```powershell
+docker compose run --rm --no-deps -v "${PWD}/seed:/seed:ro" backend python /seed/load.py
+```
+
+Dates are relative to the moment of loading, so reset and reseed before each rehearsal. To change the data, edit `seed/generate.py`, run `python seed/generate.py` and commit the CSV files.
+
 ### Running backend tests
 
 The tests need a real PostgreSQL and they **empty every table**, so use a throwaway stack, never one holding demo data.
