@@ -1,0 +1,25 @@
+# Production overrides.
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Requires: infra/certs/server.crt and server.key (from the AICTE/NIC CA),
+# PUBLIC_BASE_URL=https://<host> and a real SMTP relay in .env.
+# NOT yet exercised end to end: treat as the starting point for deployment.
+
+services:
+  keycloak:
+    command: ["start", "--import-realm"]
+
+  backend:
+    environment:
+      SETHU_ENVIRONMENT: prod
+
+  worker:
+    environment:
+      SETHU_ENVIRONMENT: prod
+
+  web:
+    volumes:
+      - ./infra/web/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./infra/certs:/etc/nginx/certs:ro
+    ports: !override
+      - "443:8443"

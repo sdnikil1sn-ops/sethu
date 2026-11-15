@@ -1,0 +1,14 @@
+.env
+infra/certs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.venv/
+*.egg-info/
+node_modules/
+dist/
+.w_test
+# real data never belongs in the repository
+data/
+*.dump

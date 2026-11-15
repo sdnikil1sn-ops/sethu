@@ -1,0 +1,36 @@
+[project]
+name = "sethu-backend"
+version = "0.1.0"
+description = "SETHU: AICTE cross-bureau complaint monitoring (SIH26264)"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115,<1",
+    "uvicorn[standard]>=0.30,<1",
+    "pydantic-settings>=2.4,<3",
+    "sqlalchemy>=2.0.30,<3",
+    "psycopg[binary]>=3.2,<4",
+    "alembic>=1.13,<2",
+    "pyjwt[crypto]>=2.9,<3",
+    "celery[redis]>=5.4,<6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "httpx>=0.27", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "S", "UP"]
+ignore = ["S101", "B008"]  # B008: FastAPI Depends() defaults are idiomatic
