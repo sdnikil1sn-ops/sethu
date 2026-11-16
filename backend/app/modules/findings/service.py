@@ -7,8 +7,9 @@ Deadlock (one case):
                     (C-090: PGRC to RB to PGRC).
   stalled_transfer  the latest action is a transfer nobody has acknowledged for `stalled_transfer_days`.
 Bottleneck (a bureau's or an institution's open cases), with at least `bottleneck_min_open` open:
-  older_than_median more than `bottleneck_share` of them are older than the bureau's median days to close.
   overdue_share     more than `bottleneck_share` of them are past their 21-day deadline.
+  older_than_median (bureaus only) more than `bottleneck_share` of them are older than the bureau's median
+                    days to close. Not for institutions: a handful of cases makes it fire too easily.
 
 A finding's key names it, so a second run adds nothing. A finding that no longer holds is marked
 resolved; if it comes back it is reopened. Deadlock findings also put an alert in the outbox in
@@ -63,7 +64,10 @@ def queue_findings(scope: str, rows: list[dict], min_open: int, share: float) ->
     """Bottlenecks in bureau or institution queues, with the numbers used."""
     found = []
     for r in rows:
-        for measure, count in (("older_than_median", r["older_than_median"]), ("overdue_share", r["overdue"])):
+        measures = [("overdue_share", r["overdue"])]
+        if scope == "bureau":
+            measures.insert(0, ("older_than_median", r["older_than_median"]))
+        for measure, count in measures:
             if r["open"] >= min_open and count / r["open"] > share:
                 found.append({
                     "kind": "bottleneck", "key": f"bottleneck:{scope}:{r['id']}:{measure}",

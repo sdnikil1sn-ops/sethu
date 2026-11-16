@@ -57,6 +57,24 @@ def test_bottleneck_rule_and_its_numbers():
     found = service.queue_findings("bureau", rows, 3, 0.5)
     assert [f["key"] for f in found] == ["bottleneck:bureau:x:overdue_share"]  # 2 of 4 is not more than half
     assert found[0]["evidence"]["share"] == 0.75 and found[0]["evidence"]["overdue"] == 3
+    old = [{"id": "z", "bureau_ids": [A], "open": 4, "overdue": 0, "older_than_median": 4, "median_days": 10}]
+    by_bureau = service.queue_findings("bureau", old, 3, 0.6)
+    assert [f["key"] for f in by_bureau] == ["bottleneck:bureau:z:older_than_median"]
+    assert service.queue_findings("institution", old, 3, 0.6) == []  # institutions: overdue measure only
+
+
+@requires_db
+def test_seed_gives_few_bottlenecks_listed_after_transfer_findings(detected):
+    found = findings_as(detected, "menon")
+    bottlenecks = [f for f in found if f["kind"] == "bottleneck"]
+    assert 1 <= len(bottlenecks) <= 5
+    by_institution = [f for f in bottlenecks if f["evidence"]["scope"] == "institution"]
+    assert by_institution and all(f["evidence"]["measure"] == "overdue_share" for f in by_institution)
+    assert all(f["evidence"]["share"] > 0.6 for f in bottlenecks)
+    order = ["transfer_loop", "stalled_transfer", "bottleneck"]
+    assert [order.index(f["kind"]) for f in found] == sorted(order.index(f["kind"]) for f in found)
+    shares = [(f["evidence"]["share"], f["evidence"]["open"]) for f in bottlenecks]
+    assert shares == sorted(shares, reverse=True)  # worst first
 
 
 # --- On the seeded data --------------------------------------------------------------------------

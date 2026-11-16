@@ -114,10 +114,14 @@ FILTERS = {
 
 
 def listing(session: Session, filters: dict[str, Any]) -> list[dict]:
-    """Findings the caller may see (Row-Level Security), open first, newest first."""
+    """Findings the caller may see (Row-Level Security). Open first; then transfer loops, stalled
+    transfers and bottlenecks, the worst bottleneck (largest share, then most open cases) first."""
     where = " AND ".join(FILTERS[k] for k in filters) or "true"
-    return _all(session, f"{FINDING} WHERE {where} ORDER BY (f.status = 'open') DESC, f.first_seen DESC, f.kind",  # noqa: S608
-                **filters)
+    return _all(session, f"""{FINDING} WHERE {where}
+         ORDER BY (f.status = 'open') DESC,
+                  array_position(ARRAY['transfer_loop', 'stalled_transfer', 'bottleneck'], f.kind),
+                  (f.evidence->>'share')::numeric DESC NULLS LAST, (f.evidence->>'open')::int DESC NULLS LAST,
+                  f.first_seen DESC, f.id""", **filters)  # noqa: S608 - constants only
 
 
 def open_count(session: Session) -> int:
