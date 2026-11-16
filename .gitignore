@@ -12,3 +12,4 @@ dist/
 # real data never belongs in the repository
 data/
 *.dump
+.claude/worktrees/

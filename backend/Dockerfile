@@ -3,7 +3,8 @@ FROM python:3.12-slim AS build
 WORKDIR /src
 COPY pyproject.toml ./
 COPY app ./app
-RUN pip install --no-cache-dir --prefix=/install .
+RUN --mount=type=cache,target=/root/.cache/pip \
+    PIP_DEFAULT_TIMEOUT=60 PIP_RETRIES=10 pip install --prefix=/install .
 
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1

@@ -1,0 +1,1204 @@
+{
+  "repo_path": "E:\\App\\Project\\SETHU",
+  "repo_label": "sethu",
+  "generated_at": "2026-11-16T14:19:16Z",
+  "duration": "1.0440719s",
+  "extractors": [
+    "manifests",
+    "mdintent",
+    "python",
+    "typescript"
+  ],
+  "explainers": [
+    "cycles",
+    "layers",
+    "crossrepo",
+    "coverage",
+    "unused-routes",
+    "domain",
+    "query-loops",
+    "dead-methods",
+    "entry-points",
+    "messaging-coverage",
+    "god-class",
+    "hotspots",
+    "dependency-depth",
+    "exported-surface",
+    "complexity-outliers",
+    "intent",
+    "constraints",
+    "vendored-candidates",
+    "import-closure",
+    "package-metrics",
+    "dead-code",
+    "performance"
+  ],
+  "renderers": [
+    "llm_context"
+  ],
+  "file_hashes": [
+    {
+      "path": "backend/app/modules/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/schemas.py",
+      "hash": "9ea2aaa2977d2cb36fdfc86bd5e03e5cb8c504572f1975d06f497c449535f296",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "backend/app/modules/overlaps/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/SKILL.md",
+      "hash": "c1e9d4da644d57cd3e3c8290ec26be140aed19f44a67ccb2eecc10568ae4443a",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/ARCHITECTURE.md",
+      "hash": "164f8f887a2ee4d32fb243bc6ec7c4257edbc8b06c5d0eaf4bc7a7e66d5af6b7",
+      "mod_time": "2026-11-16T11:25:37Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/package.json",
+      "hash": "4993df7f9c06a70cb5739c3b62a7e4f536483de1c664154a71a506f6fd8516ff",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/types.ts",
+      "hash": "c03ae1cc2c056eabacb1a9de013324ef27e2759ac441016d06c2ae73d0a286fa",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": "backend/app/modules/complaints/schemas.py",
+      "hash": "f758e8a6cd80767418422b222d77fb1b078643b01213baeb6fd09442075056a1",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "backend/app/modules/complaints/service.py",
+      "hash": "3210a8078c58bb94d07c5161374ac9ce13653195e2453d6facc8ff06794a4720",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "docker-compose.test.yml",
+      "hash": "9ede4a56c8f6d1a32e16dd9f5d964dfcd7d12517df7dd49faf23c8e2a363d0b1",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/src/features/cases/types.ts",
+      "hash": "27bdfd0607c3c5f56b8bbebc34fdc13930a5cf99062981ae365bdfd8d41d8ed3",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
+      "hash": "6ea57577dce231c97b8bc2c6e0a3267ea6ccacd786ac5b35c9fc87f8ec3f32eb",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/web/nginx.prod.conf",
+      "hash": "8237efeaf1f8bada6d8b80519a6da263675af5bb3643bef095bc01e3f873fb3b",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".env",
+      "hash": "b7bd5f36c187f67597d55cd7112d92eed067b58af51e28703a3d51846fb05b9b",
+      "mod_time": "2026-11-16T09:28:10Z"
+    },
+    {
+      "path": "infra/web/nginx.prod.conf",
+      "hash": "8237efeaf1f8bada6d8b80519a6da263675af5bb3643bef095bc01e3f873fb3b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "seed/complaints.csv",
+      "hash": "d8b19659ec3fdd522f1b0f1c9a5d0c4ad50f672e2bd7a4eb8c2c990916595ccd",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "web/src/features/cases/History.tsx",
+      "hash": "ec34768843ba8423023a8dfd0c279198ef5b082ef9f502df95e978e3696eaa72",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "web/src/features/institutions/ResolutionQueue.tsx",
+      "hash": "84771276de1d9035ed206c4ea3cbc67a84aae4f0bece1a39af125a76c07bf2e5",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T10:01:22Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/adr/README.md",
+      "hash": "425b42c88c8ae030ee470fe0b8eaebf951bd13983a447b87f8f5ea49674a7820",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/README.md",
+      "hash": "ceada6db5e2054ee046166093cfb036c4c89bd3dfc6ffef14538ebd44d2c3329",
+      "mod_time": "2026-11-16T11:25:37Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/types.ts",
+      "hash": "6d5ad058b27a3931b6a451a67454c45fa6344044d258ed4ea5609010397d6c14",
+      "mod_time": "2026-11-16T10:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/main.tsx",
+      "hash": "c0f2b418733d072ad4b8c7781068446c3388b13acada81b098963ab8bd454e00",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": "README.md",
+      "hash": "ab0719399a83525b889b60a60ec19d6446f12ed87012303eec21dfd05399f90e",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "hash": "f773d468bef46d36df4b78bed0f8835edcaa4d4827bf591bff7af495b8ce5876",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docs/SECURITY.md",
+      "hash": "255339828539924ae53e6370ddab46fe1a4825ab7eca0a5e670c038756b68fc8",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/query.md",
+      "hash": "f10b5aa8a0621d2ed7e85eb655cdc45ce39fa85e34ff3fddbb211b59ceb03a62",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.env.example",
+      "hash": "213fbd8dfc40f17bd06b78d90e1decaf67f7c12e7b838c55e4ba857b7739fea3",
+      "mod_time": "2026-11-16T08:55:12Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+      "hash": "d2893cd76ee51b8f53a9857cec7fab1bb9db454140adcaad473d347a0444b421",
+      "mod_time": "2026-11-16T11:25:37Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/scripts/init_env.py",
+      "hash": "17a0755af4b89834704cdb3acbe44c89524cd21c25e1d56ecb6ee201d77b6a06",
+      "mod_time": "2026-11-16T08:55:12Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/actions.csv",
+      "hash": "a1d6395ff8ae7b8dd187c48420e397afbc9989f3f98a62e8a96dfedbeb1c5d98",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/github-and-merge.md",
+      "hash": "1b36d67bd92de0f5ea76ec3b84d1c1103a197c6093b9954995cbaf0abac9fac3",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": "backend/app/modules/complaints/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/SOURCES.txt",
+      "hash": "00f7558cdf97cf180bad83f8e1f005c890ec08d1771a4f7ebb534821d4ddf9c0",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": "web/Dockerfile",
+      "hash": "afbe5d58f0ecd538bdcfcef4293b1058aa29168c20d62c8094d7419ade9693e5",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/main.py",
+      "hash": "e6c0da6909956b6def9ed96c3c20dbe928f4d522d4b0bdc94e6f686871107a39",
+      "mod_time": "2026-11-16T11:04:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": "backend/alembic/versions/0002_case_tracking.py",
+      "hash": "6e37f1f2eacf681f99147a5f8cc34cc261f10261007831f130780f737574d6ea",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/audit/service.py",
+      "hash": "b5f99ce37b81fb25cf8aab57d3d300b8dfef748eec8e9f8849e60168071ce4c7",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/api.py",
+      "hash": "f3390997c78beb1bc6376aa0c2314e751798960f8264669f89e4cf56a014ca3e",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/users.csv",
+      "hash": "c4f3c2c9c1215a5e6cf3983c60304351e39f86561150a0e3f11fa3d60e165a32",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": "scripts/init_env.py",
+      "hash": "17a0755af4b89834704cdb3acbe44c89524cd21c25e1d56ecb6ee201d77b6a06",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": "web/src/api.ts",
+      "hash": "3c066e540294c8656b933e0e8238f888d1179286635f37de4bad5655a3e52804",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "web/vite.config.ts",
+      "hash": "0ba8cacdd7a8e61bc4bf54cbaea4ef09d6c37c07f34b4ead44615c18ee582111",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/.dockerignore",
+      "hash": "b30b9dee256d94045955ca3716a3a36f75c07076dd0ea53b8c1a748e8ebb6dc1",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.py",
+      "hash": "a67b3b987f2ad2a6ffd3fe2fcfaaaccab11ac73153088a04f767bf0b573c0b94",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/api.ts",
+      "hash": "ed1ffc5af0d28cc9dc37243b16aa2296ab2c31a9983ba9b63e3f687ba5db1e1c",
+      "mod_time": "2026-11-16T10:09:22Z"
+    },
+    {
+      "path": "backend/app/api/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/api/routes.py",
+      "hash": "f135aac05a1aebd3eccdc949d6f9929b5da6bb70e7f8a9a3891d45f270f21e33",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/service.py",
+      "hash": "6ea57577dce231c97b8bc2c6e0a3267ea6ccacd786ac5b35c9fc87f8ec3f32eb",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/extraction-spec.md",
+      "hash": "6982c2f6067adedb87c420734ad4fb57ad0e25db0cd9dc1ba73669394cc11165",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/api.py",
+      "hash": "d3bb895732833ae451e53c26308c919254e2cd73c69c220ec2c55440ed41a4d8",
+      "mod_time": "2026-11-16T11:04:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/01-SCOPE-LOCK.md",
+      "hash": "4e5701233076dffc099b9199f1890fa82f6d4197d5ff25cbb2a435cd6c07e180",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".gitignore",
+      "hash": "216b1b7589bf1fcc12850126480b0b18d2b0cbd7c35b9e288359d7cbbcbb6e56",
+      "mod_time": "2026-11-15T20:10:27Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/repo.py",
+      "hash": "1b9c7325cf2dbf8eee82e2988255e8fd503f2618bcb44e24444a9ea9861c1732",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "docs/RUNBOOK.md",
+      "hash": "8e0e26dffdce001a8410c6499eb25eb421072255b5f5ff346191ac09aa2ee0c3",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "web/package-lock.json",
+      "hash": "1112dd77f95aa6cd12463767561aea895267eafeb84f5e339f55af9ee931b46e",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/db/session.py",
+      "hash": "b50f8d33bedbd2fc38505b7e80e5d9753075bf5b23bc116797138a581158aa96",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/pyproject.toml",
+      "hash": "fc284dabc83271c26ba28a69abdab8d3c7ffb9a6ce639f2894393e5abbf95a95",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docker-compose.yml",
+      "hash": "db6cdb8e436541d8f60e3cdf725fc2c6f5703d11934878f1ab8e72f08c54cf9a",
+      "mod_time": "2026-11-16T11:12:35Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/demo-users/users.json",
+      "hash": "3ee7fa67b2047ce75fb7037d6ff46b34c0a93fca00f2f3dd046b8a20f8d25463",
+      "mod_time": "2026-11-16T08:55:12Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/InstitutionProfile.tsx",
+      "hash": "fb3c0fbdd5743f0286c2956f558cd964982c860d9792e4fcf53be5a88514d502",
+      "mod_time": "2026-11-16T11:12:35Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps/Overlaps.tsx",
+      "hash": "b9415aba8333e6778dfd7992228f8050ae0519e5a0cbd532c612667c704b2bfa",
+      "mod_time": "2026-11-16T11:12:30Z"
+    },
+    {
+      "path": "backend/app/core/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/db/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/04-MOCK-DATA-SPEC.md",
+      "hash": "d80279858d0ca56bc9769c59058981e5754a3e532e3272f7378c254d99a3d700",
+      "mod_time": "2026-11-16T08:55:12Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/web/nginx.conf",
+      "hash": "15220fedcbd673f2183786247c5a602c95336be5a29449beef7be1e9af570f97",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/index.html",
+      "hash": "940dcfb95360b54f2c0ac2022a4657b914b834cf316db5c6cc524f481739c211",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/package-lock.json",
+      "hash": "1112dd77f95aa6cd12463767561aea895267eafeb84f5e339f55af9ee931b46e",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/ResolutionQueue.tsx",
+      "hash": "84771276de1d9035ed206c4ea3cbc67a84aae4f0bece1a39af125a76c07bf2e5",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": "backend/alembic/versions/0001_core_schema.py",
+      "hash": "b95015e1672265640e8161e37973a6593e79dfe6b5e2fe5b69d131494bea902d",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/extraction-spec.md",
+      "hash": "6982c2f6067adedb87c420734ad4fb57ad0e25db0cd9dc1ba73669394cc11165",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": "backend/app/modules/overlaps/service.py",
+      "hash": "b8923a520b92718fd736311c04824d66cbbf0d509c7d7e31a802e67cc641563a",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "seed/actions.csv",
+      "hash": "a1d6395ff8ae7b8dd187c48420e397afbc9989f3f98a62e8a96dfedbeb1c5d98",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "web/src/features/cases/CaseDetail.tsx",
+      "hash": "ce0ae0acf6e5c544a248fa3f0613cbd41090bd5300045ec9d775533ef83fdc2f",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "web/src/features/institutions/InstitutionProfile.tsx",
+      "hash": "7dcf8b7667daad43166b6938a2a154016565b94b958ef68875a9b5b387b3ea06",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/hooks.md",
+      "hash": "0a0d59a5f7582bf93f7afc00319b12166db156b47366e860e6ab6d73e405b29b",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.py",
+      "hash": "a2a0a85d6b2b97bfc7db737c03b13fd99fb0476e525104859ef5bb45a8cb4a50",
+      "mod_time": "2026-11-16T11:04:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T11:04:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/tsconfig.json",
+      "hash": "8b99f3adc5a2c56775f1e2747d0c19474f474ae3a875a35a6f78b906a84614fb",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/app/core/auth.py",
+      "hash": "3825e1029a76c81d4ce36cb31f6cc95df0b7efe023d093f21ef7aaaf2abcb9eb",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/modules/overlaps/repo.py",
+      "hash": "b958b695cf0cc54f68ed23650f04cef28ce8d31f97535704d5db2b23d8ee983c",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "infra/keycloak/sethu-realm.json",
+      "hash": "1f6fb283180df4147a2d6c6d2e232986904770baac5b55ae18a6d847d1da9166",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "seed/README.md",
+      "hash": "e8d22fec7127a0b0e39413004b55d55e04f8e39b7f37c8226aa2f88256357ac9",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/transcribe.md",
+      "hash": "dbdd2b2733734f46c369cfe98322a9a53a77fa56b6728cb2e76f1452a7b71103",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/Dockerfile",
+      "hash": "cc112a445213d74aab467ac5b52afe42c9f3cc2db14379927181f399c59160cb",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/env.py",
+      "hash": "8d54e53b2fdddf955ec9e589802d2636282fd385ff4b6dd7e8d64a246086b2da",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/05-NEXT-CLAUDE-CODE-PROMPT.md",
+      "hash": "122c5afa6cf567da9f4965b2ab504d9366ac3324f7787dfa063a9ad707d48124",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/top_level.txt",
+      "hash": "8a8f60ecb09b7e64c6d5214a8043865e608507db8c3f61f995eae6d078875901",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": "docs/DATA-MODEL.md",
+      "hash": "b013edea23a6e0d1456fbb3ec5bad397725207c3025be906ffbaaba75e338ba1",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "seed/institutions.csv",
+      "hash": "ccb4f940f0e97cca89049df86b50c768b4681be5a6e980475a0e24ab7a66d89c",
+      "mod_time": "2026-11-15T20:06:03Z"
+    },
+    {
+      "path": ".claude/CLAUDE.md",
+      "hash": "62232e3b673be110041901069d92e4aef568e92fca2e89a00d492d5514d0ea80",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/settings.json",
+      "hash": "a0032d1f5ee02653efb0b45214efbd392778393379d1542535dc8bf27a793367",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/service.py",
+      "hash": "3210a8078c58bb94d07c5161374ac9ce13653195e2453d6facc8ff06794a4720",
+      "mod_time": "2026-11-16T11:04:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo.py",
+      "hash": "1b9c7325cf2dbf8eee82e2988255e8fd503f2618bcb44e24444a9ea9861c1732",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/.dockerignore",
+      "hash": "8dddd5bb92e96a3ba01bbf50fcbaebe72b7816695816f212e21d29022c6c11b7",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/alembic/env.py",
+      "hash": "8d54e53b2fdddf955ec9e589802d2636282fd385ff4b6dd7e8d64a246086b2da",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/alembic/versions/0003_overlap_policies.py",
+      "hash": "991dd3834599e5ac93323f657ce97548929a0b0946f5fac2f832094299e19894",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/dependency_links.txt",
+      "hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": ".claude/skills/graphify/SKILL.md",
+      "hash": "c1e9d4da644d57cd3e3c8290ec26be140aed19f44a67ccb2eecc10568ae4443a",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docker-compose.test.yml",
+      "hash": "9ede4a56c8f6d1a32e16dd9f5d964dfcd7d12517df7dd49faf23c8e2a363d0b1",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/keycloak/sethu-realm.json",
+      "hash": "1f6fb283180df4147a2d6c6d2e232986904770baac5b55ae18a6d847d1da9166",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.py",
+      "hash": "06917b73a18bd19e7874e92d9872664966afd653241cab5c2374095adcdeb4db",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": ".gitattributes",
+      "hash": "95d5a632d1d0c3abf0faff2858a4f8d387c6f50cb4306239e88de1c783b21971",
+      "mod_time": "2026-11-15T20:06:03Z"
+    },
+    {
+      "path": "backend/app/modules/complaints/repo.py",
+      "hash": "843e156f7c36becfe8a7ccb9d1e33a5b4b40357fb0565f7e6d6797274401ca93",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "docker-compose.yml",
+      "hash": "db6cdb8e436541d8f60e3cdf725fc2c6f5703d11934878f1ab8e72f08c54cf9a",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "docs/02-PS-COVERAGE-CHECKLIST.md",
+      "hash": "c72e3832dcc81de22f3c48072ff47e757a8c67174ea9ae94fe0b989a86003361",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/settings.json",
+      "hash": "a0032d1f5ee02653efb0b45214efbd392778393379d1542535dc8bf27a793367",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.gitattributes",
+      "hash": "95d5a632d1d0c3abf0faff2858a4f8d387c6f50cb4306239e88de1c783b21971",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/requires.txt",
+      "hash": "d6dccd1e3e78701cde0bbdfd94a64b0aee0b2c79988c3e315c6988c8e7384e0b",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": "docs/04-MOCK-DATA-SPEC.md",
+      "hash": "602ba35d35e2aec8ad67472ebe990d7041c9dbb7b459cfab3104e7a2a48f331a",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "hash": "93bf80728caa6dffb76805dbd3f012bb00a3e76cd130ae8c23203caec163ce5b",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "docs/adr/README.md",
+      "hash": "425b42c88c8ae030ee470fe0b8eaebf951bd13983a447b87f8f5ea49674a7820",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/add-watch.md",
+      "hash": "7fd565a4b049c647ca30e736f121becaf97c300887ef0d6418c3f06bdb28649b",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py",
+      "hash": "c445f2079bbc9fe652b7833ef007d895b23e160d2ecae7fa1a9a1381dbf428ca",
+      "mod_time": "2026-11-16T11:04:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/SECURITY.md",
+      "hash": "15ba9ba1eaf4fc4db7048e0035c92b5de0ffea00417dfac35efadc3f6dcdad69",
+      "mod_time": "2026-11-16T11:25:37Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/postgres/init/01-roles.sh",
+      "hash": "07654c97096e2973d0e4e00f0d4ffab3c7c817995b66c8005cb7a5376d233381",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/Dockerfile",
+      "hash": "afbe5d58f0ecd538bdcfcef4293b1058aa29168c20d62c8094d7419ade9693e5",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/app/modules/overlaps/schemas.py",
+      "hash": "f4ce8b949ba8c77fad251407bd68a5b1aa766c3c7ece85cf21d4a3cc3e084e11",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "docs/03-DEMO-STORY.md",
+      "hash": "0244ea2505a50334f5fabc12a948072ad2378be645cf29d608dc3f6a6fe50d06",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/src/features/institutions/InstitutionList.tsx",
+      "hash": "8033f204b3af2ff7c3adaeff5975df478a3bae158af709cb55d34ca3fdb0e9d5",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0002_case_tracking.py",
+      "hash": "6e37f1f2eacf681f99147a5f8cc34cc261f10261007831f130780f737574d6ea",
+      "mod_time": "2026-11-16T10:05:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.py",
+      "hash": "f4ce8b949ba8c77fad251407bd68a5b1aa766c3c7ece85cf21d4a3cc3e084e11",
+      "mod_time": "2026-11-16T11:04:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/demo-users/import.sh",
+      "hash": "b62a4b7fab32bb1cc90404afd2b20a31717e853dca33f1e080bbbb411cd6b28d",
+      "mod_time": "2026-11-16T08:59:37Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/PKG-INFO",
+      "hash": "c68ca729f9111153fb4f74bb90d21b73508fd5de20c424b088ef05d44b894a0a",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": "docs/05-NEXT-CLAUDE-CODE-PROMPT.md",
+      "hash": "122c5afa6cf567da9f4965b2ab504d9366ac3324f7787dfa063a9ad707d48124",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/src/features/overlaps/Overlaps.tsx",
+      "hash": "95c58aa20d2657d0da37566abcb255f1bf3b50fd77ebe26732a22e2799912af4",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/auth.py",
+      "hash": "3825e1029a76c81d4ce36cb31f6cc95df0b7efe023d093f21ef7aaaf2abcb9eb",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/InstitutionList.tsx",
+      "hash": "8033f204b3af2ff7c3adaeff5975df478a3bae158af709cb55d34ca3fdb0e9d5",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": "docker-compose.prod.yml",
+      "hash": "cd2884206cfb3ad3ccf554f2da8415e1b07d3588c806dca1e22a908c1ec69dfc",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docs/01-SCOPE-LOCK.md",
+      "hash": "4e5701233076dffc099b9199f1890fa82f6d4197d5ff25cbb2a435cd6c07e180",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/.dockerignore",
+      "hash": "8dddd5bb92e96a3ba01bbf50fcbaebe72b7816695816f212e21d29022c6c11b7",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/package.json",
+      "hash": "4993df7f9c06a70cb5739c3b62a7e4f536483de1c664154a71a506f6fd8516ff",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/transcribe.md",
+      "hash": "dbdd2b2733734f46c369cfe98322a9a53a77fa56b6728cb2e76f1452a7b71103",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/.graphify_version",
+      "hash": "3b6233c7b84f0aa2342452dd876d61beef0b164516ba92e25629ba004e90358f",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.gitignore",
+      "hash": "0ca75fe213c3ec591b104f359b5ded508b4d6e7afda0f908d40f30e01a49f2fa",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/LICENSE",
+      "hash": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/app/db/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "infra/demo-users/users.json",
+      "hash": "f235bb9aab3469c19627e6c27f8a6a6781ae46feea64a9bf44b3e6396e22a1b4",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": "web/src/App.tsx",
+      "hash": "c6b6f7abfabb90581bdc13d4d2fa5c90a210315e34cfa529cd3301f48bdc5756",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/exports.md",
+      "hash": "f1debd1003b168c3c1c9fe284bf3018609372740ae8856bea2b10bba0a07b34b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/query.md",
+      "hash": "f10b5aa8a0621d2ed7e85eb655cdc45ce39fa85e34ff3fddbb211b59ceb03a62",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/vite.config.ts",
+      "hash": "0ba8cacdd7a8e61bc4bf54cbaea4ef09d6c37c07f34b4ead44615c18ee582111",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/app/db/session.py",
+      "hash": "b50f8d33bedbd2fc38505b7e80e5d9753075bf5b23bc116797138a581158aa96",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/src/features/cases/CaseList.tsx",
+      "hash": "effe597f99c8920f708e0a9bc4a12485b0a756e9793f61a5e5339b24eeb74054",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/add-watch.md",
+      "hash": "7fd565a4b049c647ca30e736f121becaf97c300887ef0d6418c3f06bdb28649b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/update.md",
+      "hash": "582b4c23a1d3e2c0989a0c5dfc2f7c6bf17ad19087aece2c78eb03c0a202bb88",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/repo.py",
+      "hash": "843e156f7c36becfe8a7ccb9d1e33a5b4b40357fb0565f7e6d6797274401ca93",
+      "mod_time": "2026-11-16T11:04:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/service.py",
+      "hash": "b8923a520b92718fd736311c04824d66cbbf0d509c7d7e31a802e67cc641563a",
+      "mod_time": "2026-11-16T11:07:28Z"
+    },
+    {
+      "path": "backend/Dockerfile",
+      "hash": "cc112a445213d74aab467ac5b52afe42c9f3cc2db14379927181f399c59160cb",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/modules/complaints/api.py",
+      "hash": "a2a0a85d6b2b97bfc7db737c03b13fd99fb0476e525104859ef5bb45a8cb4a50",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "backend/app/worker.py",
+      "hash": "c445f2079bbc9fe652b7833ef007d895b23e160d2ecae7fa1a9a1381dbf428ca",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/skills/graphify/.graphify_version",
+      "hash": "3b6233c7b84f0aa2342452dd876d61beef0b164516ba92e25629ba004e90358f",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/hooks.md",
+      "hash": "0a0d59a5f7582bf93f7afc00319b12166db156b47366e860e6ab6d73e405b29b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/exports.md",
+      "hash": "f1debd1003b168c3c1c9fe284bf3018609372740ae8856bea2b10bba0a07b34b",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md",
+      "hash": "1d86f9f9c75072b376cdd2728e7c622c7fd26ded6c1e2a209abd81119732d3aa",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic.ini",
+      "hash": "fdacda19d394cd705fffe539585c9d6b3510809da415c08618dda2a17b68340b",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/02-PS-COVERAGE-CHECKLIST.md",
+      "hash": "344502fb152ce7c08f943d616dd83b2369211bb5fcbc123956a586cf4bed6a8f",
+      "mod_time": "2026-11-16T11:25:37Z"
+    },
+    {
+      "path": "backend/app/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "hash": "fc284dabc83271c26ba28a69abdab8d3c7ffb9a6ce639f2894393e5abbf95a95",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/README.md",
+      "hash": "ab0719399a83525b889b60a60ec19d6446f12ed87012303eec21dfd05399f90e",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0001_core_schema.py",
+      "hash": "b95015e1672265640e8161e37973a6593e79dfe6b5e2fe5b69d131494bea902d",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/schemas.py",
+      "hash": "f758e8a6cd80767418422b222d77fb1b078643b01213baeb6fd09442075056a1",
+      "mod_time": "2026-11-16T11:05:33Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
+      "hash": "9ea2aaa2977d2cb36fdfc86bd5e03e5cb8c504572f1975d06f497c449535f296",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": "backend/app/audit/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/core/logging.py",
+      "hash": "0d30e6d41ad2c79c838a993c40a9f30874f23e49a50d04880cf3ce6173bfeacf",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "infra/web/nginx.conf",
+      "hash": "15220fedcbd673f2183786247c5a602c95336be5a29449beef7be1e9af570f97",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/index.html",
+      "hash": "940dcfb95360b54f2c0ac2022a4657b914b834cf316db5c6cc524f481739c211",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/logging.py",
+      "hash": "0d30e6d41ad2c79c838a993c40a9f30874f23e49a50d04880cf3ce6173bfeacf",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/repo.py",
+      "hash": "b958b695cf0cc54f68ed23650f04cef28ce8d31f97535704d5db2b23d8ee983c",
+      "mod_time": "2026-11-16T11:04:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/app.css",
+      "hash": "670f0a263a41b70bbfea076a82c6c020ee3991607d18b49a465bef59c137a714",
+      "mod_time": "2026-11-16T11:12:35Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/auth.ts",
+      "hash": "0e89db8164011eccece6bd2321a9b48572365f908dbe114085074cdb4c1b4e81",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/History.tsx",
+      "hash": "2ea0c30c38e7ac32294e4d699c3e10f41c3614937c1d123cda735b3127e98d7b",
+      "mod_time": "2026-11-16T10:19:24Z"
+    },
+    {
+      "path": "backend/app/modules/overlaps/api.py",
+      "hash": "d3bb895732833ae451e53c26308c919254e2cd73c69c220ec2c55440ed41a4d8",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "infra/postgres/init/01-roles.sh",
+      "hash": "07654c97096e2973d0e4e00f0d4ffab3c7c817995b66c8005cb7a5376d233381",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/github-and-merge.md",
+      "hash": "1b36d67bd92de0f5ea76ec3b84d1c1103a197c6093b9954995cbaf0abac9fac3",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/audit/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/alembic.ini",
+      "hash": "fdacda19d394cd705fffe539585c9d6b3510809da415c08618dda2a17b68340b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "seed/load.py",
+      "hash": "06917b73a18bd19e7874e92d9872664966afd653241cab5c2374095adcdeb4db",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "web/src/features/institutions/types.ts",
+      "hash": "c03ae1cc2c056eabacb1a9de013324ef27e2759ac441016d06c2ae73d0a286fa",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "web/src/main.tsx",
+      "hash": "c0f2b418733d072ad4b8c7781068446c3388b13acada81b098963ab8bd454e00",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "web/tsconfig.json",
+      "hash": "8b99f3adc5a2c56775f1e2747d0c19474f474ae3a875a35a6f78b906a84614fb",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/update.md",
+      "hash": "582b4c23a1d3e2c0989a0c5dfc2f7c6bf17ad19087aece2c78eb03c0a202bb88",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0003_overlap_policies.py",
+      "hash": "991dd3834599e5ac93323f657ce97548929a0b0946f5fac2f832094299e19894",
+      "mod_time": "2026-11-16T11:03:05Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/App.tsx",
+      "hash": "e009b119711b9bbd9f7469cc1246ad20fe2df53ba39d0d0c668705d9efb8f281",
+      "mod_time": "2026-11-16T11:12:35Z"
+    },
+    {
+      "path": "CLAUDE.md",
+      "hash": "35ad4bba76138a5b8368239d5aab1da8430229a11ccec322a2d68ffe735121ca",
+      "mod_time": "2026-11-16T09:53:23Z"
+    },
+    {
+      "path": "LICENSE",
+      "hash": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+      "mod_time": "2026-11-15T17:00:50Z"
+    },
+    {
+      "path": "infra/demo-users/import.sh",
+      "hash": "b62a4b7fab32bb1cc90404afd2b20a31717e853dca33f1e080bbbb411cd6b28d",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/CLAUDE.md",
+      "hash": "62232e3b673be110041901069d92e4aef568e92fca2e89a00d492d5514d0ea80",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.py",
+      "hash": "f135aac05a1aebd3eccdc949d6f9929b5da6bb70e7f8a9a3891d45f270f21e33",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/config.py",
+      "hash": "f773d468bef46d36df4b78bed0f8835edcaa4d4827bf591bff7af495b8ce5876",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/CaseList.tsx",
+      "hash": "8b531dc4022f6e4599dd2592ca6003a653b5474e82185c9137e773be89a82958",
+      "mod_time": "2026-11-16T11:12:35Z"
+    },
+    {
+      "path": "backend/.dockerignore",
+      "hash": "b30b9dee256d94045955ca3716a3a36f75c07076dd0ea53b8c1a748e8ebb6dc1",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/api.py",
+      "hash": "f3390997c78beb1bc6376aa0c2314e751798960f8264669f89e4cf56a014ca3e",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "seed/users.csv",
+      "hash": "c4f3c2c9c1215a5e6cf3983c60304351e39f86561150a0e3f11fa3d60e165a32",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": "web/src/auth.ts",
+      "hash": "0e89db8164011eccece6bd2321a9b48572365f908dbe114085074cdb4c1b4e81",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/03-DEMO-STORY.md",
+      "hash": "0244ea2505a50334f5fabc12a948072ad2378be645cf29d608dc3f6a6fe50d06",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/complaints.csv",
+      "hash": "d8b19659ec3fdd522f1b0f1c9a5d0c4ad50f672e2bd7a4eb8c2c990916595ccd",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/CaseDetail.tsx",
+      "hash": "0fbcbd140e4d9db64dc92943fee1081646900e373881fd1da80b9c02c77ea099",
+      "mod_time": "2026-11-16T10:09:16Z"
+    },
+    {
+      "path": "backend/app/audit/service.py",
+      "hash": "b5f99ce37b81fb25cf8aab57d3d300b8dfef748eec8e9f8849e60168071ce4c7",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "seed/generate.py",
+      "hash": "a67b3b987f2ad2a6ffd3fe2fcfaaaccab11ac73153088a04f767bf0b573c0b94",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "web/src/app.css",
+      "hash": "d0118bf9ed4d563b14f5cb6eab1796f8113310752cccdc471d3eaf3a6ef01810",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docker-compose.prod.yml",
+      "hash": "cd2884206cfb3ad3ccf554f2da8415e1b07d3588c806dca1e22a908c1ec69dfc",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/DATA-MODEL.md",
+      "hash": "ed0b5266e413846fc3114fab913d77a41577b3464570c071db408b4c3d55d07d",
+      "mod_time": "2026-11-16T11:25:37Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/institutions.csv",
+      "hash": "ccb4f940f0e97cca89049df86b50c768b4681be5a6e980475a0e24ab7a66d89c",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": ".env.example",
+      "hash": "488d836103575bd02bf96d0b25c6a056564281cfc556559ba437019aa8350060",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": "backend/app/main.py",
+      "hash": "e6c0da6909956b6def9ed96c3c20dbe928f4d522d4b0bdc94e6f686871107a39",
+      "mod_time": "2026-11-16T11:28:49Z"
+    }
+  ],
+  "fact_count": 1351,
+  "insight_count": 130,
+  "enola_version": "0.4.21",
+  "snapshot_id": "sha256:56a68324eee3c135eafbb744945fc987768d119b3275e14a1838807b7f910afc",
+  "git": {
+    "ref": "main",
+    "commit": "a3efd898f0b66681e9d89bada8661e90c3558742",
+    "dirty": true,
+    "remote": "github.com/sdnikil1sn-ops/sethu"
+  },
+  "config_hash": "sha256:73d78ea79f51e19979d4c7d00bd9463ae684ebcb909116abad86675323c32c05",
+  "extractor_version": "v270",
+  "files_seen": 212,
+  "files_parsed": 130,
+  "source_bytes": 647537,
+  "files_skipped": 19,
+  "dirs_skipped": 6,
+  "skipped_sample": [
+    ".claude/worktrees/jolly-feynman-1a9f96/.enola/ (glob: **/.enola/**)",
+    ".claude/worktrees/jolly-feynman-1a9f96/.git (glob: **/.git/**)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/.pytest_cache/ (glob: **/.pytest_cache/**)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/.ruff_cache/ (glob: **/.ruff_cache/**)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/__init__.py (glob: **/tests/**/*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/conftest.py (glob: **/conftest.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_audit.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_auth_and_api.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_cases.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_institutions.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_overlaps.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_rls.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_seed.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/web/dist/ (glob: **/dist/**)",
+    ".claude/worktrees/jolly-feynman-1a9f96/web/node_modules/ (glob: **/node_modules/**)",
+    ".git/ (glob: **/.git/**)",
+    "backend/tests/__init__.py (glob: **/tests/**/*.py)",
+    "backend/tests/conftest.py (glob: **/conftest.py)",
+    "backend/tests/test_audit.py (glob: **/test_*.py)",
+    "backend/tests/test_auth_and_api.py (glob: **/test_*.py)"
+  ],
+  "ignore_glob_hash": "sha256:7523cc6397a498e151125a682d28fbf6df20c6f51f6dfaf18fd8f5239a20d2d8",
+  "heuristic_insights": 128,
+  "coverage": {
+    "services_total": 0,
+    "coverage_gaps": 0,
+    "unresolved_edges": 0,
+    "extractors_reporting": 1,
+    "extraction_unresolved": 126
+  },
+  "census": {
+    "files_walked": 231,
+    "parsed": 130,
+    "excluded_by_ignore": 19,
+    "excluded_by_kind": 58,
+    "excluded_kinds": {
+      "(no extension)": 7,
+      ".conf": 4,
+      ".css": 2,
+      ".csv": 8,
+      ".dockerignore": 4,
+      ".env": 1,
+      ".example": 2,
+      ".gitattributes": 2,
+      ".gitignore": 2,
+      ".graphify_version": 2,
+      ".ini": 2,
+      ".json": 8,
+      ".sh": 4,
+      ".txt": 4,
+      ".yml": 6
+    },
+    "skipped_with_cause": 24,
+    "top_skip_causes": [
+      {
+        "cause": "claimed by python, no facts emitted",
+        "count": 18
+      },
+      {
+        "cause": "claimed by manifests, no facts emitted",
+        "count": 4
+      },
+      {
+        "cause": "claimed by typescript, no facts emitted",
+        "count": 2
+      }
+    ]
+  },
+  "output_hashes": {
+    "facts.jsonl": "sha256:43754a4e894ca16d645d589cfe094cf713e9d907834f3a4441e506aa2ed7176a",
+    "insights.json": "sha256:6eb662652ec492a11ea04445e9034519c691d7540f5696e121632af77c861101",
+    "llm_context.md": "sha256:ce3ad841c638eab59213b5841226647f6c8496a4f864ab50433b1a4d786ef4dd"
+  },
+  "unseen": {
+    "files_excluded_by_ignore": 19,
+    "dirs_excluded_by_ignore": 6,
+    "outside_graph": {
+      "imports": 218
+    },
+    "outside_graph_prefixes": {
+      "react-dom": 2
+    },
+    "dead_exemptions": 0,
+    "dynamic_feature_classes": 0
+  }
+}
