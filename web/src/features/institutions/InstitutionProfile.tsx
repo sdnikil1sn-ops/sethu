@@ -1,5 +1,6 @@
 import { useLoad } from "../../api";
 import { InstitutionTimeline } from "../cases/History";
+import { Links, SameInstitution } from "../overlaps/Overlaps";
 import { type Profile, day, daysSince, place } from "./types";
 
 export function InstitutionProfile({ id }: { id: string }) {
@@ -38,6 +39,9 @@ export function InstitutionProfile({ id }: { id: string }) {
           <dd>{p.oldest_open ? `${p.oldest_open.ref}, ${daysSince(p.oldest_open.filed_at)} days` : "None"}</dd>
         </div>
       </dl>
+
+      <SameInstitution institutionId={p.id} />
+      <Links institutionId={p.id} />
 
       <h2>Cases from every bureau</h2>
       {p.complaints.length === 0 ? (

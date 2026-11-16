@@ -9,6 +9,7 @@ from app.core.config import get_settings
 from app.core.logging import configure_logging, request_id
 from app.modules.complaints.api import router as cases
 from app.modules.institutions.api import router as institutions
+from app.modules.overlaps.api import router as overlaps
 
 log = logging.getLogger("sethu.http")
 
@@ -43,6 +44,7 @@ def create_app() -> FastAPI:
     app.include_router(api)
     app.include_router(institutions)
     app.include_router(cases)
+    app.include_router(overlaps)
     return app
 
 

@@ -36,7 +36,7 @@ Dates are stored as days before the load (`filed_days_ago`, `days_ago`), so "C-1
 | Pattern | Tag | Count | Expected detection |
 |---|---|---|---|
 | Demo records C-101, C-102, C-103 at Greenfield | `demo` | 3 | One profile for three spellings; C-101 and C-102 overlap |
-| Same institution, two bureaus, same category, similar wording | `tier2:N` | 6 pairs | 6 Tier 2 overlap alerts (`tier2:1` is C-101 and C-102) |
+| Same institution, two bureaus, same category, similar wording | `tier2:N` | 6 pairs | 6 Tier 2 suggestions from `sethu.overlaps.detect` (`tier2:1` is C-101 and C-102); text similarity 0.34 to 0.62 against a threshold of 0.30 |
 | Same institution, two bureaus, different category | `tier1:N` | 10 pairs | Tier 1 only, no Tier 2 (`tier1:10` is C-102 and C-103) |
 | Identical text filed twice at one bureau | `dup:N` | 5 pairs | 5 duplicates, by `body_sha256` |
 | Typed name differs from the canonical name | `variant` | 40 | Resolved by the cascade: abbreviation, acronym with city, typo, abbreviation without city |

@@ -46,3 +46,10 @@ textarea { min-height: 4.5rem; }
 h1 small { font-size: 0.9rem; font-weight: 400; border: 1px solid var(--line); border-radius: 1rem; padding: 0.1rem 0.6rem; }
 [role="note"] { background: var(--soft); padding: 0.75rem; border-radius: 0.5rem; }
 @media (max-width: 40rem) { .history li { grid-template-columns: 1fr; gap: 0; } }
+.overlap { border: 1px solid var(--line); border-radius: 0.5rem; padding: 0.25rem 0.9rem; margin: 0.75rem 0; }
+.overlap h3 { margin: 0.6rem 0 0.2rem; font-size: 1.05rem; }
+.overlap h3 small { font-weight: 400; border: 1px solid var(--line); border-radius: 1rem; padding: 0.1rem 0.6rem; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.pair div { background: var(--soft); border-radius: 0.5rem; padding: 0.6rem; }
+.banner { border-left: 4px solid #b3261e; font-weight: 600; }
+@media (max-width: 40rem) { .pair { grid-template-columns: 1fr; } }

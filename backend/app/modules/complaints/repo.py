@@ -29,6 +29,7 @@ FILTERS = {
     "filed_from": "s.filed_at >= :filed_from",
     "filed_to": "s.filed_at < CAST(:filed_to AS date) + 1",
     "overdue": "(s.status <> 'closed' AND s.due_at < now()) = :overdue",
+    "ids": "s.id = ANY(:ids)",
     "q": "(s.ref ILIKE :q OR i.name ILIKE :q OR c.institution_name_raw ILIKE :q OR c.body ILIKE :q)",
 }
 

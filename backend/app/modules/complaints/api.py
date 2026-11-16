@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.auth import Principal, require_roles
 from app.db.session import get_session
 from app.modules.complaints import schemas, service
+from app.modules.overlaps import service as overlaps
 
 router = APIRouter(prefix="/api/v1/cases", tags=["cases"])
 
@@ -28,7 +29,10 @@ def list_cases(
     _: Principal = Depends(READ),
     session: Session = Depends(get_session),
 ) -> dict:
-    return service.search(session, filters.model_dump(), limit, offset)
+    wanted = filters.model_dump()
+    if wanted.pop("overlapping"):
+        wanted["ids"] = overlaps.linked_case_ids(session)
+    return service.search(session, wanted, limit, offset)
 
 
 @router.get("/options", response_model=schemas.Options)

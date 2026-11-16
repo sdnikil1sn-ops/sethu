@@ -8,6 +8,7 @@ from app.audit import service as audit
 from app.core.config import get_settings
 from app.db.session import SYSTEM, session_for
 from app.modules.institutions import service as institutions
+from app.modules.overlaps import service as overlaps
 
 log = logging.getLogger("sethu.worker")
 settings = get_settings()
@@ -23,6 +24,7 @@ celery.conf.update(
     beat_schedule={
         "audit-chain-nightly": {"task": "sethu.audit.verify_chain", "schedule": crontab(hour=2, minute=0)},
         "resolve-institutions": {"task": "sethu.institutions.resolve_pending", "schedule": 300.0},
+        "detect-overlaps": {"task": "sethu.overlaps.detect", "schedule": 300.0},
     },
 )
 
@@ -42,3 +44,10 @@ def resolve_pending() -> dict:
     """Link newly arrived complaints to institutions; what cannot be linked waits in the officer queue."""
     with session_for(SYSTEM) as session:
         return institutions.resolve_pending(session, SYSTEM)
+
+
+@celery.task(name="sethu.overlaps.detect")
+def detect_overlaps() -> dict:
+    """Suggest new Tier 2 overlap links. A person approves or rejects each one."""
+    with session_for(SYSTEM) as session:
+        return overlaps.detect(session, SYSTEM)

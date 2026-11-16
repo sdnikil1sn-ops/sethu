@@ -13,6 +13,7 @@ const EMPTY = {
   filed_from: "",
   filed_to: "",
   overdue: "",
+  overlapping: "",
 };
 type Filters = typeof EMPTY;
 
@@ -77,6 +78,7 @@ export function CaseList({ initial }: { initial: string }) {
           ["true", "Overdue only"],
           ["false", "Not overdue"],
         ])}
+        {choose("Overlaps", "overlapping", [["true", "Overlapping only"]])}
         <button
           type="button"
           onClick={() => {

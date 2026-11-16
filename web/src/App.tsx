@@ -5,6 +5,7 @@ import { CaseDetail } from "./features/cases/CaseDetail";
 import { CaseList } from "./features/cases/CaseList";
 import { InstitutionList } from "./features/institutions/InstitutionList";
 import { InstitutionProfile } from "./features/institutions/InstitutionProfile";
+import { OverlapsPage } from "./features/overlaps/Overlaps";
 import { ResolutionQueue } from "./features/institutions/ResolutionQueue";
 
 type Me = { name: string; role: string };
@@ -39,6 +40,9 @@ export function App() {
           <a href="#/cases" aria-current={caseId || caseList ? "page" : undefined}>
             Cases
           </a>
+          <a href="#/overlaps" aria-current={route === "/overlaps" ? "page" : undefined}>
+            Overlaps
+          </a>
           <a href="#/queue" aria-current={route === "/queue" ? "page" : undefined}>
             Unmatched names
           </a>
@@ -57,6 +61,8 @@ export function App() {
           <CaseList key={route} initial={caseList[1] ?? ""} />
         ) : profileId ? (
           <InstitutionProfile id={profileId} />
+        ) : route === "/overlaps" ? (
+          <OverlapsPage canDetect={me?.role === "admin"} />
         ) : route === "/queue" ? (
           <ResolutionQueue canResolve={!!me && CAN_RESOLVE.includes(me.role)} />
         ) : (

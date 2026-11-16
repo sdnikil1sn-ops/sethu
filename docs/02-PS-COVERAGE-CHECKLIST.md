@@ -13,10 +13,10 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [x] Status change is possible for the owner bureau only (role check)
 
 ## 3. Overlap detection
-- [ ] Tier 1: two cases on the same institution in different bureaus are linked as "same institution"
-- [ ] Tier 2: two cases on the same matter (same category, similar text, near dates) are flagged "potential overlap"
-- [ ] Banner text: "Potential Overlapping Cases – Coordination Required"
-- [ ] Officer must approve or reject the link; both choices are logged
+- [x] Tier 1: two cases on the same institution in different bureaus are linked as "same institution"
+- [x] Tier 2: two cases on the same matter (same category, similar text, near dates) are flagged "potential overlap"
+- [x] Banner text: "Potential Overlapping Cases – Coordination Required"
+- [x] Officer must approve or reject the link; both choices are logged
 
 ## 4. Real-time dashboard
 - [ ] Counts by bureau, status, category, overdue
@@ -30,12 +30,12 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 
 ## 6. Search and filters
 - [x] Free text over complaint text and institution names
-- [ ] Filters: bureau, category, status, date range, overdue only, overlapping only (all built except "overlapping only", which waits for overlap detection)
+- [x] Filters: bureau, category, status, date range, overdue only, overlapping only
 - [x] Results under 1 second on the seeded data
 
 ## 7. Alerts
-- [ ] Overlap alert is queued to an email outbox for both bureau heads
-- [ ] Alert is held until an officer approves it (human approval)
+- [x] Overlap alert is queued to an email outbox for both bureau heads
+- [x] Alert is held until an officer approves it (human approval)
 - [ ] A local mail catcher shows the delivered email during the demo
 - [ ] Sent alerts are listed with time and recipient
 

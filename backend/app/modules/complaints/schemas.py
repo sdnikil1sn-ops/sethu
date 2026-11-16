@@ -94,4 +94,5 @@ class Filters(BaseModel):
     filed_from: date | None = None
     filed_to: date | None = None
     overdue: bool | None = None
+    overlapping: bool | None = None  # true: only cases in a suggested or approved overlap
     q: str | None = Field(None, max_length=200)

@@ -31,10 +31,10 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
 
 | Component | Responsibility | Status |
 |---|---|---|
-| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, case list, case detail and actions. Run end to end in dev; the production TLS config is not yet run |
-| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile, alias search, resolution cascade), `complaints` (case list, detail, history, actions). Other features: Planned |
-| worker (Celery) | Ingestion, matching, graph jobs, alert delivery, nightly audit verification | Built: nightly audit verify, institution resolution every 5 minutes. The rest: Planned |
-| postgres | System of record, Row-Level Security, audit ledger | Built and tested (migrations 0001, 0002) |
+| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, case list, case detail and actions, overlaps. Run end to end in dev; the production TLS config is not yet run |
+| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile, alias search, resolution cascade), `complaints` (case list, detail, history, actions), `overlaps` (Tier 1 view, Tier 2 suggestions, approval, alert outbox row). Other features: Planned |
+| worker (Celery) | Ingestion, matching, graph jobs, alert delivery, nightly audit verification | Built: nightly audit verify, and every 5 minutes institution resolution and Tier 2 overlap detection. Alert delivery and the rest: Planned |
+| postgres | System of record, Row-Level Security, audit ledger | Built and tested (migrations 0001 to 0003) |
 | keycloak | Login, MFA, roles, `bureau_id` claim | Built for dev: realm imports, demo users are created by the `demo-users` service. Production realm settings: not yet run |
 | redis | Celery broker | Scaffolded |
 | mailpit | Catches alert email in dev and demo | Scaffolded |
@@ -50,9 +50,9 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
 
 ## 4. Request flow (example: approve an overlap link)
 
-1. Officer clicks Approve. Browser sends `POST /api/v1/overlaps/{id}/approve` with a bearer token.
+1. Officer clicks Approve. Browser sends `POST /api/v1/overlaps/{id}/decision` (`approve` or `reject`) with a bearer token.
 2. `require_roles("officer","bureau_head")` admits the caller; `get_session` opens a transaction and sets the context.
-3. `overlaps.service.approve` loads the link (RLS decides visibility), sets `status='approved'`, inserts an `alerts` row in `pending_approval` or `approved` state, and calls `audit.record("overlap.approve", ...)`.
+3. `overlaps.service.decide` loads the link (RLS shows it only to the two bureaus involved and the reading roles), sets `status='approved'`, inserts an `alerts` row in `approved` state addressed to the heads of both bureaus, and calls `audit.record("overlap.approve", ...)`. The alert holds case references, never complaint text. A rejection writes the decision and its audit entry, and no alert.
 4. The transaction commits. Link, outbox row and audit entry are saved together or not at all.
 5. The worker picks up approved outbox rows, sends mail through the relay, marks them `sent`, and audits the send. A crash between steps re-sends at most once more; nothing is lost (ADR 0004).
 
@@ -66,6 +66,8 @@ source adapters -> intake -> language/translate* -> institution resolution -> cl
 ```
 
 `*` optional AI steps. Each has a deterministic fallback and a confidence threshold; below the threshold the item goes to an officer queue instead of being auto-accepted. The pipeline must pass its tests with every AI model switched off.
+
+Overlap detection as built. Tier 1 is a view over case summaries (open cases at one institution held by two or more bureaus); nothing is stored and no link is suggested. Tier 2 is a worker job run as `system`, because it must compare the text of both bureaus: same institution, different bureaus, same category, both open, filed within 30 days, and `pg_trgm` similarity of the two texts of at least 0.30, computed inside PostgreSQL. Each new pair is stored as a `proposed` link (the suggestion shown to officers); a pair that was rejected is not suggested again. Tier 3 (duplicates) is not built.
 
 Institution resolution cascade: exact permanent ID; exact alias within state or district; fuzzy match (`pg_trgm` picks candidates, Python's standard `difflib` ratio scores them; no extra dependency; auto-accept only at 95+ with a clear runner-up gap; complaints carry no state or PIN, so the district is used only when it was typed with the name); embedding match that must agree with the fuzzy step; otherwise an officer picks from the top five.
 
@@ -93,7 +95,7 @@ Transfers: the receiving bureau holds the case at once (`bureau_id`) with status
 - One package per feature under `backend/app/modules/`: `api.py` (HTTP, roles), `service.py` (rules, audit), `repo.py` (SQL), `schemas.py` (Pydantic).
 - Dependencies point inward: `api -> service -> repo`. A module calls another module through its `service`, never its `repo` or tables.
 - `core`, `db` and `audit` are shared kernel; they import no feature module.
-- Built modules: `institutions`, `complaints`. Planned modules: `intake`, `overlaps`, `alerts`, `dashboard`, `reports`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
+- Built modules: `institutions`, `complaints`, `overlaps`. Planned modules: `intake`, `alerts`, `dashboard`, `reports`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
 
 ## 9. Failure behaviour
 
@@ -112,8 +114,8 @@ Stateless API and workers scale horizontally behind the edge. PostgreSQL gets a 
 
 ## 11. What has been verified
 
-- Migrations 0001 and 0002 applied to PostgreSQL 16; 55 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates, seed patterns, institution resolution, case visibility, case actions and their audit entries).
+- Migrations 0001 to 0003 applied to PostgreSQL 16; 67 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates, seed patterns, institution resolution, case visibility, case actions and their audit entries, overlap detection, approval and its alert).
 - Web app type-checks and builds.
-- A full `docker compose --profile dev up` on a fresh, isolated copy of the stack: realm import, demo-user import, seeding, sign-in through Nginx and Keycloak, the case list, case detail and one recorded action in a browser.
+- A full `docker compose --profile dev up` on a fresh, isolated copy of the stack: realm import, demo-user import, seeding, sign-in through Nginx and Keycloak, the case list, case detail and one recorded action in a browser; the overlap worker task (6 suggestions on the seeded data), one approval and its queued alert.
 - Both Compose files parse (`docker compose config`).
 - **Not yet verified:** the production TLS override and production realm settings, anything using `pgvector`, mail delivery, and the Keycloak login page under the Nginx content security policy (it logs blocked inline scripts; sign-in still works).

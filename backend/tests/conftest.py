@@ -67,3 +67,26 @@ def clean_db(request):
         conn.execute(text(f"TRUNCATE {', '.join('sethu.' + t.strip() for t in TABLES.split(','))} CASCADE"))
         conn.execute(text("ALTER TABLE sethu.audit_log ENABLE TRIGGER audit_log_no_truncate"))
     yield
+
+
+@pytest.fixture
+def world(app_engine):
+    """The seeded database, the demo people and a way to look a case up by reference."""
+    from app.core.auth import Principal
+    from app.db.session import SYSTEM, session_for
+    from tests.test_seed import load
+
+    load.load(app_engine)
+    with session_for(SYSTEM, app_engine) as s:
+        bureau = {r.code: r.id for r in s.execute(text("SELECT code, id FROM sethu.bureaus"))}
+        case = {r.ref: r.id for r in s.execute(text("SELECT ref, id FROM sethu.complaints"))}
+
+    def person(username, role, code=None):
+        return Principal(str(load.user_id(username)), username, role, bureau[code] if code else None)
+
+    return {
+        "engine": app_engine, "bureau": bureau, "case": case,
+        "rao": person("rao", "officer", "PGRC"), "fernandes": person("fernandes", "bureau_head", "PGRC"),
+        "iyer": person("iyer", "bureau_head", "RB"), "menon": person("menon", "oversight"),
+        "das": person("das", "auditor"),
+    }

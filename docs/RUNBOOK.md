@@ -95,6 +95,13 @@ Load into an empty database only (after a first start or a reset, section 5). Th
 docker compose run --rm --no-deps -v "${PWD}/seed:/seed:ro" backend python /seed/load.py
 ```
 
+The worker links misspelt institution names and suggests overlaps every 5 minutes. To have both at once after seeding:
+
+```powershell
+docker compose exec worker celery -A app.worker:celery call sethu.institutions.resolve_pending
+docker compose exec worker celery -A app.worker:celery call sethu.overlaps.detect
+```
+
 Dates are relative to the moment of loading, so reset and reseed before each rehearsal. To change the data, edit `seed/generate.py`, run `python seed/generate.py` and commit the CSV files.
 
 ### Running backend tests
@@ -132,9 +139,10 @@ docker compose --profile dev down -v
 
 ## 6. Demo day
 
-1. Start the stack and seed data while online, the day before.
-2. Switch Wi-Fi off. `docker compose --profile dev up -d` must still work: every image is local and nothing calls out.
-3. Run the script in `docs/03-DEMO-STORY.md` twice.
+1. The day before, while online: start the stack once so every image is built and pulled.
+2. On the day: reset (section 5), start, and seed (section 3). Seed dates count back from the moment of loading, so data seeded the day before shows C-101 as 13 days old and the wrong number of overdue cases. Seeding needs no network.
+3. Switch Wi-Fi off. `docker compose --profile dev up -d` must still work: every image is local and nothing calls out.
+4. Run the script in `docs/03-DEMO-STORY.md` twice.
 
 ## 7. Production differences
 

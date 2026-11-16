@@ -96,6 +96,15 @@ def assignees(session: Session, complaint_id: UUID) -> list[dict]:
     return repo.staff(session, case["holder_id"]) if case and case["readable"] else []
 
 
+def actor_id(session: Session, principal: Principal) -> UUID:
+    """The app_users id of a signed-in person, registered (and audited) on first use."""
+    user_id, created = repo.ensure_user(session, principal)
+    if created:
+        audit.record(session, principal, "user.registered", entity_type="app_users", entity_id=str(user_id),
+                     payload={"role": principal.role})
+    return user_id
+
+
 def act(session: Session, principal: Principal, complaint_id: UUID, action: str, *, note: str | None = None,
         to_bureau: str | None = None, assignee_id: UUID | None = None) -> dict:
     db_action, allowed_from, new_status = ACTIONS[action]
@@ -136,10 +145,7 @@ def act(session: Session, principal: Principal, complaint_id: UUID, action: str,
         sender = None
 
     if principal.role != "system":
-        row["actor_id"], created = repo.ensure_user(session, principal)
-        if created:
-            audit.record(session, principal, "user.registered", entity_type="app_users",
-                         entity_id=str(row["actor_id"]), payload={"role": principal.role})
+        row["actor_id"] = actor_id(session, principal)
     # History first: the insert policy checks the case is still held by the caller's bureau.
     repo.insert_action(session, **row)
     repo.update_case(session, complaint_id, new_status or case["status"], holder, sender)

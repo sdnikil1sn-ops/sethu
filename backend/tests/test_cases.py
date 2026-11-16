@@ -7,36 +7,16 @@ from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
 from app.audit.service import verify
-from app.core.auth import Principal, get_principal
+from app.core.auth import get_principal
 from app.db.session import SYSTEM, session_for
 from app.main import app
 from app.modules.complaints import service
 from app.modules.complaints.service import CaseError
 from tests.conftest import requires_db
-from tests.test_seed import load
 
 pytestmark = requires_db
 
 C101_PHRASE = "classes are being combined"  # only in the text of C-101 (PGRC)
-
-
-@pytest.fixture
-def world(app_engine):
-    """The seeded database, the demo people and a way to look a case up by reference."""
-    load.load(app_engine)
-    with session_for(SYSTEM, app_engine) as s:
-        bureau = {r.code: r.id for r in s.execute(text("SELECT code, id FROM sethu.bureaus"))}
-        case = {r.ref: r.id for r in s.execute(text("SELECT ref, id FROM sethu.complaints"))}
-
-    def person(username, role, code=None):
-        return Principal(str(load.user_id(username)), username, role, bureau[code] if code else None)
-
-    return {
-        "engine": app_engine, "bureau": bureau, "case": case,
-        "rao": person("rao", "officer", "PGRC"), "fernandes": person("fernandes", "bureau_head", "PGRC"),
-        "iyer": person("iyer", "bureau_head", "RB"), "menon": person("menon", "oversight"),
-        "das": person("das", "auditor"),
-    }
 
 
 def scalar(session, sql, **params):
