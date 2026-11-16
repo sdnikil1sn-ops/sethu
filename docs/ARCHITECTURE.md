@@ -31,11 +31,11 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
 
 | Component | Responsibility | Status |
 |---|---|---|
-| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Scaffolded (app shell builds; proxy config not yet run) |
-| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health. Features: Planned |
-| worker (Celery) | Ingestion, matching, graph jobs, alert delivery, nightly audit verification | Scaffolded (nightly verify task only) |
-| postgres | System of record, Row-Level Security, audit ledger | Built and tested (migration 0001) |
-| keycloak | Login, MFA, roles, `bureau_id` claim | Scaffolded (realm file not yet imported) |
+| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, case list, case detail and actions. Run end to end in dev; the production TLS config is not yet run |
+| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile, alias search, resolution cascade), `complaints` (case list, detail, history, actions). Other features: Planned |
+| worker (Celery) | Ingestion, matching, graph jobs, alert delivery, nightly audit verification | Built: nightly audit verify, institution resolution every 5 minutes. The rest: Planned |
+| postgres | System of record, Row-Level Security, audit ledger | Built and tested (migrations 0001, 0002) |
+| keycloak | Login, MFA, roles, `bureau_id` claim | Built for dev: realm imports, demo users are created by the `demo-users` service. Production realm settings: not yet run |
 | redis | Celery broker | Scaffolded |
 | mailpit | Catches alert email in dev and demo | Scaffolded |
 | object storage | Complaint attachments | Planned (ADR 0006) |
@@ -67,11 +67,11 @@ source adapters -> intake -> language/translate* -> institution resolution -> cl
 
 `*` optional AI steps. Each has a deterministic fallback and a confidence threshold; below the threshold the item goes to an officer queue instead of being auto-accepted. The pipeline must pass its tests with every AI model switched off.
 
-Institution resolution cascade: exact permanent ID; exact alias within state or district; fuzzy match (RapidFuzz plus `pg_trgm`, blocked by state and PIN, auto-accept only at 95+ with a clear runner-up gap); embedding match that must agree with the fuzzy step; otherwise an officer picks from the top five.
+Institution resolution cascade: exact permanent ID; exact alias within state or district; fuzzy match (`pg_trgm` picks candidates, Python's standard `difflib` ratio scores them; no extra dependency; auto-accept only at 95+ with a clear runner-up gap; complaints carry no state or PIN, so the district is used only when it was typed with the name); embedding match that must agree with the fuzzy step; otherwise an officer picks from the top five.
 
 ## 6. Audit ledger
 
-Each row stores `prev_hash` and `hash = SHA-256(prev_hash, seq, ts, actor, role, action, entity, payload)`. A `BEFORE INSERT` trigger takes a lock, reads the last row and fills in `seq`, `ts`, `prev_hash` and `hash`, ignoring anything the client supplied. Triggers reject UPDATE, DELETE and TRUNCATE. `sethu.audit_verify()` walks the chain and returns the first broken sequence number.
+Each row stores `prev_hash` and `hash = SHA-256(prev_hash, seq, ts, actor, role, action, entity, payload)`. A `BEFORE INSERT` trigger takes a lock, reads the last row and fills in `seq`, `ts`, `prev_hash` and `hash`, ignoring anything the client supplied. Triggers reject UPDATE, DELETE and TRUNCATE. `sethu.audit_verify()` walks the chain and returns the first broken sequence number. Since migration 0002 the trigger also takes `actor` and `actor_role` from the request context when one is set, so application code cannot record an entry under another person's name.
 
 What this proves: any edit, deletion or reordering of past entries is detected, even if done by someone with owner rights who disables the triggers (tested). What it does not prove on its own: that the entire chain was not rebuilt from scratch by a database superuser. The mitigation is **Planned**: export the head hash nightly to write-once storage and email it to the auditor, so an outside copy anchors the chain.
 
@@ -84,12 +84,16 @@ Overlap detection needs to know that RB also holds a complaint about the same in
 
 An officer sees *that* another bureau has a matching case and who to coordinate with, not what the complainant wrote. Tested in `tests/test_rls.py`.
 
+The case screens follow the same rule. The case list joins the summaries to `sethu.complaints`, which Row-Level Security empties for rows the caller may not read, so free-text search can only match text the caller is allowed to see, and a case from another bureau opens with its summary fields only (no text, no history). Tested in `tests/test_cases.py`.
+
+Transfers: the receiving bureau holds the case at once (`bureau_id`) with status `transferred`; the sender is kept in `transferred_from_bureau_id` and can still read the case until the receiver acknowledges, but only the holder can act on it. The database lets a bureau hand a case over only by naming itself as the sender. An acknowledgement is its own `case_actions` row (history is never updated), so an unacknowledged transfer is one with no acknowledgement after it. That is what deadlock detection will read.
+
 ## 8. Module rules
 
 - One package per feature under `backend/app/modules/`: `api.py` (HTTP, roles), `service.py` (rules, audit), `repo.py` (SQL), `schemas.py` (Pydantic).
 - Dependencies point inward: `api -> service -> repo`. A module calls another module through its `service`, never its `repo` or tables.
 - `core`, `db` and `audit` are shared kernel; they import no feature module.
-- Planned modules: `institutions`, `intake`, `complaints`, `overlaps`, `alerts`, `dashboard`, `reports`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
+- Built modules: `institutions`, `complaints`. Planned modules: `intake`, `overlaps`, `alerts`, `dashboard`, `reports`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
 
 ## 9. Failure behaviour
 
@@ -108,7 +112,8 @@ Stateless API and workers scale horizontally behind the edge. PostgreSQL gets a 
 
 ## 11. What has been verified
 
-- Migration 0001 applied to PostgreSQL 16; 30 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates).
+- Migrations 0001 and 0002 applied to PostgreSQL 16; 55 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates, seed patterns, institution resolution, case visibility, case actions and their audit entries).
 - Web app type-checks and builds.
+- A full `docker compose --profile dev up` on a fresh, isolated copy of the stack: realm import, demo-user import, seeding, sign-in through Nginx and Keycloak, the case list, case detail and one recorded action in a browser.
 - Both Compose files parse (`docker compose config`).
-- **Not yet verified:** a full `docker compose up` (no Docker daemon was available where these files were written), the Keycloak realm import, the Nginx proxy configuration, the `pgvector` extension step, and the production TLS override. Run `docs/RUNBOOK.md` section 1 first and fix what it surfaces.
+- **Not yet verified:** the production TLS override and production realm settings, anything using `pgvector`, mail delivery, and the Keycloak login page under the Nginx content security policy (it logs blocked inline scripts; sign-in still works).

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLoad } from "./api";
 import { logout } from "./auth";
+import { CaseDetail } from "./features/cases/CaseDetail";
+import { CaseList } from "./features/cases/CaseList";
 import { InstitutionList } from "./features/institutions/InstitutionList";
 import { InstitutionProfile } from "./features/institutions/InstitutionProfile";
 import { ResolutionQueue } from "./features/institutions/ResolutionQueue";
@@ -23,6 +25,8 @@ export function App() {
   const route = useHashRoute();
   const { data: me } = useLoad<Me>("/me");
   const profileId = route.match(/^\/institutions\/([0-9a-f-]{36})$/)?.[1];
+  const caseId = route.match(/^\/cases\/([0-9a-f-]{36})$/)?.[1];
+  const caseList = route.match(/^\/cases(?:\?(.*))?$/);
 
   return (
     <>
@@ -31,6 +35,9 @@ export function App() {
         <nav aria-label="Main">
           <a href="#/" aria-current={route === "/" || profileId ? "page" : undefined}>
             Institutions
+          </a>
+          <a href="#/cases" aria-current={caseId || caseList ? "page" : undefined}>
+            Cases
           </a>
           <a href="#/queue" aria-current={route === "/queue" ? "page" : undefined}>
             Unmatched names
@@ -44,7 +51,11 @@ export function App() {
         </span>
       </header>
       <main>
-        {profileId ? (
+        {caseId ? (
+          <CaseDetail key={caseId} id={caseId} />
+        ) : caseList ? (
+          <CaseList key={route} initial={caseList[1] ?? ""} />
+        ) : profileId ? (
           <InstitutionProfile id={profileId} />
         ) : route === "/queue" ? (
           <ResolutionQueue canResolve={!!me && CAN_RESOLVE.includes(me.role)} />

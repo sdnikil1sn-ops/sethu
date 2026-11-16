@@ -13,7 +13,7 @@ Status key: **Built** (tested in this repo), **Scaffolded** (configured, not yet
 | # | Threat | Control | Status |
 |---|---|---|---|
 | 1 | Complaint data sent to an outside service | App and data networks are `internal`; no external APIs; local models only | Scaffolded |
-| 2 | Officer of one bureau reads another bureau's complaint text | Row-Level Security on `complaints`; cross-bureau view exposes metadata only | Built |
+| 2 | Officer of one bureau reads another bureau's complaint text | Row-Level Security on `complaints` and `case_actions`; cross-bureau view exposes metadata only; free-text search and case detail go through the same policies | Built |
 | 3 | API bug forgets an access filter | RLS applies in the database regardless; no request context returns nothing | Built |
 | 4 | Forged or replayed token | RS256/ES256 only, issuer, audience and expiry checked, 5-minute lifetime; HS256 tokens rejected | Built |
 | 5 | Privilege escalation through token claims | Only five known roles accepted; bureau-scoped roles require a `bureau_id`; `system` cannot come from a token | Built |

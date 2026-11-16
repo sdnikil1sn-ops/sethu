@@ -71,3 +71,11 @@ def test_deleted_row_is_detected(app_engine, owner_engine):
     with session_for(AUDITOR, app_engine) as s:
         status = audit.verify(s)
     assert not status.ok and status.broken_seq == 3
+
+
+def test_actor_comes_from_the_session_not_the_caller(app_engine):
+    impostor = Principal(subject="someone-else", name="x", role="admin", bureau_id=None)
+    with session_for(AUDITOR, app_engine) as s:
+        audit.record(s, impostor, "test.event")
+        row = s.execute(text("SELECT actor, actor_role FROM sethu.audit_log")).one()
+        assert tuple(row) == ("u-auditor", "auditor") and audit.verify(s).ok

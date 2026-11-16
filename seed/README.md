@@ -24,6 +24,7 @@ Dates are stored as days before the load (`filed_days_ago`, `days_ago`), so "C-1
 
 - One transaction through `session_for(SYSTEM)`. Every inserted row gets an audit entry in that transaction (`complaint.created`, `case.transferred`, ... and a final `seed.loaded`). Payloads hold references and codes, never complaint text.
 - Refuses to run if any complaint exists. The audit log and case history are append-only, so a load cannot be undone short of a reset.
+- Each assignment names the officer (`assignee`); a case in an unacknowledged transfer names the sending bureau (`transferred_from`, only C-090).
 - Bureau ids are derived from the bureau code (UUIDv5), so the `bureau_id` attribute on Keycloak users stays valid after a reseed.
 - Links a complaint to its institution only when the typed name is exactly the canonical name or a stored alias. The other 38 name variants are loaded `unresolved` for the resolution cascade; `institution_pid` says what the right answer is.
 - `due_at` is `filed_at` plus the 21-day SLA. `complainant_enc` is left empty: there is no complainant data in the seed.

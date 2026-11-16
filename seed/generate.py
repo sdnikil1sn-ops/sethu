@@ -215,20 +215,22 @@ def build() -> dict[str, list[dict]]:
             "body": body or fresh(category, lang),
             "filed_days_ago": days,
             "closed_days_ago": "",
+            # The bureau still waiting for its transfer to be acknowledged (C-090: RB sent it back).
+            "transferred_from": "RB" if flow == "loop" else "",
             "seed_tags": tags,
         }
         seen.add(c["body"])
         recent[inst["state"], category] += days <= 21
         complaints.append(c)
 
-        def act(action, at, actor="", note="", frm="", to="", ack=""):
+        def act(action, at, actor="", note="", frm="", to="", ack="", assignee=""):
             actions.append({"complaint_ref": c["ref"], "action": action, "days_ago": round(at, 2),
-                            "from_bureau": frm, "to_bureau": to, "actor": actor, "note": note,
-                            "acknowledged_days_ago": ack})
+                            "from_bureau": frm, "to_bureau": to, "actor": actor, "assignee": assignee,
+                            "note": note, "acknowledged_days_ago": ack})
 
         def assign(at, b):
             o = rng.choice(officers[b])
-            act("assigned", at, head[b], f"Assigned to {o['username']}" + (f", desk {o['desk']}" if o["desk"] else ""))
+            act("assigned", at, head[b], f"Desk {o['desk']}" if o["desk"] else "", assignee=o["username"])
 
         def transfer(at, frm, to, acknowledged):
             act("transferred", at, head[frm], "Outside this bureau's remit", frm, to, at - 1 if acknowledged else "")

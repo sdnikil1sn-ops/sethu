@@ -59,14 +59,16 @@ def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str,
             raise RuntimeError("complaints already exist; seed only an empty database (docs/RUNBOOK.md section 5)")
 
         # Bureau ids are derived from the code, so the bureau_id set on Keycloak users survives a reseed.
+        bureaus_created = 0
         for code, name in BUREAUS.items():
             if not s.execute(text("SELECT 1 FROM sethu.bureaus WHERE code = :c"), {"c": code}).first():
+                bureaus_created += 1
                 insert(s, "bureaus", "bureau.created", {"code": code},
                        id=uuid5(NAMESPACE_URL, f"sethu:bureau:{code}"), code=code, name=name)
         bureau = {r.code: r.id for r in s.execute(text("SELECT code, id FROM sethu.bureaus"))}
         bureau[""] = None
 
-        # users.csv "desk" has no column yet; it shows up in the assignment notes instead.
+        # users.csv "desk" has no column; the desk is written in the assignment note.
         user = {"": None}
         for u in rows("users"):
             user[u["username"]] = insert(
@@ -99,7 +101,8 @@ def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str,
                 resolution_state="auto" if iid else "unresolved", category=c["category"], status=c["status"],
                 language=c["language"], body=c["body"],
                 body_sha256=hashlib.sha256(c["body"].encode()).hexdigest(), filed_at=filed,
-                due_at=filed + timedelta(days=get_settings().sla_days), closed_at=ago(c["closed_days_ago"]))
+                due_at=filed + timedelta(days=get_settings().sla_days), closed_at=ago(c["closed_days_ago"]),
+                transferred_from_bureau_id=bureau[c["transferred_from"]])
 
         actions = rows("actions")
         for a in actions:
@@ -108,10 +111,11 @@ def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str,
                    {"entity": ("complaints", cid), "ref": a["complaint_ref"], "from": a["from_bureau"],
                     "to": a["to_bureau"], "acknowledged": bool(a["acknowledged_days_ago"])},
                    complaint_id=cid, action=a["action"], from_bureau_id=bureau[a["from_bureau"]],
-                   to_bureau_id=bureau[a["to_bureau"]], actor_id=user[a["actor"]], note=a["note"] or None,
+                   to_bureau_id=bureau[a["to_bureau"]], actor_id=user[a["actor"]],
+                   assignee_id=user[a["assignee"]], note=a["note"] or None,
                    acknowledged_at=ago(a["acknowledged_days_ago"]), created_at=ago(a["days_ago"]))
 
-        counts = {"bureaus": len(BUREAUS), "users": len(user) - 1, "institutions": len(rows("institutions")),
+        counts = {"bureaus": bureaus_created, "users": len(user) - 1, "institutions": len(rows("institutions")),
                   "complaints": len(complaint), "case_actions": len(actions)}
         record(s, SYSTEM, "seed.loaded", payload=counts)
     return counts

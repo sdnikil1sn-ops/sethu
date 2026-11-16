@@ -8,9 +8,9 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [x] Profile shows bureaus involved, open and closed counts, oldest open case
 
 ## 2. Case tracking
-- [ ] Each case shows status, owner bureau, filed date, due date, days remaining
-- [ ] Overdue cases are visibly marked
-- [ ] Status change is possible for the owner bureau only (role check)
+- [x] Each case shows status, owner bureau, filed date, due date, days remaining
+- [x] Overdue cases are visibly marked
+- [x] Status change is possible for the owner bureau only (role check)
 
 ## 3. Overlap detection
 - [ ] Tier 1: two cases on the same institution in different bureaus are linked as "same institution"
@@ -24,14 +24,14 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [ ] Overlap count and open alerts shown
 
 ## 5. Action history
-- [ ] Timeline per case: filed, assigned, transferred, replied, closed, with actor and time
-- [ ] Timeline per institution across all its cases
-- [ ] Entries cannot be edited or deleted from the UI
+- [x] Timeline per case: filed, assigned, transferred, replied, closed, with actor and time
+- [x] Timeline per institution across all its cases (each person sees the cases they may read; the page says how many are hidden)
+- [x] Entries cannot be edited or deleted from the UI
 
 ## 6. Search and filters
-- [ ] Free text over complaint text and institution names
-- [ ] Filters: bureau, category, status, date range, overdue only, overlapping only
-- [ ] Results under 1 second on the seeded data
+- [x] Free text over complaint text and institution names
+- [ ] Filters: bureau, category, status, date range, overdue only, overlapping only (all built except "overlapping only", which waits for overlap detection)
+- [x] Results under 1 second on the seeded data
 
 ## 7. Alerts
 - [ ] Overlap alert is queued to an email outbox for both bureau heads

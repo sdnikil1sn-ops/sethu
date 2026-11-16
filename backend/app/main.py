@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request
 from app.api.routes import api, health
 from app.core.config import get_settings
 from app.core.logging import configure_logging, request_id
+from app.modules.complaints.api import router as cases
 from app.modules.institutions.api import router as institutions
 
 log = logging.getLogger("sethu.http")
@@ -41,6 +42,7 @@ def create_app() -> FastAPI:
     app.include_router(health)
     app.include_router(api)
     app.include_router(institutions)
+    app.include_router(cases)
     return app
 
 

@@ -1,4 +1,5 @@
 import { useLoad } from "../../api";
+import { InstitutionTimeline } from "../cases/History";
 import { type Profile, day, daysSince, place } from "./types";
 
 export function InstitutionProfile({ id }: { id: string }) {
@@ -56,7 +57,9 @@ export function InstitutionProfile({ id }: { id: string }) {
           <tbody>
             {p.complaints.map((c) => (
               <tr key={c.id}>
-                <td>{c.ref}</td>
+                <td>
+                  <a href={`#/cases/${c.id}`}>{c.ref}</a>
+                </td>
                 <td>{c.bureau}</td>
                 <td>{c.category ?? "–"}</td>
                 <td>{c.status.replace("_", " ")}</td>
@@ -72,7 +75,13 @@ export function InstitutionProfile({ id }: { id: string }) {
           </tbody>
         </table>
       )}
-      <p className="note">Complaint text stays with the bureau that owns the case.</p>
+      <p className="note">
+        Complaint text stays with the bureau that holds the case.{" "}
+        <a href={`#/cases?institution_id=${p.id}`}>Filter these cases</a>
+      </p>
+
+      <h2>History across these cases</h2>
+      <InstitutionTimeline institutionId={p.id} />
     </section>
   );
 }

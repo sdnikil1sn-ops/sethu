@@ -89,3 +89,26 @@ def test_case_action_history_cannot_be_edited(app_engine, world):
 def test_unknown_bureau_sees_nothing(app_engine, world):
     with session_for(Principal("u9", "x", "officer", uuid4()), app_engine) as s:
         assert _refs(s) == []
+
+
+@pytest.mark.parametrize("role", ["auditor", "oversight"])
+def test_read_only_roles_cannot_add_case_history(app_engine, world, role):
+    with pytest.raises(DBAPIError), session_for(Principal("u4", "x", role, None), app_engine) as s:
+        s.execute(text("INSERT INTO sethu.case_actions (complaint_id, action)"
+                       " SELECT id, 'note' FROM sethu.complaints WHERE ref = 'C-101'"))
+
+
+def test_a_bureau_can_only_hand_a_case_over_as_itself(app_engine, world):
+    officer = Principal("u1", "rao", "officer", world["pgrc"])
+    give_away = "UPDATE sethu.complaints SET bureau_id = :to, transferred_from_bureau_id = :sender WHERE ref = 'C-101'"
+    with pytest.raises(DBAPIError), session_for(officer, app_engine) as s:  # no sender named
+        s.execute(text(give_away), {"to": world["rb"], "sender": None})
+    with session_for(officer, app_engine) as s:
+        assert s.execute(text(give_away), {"to": world["rb"], "sender": world["pgrc"]}).rowcount == 1
+        assert _refs(s) == ["C-101"]  # still readable while unacknowledged
+        assert s.execute(text("UPDATE sethu.complaints SET status = 'closed' WHERE ref = 'C-101'")).rowcount == 0
+    with session_for(Principal("u5", "iyer", "bureau_head", world["rb"]), app_engine) as s:
+        assert s.execute(text("UPDATE sethu.complaints SET transferred_from_bureau_id = NULL"
+                              " WHERE ref = 'C-101'")).rowcount == 1
+    with session_for(officer, app_engine) as s:
+        assert _refs(s) == []

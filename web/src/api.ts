@@ -10,9 +10,14 @@ export async function api<T>(path: string, body?: unknown): Promise<T> {
     },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  if (response.status === 403) throw new Error("Your role does not allow this.");
-  if (response.status === 404) throw new Error("Not found. It may already have been dealt with.");
-  if (!response.ok) throw new Error(`The request failed (${response.status}).`);
+  if (!response.ok) {
+    // The API explains refusals in `detail` ("only the bureau holding this case can act on it").
+    const detail = await response.json().then(
+      (b: { detail?: unknown }) => (typeof b.detail === "string" ? b.detail : null),
+      () => null,
+    );
+    throw new Error(detail ? `${detail[0].toUpperCase()}${detail.slice(1)}.` : `The request failed (${response.status}).`);
+  }
   return (await response.json()) as T;
 }
 
