@@ -165,3 +165,19 @@ def test_only_the_detector_creates_links_and_only_the_worker_changes_alerts(app_
                        " VALUES ('overlap', :l, 's', 'b')"), {"l": linked["link"]})
     with session_for(SYSTEM, app_engine) as s:
         assert s.execute(text("UPDATE sethu.alerts SET status = 'sent'")).rowcount == 2
+
+
+def test_findings_are_read_by_the_bureaus_involved_and_written_by_the_detector(app_engine, world):
+    with session_for(SYSTEM, app_engine) as s:
+        s.execute(text("INSERT INTO sethu.findings (kind, key, bureau_ids) VALUES ('bottleneck', 'rb-only', :b)"),
+                  {"b": [world["rb"]]})
+    officer = Principal("u1", "rao", "officer", world["pgrc"])
+    with session_for(officer, app_engine) as s:
+        assert s.execute(text("SELECT count(*) FROM sethu.findings")).scalar_one() == 0
+        assert s.execute(text("UPDATE sethu.findings SET status = 'dismissed'")).rowcount == 0
+    with pytest.raises(DBAPIError):
+        with session_for(officer, app_engine) as s:
+            s.execute(text("INSERT INTO sethu.findings (kind, key, bureau_ids) VALUES ('bottleneck', 'x', :b)"),
+                      {"b": [world["pgrc"]]})
+    with session_for(Principal("u2", "das", "auditor", None), app_engine) as s:
+        assert s.execute(text("SELECT count(*) FROM sethu.findings")).scalar_one() == 1

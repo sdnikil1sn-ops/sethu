@@ -79,8 +79,10 @@ def _shape(principal: Principal, link: dict) -> dict:
 
 
 def links(session: Session, principal: Principal, status: str | None = None,
-          institution_id: UUID | None = None) -> list[dict]:
-    return [_shape(principal, row) for row in repo.links(session, status=status, institution_id=institution_id)]
+          institution_id: UUID | None = None, bureau: str | None = None, tier: int | None = None) -> list[dict]:
+    """bureau: links where either case is held by that bureau."""
+    rows = repo.links(session, status=status, institution_id=institution_id, bureau=bureau, tier=tier)
+    return [_shape(principal, row) for row in rows]
 
 
 def linked_case_ids(session: Session) -> list[UUID]:

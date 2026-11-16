@@ -62,7 +62,8 @@ export function SearchResults({ q }: { q: string }) {
     <section>
       <h1>Search: “{data.q}”</h1>
       <p className="note">
-        Institutions are matched by name, other spellings, initials and city; cases by reference, category, status,
+        Institutions are matched by name, other spellings, initials, city, state and permanent id (the same search as
+        the Institutions screen); cases by reference, category, status,
         bureau and institution. Complaint text is searched only in cases you are allowed to read.
       </p>
 

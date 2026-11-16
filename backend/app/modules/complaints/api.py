@@ -1,3 +1,4 @@
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -23,7 +24,7 @@ def _run(work):
 
 @router.get("", response_model=schemas.CasePage)
 def list_cases(
-    filters: schemas.Filters = Depends(),
+    filters: Annotated[schemas.Filters, Query()],
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
     _: Principal = Depends(READ),

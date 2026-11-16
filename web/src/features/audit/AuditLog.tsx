@@ -88,7 +88,7 @@ export function AuditLog() {
   const [older, setOlder] = useState<Entry[]>([]);
   const [more, setMore] = useState<{ done: boolean; error?: string }>({ done: false });
   const query = new URLSearchParams({ limit: String(PAGE) });
-  Object.entries(filters).forEach(([k, v]) => v && query.set(k, v));
+  Object.entries(filters).forEach(([k, v]) => v.trim() && query.set(k, v.trim()));
   const { data, error } = useLoad<EntryPage>(`/audit?${query}`);
   const items = [...(data?.items ?? []), ...older];
 

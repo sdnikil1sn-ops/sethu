@@ -13,11 +13,11 @@ class Institution(BaseModel):
 
 
 class InstitutionRow(Institution):
-    """A list row (with case counts) or a search hit (with score and the spelling that matched)."""
-    complaints: int | None = None
-    open: int | None = None
+    """A list row with case counts; a search hit also has its score and why it matched."""
+    complaints: int
+    open: int
     score: float | None = None
-    matched: str | None = None
+    why: str | None = None
 
 
 class Candidate(Institution):

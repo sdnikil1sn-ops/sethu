@@ -8,10 +8,10 @@ export type Institution = {
 };
 
 export type InstitutionRow = Institution & {
-  complaints: number | null;
-  open: number | null;
+  complaints: number;
+  open: number;
   score: number | null;
-  matched: string | null;
+  why: string | null;
 };
 
 export type Candidate = Institution & { score: number; reason: string };

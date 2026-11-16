@@ -8,6 +8,7 @@ from app.audit import service as audit
 from app.core.config import get_settings
 from app.db.session import SYSTEM, session_for
 from app.modules.alerts import service as alerts
+from app.modules.findings import service as findings
 from app.modules.institutions import service as institutions
 from app.modules.overlaps import service as overlaps
 
@@ -26,6 +27,7 @@ celery.conf.update(
         "audit-chain-nightly": {"task": "sethu.audit.verify_chain", "schedule": crontab(hour=2, minute=0)},
         "resolve-institutions": {"task": "sethu.institutions.resolve_pending", "schedule": 300.0},
         "detect-overlaps": {"task": "sethu.overlaps.detect", "schedule": 300.0},
+        "detect-findings": {"task": "sethu.findings.detect", "schedule": 300.0},
         "deliver-alerts": {"task": "sethu.alerts.deliver", "schedule": 15.0},
     },
 )
@@ -53,6 +55,13 @@ def detect_overlaps() -> dict:
     """Suggest new Tier 2 overlap links. A person approves or rejects each one."""
     with session_for(SYSTEM) as session:
         return overlaps.detect(session, SYSTEM)
+
+
+@celery.task(name="sethu.findings.detect")
+def detect_findings() -> dict:
+    """Transfer loops, stalled transfers and queue bottlenecks. Repeatable: known findings are left alone."""
+    with session_for(SYSTEM) as session:
+        return findings.detect(session, SYSTEM)
 
 
 @celery.task(name="sethu.alerts.deliver")

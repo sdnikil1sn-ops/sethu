@@ -69,7 +69,7 @@ def tier1_pairs(session: Session, institution_id: UUID | None) -> list[dict]:
 
 
 def links(session: Session, *, link_id: UUID | None = None, status: str | None = None,
-          institution_id: UUID | None = None) -> list[dict]:
+          institution_id: UUID | None = None, bureau: str | None = None, tier: int | None = None) -> list[dict]:
     """Links the caller is allowed to see, with both cases' summary fields (never their text)."""
     return _all(session, """
         SELECT l.id, l.tier, l.score, l.reasons, l.status, l.created_at, l.decided_at,
@@ -90,8 +90,10 @@ def links(session: Session, *, link_id: UUID | None = None, status: str | None =
          WHERE (CAST(:id AS uuid) IS NULL OR l.id = :id)
            AND (CAST(:status AS text) IS NULL OR l.status = :status)
            AND (CAST(:inst AS uuid) IS NULL OR a.institution_id = :inst)
+           AND (CAST(:bureau AS text) IS NULL OR upper(:bureau) IN (ba.code, bb.code))
+           AND (CAST(:tier AS int) IS NULL OR l.tier = :tier)
          ORDER BY (l.status = 'proposed') DESC, l.created_at DESC, a.ref""",
-                id=link_id, status=status, inst=institution_id)
+                id=link_id, status=status, inst=institution_id, bureau=bureau, tier=tier)
 
 
 def linked_case_ids(session: Session) -> list[UUID]:

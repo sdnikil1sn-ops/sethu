@@ -42,24 +42,28 @@
 | `backend/app/modules` | python | 0 | 0 |
 | `backend/app/modules/alerts` | python | 19 | 15 |
 | `backend/app/modules/audit_view` | python | 10 | 10 |
-| `backend/app/modules/complaints` | python | 45 | 39 |
+| `backend/app/modules/complaints` | python | 47 | 41 |
 | `backend/app/modules/dashboard` | python | 14 | 13 |
-| `backend/app/modules/institutions` | python | 35 | 32 |
+| `backend/app/modules/institutions` | python | 37 | 34 |
 | `backend/app/modules/overlaps` | python | 30 | 24 |
+| `backend/app/modules/reports` | python | 12 | 9 |
+| `backend/app/modules/search` | python | 6 | 6 |
 | `scripts` | python | 1 | 1 |
 | `seed` | python | 8 | 8 |
 | `web` | typescript | 1 | 1 |
-| `web/src` | typescript | 20 | 6 |
+| `web/src` | typescript | 21 | 7 |
 | `web/src/features/alerts` | typescript | 6 | 1 |
 | `web/src/features/audit` | typescript | 9 | 1 |
 | `web/src/features/cases` | typescript | 21 | 15 |
 | `web/src/features/dashboard` | typescript | 9 | 1 |
 | `web/src/features/institutions` | typescript | 12 | 12 |
 | `web/src/features/overlaps` | typescript | 10 | 4 |
+| `web/src/features/reports` | typescript | 5 | 1 |
+| `web/src/features/search` | typescript | 5 | 2 |
 
 ## Extraction Quality
 
-- Files parsed: **173** / 493 seen (27 file(s) + 5 directory tree(s) skipped by ignore globs)
+- Files parsed: **182** / 526 seen (29 file(s) + 5 directory tree(s) skipped by ignore globs)
 - Parse errors: 0
 
 ## Architecture Pattern
@@ -70,7 +74,7 @@ _No specific architecture pattern detected._
 
 - **main**: `.claude/worktrees/jolly-feynman-1a9f96/scripts/init_env.main` (.claude/worktrees/jolly-feynman-1a9f96/scripts/init_env.py)
 - **main**: `scripts/init_env.main` (scripts/init_env.py)
-54 routes, 15 shown:
+58 routes, 15 shown:
 - **route** GET `/api/v1/alerts` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/api.py)
 - **route** GET `/api/v1/alerts` (backend/app/modules/alerts/api.py)
 - **route** GET `/api/v1/audit/verify` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view/api.py)
@@ -86,7 +90,7 @@ _No specific architecture pattern detected._
 - **route** GET `/api/v1/cases/{complaint_id}` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.py)
 - **route** GET `/api/v1/cases/{complaint_id}` (backend/app/modules/complaints/api.py)
 - **route** GET `/api/v1/cases` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.py)
-- … and 39 more (query_facts(kind="route") for all)
+- … and 43 more (query_facts(kind="route") for all)
 
 ## Routes
 
@@ -94,6 +98,7 @@ _No specific architecture pattern detected._
 |--------|------|------|------|
 | GET | `/api/v1` | `.claude/worktrees/jolly-feynman-1a9f96/web/src/api.ts` |  |
 | GET | `/api/v1` | `.claude/worktrees/jolly-feynman-1a9f96/web/src/api.ts` |  |
+| GET | `/api/v1` | `web/src/api.ts` |  |
 | GET | `/api/v1` | `web/src/api.ts` |  |
 | GET | `/api/v1/alerts` | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/api.py` |  |
 | GET | `/api/v1/alerts` | `backend/app/modules/alerts/api.py` |  |
@@ -138,8 +143,11 @@ _No specific architecture pattern detected._
 | POST | `/api/v1/overlaps/{link_id}/decision` | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/api.py` |  |
 | POST | `/api/v1/overlaps/{link_id}/decision` | `backend/app/modules/overlaps/api.py` |  |
 | GET | `/api/v1/reports/{name}` | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/api.py` |  |
+| GET | `/api/v1/reports/{name}` | `backend/app/modules/reports/api.py` |  |
 | GET | `/api/v1/reports/{name}/export` | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/api.py` |  |
+| GET | `/api/v1/reports/{name}/export` | `backend/app/modules/reports/api.py` |  |
 | GET | `/api/v1/search` | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/api.py` |  |
+| GET | `/api/v1/search` | `backend/app/modules/search/api.py` |  |
 | POST | `/auth/realms/sethu/protocol/openid-connect/token` | `.claude/worktrees/jolly-feynman-1a9f96/web/src/auth.ts` |  |
 | POST | `/auth/realms/sethu/protocol/openid-connect/token` | `web/src/auth.ts` |  |
 | GET | `/health/live` | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.py` |  |
@@ -149,7 +157,7 @@ _No specific architecture pattern detected._
 
 ## Dependency Rules
 
-64 internal module dependencies. The modules that reach furthest; traverse() or query_facts(kind="dependency") for the edges themselves.
+72 internal module dependencies. The modules that reach furthest; traverse() or query_facts(kind="dependency") for the edges themselves.
 
 | Module | Depends on |
 |--------|------------|
@@ -160,48 +168,49 @@ _No specific architecture pattern detected._
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` | 3 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search` | 3 modules |
 | `backend/app/modules/alerts` | 3 modules |
 | `backend/app/modules/complaints` | 3 modules |
 | `backend/app/modules/overlaps` | 3 modules |
+| `backend/app/modules/search` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions` | 2 modules |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search` | 2 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features` | 2 modules |
 | `backend` | 2 modules |
 | `backend/app/modules` | 2 modules |
 | `backend/app/modules/audit_view` | 2 modules |
 | `backend/app/modules/institutions` | 2 modules |
+| `backend/app/modules/reports` | 2 modules |
+| `web/src/features` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic` | 1 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions` | 1 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard` | 1 modules |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports` | 1 modules |
 | `backend/alembic` | 1 modules |
 | `backend/alembic/versions` | 1 modules |
 | `backend/app/modules/dashboard` | 1 modules |
-| `web/src/features` | 1 modules |
 
 ## Critical Modules
 
 | Module | Fan-In | Fan-Out | Criticality |
 |--------|--------|---------|-------------|
-| `backend/app/db` | 20 | 0 | high |
-| `backend/app/audit` | 15 | 0 | high |
+| `backend/app/db` | 22 | 0 | high |
+| `backend/app/audit` | 16 | 0 | high |
+| `backend/app/modules/complaints` | 8 | 4 | high |
 | `backend/app/core` | 11 | 0 | high |
-| `backend/app/modules/complaints` | 7 | 4 | high |
 | `backend/alembic` | 9 | 1 | high |
 | `backend/app/modules/overlaps` | 6 | 4 | high |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | 0 | 9 | medium |
+| `backend/app/modules` | 0 | 9 | medium |
+| `backend/app/modules/institutions` | 6 | 3 | medium |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app` | 0 | 8 | medium |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src` | 8 | 0 | medium |
-| `backend/app/modules/alerts` | 4 | 4 | medium |
 
 ## Risk Zones
 
 - **Cyclic dependency detected (2 modules)** (confidence: 100%): The following modules form a dependency cycle: backend/app/modules/complaints -> backend/app/modules/overlaps -> backend/app/modules/complaints. This can cause initialization issues, make refactoring harder, and indicates tight coupling.
-- **Cyclic dependency detected (7 modules)** (confidence: 100%): The following modules form a dependency cycle: web/src -> web/src/features/alerts -> web/src/features/audit -> web/src/features/cases -> web/src/features/dashboard -> web/src/features/institutions -> web/src/features/overlaps -> web/src. This can cause initialization issues, make refactoring harder, and indicates tight coupling.
 
 ---
 
-*Generated at 2026-11-16T17:52:28Z in 2.6755204s. 1934 facts, 156 insights.*
+*Generated at 2026-11-16T18:56:22Z in 964.3563ms. 2035 facts, 157 insights.*

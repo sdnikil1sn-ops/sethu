@@ -11,6 +11,7 @@ from app.modules.alerts.api import router as alerts
 from app.modules.audit_view.api import router as audit_view
 from app.modules.complaints.api import router as cases
 from app.modules.dashboard.api import router as dashboard
+from app.modules.findings.api import router as findings
 from app.modules.institutions.api import router as institutions
 from app.modules.overlaps.api import router as overlaps
 from app.modules.reports.api import router as reports
@@ -55,6 +56,7 @@ def create_app() -> FastAPI:
     app.include_router(audit_view)
     app.include_router(search)
     app.include_router(reports)
+    app.include_router(findings)
     return app
 
 

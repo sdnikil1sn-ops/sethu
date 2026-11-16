@@ -21,7 +21,7 @@ SUMMARY = """
 # Filter name -> SQL. Free text matches the reference and institution name for everyone,
 # and complaint text only through `c`, that is, only where the caller may read it.
 FILTERS = {
-    "bureau": "b.code = :bureau",
+    "bureau": "b.code = upper(:bureau)",
     "category": "s.category = :category",
     "status": "s.status = :status",
     "institution_id": "s.institution_id = :institution_id",

@@ -134,7 +134,8 @@ def test_profile_shows_every_bureau_without_complaint_text(seeded):
     officer = Principal("u-rao", "rao", "officer", pgrc)
     with session_for(officer, seeded) as s:
         hit = service.list_institutions(s, "GIT Pune", None, 10, 0)[0]
-        assert hit["name"] == GREENFIELD and hit["matched"] == "GIT Pune"
+        assert hit["name"] == GREENFIELD and hit["why"] == 'also known as "GIT Pune": same spelling'
+        assert (hit["complaints"], hit["open"]) == (3, 3)
         profile = service.profile(s, hit["id"])
         assert [c["ref"] for c in profile["complaints"]] == ["C-103", "C-102", "C-101"]  # RB's C-102 included
         assert profile["bureaus"] == ["PGRC", "RB"]

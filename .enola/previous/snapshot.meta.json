@@ -1,8 +1,8 @@
 {
   "repo_path": "E:\\App\\Project\\SETHU",
   "repo_label": "sethu",
-  "generated_at": "2026-11-16T16:21:23Z",
-  "duration": "13.2325094s",
+  "generated_at": "2026-11-16T17:52:28Z",
+  "duration": "2.6755204s",
   "extractors": [
     "manifests",
     "mdintent",
@@ -38,459 +38,9 @@
   ],
   "file_hashes": [
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docker-compose.prod.yml",
-      "hash": "cd2884206cfb3ad3ccf554f2da8415e1b07d3588c806dca1e22a908c1ec69dfc",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "backend/app/core/logging.py",
-      "hash": "0d30e6d41ad2c79c838a993c40a9f30874f23e49a50d04880cf3ce6173bfeacf",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/package.json",
-      "hash": "4993df7f9c06a70cb5739c3b62a7e4f536483de1c664154a71a506f6fd8516ff",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/types.ts",
-      "hash": "c03ae1cc2c056eabacb1a9de013324ef27e2759ac441016d06c2ae73d0a286fa",
-      "mod_time": "2026-11-16T08:17:02Z"
-    },
-    {
-      "path": "backend/app/modules/overlaps/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T11:28:49Z"
-    },
-    {
-      "path": "backend/sethu_backend.egg-info/requires.txt",
-      "hash": "d6dccd1e3e78701cde0bbdfd94a64b0aee0b2c79988c3e315c6988c8e7384e0b",
-      "mod_time": "2026-11-15T19:33:49Z"
-    },
-    {
-      "path": "docker-compose.prod.yml",
-      "hash": "cd2884206cfb3ad3ccf554f2da8415e1b07d3588c806dca1e22a908c1ec69dfc",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/InstitutionList.tsx",
-      "hash": "8033f204b3af2ff7c3adaeff5975df478a3bae158af709cb55d34ca3fdb0e9d5",
-      "mod_time": "2026-11-16T08:17:02Z"
-    },
-    {
-      "path": ".env.example",
-      "hash": "488d836103575bd02bf96d0b25c6a056564281cfc556559ba437019aa8350060",
-      "mod_time": "2026-11-16T09:27:49Z"
-    },
-    {
-      "path": "backend/sethu_backend.egg-info/PKG-INFO",
-      "hash": "c68ca729f9111153fb4f74bb90d21b73508fd5de20c424b088ef05d44b894a0a",
-      "mod_time": "2026-11-15T19:33:49Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/ARCHITECTURE.md",
-      "hash": "57f2e35b475195bdc110fe46e2808164979dd38ab2ee542f1be5d8f3b488a906",
-      "mod_time": "2026-11-16T15:12:14Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/keycloak/sethu-realm.json",
-      "hash": "1f6fb283180df4147a2d6c6d2e232986904770baac5b55ae18a6d847d1da9166",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "backend/app/main.py",
-      "hash": "38d6f87e952c12b8dab55229f329385c82927473fd607c3a415f687d6c2a7c6b",
-      "mod_time": "2026-11-16T15:21:56Z"
-    },
-    {
-      "path": "web/src/auth.ts",
-      "hash": "0e89db8164011eccece6bd2321a9b48572365f908dbe114085074cdb4c1b4e81",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": "docs/adr/README.md",
-      "hash": "425b42c88c8ae030ee470fe0b8eaebf951bd13983a447b87f8f5ea49674a7820",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "seed/load.py",
-      "hash": "06917b73a18bd19e7874e92d9872664966afd653241cab5c2374095adcdeb4db",
-      "mod_time": "2026-11-16T10:39:03Z"
-    },
-    {
-      "path": "web/src/app.css",
-      "hash": "d0118bf9ed4d563b14f5cb6eab1796f8113310752cccdc471d3eaf3a6ef01810",
-      "mod_time": "2026-11-16T11:28:49Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/audit/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.py",
-      "hash": "a67b3b987f2ad2a6ffd3fe2fcfaaaccab11ac73153088a04f767bf0b573c0b94",
-      "mod_time": "2026-11-16T10:00:14Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps/Overlaps.tsx",
-      "hash": "b9415aba8333e6778dfd7992228f8050ae0519e5a0cbd532c612667c704b2bfa",
-      "mod_time": "2026-11-16T11:12:30Z"
-    },
-    {
-      "path": "backend/.dockerignore",
-      "hash": "b30b9dee256d94045955ca3716a3a36f75c07076dd0ea53b8c1a748e8ebb6dc1",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "backend/app/modules/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": "docs/04-MOCK-DATA-SPEC.md",
-      "hash": "602ba35d35e2aec8ad67472ebe990d7041c9dbb7b459cfab3104e7a2a48f331a",
-      "mod_time": "2026-11-16T09:27:49Z"
-    },
-    {
-      "path": "docs/DATA-MODEL.md",
-      "hash": "2f752d6f543a17c5fa45faf8ef3396f881b55287b5aac74463d9849187b69027",
-      "mod_time": "2026-11-16T15:21:57Z"
-    },
-    {
-      "path": "web/src/features/cases/History.tsx",
-      "hash": "ec34768843ba8423023a8dfd0c279198ef5b082ef9f502df95e978e3696eaa72",
-      "mod_time": "2026-11-16T10:39:03Z"
-    },
-    {
-      "path": "web/tsconfig.json",
-      "hash": "8b99f3adc5a2c56775f1e2747d0c19474f474ae3a875a35a6f78b906a84614fb",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/skills/graphify/references/update.md",
-      "hash": "582b4c23a1d3e2c0989a0c5dfc2f7c6bf17ad19087aece2c78eb03c0a202bb88",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".env",
-      "hash": "b7bd5f36c187f67597d55cd7112d92eed067b58af51e28703a3d51846fb05b9b",
-      "mod_time": "2026-11-16T09:28:10Z"
-    },
-    {
-      "path": ".gitattributes",
-      "hash": "95d5a632d1d0c3abf0faff2858a4f8d387c6f50cb4306239e88de1c783b21971",
-      "mod_time": "2026-11-15T20:06:03Z"
-    },
-    {
-      "path": "backend/app/modules/institutions/service.py",
-      "hash": "6ea57577dce231c97b8bc2c6e0a3267ea6ccacd786ac5b35c9fc87f8ec3f32eb",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": "web/src/App.tsx",
-      "hash": "dc0ff992600161d821be80464389de598adf79c08c8cbc81c0476d7a9b2a55f4",
-      "mod_time": "2026-11-16T15:21:57Z"
-    },
-    {
-      "path": "backend/app/modules/overlaps/service.py",
-      "hash": "8a464f64badea830ae42f815d4ba4b70512461ff1589a606ff53be9e19c79c8c",
-      "mod_time": "2026-11-16T15:21:56Z"
-    },
-    {
-      "path": "seed/users.csv",
-      "hash": "c4f3c2c9c1215a5e6cf3983c60304351e39f86561150a0e3f11fa3d60e165a32",
-      "mod_time": "2026-11-16T09:27:49Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0002_case_tracking.py",
-      "hash": "6e37f1f2eacf681f99147a5f8cc34cc261f10261007831f130780f737574d6ea",
-      "mod_time": "2026-11-16T10:05:23Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/ResolutionQueue.tsx",
-      "hash": "84771276de1d9035ed206c4ea3cbc67a84aae4f0bece1a39af125a76c07bf2e5",
-      "mod_time": "2026-11-16T08:17:02Z"
-    },
-    {
-      "path": "backend/app/api/routes.py",
-      "hash": "f135aac05a1aebd3eccdc949d6f9929b5da6bb70e7f8a9a3891d45f270f21e33",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/exports.md",
-      "hash": "f1debd1003b168c3c1c9fe284bf3018609372740ae8856bea2b10bba0a07b34b",
-      "mod_time": "2026-11-16T08:15:20Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/App.tsx",
-      "hash": "6940c1016855712deebe1206d82784b65b5bd55aabcf84aee97aa2569947888e",
-      "mod_time": "2026-11-16T14:37:00Z"
-    },
-    {
-      "path": "backend/alembic/versions/0002_case_tracking.py",
-      "hash": "6e37f1f2eacf681f99147a5f8cc34cc261f10261007831f130780f737574d6ea",
-      "mod_time": "2026-11-16T10:39:03Z"
-    },
-    {
-      "path": ".claude/skills/graphify/references/transcribe.md",
-      "hash": "dbdd2b2733734f46c369cfe98322a9a53a77fa56b6728cb2e76f1452a7b71103",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/github-and-merge.md",
-      "hash": "1b36d67bd92de0f5ea76ec3b84d1c1103a197c6093b9954995cbaf0abac9fac3",
-      "mod_time": "2026-11-16T08:15:20Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.py",
-      "hash": "f135aac05a1aebd3eccdc949d6f9929b5da6bb70e7f8a9a3891d45f270f21e33",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T14:31:34Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
-      "hash": "9ea2aaa2977d2cb36fdfc86bd5e03e5cb8c504572f1975d06f497c449535f296",
-      "mod_time": "2026-11-16T08:17:02Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/.graphify_version",
-      "hash": "3b6233c7b84f0aa2342452dd876d61beef0b164516ba92e25629ba004e90358f",
-      "mod_time": "2026-11-16T08:15:20Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0003_overlap_policies.py",
-      "hash": "991dd3834599e5ac93323f657ce97548929a0b0946f5fac2f832094299e19894",
-      "mod_time": "2026-11-16T11:03:05Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.py",
-      "hash": "8c1bee4c363d8060d2152a78c1db29b12614a9d61626d16a4f34c43222c07172",
-      "mod_time": "2026-11-16T14:31:29Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/03-DEMO-STORY.md",
-      "hash": "0244ea2505a50334f5fabc12a948072ad2378be645cf29d608dc3f6a6fe50d06",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "backend/app/modules/institutions/repo.py",
-      "hash": "1b9c7325cf2dbf8eee82e2988255e8fd503f2618bcb44e24444a9ea9861c1732",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": "backend/app/modules/overlaps/schemas.py",
-      "hash": "f4ce8b949ba8c77fad251407bd68a5b1aa766c3c7ece85cf21d4a3cc3e084e11",
-      "mod_time": "2026-11-16T11:28:49Z"
-    },
-    {
-      "path": "infra/demo-users/import.sh",
-      "hash": "b62a4b7fab32bb1cc90404afd2b20a31717e853dca33f1e080bbbb411cd6b28d",
-      "mod_time": "2026-11-16T09:27:49Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py",
-      "hash": "b7c3a6bc0cb341fd49c97c804a202466186bab576cd7b5125cbaa99a595c9d1a",
-      "mod_time": "2026-11-16T14:31:34Z"
-    },
-    {
-      "path": "backend/app/modules/institutions/schemas.py",
-      "hash": "9ea2aaa2977d2cb36fdfc86bd5e03e5cb8c504572f1975d06f497c449535f296",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": "web/vite.config.ts",
-      "hash": "0ba8cacdd7a8e61bc4bf54cbaea4ef09d6c37c07f34b4ead44615c18ee582111",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/skills/graphify/references/query.md",
-      "hash": "f10b5aa8a0621d2ed7e85eb655cdc45ce39fa85e34ff3fddbb211b59ceb03a62",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/01-SCOPE-LOCK.md",
-      "hash": "4e5701233076dffc099b9199f1890fa82f6d4197d5ff25cbb2a435cd6c07e180",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/SECURITY.md",
-      "hash": "c83eea062d837dfa9d1f91fc8ae6215ef41de4ded59fb3b5b1339eba83e91274",
-      "mod_time": "2026-11-16T15:12:14Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/CaseList.tsx",
-      "hash": "8b531dc4022f6e4599dd2592ca6003a653b5474e82185c9137e773be89a82958",
-      "mod_time": "2026-11-16T11:12:35Z"
-    },
-    {
-      "path": ".claude/settings.json",
-      "hash": "a0032d1f5ee02653efb0b45214efbd392778393379d1542535dc8bf27a793367",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.py",
-      "hash": "934feb3d4664d90d1b4f3de99a77ed6d8cfca430112ccc613177b4edbf002eaa",
-      "mod_time": "2026-11-16T14:33:45Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/pyproject.toml",
-      "hash": "fc284dabc83271c26ba28a69abdab8d3c7ffb9a6ce639f2894393e5abbf95a95",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "infra/postgres/init/01-roles.sh",
-      "hash": "07654c97096e2973d0e4e00f0d4ffab3c7c817995b66c8005cb7a5376d233381",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "infra/web/nginx.conf",
-      "hash": "15220fedcbd673f2183786247c5a602c95336be5a29449beef7be1e9af570f97",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic.ini",
-      "hash": "fdacda19d394cd705fffe539585c9d6b3510809da415c08618dda2a17b68340b",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-      "hash": "74e7b40c5c81e4667bd6f1b13b0da3c19e3f8ad519005ded6f795902b3f0bb18",
-      "mod_time": "2026-11-16T15:12:14Z"
-    },
-    {
-      "path": ".gitignore",
-      "hash": "216b1b7589bf1fcc12850126480b0b18d2b0cbd7c35b9e288359d7cbbcbb6e56",
-      "mod_time": "2026-11-15T20:10:27Z"
-    },
-    {
-      "path": "backend/app/modules/institutions/api.py",
-      "hash": "f3390997c78beb1bc6376aa0c2314e751798960f8264669f89e4cf56a014ca3e",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": ".claude/skills/graphify/.graphify_version",
-      "hash": "3b6233c7b84f0aa2342452dd876d61beef0b164516ba92e25629ba004e90358f",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo.py",
-      "hash": "1b9c7325cf2dbf8eee82e2988255e8fd503f2618bcb44e24444a9ea9861c1732",
-      "mod_time": "2026-11-16T08:17:02Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/demo-users/users.json",
-      "hash": "3ee7fa67b2047ce75fb7037d6ff46b34c0a93fca00f2f3dd046b8a20f8d25463",
-      "mod_time": "2026-11-16T08:55:12Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/web/nginx.conf",
-      "hash": "15220fedcbd673f2183786247c5a602c95336be5a29449beef7be1e9af570f97",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "backend/Dockerfile",
-      "hash": "57f36ee5bd10e015cfc464c2a2b416bbcffe0f67c4a67e6b3eacebfcc21b37b1",
-      "mod_time": "2026-11-16T15:38:14Z"
-    },
-    {
-      "path": "seed/complaints.csv",
-      "hash": "d8b19659ec3fdd522f1b0f1c9a5d0c4ad50f672e2bd7a4eb8c2c990916595ccd",
-      "mod_time": "2026-11-16T10:39:03Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/settings.json",
-      "hash": "a0032d1f5ee02653efb0b45214efbd392778393379d1542535dc8bf27a793367",
-      "mod_time": "2026-11-16T08:15:20Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docker-compose.yml",
-      "hash": "db6cdb8e436541d8f60e3cdf725fc2c6f5703d11934878f1ab8e72f08c54cf9a",
-      "mod_time": "2026-11-16T11:12:35Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/db/session.py",
-      "hash": "b50f8d33bedbd2fc38505b7e80e5d9753075bf5b23bc116797138a581158aa96",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/api.py",
-      "hash": "f3390997c78beb1bc6376aa0c2314e751798960f8264669f89e4cf56a014ca3e",
-      "mod_time": "2026-11-16T08:17:02Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docker-compose.test.yml",
-      "hash": "9ede4a56c8f6d1a32e16dd9f5d964dfcd7d12517df7dd49faf23c8e2a363d0b1",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "seed/generate.py",
-      "hash": "a67b3b987f2ad2a6ffd3fe2fcfaaaccab11ac73153088a04f767bf0b573c0b94",
-      "mod_time": "2026-11-16T10:39:03Z"
-    },
-    {
-      "path": "web/src/features/institutions/InstitutionList.tsx",
-      "hash": "8033f204b3af2ff7c3adaeff5975df478a3bae158af709cb55d34ca3fdb0e9d5",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/LICENSE",
-      "hash": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
       "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/__init__.py",
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "mod_time": "2026-11-16T08:17:02Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/schemas.py",
-      "hash": "61ca6217721f2afc280ff9e8fb69a2b7844f94d7f5e1814aea8748605c165427",
-      "mod_time": "2026-11-16T14:31:30Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T10:01:22Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/.dockerignore",
-      "hash": "8dddd5bb92e96a3ba01bbf50fcbaebe72b7816695816f212e21d29022c6c11b7",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "CLAUDE.md",
-      "hash": "35ad4bba76138a5b8368239d5aab1da8430229a11ccec322a2d68ffe735121ca",
-      "mod_time": "2026-11-16T09:53:23Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/users.csv",
-      "hash": "c4f3c2c9c1215a5e6cf3983c60304351e39f86561150a0e3f11fa3d60e165a32",
-      "mod_time": "2026-11-16T10:00:14Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/api.ts",
-      "hash": "ed1ffc5af0d28cc9dc37243b16aa2296ab2c31a9983ba9b63e3f687ba5db1e1c",
-      "mod_time": "2026-11-16T10:09:22Z"
-    },
-    {
-      "path": "backend/sethu_backend.egg-info/dependency_links.txt",
-      "hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
-      "mod_time": "2026-11-15T19:33:49Z"
-    },
-    {
-      "path": "web/src/api.ts",
-      "hash": "3c066e540294c8656b933e0e8238f888d1179286635f37de4bad5655a3e52804",
-      "mod_time": "2026-11-16T10:39:03Z"
-    },
-    {
-      "path": "backend/app/modules/complaints/api.py",
-      "hash": "a2a0a85d6b2b97bfc7db737c03b13fd99fb0476e525104859ef5bb45a8cb4a50",
-      "mod_time": "2026-11-16T11:28:49Z"
     },
     {
       "path": "web/src/features/alerts/Alerts.tsx",
@@ -498,164 +48,49 @@
       "mod_time": "2026-11-16T15:21:57Z"
     },
     {
-      "path": "web/src/features/cases/types.ts",
-      "hash": "27bdfd0607c3c5f56b8bbebc34fdc13930a5cf99062981ae365bdfd8d41d8ed3",
-      "mod_time": "2026-11-16T10:39:03Z"
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/37b6cc5ed85ba36b5dea620c66d21d47a75ded4f9e2058659b802ec2af2a4d64.json",
+      "hash": "f9bcc57ba4d716c3b938c2b69e2fa384f467caa671f9e46239a7cd98142301b6",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.gitignore",
-      "hash": "0ca75fe213c3ec591b104f359b5ded508b4d6e7afda0f908d40f30e01a49f2fa",
-      "mod_time": "2026-11-16T08:15:20Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/dd817fc3a578338cde90847f65dd7aa233f689307bc830316b0501f16b27fa3d.json",
+      "hash": "601ef4daa5d968ec46a2fb4fdbf96f5312f43b45cc20e9e12a48672332bfcbe2",
+      "mod_time": "2026-11-16T16:36:01Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T08:15:21Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/fcf8e432e855c9797e3e5f1aeebd616800c6730695df3b171c569b77f7e7f524.json",
+      "hash": "ca8b720ef27a31707d5b02582b8953407eb390fddf35d1a56ec3acd1bbed3a86",
+      "mod_time": "2026-11-16T17:44:21Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T08:17:02Z"
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/fe65d0e4b69f2aebf61fcb6553591b99ff974b7046dbb101d581d8f4ff01d096.json",
+      "hash": "7831489270dd0a845e0f01e53c201bd9d5281f4ac462bb2ad5fa1263436f25e3",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
-      "path": ".claude/CLAUDE.md",
-      "hash": "62232e3b673be110041901069d92e4aef568e92fca2e89a00d492d5514d0ea80",
-      "mod_time": "2026-11-15T19:19:16Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+      "hash": "5a034eae3e72dd89e9ae33c9faca1f6d008a3c7d3dfa468ed66dfb9a43bf449e",
+      "mod_time": "2026-11-16T17:43:10Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/CaseDetail.tsx",
-      "hash": "0fbcbd140e4d9db64dc92943fee1081646900e373881fd1da80b9c02c77ea099",
-      "mod_time": "2026-11-16T10:09:16Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/cbe5d9d0581ab5933d9bdf5e8b86e12e16ae575bebe0f6af3873e57834627af6.json",
+      "hash": "0bacf84a16cd38dea3248ad500576ea4fc75b963bc7a1ecc66b1a51592ea3a9a",
+      "mod_time": "2026-11-16T16:36:03Z"
     },
     {
-      "path": "docs/ARCHITECTURE.md",
-      "hash": "6caa863c3e6591502a3b23b3a55da443c9e3170284769c0ff455581969c05b86",
-      "mod_time": "2026-11-16T15:21:57Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/e0a9a3836afd5f9483f67ce71894417e51515b710343626eb53e89baaf3daa0f.json",
+      "hash": "7490124a3adfe1d1736eb84fa49ac42cc430ff0ba77034e68382a333992a9a90",
+      "mod_time": "2026-11-16T17:44:21Z"
     },
     {
-      "path": "web/src/features/institutions/InstitutionProfile.tsx",
-      "hash": "7dcf8b7667daad43166b6938a2a154016565b94b958ef68875a9b5b387b3ea06",
-      "mod_time": "2026-11-16T11:28:49Z"
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/431463da2edea2275bfdf3c2e6c82ea7d944251b5679ecbebce0b4eea60fd548.json",
+      "hash": "3a68a3367d91043323fe9f83521e788cee02f7dcb61ed595e0e7c97aef79f15d",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.py",
-      "hash": "a2a0a85d6b2b97bfc7db737c03b13fd99fb0476e525104859ef5bb45a8cb4a50",
-      "mod_time": "2026-11-16T11:04:23Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/adr/README.md",
-      "hash": "425b42c88c8ae030ee470fe0b8eaebf951bd13983a447b87f8f5ea49674a7820",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/postgres/init/01-roles.sh",
-      "hash": "07654c97096e2973d0e4e00f0d4ffab3c7c817995b66c8005cb7a5376d233381",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/InstitutionProfile.tsx",
-      "hash": "fb3c0fbdd5743f0286c2956f558cd964982c860d9792e4fcf53be5a88514d502",
-      "mod_time": "2026-11-16T11:12:35Z"
-    },
-    {
-      "path": "docs/SECURITY.md",
-      "hash": "e6b3ab21f5977f41117e4c862ef912200460dbdf33b02355e825971f74702926",
-      "mod_time": "2026-11-16T15:21:57Z"
-    },
-    {
-      "path": ".claude/skills/graphify/references/add-watch.md",
-      "hash": "7fd565a4b049c647ca30e736f121becaf97c300887ef0d6418c3f06bdb28649b",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "backend/app/db/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "docs/01-SCOPE-LOCK.md",
-      "hash": "4e5701233076dffc099b9199f1890fa82f6d4197d5ff25cbb2a435cd6c07e180",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "web/Dockerfile",
-      "hash": "afbe5d58f0ecd538bdcfcef4293b1058aa29168c20d62c8094d7419ade9693e5",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/add-watch.md",
-      "hash": "7fd565a4b049c647ca30e736f121becaf97c300887ef0d6418c3f06bdb28649b",
-      "mod_time": "2026-11-16T08:15:20Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/main.py",
-      "hash": "38d6f87e952c12b8dab55229f329385c82927473fd607c3a415f687d6c2a7c6b",
-      "mod_time": "2026-11-16T14:31:34Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/api.py",
-      "hash": "d3bb895732833ae451e53c26308c919254e2cd73c69c220ec2c55440ed41a4d8",
-      "mod_time": "2026-11-16T11:04:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/demo-users/import.sh",
-      "hash": "b62a4b7fab32bb1cc90404afd2b20a31717e853dca33f1e080bbbb411cd6b28d",
-      "mod_time": "2026-11-16T08:59:37Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/scripts/init_env.py",
-      "hash": "17a0755af4b89834704cdb3acbe44c89524cd21c25e1d56ecb6ee201d77b6a06",
-      "mod_time": "2026-11-16T08:55:12Z"
-    },
-    {
-      "path": "backend/alembic/env.py",
-      "hash": "8d54e53b2fdddf955ec9e589802d2636282fd385ff4b6dd7e8d64a246086b2da",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "web/src/main.tsx",
-      "hash": "c0f2b418733d072ad4b8c7781068446c3388b13acada81b098963ab8bd454e00",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/schemas.py",
-      "hash": "f758e8a6cd80767418422b222d77fb1b078643b01213baeb6fd09442075056a1",
-      "mod_time": "2026-11-16T11:05:33Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/README.md",
-      "hash": "ceada6db5e2054ee046166093cfb036c4c89bd3dfc6ffef14538ebd44d2c3329",
-      "mod_time": "2026-11-16T11:25:37Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/Dockerfile",
-      "hash": "afbe5d58f0ecd538bdcfcef4293b1058aa29168c20d62c8094d7419ade9693e5",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "backend/alembic.ini",
-      "hash": "fdacda19d394cd705fffe539585c9d6b3510809da415c08618dda2a17b68340b",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/README.md",
-      "hash": "ab0719399a83525b889b60a60ec19d6446f12ed87012303eec21dfd05399f90e",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/tsconfig.json",
-      "hash": "8b99f3adc5a2c56775f1e2747d0c19474f474ae3a875a35a6f78b906a84614fb",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T11:04:23Z"
-    },
-    {
-      "path": "seed/README.md",
-      "hash": "e8d22fec7127a0b0e39413004b55d55e04f8e39b7f37c8226aa2f88256357ac9",
-      "mod_time": "2026-11-16T11:28:49Z"
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/b18d2f6312f93e5e14579a18fe701b57c420ef224703585b5a827b9b8f321b38.json",
+      "hash": "affcc21f13c4562c253e1dd0794770035e0542a8ac88d6ef2ab72101a563933c",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
       "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/api.py",
@@ -663,54 +98,69 @@
       "mod_time": "2026-11-16T14:31:30Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/repo.py",
-      "hash": "843e156f7c36becfe8a7ccb9d1e33a5b4b40357fb0565f7e6d6797274401ca93",
-      "mod_time": "2026-11-16T11:04:23Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/191c42fd6389d5e5eae06810a7575795b472ed677ccda42d4d965ec69f0cb66b.json",
+      "hash": "3f8efb9fb12f656256ec526a7911e0e59e17acb7f49adc01b3cf22764ea1440f",
+      "mod_time": "2026-11-16T16:36:03Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/index.html",
-      "hash": "940dcfb95360b54f2c0ac2022a4657b914b834cf316db5c6cc524f481739c211",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/3b3d85da2d31248925fa71abfb5f81a46ad9eaf5cee01de3443355cbb7881d46.json",
+      "hash": "7989e61895b28c963efc2477a4925c7955707e427e2cebab245afa6f1e741b0b",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9244aa4ef47273eee2ce81750505a0dfae816090d05b454cf4f879adea32e8ad.json",
+      "hash": "db9b9e9d476d5e7ec1b01e4eecd24c900580d660c17b4a02159f988d467cd1e3",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/3fcee10863e6619209a6dc35679b936092cccc5b6a840f45e1ca066c492500ef.json",
+      "hash": "16205ce3acd6c70d343b66a978aeb2865240c779141f0440350192d0f8f8b49e",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/e36d24c1f6af95b5fee37a5f4f02d10806013a08fe5243fbd0d1128958d17266.json",
+      "hash": "fef43886bcfa81e7fa2acb83417a5ed0165f487f7985a5ab202b1c6ce3049da8",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/f8dd04106416b95af926d75fed9069a2766c4ab5a6ed86430746a7397d0a2494.json",
+      "hash": "468d113025fad189d413349327d0eb532d8daa9f3b88c4e73c35e107f8be2a57",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": "graphify-out/.graphify_build_state.json",
+      "hash": "be23bf8845047a4db29d6258c11f068feaec857f2816bf34cb278a3b9104b5e4",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c966edd9b9e64c1a918b7625e400965de17a6657dc42393416d1ef9cec937f9b.json",
+      "hash": "027ac1146ef24e95091ec782edbac866431aaeb3efc287151e0ab750f4fd3a7e",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docker-compose.test.yml",
+      "hash": "9ede4a56c8f6d1a32e16dd9f5d964dfcd7d12517df7dd49faf23c8e2a363d0b1",
       "mod_time": "2026-11-16T08:15:21Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts/Alerts.tsx",
-      "hash": "4b9fbec8fef0a41d7af9f14c4185740172be76771d680db5348de34129791332",
-      "mod_time": "2026-11-16T14:36:57Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/ARCHITECTURE.md",
+      "hash": "4d27f324b5ce4278c2c573e8c799f59a4937d27013ba5326fc7d9e776d612924",
+      "mod_time": "2026-11-16T17:51:26Z"
     },
     {
-      "path": "backend/app/modules/alerts/schemas.py",
-      "hash": "61ca6217721f2afc280ff9e8fb69a2b7844f94d7f5e1814aea8748605c165427",
-      "mod_time": "2026-11-16T15:21:56Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/e86de89ac1fa2dcc58d205a5eac23b25c240ae4740035f91635d0c887e97a174.json",
+      "hash": "f8343bb1a58c0cfd110644f017d205005f05e7b537ef0d0ba3aabd40450d19ec",
+      "mod_time": "2026-11-16T16:36:01Z"
     },
     {
-      "path": "backend/app/modules/alerts/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T15:21:56Z"
+      "path": "backend/app/modules/dashboard/schemas.py",
+      "hash": "f12778a968ed32199bafbb2ef2a3c5bc1e31f1cb7047bff5303caceba8d40356",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
-      "path": "docs/02-PS-COVERAGE-CHECKLIST.md",
-      "hash": "8cc8b0c9d4f3ecbe5cc23a7daa360f55ebf491247158b3a2842d11a72792b7c7",
-      "mod_time": "2026-11-16T15:21:57Z"
-    },
-    {
-      "path": "seed/institutions.csv",
-      "hash": "ccb4f940f0e97cca89049df86b50c768b4681be5a6e980475a0e24ab7a66d89c",
-      "mod_time": "2026-11-15T20:06:03Z"
-    },
-    {
-      "path": "web/package.json",
-      "hash": "4993df7f9c06a70cb5739c3b62a7e4f536483de1c664154a71a506f6fd8516ff",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "docker-compose.yml",
-      "hash": "db6cdb8e436541d8f60e3cdf725fc2c6f5703d11934878f1ab8e72f08c54cf9a",
-      "mod_time": "2026-11-16T11:28:49Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/52d0a7b212a20a199a4167d875f2057cbe20a957e16a99328179baa768df67ed.json",
+      "hash": "d43510b154cd7ae93808aa59d3a60ce58726adc1e6d5156ae67db5433b48982c",
+      "mod_time": "2026-11-16T16:36:02Z"
     },
     {
       "path": "web/src/features/cases/CaseDetail.tsx",
@@ -718,14 +168,54 @@
       "mod_time": "2026-11-16T10:39:03Z"
     },
     {
-      "path": "infra/web/nginx.prod.conf",
-      "hash": "8237efeaf1f8bada6d8b80519a6da263675af5bb3643bef095bc01e3f873fb3b",
-      "mod_time": "2026-11-15T19:19:16Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6d7fdc23136eb38645b1e97032ad71d799fe3eb47ef14de8eac1eee6f22e4cfc.json",
+      "hash": "aa1c1b6da60b0de5d803dc1bb5b8336bad37e9f5d082d14ca0dce8c2c4f77795",
+      "mod_time": "2026-11-16T16:36:00Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/package-lock.json",
-      "hash": "1112dd77f95aa6cd12463767561aea895267eafeb84f5e339f55af9ee931b46e",
-      "mod_time": "2026-11-16T08:15:21Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/7d58618dfdf78625ff4867e9f626c15feb316c3bf5c15339025a9d75ed066a68.json",
+      "hash": "104c9ddaf933c59f96176792669cfd7a2ecda86c4d314a9a21dacfe2a258c43f",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/e61040aa9a6f7b5048d9819257e98fd4f2d8f14d9baf1135f1f99ff855912a9f.json",
+      "hash": "c8f59d2b9c17f30348262b316030e35f17603f092b8401bfebb259f39434e800",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/repo.py",
+      "hash": "1b9c7325cf2dbf8eee82e2988255e8fd503f2618bcb44e24444a9ea9861c1732",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/7a9a26d6f2bd4f9c1800a17a8822c68cff81bbe5168dfa2c2c3bfbc39e59c95d.json",
+      "hash": "01afbea3b1383d5a551b48fd4a0ef11feb01be0ffe89296a522807526c1ad929",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/src/features/cases/History.tsx",
+      "hash": "ec34768843ba8423023a8dfd0c279198ef5b082ef9f502df95e978e3696eaa72",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/schemas.py",
+      "hash": "61ca6217721f2afc280ff9e8fb69a2b7844f94d7f5e1814aea8748605c165427",
+      "mod_time": "2026-11-16T14:31:30Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/1774c461a6dbd361007b7dc3a34842c2f4be8c954261c71eeb366794273e6bd6.json",
+      "hash": "5efdc7e712f944049304d81d3c242efcfd03a127b725033e90b5a941f2484da6",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/service.py",
+      "hash": "6ea57577dce231c97b8bc2c6e0a3267ea6ccacd786ac5b35c9fc87f8ec3f32eb",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/App.tsx",
+      "hash": "a0fc6e8294c00c656e383c25d27114faab9539665e450c7b8dce020dd589c4cc",
+      "mod_time": "2026-11-16T17:42:06Z"
     },
     {
       "path": "backend/app/modules/overlaps/repo.py",
@@ -733,89 +223,94 @@
       "mod_time": "2026-11-16T11:28:49Z"
     },
     {
-      "path": "scripts/init_env.py",
-      "hash": "17a0755af4b89834704cdb3acbe44c89524cd21c25e1d56ecb6ee201d77b6a06",
-      "mod_time": "2026-11-16T09:27:49Z"
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/78709814f125b156f1f0a7791ac865740024a6a119646f59363cb1cd7910c7e9.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/config.py",
-      "hash": "f773d468bef46d36df4b78bed0f8835edcaa4d4827bf591bff7af495b8ce5876",
+      "path": "web/src/features/dashboard/Dashboard.tsx",
+      "hash": "2fa9e8c995c564618105870c1ff90c4d1bfdac457be36bc8b78575d407e41860",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/auth.py",
+      "hash": "3825e1029a76c81d4ce36cb31f6cc95df0b7efe023d093f21ef7aaaf2abcb9eb",
       "mod_time": "2026-11-16T08:15:21Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/logging.py",
-      "hash": "0d30e6d41ad2c79c838a993c40a9f30874f23e49a50d04880cf3ce6173bfeacf",
-      "mod_time": "2026-11-16T08:15:21Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/61261ceb48b7496d0f846788518361958ab5b533d78246abff5ac5a3a6e615d8.json",
+      "hash": "dff4fd0500598c9ad2d4149e3e322d6d0501bb84ebedd89d278e2d1c29c55194",
+      "mod_time": "2026-11-16T16:35:59Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/05-NEXT-CLAUDE-CODE-PROMPT.md",
-      "hash": "122c5afa6cf567da9f4965b2ab504d9366ac3324f7787dfa063a9ad707d48124",
-      "mod_time": "2026-11-16T08:15:21Z"
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/131cec07159164111d39dad2a070dc332e0005025b62f8a509f65cbcbf2c12aa.json",
+      "hash": "5b7d76a3d6e2cf45decf17f76c4863ee55c3dfbdac7176d596addbf16abcebda",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T17:34:26Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/346a51d51046d3f83df8556b8ea7c8d6bb59a4e2dac5889eb0f9184078683555.json",
+      "hash": "2d29a1b45ef6b2a24c8c99b493a2a4511915ee41794e4a7b5a996142ce308f5c",
+      "mod_time": "2026-11-16T16:36:01Z"
     },
     {
       "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/app.css",
-      "hash": "670f0a263a41b70bbfea076a82c6c020ee3991607d18b49a465bef59c137a714",
-      "mod_time": "2026-11-16T11:12:35Z"
+      "hash": "8817e74a53229b60664cef2b73d20fc16d60a662d87ccb64243c8b15e8081eec",
+      "mod_time": "2026-11-16T17:42:06Z"
     },
     {
-      "path": "backend/app/api/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "docs/05-NEXT-CLAUDE-CODE-PROMPT.md",
+      "hash": "122c5afa6cf567da9f4965b2ab504d9366ac3324f7787dfa063a9ad707d48124",
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": "backend/app/audit/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-15T19:19:16Z"
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/ea49111e5061fd600b6039c83fa219f82214f2c4d99a1a275eb9a8cf024e64d3.json",
+      "hash": "4ecda4ebd0185bda806ad5f5b367e0389ea71a1de985c1843de9ab5163d3f8fd",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
-      "path": "backend/app/modules/alerts/api.py",
-      "hash": "7e36d5de77ab892087f82c95ea7a62932fd009df7619c2ab67a2b346c53fb3fb",
-      "mod_time": "2026-11-16T15:21:56Z"
-    },
-    {
-      "path": "backend/pyproject.toml",
-      "hash": "fc284dabc83271c26ba28a69abdab8d3c7ffb9a6ce639f2894393e5abbf95a95",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/History.tsx",
-      "hash": "2ea0c30c38e7ac32294e4d699c3e10f41c3614937c1d123cda735b3127e98d7b",
-      "mod_time": "2026-11-16T10:19:24Z"
-    },
-    {
-      "path": "backend/sethu_backend.egg-info/SOURCES.txt",
-      "hash": "00f7558cdf97cf180bad83f8e1f005c890ec08d1771a4f7ebb534821d4ddf9c0",
-      "mod_time": "2026-11-15T19:33:49Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/DATA-MODEL.md",
-      "hash": "fabde0e7d170f83ee87b9d1c9b07e95801f8f4a60b4d6c5b3a283b4b99516282",
-      "mod_time": "2026-11-16T15:12:14Z"
-    },
-    {
-      "path": "backend/app/modules/alerts/service.py",
-      "hash": "934feb3d4664d90d1b4f3de99a77ed6d8cfca430112ccc613177b4edbf002eaa",
-      "mod_time": "2026-11-16T15:21:56Z"
-    },
-    {
-      "path": "backend/sethu_backend.egg-info/top_level.txt",
-      "hash": "8a8f60ecb09b7e64c6d5214a8043865e608507db8c3f61f995eae6d078875901",
-      "mod_time": "2026-11-15T19:33:49Z"
-    },
-    {
-      "path": "web/src/features/institutions/ResolutionQueue.tsx",
-      "hash": "84771276de1d9035ed206c4ea3cbc67a84aae4f0bece1a39af125a76c07bf2e5",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/audit/service.py",
-      "hash": "b5f99ce37b81fb25cf8aab57d3d300b8dfef748eec8e9f8849e60168071ce4c7",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
-      "hash": "6ea57577dce231c97b8bc2c6e0a3267ea6ccacd786ac5b35c9fc87f8ec3f32eb",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/api.py",
+      "hash": "f3390997c78beb1bc6376aa0c2314e751798960f8264669f89e4cf56a014ca3e",
       "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/193a54346ae97090bd5a2528233b41553db4a2fb329a0f91d049309921d189fa.json",
+      "hash": "8b00a4563ab3ae8520746674f8bfa67f5120cb90263375a1d45ed4d465e32e31",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": "docs/DATA-MODEL.md",
+      "hash": "1f81cee6e7cf2615c3b196ce89f827199751788248a49a1d57bc7b375b349d93",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard/repo.py",
+      "hash": "3aa1df84abdd44226d8d8e25e64f89d541969ea04203d168f6f641023a6a935a",
+      "mod_time": "2026-11-16T16:22:35Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9b5fd26fb1cb59b5c2d2ff718c8c0db18c028be6db1d81f0af2ffcac0ed3a466.json",
+      "hash": "59dff5609f329bdb989b6c5d611f0951e7437122f6a186651a8901393123adee",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/complaints.csv",
+      "hash": "d8b19659ec3fdd522f1b0f1c9a5d0c4ad50f672e2bd7a4eb8c2c990916595ccd",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": "backend/app/modules/audit_view/service.py",
+      "hash": "ce68ea2fa795f693c9ca0ebac528cd1b08cf21c629a0cfce0249bc92b53a3a46",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/transcribe.md",
+      "hash": "dbdd2b2733734f46c369cfe98322a9a53a77fa56b6728cb2e76f1452a7b71103",
+      "mod_time": "2026-11-15T19:19:16Z"
     },
     {
       "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/repo.py",
@@ -823,43 +318,88 @@
       "mod_time": "2026-11-16T11:04:20Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/main.tsx",
-      "hash": "c0f2b418733d072ad4b8c7781068446c3388b13acada81b098963ab8bd454e00",
-      "mod_time": "2026-11-16T08:17:02Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/f48fb1795bcf23b07eca7e9ea9288c6fbac255adba112cd9c513d073e9868963.json",
+      "hash": "400a0943bf47050a428fa99562c5ca76b320b725f98e8b8cd1754c7d125dc1d6",
+      "mod_time": "2026-11-16T16:36:04Z"
     },
     {
-      "path": "backend/app/modules/complaints/__init__.py",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/graph.html",
+      "hash": "448a6adf5b7b177b86be4062d5c41449a765896e44b4b6e473583d17dda9a74a",
+      "mod_time": "2026-11-16T17:44:27Z"
+    },
+    {
+      "path": "backend/app/__init__.py",
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T10:39:03Z"
-    },
-    {
-      "path": "docs/03-DEMO-STORY.md",
-      "hash": "0244ea2505a50334f5fabc12a948072ad2378be645cf29d608dc3f6a6fe50d06",
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": "seed/actions.csv",
-      "hash": "a1d6395ff8ae7b8dd187c48420e397afbc9989f3f98a62e8a96dfedbeb1c5d98",
-      "mod_time": "2026-11-16T10:39:03Z"
+      "path": "backend/app/core/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/SKILL.md",
-      "hash": "c1e9d4da644d57cd3e3c8290ec26be140aed19f44a67ccb2eecc10568ae4443a",
-      "mod_time": "2026-11-16T08:15:20Z"
+      "path": "docs/adr/README.md",
+      "hash": "425b42c88c8ae030ee470fe0b8eaebf951bd13983a447b87f8f5ea49674a7820",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/Dockerfile",
+      "hash": "cc112a445213d74aab467ac5b52afe42c9f3cc2db14379927181f399c59160cb",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/types.ts",
+      "hash": "6d5ad058b27a3931b6a451a67454c45fa6344044d258ed4ea5609010397d6c14",
+      "mod_time": "2026-11-16T10:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/4c89baf881407c25495d97bd0431b4b0d7f341bcb60b257d927c41a0cbcce9fc.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0002_case_tracking.py",
+      "hash": "6e37f1f2eacf681f99147a5f8cc34cc261f10261007831f130780f737574d6ea",
+      "mod_time": "2026-11-16T10:05:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/de7b8e5e1d950c125c081ef231f4ecae365b80c7ed39208567ec1bf15280a7a2.json",
+      "hash": "cb377ce34a5e8bd9b7ae7ec898acc61f7f00388b2394b0ebf2c1a5269f3d8be7",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/audit/AuditLog.tsx",
+      "hash": "a0996d29dfbd4bf7646a249a7878fbfff85711531035acae1bd63d68b6e8cda5",
+      "mod_time": "2026-11-16T16:29:08Z"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "hash": "8dcca50d393dbe9f56226a379ec698e48195a5064ad41acb36ca7c7bdb28b249",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/1774c461a6dbd361007b7dc3a34842c2f4be8c954261c71eeb366794273e6bd6.json",
+      "hash": "5efdc7e712f944049304d81d3c242efcfd03a127b725033e90b5a941f2484da6",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8339384258028204354c46670364b5a25e7e2f109bd64b92818072c739cdca4b.json",
+      "hash": "3f3baf32b5928aa34ac62b2dd25a3475075f4788190a73cd43039d4a65ca61ea",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/ec9f8cf1a4e0519b9a9c06201a9c70619b7622eba39b1ec8e050fb38810e730f.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "backend/alembic/versions/0004_alert_approval.py",
+      "hash": "8c1bee4c363d8060d2152a78c1db29b12614a9d61626d16a4f34c43222c07172",
+      "mod_time": "2026-11-16T15:21:56Z"
     },
     {
       "path": "backend/app/core/auth.py",
       "hash": "3825e1029a76c81d4ce36cb31f6cc95df0b7efe023d093f21ef7aaaf2abcb9eb",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/skills/graphify/references/exports.md",
-      "hash": "f1debd1003b168c3c1c9fe284bf3018609372740ae8856bea2b10bba0a07b34b",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/skills/graphify/references/extraction-spec.md",
-      "hash": "6982c2f6067adedb87c420734ad4fb57ad0e25db0cd9dc1ba73669394cc11165",
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
@@ -868,19 +408,529 @@
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/query.md",
-      "hash": "f10b5aa8a0621d2ed7e85eb655cdc45ce39fa85e34ff3fddbb211b59ceb03a62",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/service.py",
+      "hash": "efcb6d1f9b2a4dd3a4702a54d29c24f32b7d8d6a8b963c2f8e735ff6822b2d22",
+      "mod_time": "2026-11-16T17:38:51Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/02-PS-COVERAGE-CHECKLIST.md",
+      "hash": "5cd6641d411080fb7837595a09bef0b997dbaf016ed39fc88a5eaacff032b2c5",
+      "mod_time": "2026-11-16T17:43:10Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/67bcd1675b095463daae89d785d227fe0ce634d08d8383d6ce15a9e3537a7cd6.json",
+      "hash": "46030ced3ece2bc12ec7864ca2caf670083b812e6c8e64f4aeba541f20b19ec1",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/ec9f8cf1a4e0519b9a9c06201a9c70619b7622eba39b1ec8e050fb38810e730f.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": "backend/app/api/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/modules/dashboard/api.py",
+      "hash": "711a6422218a0584be04c8f4ddacc47f6b0f3f62b072854b85a2bc6dd156a862",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "backend/app/modules/dashboard/repo.py",
+      "hash": "3aa1df84abdd44226d8d8e25e64f89d541969ea04203d168f6f641023a6a935a",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c7da34dcdd4f9186c742e7fe38ad83a5ed917867ea6fd73daa12a9721f1e58c9.json",
+      "hash": "fa3dc071c2d797f41385d69da54085c4d7d171e411b145ef1457b772d7a012b5",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/d29a506d3b87464b5c61dc73a07c82b90147e4e3d9d62a9538de5720c6e3ad3a.json",
+      "hash": "4dbdbfda18b7d681b225dfbe568afba00d108263d1f7b4ccb4aad54dc116711f",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/github-and-merge.md",
+      "hash": "1b36d67bd92de0f5ea76ec3b84d1c1103a197c6093b9954995cbaf0abac9fac3",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/b298466cd8d08e147cda550f951f7f590cee055b3d4cb179de94a501584b9362.json",
+      "hash": "9e057bb8b7b3a75a2e3f1c7d64bc9e80873d3ae00c65be182455b6a2c19b8927",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c9b17c6551f4299816f6f27ddd688eb3e92a2b43ccc66ece9a81a47193ad6936.json",
+      "hash": "8b83aaa7f609bad4e98e3d82c9dc13408f56b46328f52f10784d033211359e66",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/cfc41075a6b10b7c026795c90194856ce6881ee21d6a20d6737363290db41b15.json",
+      "hash": "00e52844f034f2d2a562944edf265d8c625be3895ddf7d9e5ece5ab1740d6a43",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/package-lock.json",
+      "hash": "1112dd77f95aa6cd12463767561aea895267eafeb84f5e339f55af9ee931b46e",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/schemas.py",
+      "hash": "9ea2aaa2977d2cb36fdfc86bd5e03e5cb8c504572f1975d06f497c449535f296",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "web/src/features/institutions/ResolutionQueue.tsx",
+      "hash": "84771276de1d9035ed206c4ea3cbc67a84aae4f0bece1a39af125a76c07bf2e5",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/SKILL.md",
+      "hash": "c1e9d4da644d57cd3e3c8290ec26be140aed19f44a67ccb2eecc10568ae4443a",
       "mod_time": "2026-11-16T08:15:20Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/update.md",
-      "hash": "582b4c23a1d3e2c0989a0c5dfc2f7c6bf17ad19087aece2c78eb03c0a202bb88",
-      "mod_time": "2026-11-16T08:15:20Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/15953d1b8f0ed8f6161dfae971fb9d4b739cc1566eb67611772f12f481886231.json",
+      "hash": "c1b9816d541a6d6676938c0796d8bdf061c4fcacc7164fe1922249753d962675",
+      "mod_time": "2026-11-16T16:36:03Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/db/__init__.py",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8d4a652754f16c496129d03643d6345ff2729e1ac318552bc8c380a1009daece.json",
+      "hash": "579d44b70945671310486e2e436ec473509b9378b0df9497b9999371c11aa6f8",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": "backend/alembic/versions/0003_overlap_policies.py",
+      "hash": "991dd3834599e5ac93323f657ce97548929a0b0946f5fac2f832094299e19894",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "graphify-out/graph.json",
+      "hash": "02887ca563ce23bb022faa59763a75b75fd1e68a3d5ef4662d811343b511813b",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "seed/complaints.csv",
+      "hash": "d8b19659ec3fdd522f1b0f1c9a5d0c4ad50f672e2bd7a4eb8c2c990916595ccd",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/service.py",
+      "hash": "7f8a4b20f3fed7a379ee69e7a5c5b8e9dda0909e2ec990d9b2cfc24ff5973c8c",
+      "mod_time": "2026-11-16T17:41:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/pyproject.toml",
+      "hash": "fc284dabc83271c26ba28a69abdab8d3c7ffb9a6ce639f2894393e5abbf95a95",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/extraction-spec.md",
+      "hash": "6982c2f6067adedb87c420734ad4fb57ad0e25db0cd9dc1ba73669394cc11165",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docker-compose.yml",
+      "hash": "db6cdb8e436541d8f60e3cdf725fc2c6f5703d11934878f1ab8e72f08c54cf9a",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "infra/demo-users/users.json",
+      "hash": "f235bb9aab3469c19627e6c27f8a6a6781ae46feea64a9bf44b3e6396e22a1b4",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": "web/src/features/cases/CaseList.tsx",
+      "hash": "effe597f99c8920f708e0a9bc4a12485b0a756e9793f61a5e5339b24eeb74054",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/audit/__init__.py",
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/3822f6484359f172127da2f7f412b8f61ca777b71c392d9b986a34b80c4ddd18.json",
+      "hash": "0a70ea454be209faed40d3a51bc6482964c8251552fcc55744bcb0e65a3a41f8",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": "backend/app/modules/alerts/service.py",
+      "hash": "934feb3d4664d90d1b4f3de99a77ed6d8cfca430112ccc613177b4edbf002eaa",
+      "mod_time": "2026-11-16T15:21:56Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/02864fcf1b0fe18ea4c3e0d8bf70d0380a5c29dfabcbb3f3cac10a5ba478310f.json",
+      "hash": "a28d6a32f3e9503a6a394f25729049cf6baaa843b54ea595ba3d037c9a64b3c8",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/346a51d51046d3f83df8556b8ea7c8d6bb59a4e2dac5889eb0f9184078683555.json",
+      "hash": "2d29a1b45ef6b2a24c8c99b493a2a4511915ee41794e4a7b5a996142ce308f5c",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/src/features/audit/AuditLog.tsx",
+      "hash": "691606ba5eeb7174c8e3f5aa3646f181fbab6104f6a99cdab7d5314dd8664d09",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/02864fcf1b0fe18ea4c3e0d8bf70d0380a5c29dfabcbb3f3cac10a5ba478310f.json",
+      "hash": "a28d6a32f3e9503a6a394f25729049cf6baaa843b54ea595ba3d037c9a64b3c8",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9f087eb7aa202b2da6c94e9b95ec0f6b2f7efb892def78cc27b95ec0c98a275c.json",
+      "hash": "2fe75c2349b0d0236d1eb0d83cd99209c61eab0332e3e86edf29a94bab28c589",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6458d8ed18d531360f99cf6966da2cd811e37f3776b371506857c799bfb7f1ef.json",
+      "hash": "6f5f4077fe26327711b4927e597da37c38abbca123e95e6aa03585bbc5a74ba6",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9b88645d8efb0dcf0876eb2376231bf5f835d6604d3b762728741af44879665d.json",
+      "hash": "975009abe4c852b7f3687194dcc3dc90ed9777b2fc54efe171078e3648ae00fc",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/main.py",
+      "hash": "7b01c6be42f4f577a5b132c202516d4100c77248ee8e5703ba97b2c6fcf497e8",
+      "mod_time": "2026-11-16T17:35:56Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/f1f8c292ecf53db88a883b47143362ed3d23e347cbd8889b91a242a2d94c0009.json",
+      "hash": "87e7306844df57cb61c171de2d8b452d9bb8d14bdd63e6071a6883de5266e898",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": "backend/app/modules/overlaps/api.py",
+      "hash": "d3bb895732833ae451e53c26308c919254e2cd73c69c220ec2c55440ed41a4d8",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/749dc77d2e9ebe6bd0a5e647fc4ee13c8f8aade3106e565ae3372fec4434c4ff.json",
+      "hash": "02790567bf5bb61ab6d6001b3a458f233477adebe8cede827b0c2fc91da0af62",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "seed/actions.csv",
+      "hash": "a1d6395ff8ae7b8dd187c48420e397afbc9989f3f98a62e8a96dfedbeb1c5d98",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/78d3c0615bf033321695c80fbb47e7654d0127500c670c70b47953c51f7f3d05.json",
+      "hash": "aa9cadc0f0863effc26e85d391790d3929a031e0c2df20e2af1602b8f568261f",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/README.md",
+      "hash": "ceada6db5e2054ee046166093cfb036c4c89bd3dfc6ffef14538ebd44d2c3329",
+      "mod_time": "2026-11-16T11:25:37Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts/Alerts.tsx",
+      "hash": "4b9fbec8fef0a41d7af9f14c4185740172be76771d680db5348de34129791332",
+      "mod_time": "2026-11-16T14:36:57Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/43dca8e8ea4cfab5d12f69977396fa819a4fc67de93d534159f86716d456f65d.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard/service.py",
+      "hash": "b78ef42a94f23608f6e89a1c78ed3b8f04acf57cfc4f626cd2e12438d30c17a5",
+      "mod_time": "2026-11-16T16:25:45Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/a9acb6dc9d1bd4f7925fb8271e5380797fcc8171174e375d0e4556fc23ef90fd.json",
+      "hash": "886817ec6652857deaa0442a72a90f870811707875ae5e76a043b056c75bc3ee",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/07d96ba5f3451d0df97872fb7408b8a9660cefbd37e2ed9c9f20f5f46fe81d9e.json",
+      "hash": "024d7dabe3f94f25d3bf4babd441a0f594ff4d11de97e103a9cb114210c6a618",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/.graphify_version",
+      "hash": "3b6233c7b84f0aa2342452dd876d61beef0b164516ba92e25629ba004e90358f",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/schemas.py",
+      "hash": "01e3c5210bd3837491936c03d47316347fbae05a225b1001f2ce9bc23cc20ab8",
+      "mod_time": "2026-11-16T17:35:54Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py",
+      "hash": "b7c3a6bc0cb341fd49c97c804a202466186bab576cd7b5125cbaa99a595c9d1a",
+      "mod_time": "2026-11-16T14:31:34Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/7016ee490b9f1482a6cd785250d4f4b10a9d723e9456574aa929b8c78ca4850b.json",
+      "hash": "094e79ca892ec6ce0cc8944b0395d50c5bb1913ba522d869f95761e13553597e",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/3822f6484359f172127da2f7f412b8f61ca777b71c392d9b986a34b80c4ddd18.json",
+      "hash": "0a70ea454be209faed40d3a51bc6482964c8251552fcc55744bcb0e65a3a41f8",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/b5ec45c5f7ad63384e903c941cd67b3e10f44966b1e36188f7d4d6e4280dfcfc.json",
+      "hash": "d3f5d3ae5f316ef1c1faf2c2010632469f0400ecd737143441b529f555e6cd74",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/manifest.json",
+      "hash": "7f26273527e9523619e660c0ff927966c911285c293853ab7a6a2e3eeb95e78f",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/431463da2edea2275bfdf3c2e6c82ea7d944251b5679ecbebce0b4eea60fd548.json",
+      "hash": "3a68a3367d91043323fe9f83521e788cee02f7dcb61ed595e0e7c97aef79f15d",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/fe65d0e4b69f2aebf61fcb6553591b99ff974b7046dbb101d581d8f4ff01d096.json",
+      "hash": "7831489270dd0a845e0f01e53c201bd9d5281f4ac462bb2ad5fa1263436f25e3",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": "backend/app/modules/audit_view/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/f8dd04106416b95af926d75fed9069a2766c4ab5a6ed86430746a7397d0a2494.json",
+      "hash": "468d113025fad189d413349327d0eb532d8daa9f3b88c4e73c35e107f8be2a57",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "seed/users.csv",
+      "hash": "c4f3c2c9c1215a5e6cf3983c60304351e39f86561150a0e3f11fa3d60e165a32",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/transcribe.md",
+      "hash": "dbdd2b2733734f46c369cfe98322a9a53a77fa56b6728cb2e76f1452a7b71103",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/14ce2c9d4a7e4c0451cd3cba5cc4a8bbb6aa8901979d8f60dae318f4022737c0.json",
+      "hash": "4691a38342a1cac5c373112bcc6058bbcf680c5d890b9bd2dea5a8cae9abe3bd",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/7c1078ccfbe4dc3973d84613172fe710d424cb8ca07ef7487ce97f567025d850.json",
+      "hash": "157f2ef18ebfbab983926057c7f0ed81f06b2e4572888891cbbc1fca8c497c72",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/918fd95e775837ff5c735b782d56b0fcaaac1d94cf4694ee94973cabb219ffa7.json",
+      "hash": "d5be6512e47f07f5eed9d95ca287a2887a2508d40f0abc66b7d96b93f54fa6cb",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/d29a506d3b87464b5c61dc73a07c82b90147e4e3d9d62a9538de5720c6e3ad3a.json",
+      "hash": "4dbdbfda18b7d681b225dfbe568afba00d108263d1f7b4ccb4aad54dc116711f",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".gitignore",
+      "hash": "216b1b7589bf1fcc12850126480b0b18d2b0cbd7c35b9e288359d7cbbcbb6e56",
+      "mod_time": "2026-11-15T20:10:27Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/a6ffa0d89d0397913f08859ef5f84a1f4607b60caf42e18b906815c8b3978f23.json",
+      "hash": "8e04474dacb9a54aa6e1cb6fcf370081917a08676120e5ff4b1e3206b85f6115",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0001_core_schema.py",
+      "hash": "b95015e1672265640e8161e37973a6593e79dfe6b5e2fe5b69d131494bea902d",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9b88645d8efb0dcf0876eb2376231bf5f835d6604d3b762728741af44879665d.json",
+      "hash": "975009abe4c852b7f3687194dcc3dc90ed9777b2fc54efe171078e3648ae00fc",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": "graphify-out/GRAPH_REPORT.md",
+      "hash": "f3185dd2dee84825cc1c44ce24c23be42ea211cac6276b092c169782fa823884",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/aba02751bbbaf5290c438f5ec11951b79b3c7eb77a0cab4385cffa8295ac8389.json",
+      "hash": "a3851d19ca6876ed6b0879c44b2a693429028c3db8345e7cacc012d0f1f2fa29",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "infra/web/nginx.conf",
+      "hash": "15220fedcbd673f2183786247c5a602c95336be5a29449beef7be1e9af570f97",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/tsconfig.json",
+      "hash": "8b99f3adc5a2c56775f1e2747d0c19474f474ae3a875a35a6f78b906a84614fb",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/env.py",
+      "hash": "8d54e53b2fdddf955ec9e589802d2636282fd385ff4b6dd7e8d64a246086b2da",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/fb0c22d58734c18e4388e619406b673ead1d668e1c433876e72bd74f3d494884.json",
+      "hash": "b857390acfaef4d91d9b59007a57ff8f416587e65c42e48a6021488ff43bc67c",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/package.json",
+      "hash": "4993df7f9c06a70cb5739c3b62a7e4f536483de1c664154a71a506f6fd8516ff",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".gitattributes",
+      "hash": "95d5a632d1d0c3abf0faff2858a4f8d387c6f50cb4306239e88de1c783b21971",
+      "mod_time": "2026-11-15T20:06:03Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/52d0a7b212a20a199a4167d875f2057cbe20a957e16a99328179baa768df67ed.json",
+      "hash": "d43510b154cd7ae93808aa59d3a60ce58726adc1e6d5156ae67db5433b48982c",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/72d6233b461e0796b40310382d9c9b21da669a3206eff62ba3cf5f76bd4bff7b.json",
+      "hash": "35fd51a720b70c2bcc9df4d9faea8ab1fa8a680e240f2090c64e5ff063a2de8f",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/927d66396991e1e7523900eeca2e9bc40958f33ba39054149c14bf8f6db4064d.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/a495810bf4dc8f03023fe281423e0f3fe4bfbcef51f548735ba8bb5699b8de1f.json",
+      "hash": "36a3beb842419c401a55d5808f1e65847b957e431bbbc96811e7b55c852f95ad",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view/repo.py",
+      "hash": "2867e1ded16762c8eb6054c8e37b233e34795a0e3eb5f74cfee4a8d35d9d0882",
+      "mod_time": "2026-11-16T16:27:53Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/01-SCOPE-LOCK.md",
+      "hash": "4e5701233076dffc099b9199f1890fa82f6d4197d5ff25cbb2a435cd6c07e180",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/1c64cd69a6ba174b1393eb42fdb6405e66a757fb3e3df2498b57b87dd6e4173d.json",
+      "hash": "7d0f098cf4886d6143a37718f6c8e455167cca309d07033da7d94424b8ac993a",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".env.example",
+      "hash": "488d836103575bd02bf96d0b25c6a056564281cfc556559ba437019aa8350060",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c9b17c6551f4299816f6f27ddd688eb3e92a2b43ccc66ece9a81a47193ad6936.json",
+      "hash": "8b83aaa7f609bad4e98e3d82c9dc13408f56b46328f52f10784d033211359e66",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/ed7dcd10d184ead1c98fe2d339e65e166fb33e2739d7eecaf43e95dc45fa5cd7.json",
+      "hash": "bf22dda8bfbf938485760a9433e8d4ff79a5df6aa654b61379d523f185cedc19",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/src/app.css",
+      "hash": "51afe13c1b3a38b09e1e2d3dcec221c5d8852ab99167b2eba7e15f720647a4d1",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/skills/graphify/SKILL.md",
+      "hash": "c1e9d4da644d57cd3e3c8290ec26be140aed19f44a67ccb2eecc10568ae4443a",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/.graphify_labels.json",
+      "hash": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f",
+      "mod_time": "2026-11-16T17:44:27Z"
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "hash": "f773d468bef46d36df4b78bed0f8835edcaa4d4827bf591bff7af495b8ce5876",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/src/auth.ts",
+      "hash": "0e89db8164011eccece6bd2321a9b48572365f908dbe114085074cdb4c1b4e81",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/CaseDetail.tsx",
+      "hash": "0fbcbd140e4d9db64dc92943fee1081646900e373881fd1da80b9c02c77ea099",
+      "mod_time": "2026-11-16T10:09:16Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8d4a652754f16c496129d03643d6345ff2729e1ac318552bc8c380a1009daece.json",
+      "hash": "579d44b70945671310486e2e436ec473509b9378b0df9497b9999371c11aa6f8",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/postgres/init/01-roles.sh",
+      "hash": "07654c97096e2973d0e4e00f0d4ffab3c7c817995b66c8005cb7a5376d233381",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "hash": "fc284dabc83271c26ba28a69abdab8d3c7ffb9a6ce639f2894393e5abbf95a95",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "docs/03-DEMO-STORY.md",
+      "hash": "0244ea2505a50334f5fabc12a948072ad2378be645cf29d608dc3f6a6fe50d06",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8ee429bba89190024414101471d020c552f2767e52b4da71fd987a0b267708f3.json",
+      "hash": "940fcce1027fe82a96e4af6772e68a122d4077da88adee3756939e4ef89d0373",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/stat-index.json",
+      "hash": "7daa32ad3631abd5e15c0affe352726b6795de7f6bad1db9cbaa1bf2c9d8721d",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/0216110ae18f3cebfee7dee4e3da32b3d2598009e55ef84bbab9931f0aac27dd.json",
+      "hash": "d5a3ce660ee18fe0e8a92afec05732e93c73998c668f567c3d2c3589244adcbc",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/054a69671c86948a2a5f3ae05597e91405569e6b49b3559062a4a82a555cc257.json",
+      "hash": "b00abe4f5cf55f92bd44389de3dc19db32ec9be249e11257d89e39159e29be3b",
+      "mod_time": "2026-11-16T16:36:00Z"
     },
     {
       "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/web/nginx.prod.conf",
@@ -893,94 +943,9 @@
       "mod_time": "2026-11-16T10:00:14Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.gitattributes",
-      "hash": "95d5a632d1d0c3abf0faff2858a4f8d387c6f50cb4306239e88de1c783b21971",
-      "mod_time": "2026-11-16T08:15:20Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/auth.py",
-      "hash": "3825e1029a76c81d4ce36cb31f6cc95df0b7efe023d093f21ef7aaaf2abcb9eb",
-      "mod_time": "2026-11-16T08:15:21Z"
-    },
-    {
-      "path": "backend/alembic/versions/0003_overlap_policies.py",
-      "hash": "991dd3834599e5ac93323f657ce97548929a0b0946f5fac2f832094299e19894",
-      "mod_time": "2026-11-16T11:28:49Z"
-    },
-    {
-      "path": "backend/alembic/versions/0004_alert_approval.py",
-      "hash": "8c1bee4c363d8060d2152a78c1db29b12614a9d61626d16a4f34c43222c07172",
-      "mod_time": "2026-11-16T15:21:56Z"
-    },
-    {
-      "path": "backend/app/modules/complaints/schemas.py",
-      "hash": "f758e8a6cd80767418422b222d77fb1b078643b01213baeb6fd09442075056a1",
-      "mod_time": "2026-11-16T11:28:49Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/04-MOCK-DATA-SPEC.md",
-      "hash": "d80279858d0ca56bc9769c59058981e5754a3e532e3272f7378c254d99a3d700",
-      "mod_time": "2026-11-16T08:55:12Z"
-    },
-    {
-      "path": "backend/app/modules/institutions/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": "web/package-lock.json",
-      "hash": "1112dd77f95aa6cd12463767561aea895267eafeb84f5e339f55af9ee931b46e",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/types.ts",
-      "hash": "6d5ad058b27a3931b6a451a67454c45fa6344044d258ed4ea5609010397d6c14",
-      "mod_time": "2026-11-16T10:09:14Z"
-    },
-    {
-      "path": "README.md",
-      "hash": "ab0719399a83525b889b60a60ec19d6446f12ed87012303eec21dfd05399f90e",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "web/src/features/cases/CaseList.tsx",
-      "hash": "effe597f99c8920f708e0a9bc4a12485b0a756e9793f61a5e5339b24eeb74054",
-      "mod_time": "2026-11-16T11:28:49Z"
-    },
-    {
-      "path": "web/src/features/overlaps/Overlaps.tsx",
-      "hash": "95c58aa20d2657d0da37566abcb255f1bf3b50fd77ebe26732a22e2799912af4",
-      "mod_time": "2026-11-16T11:28:49Z"
-    },
-    {
-      "path": ".claude/skills/graphify/SKILL.md",
-      "hash": "c1e9d4da644d57cd3e3c8290ec26be140aed19f44a67ccb2eecc10568ae4443a",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.env.example",
-      "hash": "213fbd8dfc40f17bd06b78d90e1decaf67f7c12e7b838c55e4ba857b7739fea3",
-      "mod_time": "2026-11-16T08:55:12Z"
-    },
-    {
-      "path": "infra/demo-users/users.json",
-      "hash": "f235bb9aab3469c19627e6c27f8a6a6781ae46feea64a9bf44b3e6396e22a1b4",
+      "path": "scripts/init_env.py",
+      "hash": "17a0755af4b89834704cdb3acbe44c89524cd21c25e1d56ecb6ee201d77b6a06",
       "mod_time": "2026-11-16T09:27:49Z"
-    },
-    {
-      "path": "web/src/features/institutions/types.ts",
-      "hash": "c03ae1cc2c056eabacb1a9de013324ef27e2759ac441016d06c2ae73d0a286fa",
-      "mod_time": "2026-11-16T08:11:14Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/extraction-spec.md",
-      "hash": "6982c2f6067adedb87c420734ad4fb57ad0e25db0cd9dc1ba73669394cc11165",
-      "mod_time": "2026-11-16T08:15:20Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/Dockerfile",
-      "hash": "cc112a445213d74aab467ac5b52afe42c9f3cc2db14379927181f399c59160cb",
-      "mod_time": "2026-11-16T08:15:21Z"
     },
     {
       "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/.dockerignore",
@@ -988,39 +953,329 @@
       "mod_time": "2026-11-16T08:15:21Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/service.py",
-      "hash": "3210a8078c58bb94d07c5161374ac9ce13653195e2453d6facc8ff06794a4720",
-      "mod_time": "2026-11-16T11:04:23Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/68adf1f3b1adb1e015903f8880d79551f17e1f760f5c7f5cffb267ccb72414e5.json",
+      "hash": "8e4fd7d8f0e27d904ef2a8014fe4c1d17f5f56fcaeef549561f1b734a707864e",
+      "mod_time": "2026-11-16T16:36:04Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/service.py",
-      "hash": "8a464f64badea830ae42f815d4ba4b70512461ff1589a606ff53be9e19c79c8c",
-      "mod_time": "2026-11-16T14:31:34Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/b18d2f6312f93e5e14579a18fe701b57c420ef224703585b5a827b9b8f321b38.json",
+      "hash": "affcc21f13c4562c253e1dd0794770035e0542a8ac88d6ef2ab72101a563933c",
+      "mod_time": "2026-11-16T16:35:59Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/vite.config.ts",
-      "hash": "0ba8cacdd7a8e61bc4bf54cbaea4ef09d6c37c07f34b4ead44615c18ee582111",
-      "mod_time": "2026-11-16T08:15:21Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/b5ec45c5f7ad63384e903c941cd67b3e10f44966b1e36188f7d4d6e4280dfcfc.json",
+      "hash": "d3f5d3ae5f316ef1c1faf2c2010632469f0400ecd737143441b529f555e6cd74",
+      "mod_time": "2026-11-16T16:36:04Z"
     },
     {
-      "path": "backend/app/core/config.py",
-      "hash": "f773d468bef46d36df4b78bed0f8835edcaa4d4827bf591bff7af495b8ce5876",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/ResolutionQueue.tsx",
+      "hash": "84771276de1d9035ed206c4ea3cbc67a84aae4f0bece1a39af125a76c07bf2e5",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/requires.txt",
+      "hash": "d6dccd1e3e78701cde0bbdfd94a64b0aee0b2c79988c3e315c6988c8e7384e0b",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/78d3c0615bf033321695c80fbb47e7654d0127500c670c70b47953c51f7f3d05.json",
+      "hash": "aa9cadc0f0863effc26e85d391790d3929a031e0c2df20e2af1602b8f568261f",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/add-watch.md",
+      "hash": "7fd565a4b049c647ca30e736f121becaf97c300887ef0d6418c3f06bdb28649b",
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": "backend/app/modules/overlaps/api.py",
-      "hash": "d3bb895732833ae451e53c26308c919254e2cd73c69c220ec2c55440ed41a4d8",
-      "mod_time": "2026-11-16T11:28:49Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/schemas.py",
+      "hash": "f758e8a6cd80767418422b222d77fb1b078643b01213baeb6fd09442075056a1",
+      "mod_time": "2026-11-16T11:05:33Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/repo.py",
-      "hash": "a0264aa672f46f4f8c6f7a5ffc67d1d3208150f6c77ca090df539c2e2af6c79b",
-      "mod_time": "2026-11-16T14:31:30Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6bd21fb6e91fb6e00d13de6dfabe0a84e372b8af4e20b0055ca89b7f028bfdf2.json",
+      "hash": "23017db6bef8a3b5270aad75dcc236e744e8b2df86ddb72e29081eb7780d3f7f",
+      "mod_time": "2026-11-16T16:36:03Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.py",
-      "hash": "f4ce8b949ba8c77fad251407bd68a5b1aa766c3c7ece85cf21d4a3cc3e084e11",
-      "mod_time": "2026-11-16T11:04:21Z"
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/1c64cd69a6ba174b1393eb42fdb6405e66a757fb3e3df2498b57b87dd6e4173d.json",
+      "hash": "7d0f098cf4886d6143a37718f6c8e455167cca309d07033da7d94424b8ac993a",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T17:34:26Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/b298466cd8d08e147cda550f951f7f590cee055b3d4cb179de94a501584b9362.json",
+      "hash": "9e057bb8b7b3a75a2e3f1c7d64bc9e80873d3ae00c65be182455b6a2c19b8927",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/bc11cffb00cc9784d79f1d2c68b916621da79036af723c7adb09efb541922e31.json",
+      "hash": "b914cf3298bffeffa9c341c71179d2ca2f68f1ef72938ab91f748e74e8eb71a8",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c7da34dcdd4f9186c742e7fe38ad83a5ed917867ea6fd73daa12a9721f1e58c9.json",
+      "hash": "fa3dc071c2d797f41385d69da54085c4d7d171e411b145ef1457b772d7a012b5",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/37def3a816ec2a54ee20b939dbea3ce7781e42db2e0d73ea349ff9549ff1960a.json",
+      "hash": "7353a800f052beab128d0c39b3ed0b09f63a4c152ea9441c3a9e52990628b8e9",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/package.json",
+      "hash": "4993df7f9c06a70cb5739c3b62a7e4f536483de1c664154a71a506f6fd8516ff",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/61f6e252538282c4f42993075cd829d65ccac411e6377be470a30e5f954643d4.json",
+      "hash": "17853db9e4103e7fea0b9935fcad1c4543eb23a90653a7f927341918fff62a40",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/stat-index.json",
+      "hash": "91035e6fe3533b91811755cdd0f4d6bad7f8a6bc6a72edfcec1f925d9f416e20",
+      "mod_time": "2026-11-16T17:51:39Z"
+    },
+    {
+      "path": "backend/app/db/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/7c1078ccfbe4dc3973d84613172fe710d424cb8ca07ef7487ce97f567025d850.json",
+      "hash": "157f2ef18ebfbab983926057c7f0ed81f06b2e4572888891cbbc1fca8c497c72",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c966edd9b9e64c1a918b7625e400965de17a6657dc42393416d1ef9cec937f9b.json",
+      "hash": "027ac1146ef24e95091ec782edbac866431aaeb3efc287151e0ab750f4fd3a7e",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/SOURCES.txt",
+      "hash": "00f7558cdf97cf180bad83f8e1f005c890ec08d1771a4f7ebb534821d4ddf9c0",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard/schemas.py",
+      "hash": "f12778a968ed32199bafbb2ef2a3c5bc1e31f1cb7047bff5303caceba8d40356",
+      "mod_time": "2026-11-16T16:22:35Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/InstitutionList.tsx",
+      "hash": "8033f204b3af2ff7c3adaeff5975df478a3bae158af709cb55d34ca3fdb0e9d5",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/search/Search.tsx",
+      "hash": "4918172b12457cc7794e9dda83bdd1b8af914a3cbeca9380155f172419e55599",
+      "mod_time": "2026-11-16T17:41:53Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/dd817fc3a578338cde90847f65dd7aa233f689307bc830316b0501f16b27fa3d.json",
+      "hash": "601ef4daa5d968ec46a2fb4fdbf96f5312f43b45cc20e9e12a48672332bfcbe2",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "infra/postgres/init/01-roles.sh",
+      "hash": "07654c97096e2973d0e4e00f0d4ffab3c7c817995b66c8005cb7a5376d233381",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/Dockerfile",
+      "hash": "afbe5d58f0ecd538bdcfcef4293b1058aa29168c20d62c8094d7419ade9693e5",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/api.ts",
+      "hash": "3d8e9bd941bb57a806b1e9aae46359380a249a1602416b9e8c3c392b62cbac8c",
+      "mod_time": "2026-11-16T17:41:23Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/4c623299048093bebca81c20631d7e624a88beb32ebb031d2cc89bf5ed6978ec.json",
+      "hash": "69257956e315a432101d70500b3daf6de838c2a17d86bc5cbf477230f7becc67",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/def266960510bbce99e864228441cff51dd9fb5650754e0d6539bb9edf8d05ae.json",
+      "hash": "31fdab7a1d4ec5b5c05dfe35a77d920f28c420a973ec820e5e319dbdea2edbcb",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.py",
+      "hash": "93ca422e135d8bbea8dd6c5659ef2f74ac8bad1904cd23d72c5570d2a0c88cc6",
+      "mod_time": "2026-11-16T16:23:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/audit/service.py",
+      "hash": "b5f99ce37b81fb25cf8aab57d3d300b8dfef748eec8e9f8849e60168071ce4c7",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/SECURITY.md",
+      "hash": "e7ff85ca53739098a9771649e99830ca9232c9b431b53bebff73729037aac4ba",
+      "mod_time": "2026-11-16T17:43:17Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/keycloak/sethu-realm.json",
+      "hash": "1f6fb283180df4147a2d6c6d2e232986904770baac5b55ae18a6d847d1da9166",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps/Overlaps.tsx",
+      "hash": "b9415aba8333e6778dfd7992228f8050ae0519e5a0cbd532c612667c704b2bfa",
+      "mod_time": "2026-11-16T11:12:30Z"
+    },
+    {
+      "path": "graphify-out/.graphify_root",
+      "hash": "cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard/api.py",
+      "hash": "711a6422218a0584be04c8f4ddacc47f6b0f3f62b072854b85a2bc6dd156a862",
+      "mod_time": "2026-11-16T16:22:35Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T11:04:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/bc11cffb00cc9784d79f1d2c68b916621da79036af723c7adb09efb541922e31.json",
+      "hash": "b914cf3298bffeffa9c341c71179d2ca2f68f1ef72938ab91f748e74e8eb71a8",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/cbe5d9d0581ab5933d9bdf5e8b86e12e16ae575bebe0f6af3873e57834627af6.json",
+      "hash": "0bacf84a16cd38dea3248ad500576ea4fc75b963bc7a1ecc66b1a51592ea3a9a",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/19b894fa3a06d1171732a7486ca846d0ba20f35f29a07f2eb0a526d3e409e9d2.json",
+      "hash": "23017db6bef8a3b5270aad75dcc236e744e8b2df86ddb72e29081eb7780d3f7f",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/76cee0eb1e90ef8e10df5e7e1d6aaed7583c37f6b47f1afb81cb2428ff45d6ff.json",
+      "hash": "7414688cce1de0f08d08a69f20889528ba621e8a5ab4ae482bba5d8cd4dd45d0",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/api.py",
+      "hash": "f3390997c78beb1bc6376aa0c2314e751798960f8264669f89e4cf56a014ca3e",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/054a69671c86948a2a5f3ae05597e91405569e6b49b3559062a4a82a555cc257.json",
+      "hash": "b00abe4f5cf55f92bd44389de3dc19db32ec9be249e11257d89e39159e29be3b",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/graph.html",
+      "hash": "3f49818c2e3efd62b63f3ae3436fcbd66a4eb5bd09334d008f8024031f84f2f9",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/package-lock.json",
+      "hash": "1112dd77f95aa6cd12463767561aea895267eafeb84f5e339f55af9ee931b46e",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/DATA-MODEL.md",
+      "hash": "f950793a232ce5c00306725f1c1c464cf91f085751875129864389eb81b54bd7",
+      "mod_time": "2026-11-16T17:43:10Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/7a9a26d6f2bd4f9c1800a17a8822c68cff81bbe5168dfa2c2c3bfbc39e59c95d.json",
+      "hash": "01afbea3b1383d5a551b48fd4a0ef11feb01be0ffe89296a522807526c1ad929",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6697a9ad3859efd36d7b452a6f5e169704066d4244560faa1c6fce8468efb1e3.json",
+      "hash": "e5a96df36f12debb55c4d73d9b8299ea9df459c7277258b2ac1b85b5ff26c627",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/src/features/cases/types.ts",
+      "hash": "27bdfd0607c3c5f56b8bbebc34fdc13930a5cf99062981ae365bdfd8d41d8ed3",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/update.md",
+      "hash": "582b4c23a1d3e2c0989a0c5dfc2f7c6bf17ad19087aece2c78eb03c0a202bb88",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/db/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6458d8ed18d531360f99cf6966da2cd811e37f3776b371506857c799bfb7f1ef.json",
+      "hash": "6f5f4077fe26327711b4927e597da37c38abbca123e95e6aa03585bbc5a74ba6",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/ecdc1d306de621176695addf811187e2338cbd63fe864aa3be85d2da21246a88.json",
+      "hash": "a6ae1adbb2dd0179d7280bd642351175aed1b023153494b5f896ca3cbeeb054a",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9244aa4ef47273eee2ce81750505a0dfae816090d05b454cf4f879adea32e8ad.json",
+      "hash": "db9b9e9d476d5e7ec1b01e4eecd24c900580d660c17b4a02159f988d467cd1e3",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/e61040aa9a6f7b5048d9819257e98fd4f2d8f14d9baf1135f1f99ff855912a9f.json",
+      "hash": "c8f59d2b9c17f30348262b316030e35f17603f092b8401bfebb259f39434e800",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/46c05b29fe6e98cf54578fc9aa08a43e2f3e948e0e3ef6cad3eb26d77f4552e8.json",
+      "hash": "8496f4923a70872eee0150ab98242dd69a7f9be08b7c8b9c95e81c37d7f3afcd",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8f1411004c0a9fe076a4136a06aa28e6445db99ebeefefdad95fae5422f50522.json",
+      "hash": "c9742c89cedd3ec42d6f01cd5589da610b533d6d90e62fe7bd97ac71a0e3318e",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": "backend/app/main.py",
+      "hash": "2035ac34fcdfe64a0d897862173d640124ec39b87f9bfc979d81389f4f5cac63",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "backend/alembic.ini",
+      "hash": "fdacda19d394cd705fffe539585c9d6b3510809da415c08618dda2a17b68340b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/131cec07159164111d39dad2a070dc332e0005025b62f8a509f65cbcbf2c12aa.json",
+      "hash": "5b7d76a3d6e2cf45decf17f76c4863ee55c3dfbdac7176d596addbf16abcebda",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": "backend/app/modules/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "docker-compose.prod.yml",
+      "hash": "cd2884206cfb3ad3ccf554f2da8415e1b07d3588c806dca1e22a908c1ec69dfc",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/fb0c22d58734c18e4388e619406b673ead1d668e1c433876e72bd74f3d494884.json",
+      "hash": "b857390acfaef4d91d9b59007a57ff8f416587e65c42e48a6021488ff43bc67c",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
       "path": "web/.dockerignore",
@@ -1028,69 +1283,119 @@
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": "docs/05-NEXT-CLAUDE-CODE-PROMPT.md",
-      "hash": "122c5afa6cf567da9f4965b2ab504d9366ac3324f7787dfa063a9ad707d48124",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/72d6233b461e0796b40310382d9c9b21da669a3206eff62ba3cf5f76bd4bff7b.json",
+      "hash": "35fd51a720b70c2bcc9df4d9faea8ab1fa8a680e240f2090c64e5ff063a2de8f",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/a34f5e2d011787b5703901318a054c31a0ad188747226a1e911aeac5b6ac89c1.json",
+      "hash": "0e0a1be4327f2ea811a336788e62e361ca28a0aa126cbdd9780c4a7e0d2ff498",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": "backend/alembic/env.py",
+      "hash": "8d54e53b2fdddf955ec9e589802d2636282fd385ff4b6dd7e8d64a246086b2da",
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": "docs/RUNBOOK.md",
-      "hash": "78d8637d4372a879d04a69100d86e1bd76817dadf6ee1cdc649357bcd47fbd71",
-      "mod_time": "2026-11-16T15:21:57Z"
+      "path": "web/src/features/institutions/types.ts",
+      "hash": "c03ae1cc2c056eabacb1a9de013324ef27e2759ac441016d06c2ae73d0a286fa",
+      "mod_time": "2026-11-16T08:11:14Z"
     },
     {
-      "path": ".claude/skills/graphify/references/github-and-merge.md",
-      "hash": "1b36d67bd92de0f5ea76ec3b84d1c1103a197c6093b9954995cbaf0abac9fac3",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "backend/app/core/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "web/index.html",
-      "hash": "940dcfb95360b54f2c0ac2022a4657b914b834cf316db5c6cc524f481739c211",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/institutions.csv",
-      "hash": "ccb4f940f0e97cca89049df86b50c768b4681be5a6e980475a0e24ab7a66d89c",
-      "mod_time": "2026-11-16T10:00:14Z"
-    },
-    {
-      "path": "infra/keycloak/sethu-realm.json",
-      "hash": "1f6fb283180df4147a2d6c6d2e232986904770baac5b55ae18a6d847d1da9166",
-      "mod_time": "2026-11-15T19:19:16Z"
-    },
-    {
-      "path": "backend/app/modules/alerts/repo.py",
-      "hash": "a0264aa672f46f4f8c6f7a5ffc67d1d3208150f6c77ca090df539c2e2af6c79b",
-      "mod_time": "2026-11-16T15:21:56Z"
-    },
-    {
-      "path": "backend/app/modules/complaints/service.py",
-      "hash": "3210a8078c58bb94d07c5161374ac9ce13653195e2453d6facc8ff06794a4720",
-      "mod_time": "2026-11-16T11:28:49Z"
-    },
-    {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0001_core_schema.py",
-      "hash": "b95015e1672265640e8161e37973a6593e79dfe6b5e2fe5b69d131494bea902d",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/config.py",
+      "hash": "f773d468bef46d36df4b78bed0f8835edcaa4d4827bf591bff7af495b8ce5876",
       "mod_time": "2026-11-16T08:15:21Z"
     },
     {
-      "path": "backend/app/__init__.py",
-      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8ee429bba89190024414101471d020c552f2767e52b4da71fd987a0b267708f3.json",
+      "hash": "940fcce1027fe82a96e4af6772e68a122d4077da88adee3756939e4ef89d0373",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": "README.md",
+      "hash": "ab0719399a83525b889b60a60ec19d6446f12ed87012303eec21dfd05399f90e",
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/hooks.md",
-      "hash": "0a0d59a5f7582bf93f7afc00319b12166db156b47366e860e6ab6d73e405b29b",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0003_overlap_policies.py",
+      "hash": "991dd3834599e5ac93323f657ce97548929a0b0946f5fac2f832094299e19894",
+      "mod_time": "2026-11-16T11:03:05Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/GRAPH_REPORT.md",
+      "hash": "2b197c864fc9d8667b90cf2593caba75f55f447013eca398291a2fe0e928a581",
+      "mod_time": "2026-11-16T17:44:27Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/552d7c28c16b44c83ecdb36ab798e821197df0d17659af3c3be03d3d309746c6.json",
+      "hash": "458cab19fc96680ced372d4182b3ea7a92513d75bf3ae32df728bc2f911f10bc",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/b730ac77df93aa5cf29ca92c6059f44b42a3b1ebdbd0acaad15cc6a102caaf58.json",
+      "hash": "09fd17275b76294905c12a2a72ff03ffd56dbcac15e60dad07487023dcd79ae3",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": "backend/app/modules/complaints/repo.py",
+      "hash": "843e156f7c36becfe8a7ccb9d1e33a5b4b40357fb0565f7e6d6797274401ca93",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/552d7c28c16b44c83ecdb36ab798e821197df0d17659af3c3be03d3d309746c6.json",
+      "hash": "458cab19fc96680ced372d4182b3ea7a92513d75bf3ae32df728bc2f911f10bc",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/src/features/institutions/InstitutionProfile.tsx",
+      "hash": "77d2b1d4ac6739c639c7991463d42be7c8bd447138d67deb61793028a54716bc",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.gitattributes",
+      "hash": "95d5a632d1d0c3abf0faff2858a4f8d387c6f50cb4306239e88de1c783b21971",
       "mod_time": "2026-11-16T08:15:20Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/transcribe.md",
-      "hash": "dbdd2b2733734f46c369cfe98322a9a53a77fa56b6728cb2e76f1452a7b71103",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/last_query_stamp",
+      "hash": "30f4efcebd16dbc6383ad848752c353492e4367fe9b1bfe05f3849d439e6652f",
+      "mod_time": "2026-11-16T17:33:10Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/web/nginx.conf",
+      "hash": "15220fedcbd673f2183786247c5a602c95336be5a29449beef7be1e9af570f97",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9b5fd26fb1cb59b5c2d2ff718c8c0db18c028be6db1d81f0af2ffcac0ed3a466.json",
+      "hash": "59dff5609f329bdb989b6c5d611f0951e7437122f6a186651a8901393123adee",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/src/App.tsx",
+      "hash": "d2715cf8be487bc9cec146471bbbcf9a8fa039e2bee9fff7e66a46519b858c18",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/add-watch.md",
+      "hash": "7fd565a4b049c647ca30e736f121becaf97c300887ef0d6418c3f06bdb28649b",
       "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/demo-users/import.sh",
+      "hash": "b62a4b7fab32bb1cc90404afd2b20a31717e853dca33f1e080bbbb411cd6b28d",
+      "mod_time": "2026-11-16T08:59:37Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/scripts/init_env.py",
+      "hash": "17a0755af4b89834704cdb3acbe44c89524cd21c25e1d56ecb6ee201d77b6a06",
+      "mod_time": "2026-11-16T08:55:12Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.py",
+      "hash": "06917b73a18bd19e7874e92d9872664966afd653241cab5c2374095adcdeb4db",
+      "mod_time": "2026-11-16T10:00:14Z"
     },
     {
       "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/auth.ts",
@@ -1098,8 +1403,28 @@
       "mod_time": "2026-11-16T08:17:02Z"
     },
     {
-      "path": "backend/app/db/session.py",
-      "hash": "b50f8d33bedbd2fc38505b7e80e5d9753075bf5b23bc116797138a581158aa96",
+      "path": "docs/04-MOCK-DATA-SPEC.md",
+      "hash": "602ba35d35e2aec8ad67472ebe990d7041c9dbb7b459cfab3104e7a2a48f331a",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/3e937fbd21cd18f695c9d2dba17dfaa57d7500afa0a05ffb4c0bde93ed252800.json",
+      "hash": "29c16ee1e5c4012ca5ab6fa8f2f11b26913bcee4b8b44d04e2397cb7a0539a7d",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/extraction-spec.md",
+      "hash": "6982c2f6067adedb87c420734ad4fb57ad0e25db0cd9dc1ba73669394cc11165",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/a495810bf4dc8f03023fe281423e0f3fe4bfbcef51f548735ba8bb5699b8de1f.json",
+      "hash": "36a3beb842419c401a55d5808f1e65847b957e431bbbc96811e7b55c852f95ad",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": "backend/.dockerignore",
+      "hash": "b30b9dee256d94045955ca3716a3a36f75c07076dd0ea53b8c1a748e8ebb6dc1",
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
@@ -1108,9 +1433,104 @@
       "mod_time": "2026-11-16T15:21:57Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/__init__.py",
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9ff00864b190946c31facfd8bd9fef12c3bf88ae44f6370d6042537124f3829c.json",
+      "hash": "417c6e05fc59fddb073d5a92881a756891b9718578fabb08db730fd5a8614220",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "seed/load.py",
+      "hash": "06917b73a18bd19e7874e92d9872664966afd653241cab5c2374095adcdeb4db",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "web/src/features/institutions/InstitutionList.tsx",
+      "hash": "8033f204b3af2ff7c3adaeff5975df478a3bae158af709cb55d34ca3fdb0e9d5",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/exports.md",
+      "hash": "f1debd1003b168c3c1c9fe284bf3018609372740ae8856bea2b10bba0a07b34b",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6bd21fb6e91fb6e00d13de6dfabe0a84e372b8af4e20b0055ca89b7f028bfdf2.json",
+      "hash": "23017db6bef8a3b5270aad75dcc236e744e8b2df86ddb72e29081eb7780d3f7f",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/7016ee490b9f1482a6cd785250d4f4b10a9d723e9456574aa929b8c78ca4850b.json",
+      "hash": "094e79ca892ec6ce0cc8944b0395d50c5bb1913ba522d869f95761e13553597e",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "seed/institutions.csv",
+      "hash": "ccb4f940f0e97cca89049df86b50c768b4681be5a6e980475a0e24ab7a66d89c",
+      "mod_time": "2026-11-15T20:06:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/__init__.py",
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/app/modules/audit_view/repo.py",
+      "hash": "2867e1ded16762c8eb6054c8e37b233e34795a0e3eb5f74cfee4a8d35d9d0882",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "backend/app/modules/overlaps/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/skills/graphify/.graphify_version",
+      "hash": "3b6233c7b84f0aa2342452dd876d61beef0b164516ba92e25629ba004e90358f",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo.py",
+      "hash": "2e5949c39417f3a3ed1c2c38f8133d42efa216a107904264af3d0052221cac00",
+      "mod_time": "2026-11-16T17:34:13Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.py",
+      "hash": "f4ce8b949ba8c77fad251407bd68a5b1aa766c3c7ece85cf21d4a3cc3e084e11",
+      "mod_time": "2026-11-16T11:04:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docker-compose.prod.yml",
+      "hash": "cd2884206cfb3ad3ccf554f2da8415e1b07d3588c806dca1e22a908c1ec69dfc",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/03-DEMO-STORY.md",
+      "hash": "0244ea2505a50334f5fabc12a948072ad2378be645cf29d608dc3f6a6fe50d06",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/settings.json",
+      "hash": "a0032d1f5ee02653efb0b45214efbd392778393379d1542535dc8bf27a793367",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/749dc77d2e9ebe6bd0a5e647fc4ee13c8f8aade3106e565ae3372fec4434c4ff.json",
+      "hash": "02790567bf5bb61ab6d6001b3a458f233477adebe8cede827b0c2fc91da0af62",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": "backend/app/modules/dashboard/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/d2eca4a9ff750aef7b90d16bd01ca971d046255ee24834803a6a33aba5b9fd9c.json",
+      "hash": "992e3f3082d65dda7ef9f7b5a8fbf75845056e2622bdb40703087a8bf0b814c8",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/3e2e399423d66e92c0f478e4739642ddea2a76a891f58cec8eb5e37a242844c4.json",
+      "hash": "8caf513b69d52557edf48fd35058aade587d0dc6a180418c795fdb228b5281dd",
+      "mod_time": "2026-11-16T16:35:59Z"
     },
     {
       "path": "backend/app/audit/service.py",
@@ -1118,34 +1538,719 @@
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
+      "path": "backend/app/modules/complaints/service.py",
+      "hash": "3210a8078c58bb94d07c5161374ac9ce13653195e2453d6facc8ff06794a4720",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "docs/02-PS-COVERAGE-CHECKLIST.md",
+      "hash": "adec271b83758c539e8c47ddda870b82dadba46d3f8e0f9a61f89b180925d83c",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/81ca6338d67860713dff84591add8144d8a6254410be2a7e1c377e47224d6a82.json",
+      "hash": "6d42612309ed886ba6952b66fba788ebd2330825dd259f507c3ef1d80b6c66a3",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/vite.config.ts",
+      "hash": "0ba8cacdd7a8e61bc4bf54cbaea4ef09d6c37c07f34b4ead44615c18ee582111",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/service.py",
+      "hash": "8a464f64badea830ae42f815d4ba4b70512461ff1589a606ff53be9e19c79c8c",
+      "mod_time": "2026-11-16T14:31:34Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/4d3536492d1a2cc8d5ec1b0fa551e5648da9b4d406e46e931c35368fc093e0d8.json",
+      "hash": "7cbe5eb83d590e96dab5f83b7f2302bdf347242bb79d8db5882120fe0030c8d2",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.py",
+      "hash": "a67b3b987f2ad2a6ffd3fe2fcfaaaccab11ac73153088a04f767bf0b573c0b94",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/tsconfig.json",
+      "hash": "8b99f3adc5a2c56775f1e2747d0c19474f474ae3a875a35a6f78b906a84614fb",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T10:01:22Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/2b210051134021e743ed3d8d4806514324c4ba4b2cd31a6c2754151e24c84a17.json",
+      "hash": "7490124a3adfe1d1736eb84fa49ac42cc430ff0ba77034e68382a333992a9a90",
+      "mod_time": "2026-11-16T17:51:37Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/a6ffa0d89d0397913f08859ef5f84a1f4607b60caf42e18b906815c8b3978f23.json",
+      "hash": "8e04474dacb9a54aa6e1cb6fcf370081917a08676120e5ff4b1e3206b85f6115",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/bcbe252a4a38ab3297d29c238a8151b6bee742dce68cebb97500ce8687d26794.json",
+      "hash": "ea1d44a765c54c9c041ac39535b463de6bbcc3d5a98e78d56314abd1a161796c",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/src/main.tsx",
+      "hash": "c0f2b418733d072ad4b8c7781068446c3388b13acada81b098963ab8bd454e00",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md",
+      "hash": "51243cf25b13306d76d68926cd5b5ec4d2235ec3765954e8d12e6d3efeabd8a1",
+      "mod_time": "2026-11-16T16:30:39Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/logging.py",
+      "hash": "0d30e6d41ad2c79c838a993c40a9f30874f23e49a50d04880cf3ce6173bfeacf",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "CLAUDE.md",
+      "hash": "b4ccb2c70741db88582211e5b4b470f2324dbcd83080a39ff1691ca09ec21a17",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c7d07d3dd30240d7bd2086393ac10f9c6eb4ccac669713a2bade9ed695c7c4b4.json",
+      "hash": "827a9a6269dc3405c21cb66257d16af93b800c8ad44658309f1e6d8e375432f1",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/de7b8e5e1d950c125c081ef231f4ecae365b80c7ed39208567ec1bf15280a7a2.json",
+      "hash": "cb377ce34a5e8bd9b7ae7ec898acc61f7f00388b2394b0ebf2c1a5269f3d8be7",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "backend/app/modules/dashboard/service.py",
+      "hash": "b78ef42a94f23608f6e89a1c78ed3b8f04acf57cfc4f626cd2e12438d30c17a5",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "backend/app/modules/overlaps/schemas.py",
+      "hash": "f4ce8b949ba8c77fad251407bd68a5b1aa766c3c7ece85cf21d4a3cc3e084e11",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/0f1c4017f11e638f73fcd4fca2f0f8236a7cebd356e29da623a137147158a181.json",
+      "hash": "635d00052e6071dfc2e7886c3661500a5057179db936b751bef2d0f82d8e0968",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/07d96ba5f3451d0df97872fb7408b8a9660cefbd37e2ed9c9f20f5f46fe81d9e.json",
+      "hash": "024d7dabe3f94f25d3bf4babd441a0f594ff4d11de97e103a9cb114210c6a618",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/4c89baf881407c25495d97bd0431b4b0d7f341bcb60b257d927c41a0cbcce9fc.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c7d07d3dd30240d7bd2086393ac10f9c6eb4ccac669713a2bade9ed695c7c4b4.json",
+      "hash": "827a9a6269dc3405c21cb66257d16af93b800c8ad44658309f1e6d8e375432f1",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/users.csv",
+      "hash": "c4f3c2c9c1215a5e6cf3983c60304351e39f86561150a0e3f11fa3d60e165a32",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c75df1136c7c56f5cdd806a24601b944ede3de838f78a917dca86599f3561b1c.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/LICENSE",
+      "hash": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "graphify-out/.graphify_labels.pending.json",
+      "hash": "da85c341b7dae278a41802a3c1ba3e997e64b568a45837f2b176ae0759ea9bab",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/191c42fd6389d5e5eae06810a7575795b472ed677ccda42d4d965ec69f0cb66b.json",
+      "hash": "3f8efb9fb12f656256ec526a7911e0e59e17acb7f49adc01b3cf22764ea1440f",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view/schemas.py",
+      "hash": "0769e1bea66fa28f793b3eef212e87e75e4a2a3a7b01b92b9801d250586036b4",
+      "mod_time": "2026-11-16T16:23:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/CaseList.tsx",
+      "hash": "c5ef24d30d6d3da49c4f7ba35813276f277d15b28aea161e788306ee1de4a067",
+      "mod_time": "2026-11-16T17:41:53Z"
+    },
+    {
+      "path": "docs/01-SCOPE-LOCK.md",
+      "hash": "4e5701233076dffc099b9199f1890fa82f6d4197d5ff25cbb2a435cd6c07e180",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/a9acb6dc9d1bd4f7925fb8271e5380797fcc8171174e375d0e4556fc23ef90fd.json",
+      "hash": "886817ec6652857deaa0442a72a90f870811707875ae5e76a043b056c75bc3ee",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/a30b843c14d03da5a37b684c46f634e509968a6e2cfe2d29abcf04ca1bafb71f.json",
+      "hash": "799ad45ee24cb551947163bf2a7ad3ddc29c28c77f0ed2ca365aab5a9843d9db",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/cfc41075a6b10b7c026795c90194856ce6881ee21d6a20d6737363290db41b15.json",
+      "hash": "00e52844f034f2d2a562944edf265d8c625be3895ddf7d9e5ece5ab1740d6a43",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6e826f4b2a01df62ded961291dec8c975fcde9c56ea92785ff1dca35e85da51a.json",
+      "hash": "8039de7e7d60802b8292b2208680f1d52d2b79f997320447df010b58142fcab5",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/dee03db1bb148cb7185e257cad8597b40a3dee70fdf3d9a339e6beb70cb22753.json",
+      "hash": "445cc6699da6657983976e35f4fbcdc69f218e60159bdcda6dfed5f8f183f13a",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.gitignore",
+      "hash": "0ca75fe213c3ec591b104f359b5ded508b4d6e7afda0f908d40f30e01a49f2fa",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view/api.py",
+      "hash": "a4c38418a9c1f88c2881b1079a65a6556842ef1eb843e904719bfead9e7257bf",
+      "mod_time": "2026-11-16T16:23:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T16:22:35Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/3fcee10863e6619209a6dc35679b936092cccc5b6a840f45e1ca066c492500ef.json",
+      "hash": "16205ce3acd6c70d343b66a978aeb2865240c779141f0440350192d0f8f8b49e",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6697a9ad3859efd36d7b452a6f5e169704066d4244560faa1c6fce8468efb1e3.json",
+      "hash": "e5a96df36f12debb55c4d73d9b8299ea9df459c7277258b2ac1b85b5ff26c627",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases/History.tsx",
+      "hash": "2ea0c30c38e7ac32294e4d699c3e10f41c3614937c1d123cda735b3127e98d7b",
+      "mod_time": "2026-11-16T10:19:24Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/README.md",
+      "hash": "ab0719399a83525b889b60a60ec19d6446f12ed87012303eec21dfd05399f90e",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/0a9ca615cef902af830dc45aa23d84573e0399ff0211fab4630e80aaff5bfec2.json",
+      "hash": "abb095338cb60c4f373e77f29522272f45e629435c03bc7ed9fc37350e08691d",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/927d66396991e1e7523900eeca2e9bc40958f33ba39054149c14bf8f6db4064d.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/5f1d6e33993ae4ec47b1a190c29b7bc2189e1430aa5224969e09a0b820d01af5.json",
+      "hash": "f7a6b5ee44b5b35e25f401363b7937a19e9c7524c872dc21088fa570e0923df9",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/bca46bb4ba587186bbc7753db3c3022db63a7c8f749e2acd5c9f5e4a9db466fc.json",
+      "hash": "91621fbefa64aa3476fd2e11504b3cf17e87e06d3314c61024b244395b2b0fdd",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/CLAUDE.md",
+      "hash": "62232e3b673be110041901069d92e4aef568e92fca2e89a00d492d5514d0ea80",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/vite.config.ts",
+      "hash": "0ba8cacdd7a8e61bc4bf54cbaea4ef09d6c37c07f34b4ead44615c18ee582111",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "backend/app/core/logging.py",
+      "hash": "0d30e6d41ad2c79c838a993c40a9f30874f23e49a50d04880cf3ce6173bfeacf",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/45cf9a5dd47ebcc72f2da49aede8bca7b829f8b2bb379f644bcecf1b4e2fa50c.json",
+      "hash": "ac93760a182fecf4b4ca034c4665fe775ae07c35bbb5354421b1ccdac3d761db",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/e349582d2595340a2f1e53d7fe7841feed5912c72bb91993d9f5d834e1aeff91.json",
+      "hash": "68bda4c742e3196a5281b47462f8d2f34d4dc9f7a8c82dc504de0bfbf46c8c39",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": "backend/alembic/versions/0001_core_schema.py",
+      "hash": "b95015e1672265640e8161e37973a6593e79dfe6b5e2fe5b69d131494bea902d",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8e9260403f25c4acaca5946c09169a16ad47e2ff9f5e6ec04fee718c37568065.json",
+      "hash": "2f8f99820035f4285e59d30ba7f1acc674e93f34efc7e30fcc975fe964a4a7d4",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/918fd95e775837ff5c735b782d56b0fcaaac1d94cf4694ee94973cabb219ffa7.json",
+      "hash": "d5be6512e47f07f5eed9d95ca287a2887a2508d40f0abc66b7d96b93f54fa6cb",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/hook_sessions/d4dabfa5-9f6c-4020-99eb-82305c4ae7a7.nudges",
+      "hash": "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+      "mod_time": "2026-11-16T17:35:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/db/session.py",
+      "hash": "b50f8d33bedbd2fc38505b7e80e5d9753075bf5b23bc116797138a581158aa96",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/api.py",
+      "hash": "1f6d6e286fe0476199a55d12cda66b8ebd6834a168fe41654e607ee6cf24e9a0",
+      "mod_time": "2026-11-16T17:34:37Z"
+    },
+    {
+      "path": "infra/web/nginx.prod.conf",
+      "hash": "8237efeaf1f8bada6d8b80519a6da263675af5bb3643bef095bc01e3f873fb3b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.py",
+      "hash": "a2a0a85d6b2b97bfc7db737c03b13fd99fb0476e525104859ef5bb45a8cb4a50",
+      "mod_time": "2026-11-16T11:04:23Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9ff00864b190946c31facfd8bd9fef12c3bf88ae44f6370d6042537124f3829c.json",
+      "hash": "417c6e05fc59fddb073d5a92881a756891b9718578fabb08db730fd5a8614220",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/bcbe252a4a38ab3297d29c238a8151b6bee742dce68cebb97500ce8687d26794.json",
+      "hash": "ea1d44a765c54c9c041ac39535b463de6bbcc3d5a98e78d56314abd1a161796c",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/graph.json",
+      "hash": "3e260f124eba1d899bf78c06c1ad66c3af5875913d445fa368dbd2f2962fc214",
+      "mod_time": "2026-11-16T17:44:27Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/0a9ca615cef902af830dc45aa23d84573e0399ff0211fab4630e80aaff5bfec2.json",
+      "hash": "abb095338cb60c4f373e77f29522272f45e629435c03bc7ed9fc37350e08691d",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/hooks.md",
+      "hash": "0a0d59a5f7582bf93f7afc00319b12166db156b47366e860e6ab6d73e405b29b",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view/service.py",
+      "hash": "ce68ea2fa795f693c9ca0ebac528cd1b08cf21c629a0cfce0249bc92b53a3a46",
+      "mod_time": "2026-11-16T16:23:00Z"
+    },
+    {
+      "path": "backend/app/modules/alerts/api.py",
+      "hash": "7e36d5de77ab892087f82c95ea7a62932fd009df7619c2ab67a2b346c53fb3fb",
+      "mod_time": "2026-11-16T15:21:56Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T14:31:34Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/e5b4e0e26a7c65f16394bb4965d0cdf0f8a7de7d6706cf1897ede6dfbcd0dceb.json",
+      "hash": "8d8cbf4da27987c924be154a9f872b58ad6cf024da02c056effcf4fbff3df869",
+      "mod_time": "2026-11-16T17:44:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/main.tsx",
+      "hash": "c0f2b418733d072ad4b8c7781068446c3388b13acada81b098963ab8bd454e00",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/dependency_links.txt",
+      "hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": ".claude/settings.json",
+      "hash": "a0032d1f5ee02653efb0b45214efbd392778393379d1542535dc8bf27a793367",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/0f1c4017f11e638f73fcd4fca2f0f8236a7cebd356e29da623a137147158a181.json",
+      "hash": "635d00052e6071dfc2e7886c3661500a5057179db936b751bef2d0f82d8e0968",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/37def3a816ec2a54ee20b939dbea3ce7781e42db2e0d73ea349ff9549ff1960a.json",
+      "hash": "7353a800f052beab128d0c39b3ed0b09f63a4c152ea9441c3a9e52990628b8e9",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": "backend/app/modules/alerts/schemas.py",
+      "hash": "61ca6217721f2afc280ff9e8fb69a2b7844f94d7f5e1814aea8748605c165427",
+      "mod_time": "2026-11-16T15:21:56Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.env.example",
+      "hash": "213fbd8dfc40f17bd06b78d90e1decaf67f7c12e7b838c55e4ba857b7739fea3",
+      "mod_time": "2026-11-16T08:55:12Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/bca46bb4ba587186bbc7753db3c3022db63a7c8f749e2acd5c9f5e4a9db466fc.json",
+      "hash": "91621fbefa64aa3476fd2e11504b3cf17e87e06d3314c61024b244395b2b0fdd",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": "docs/RUNBOOK.md",
+      "hash": "c6aae77634e5ec3789ce28bf4291b23ad873c60c259ff1ce67a382b02fc7b1eb",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/1081ff16e5188fe6e2a91f5da391fd32b378e24350a132a343e8f4721dcc1473.json",
+      "hash": "cf726b67522374f539deb7a5c1636ac381d02f02a78cc5c6d1f5f47dc8b1470a",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/2049a3977f6b9692ed8a11b6563edab59420ce6682eedd264f84f0d46ed5c485.json",
+      "hash": "ac086d13f95f835f7cccc6256690cd4319a7ed36551ab739b55817a132f6c561",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/2049a3977f6b9692ed8a11b6563edab59420ce6682eedd264f84f0d46ed5c485.json",
+      "hash": "ac086d13f95f835f7cccc6256690cd4319a7ed36551ab739b55817a132f6c561",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/index.html",
+      "hash": "940dcfb95360b54f2c0ac2022a4657b914b834cf316db5c6cc524f481739c211",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/642d86ac29361a72be4fb87935563d90ae762f04deb952ff866f694cba5aa6ac.json",
+      "hash": "8e8d196a565ffe375faffa5bf56bc3d4af6f82067806c08f5376a13f77178b38",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/query.md",
+      "hash": "f10b5aa8a0621d2ed7e85eb655cdc45ce39fa85e34ff3fddbb211b59ceb03a62",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docker-compose.yml",
+      "hash": "db6cdb8e436541d8f60e3cdf725fc2c6f5703d11934878f1ab8e72f08c54cf9a",
+      "mod_time": "2026-11-16T11:12:35Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/d2d9a6cfb3c58fcb762cf33bc00513b3b59b78ebb92febe3023f660086fb233d.json",
+      "hash": "ee703fa635209d1a6cb3594819c858226962ec200f94553275344d39c2eddd85",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/ed7dcd10d184ead1c98fe2d339e65e166fb33e2739d7eecaf43e95dc45fa5cd7.json",
+      "hash": "bf22dda8bfbf938485760a9433e8d4ff79a5df6aa654b61379d523f185cedc19",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/67bcd1675b095463daae89d785d227fe0ce634d08d8383d6ce15a9e3537a7cd6.json",
+      "hash": "46030ced3ece2bc12ec7864ca2caf670083b812e6c8e64f4aeba541f20b19ec1",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6d7fdc23136eb38645b1e97032ad71d799fe3eb47ef14de8eac1eee6f22e4cfc.json",
+      "hash": "aa1c1b6da60b0de5d803dc1bb5b8336bad37e9f5d082d14ca0dce8c2c4f77795",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/f1f8c292ecf53db88a883b47143362ed3d23e347cbd8889b91a242a2d94c0009.json",
+      "hash": "87e7306844df57cb61c171de2d8b452d9bb8d14bdd63e6071a6883de5266e898",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "seed/README.md",
+      "hash": "e8d22fec7127a0b0e39413004b55d55e04f8e39b7f37c8226aa2f88256357ac9",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/81ca6338d67860713dff84591add8144d8a6254410be2a7e1c377e47224d6a82.json",
+      "hash": "6d42612309ed886ba6952b66fba788ebd2330825dd259f507c3ef1d80b6c66a3",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/5f1d6e33993ae4ec47b1a190c29b7bc2189e1430aa5224969e09a0b820d01af5.json",
+      "hash": "f7a6b5ee44b5b35e25f401363b7937a19e9c7524c872dc21088fa570e0923df9",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/68adf1f3b1adb1e015903f8880d79551f17e1f760f5c7f5cffb267ccb72414e5.json",
+      "hash": "8e4fd7d8f0e27d904ef2a8014fe4c1d17f5f56fcaeef549561f1b734a707864e",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.py",
+      "hash": "8c1bee4c363d8060d2152a78c1db29b12614a9d61626d16a4f34c43222c07172",
+      "mod_time": "2026-11-16T14:31:29Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/aba02751bbbaf5290c438f5ec11951b79b3c7eb77a0cab4385cffa8295ac8389.json",
+      "hash": "a3851d19ca6876ed6b0879c44b2a693429028c3db8345e7cacc012d0f1f2fa29",
+      "mod_time": "2026-11-16T16:36:01Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/d2ff2298cd79be4bc9e8ddbd8c320a2b82aba5fbe8c7e30432ea06434bfc5f84.json",
+      "hash": "5355ed0b39f22626d988794d6d814ed7f848f15a35c64d7bb56fdc077bd2f9d4",
+      "mod_time": "2026-11-16T17:44:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/.graphify_root",
+      "hash": "cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8",
+      "mod_time": "2026-11-16T17:44:27Z"
+    },
+    {
+      "path": "web/src/features/overlaps/Overlaps.tsx",
+      "hash": "95c58aa20d2657d0da37566abcb255f1bf3b50fd77ebe26732a22e2799912af4",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/.graphify_labels.json.sig",
+      "hash": "614505a890a14d7470a4203a9e8eff032b5bbe82eb448951b84b988f8eb3d670",
+      "mod_time": "2026-11-16T17:44:27Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/api.py",
+      "hash": "386b3015295540254d499600f42e25054db65104c732a63358dc1f17c1264d8e",
+      "mod_time": "2026-11-16T17:35:55Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/service.py",
+      "hash": "27bd2a30628e09c4efc363ce859e5c2d5a528a84ce76775b0c0a64495fb12b2a",
+      "mod_time": "2026-11-16T17:35:54Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/1081ff16e5188fe6e2a91f5da391fd32b378e24350a132a343e8f4721dcc1473.json",
+      "hash": "cf726b67522374f539deb7a5c1636ac381d02f02a78cc5c6d1f5f47dc8b1470a",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/types.ts",
+      "hash": "c03ae1cc2c056eabacb1a9de013324ef27e2759ac441016d06c2ae73d0a286fa",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": "backend/app/modules/institutions/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T08:11:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/3e2e399423d66e92c0f478e4739642ddea2a76a891f58cec8eb5e37a242844c4.json",
+      "hash": "8caf513b69d52557edf48fd35058aade587d0dc6a180418c795fdb228b5281dd",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/6e826f4b2a01df62ded961291dec8c975fcde9c56ea92785ff1dca35e85da51a.json",
+      "hash": "8039de7e7d60802b8292b2208680f1d52d2b79f997320447df010b58142fcab5",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/9f087eb7aa202b2da6c94e9b95ec0f6b2f7efb892def78cc27b95ec0c98a275c.json",
+      "hash": "2fe75c2349b0d0236d1eb0d83cd99209c61eab0332e3e86edf29a94bab28c589",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/manifest.json",
+      "hash": "ebf635cab236ce7de5ce0498ad5df1b6912ae7b5227bb1bd8edc79cdc904404e",
+      "mod_time": "2026-11-16T17:51:39Z"
+    },
+    {
+      "path": ".env",
+      "hash": "b7bd5f36c187f67597d55cd7112d92eed067b58af51e28703a3d51846fb05b9b",
+      "mod_time": "2026-11-16T09:28:10Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/ea49111e5061fd600b6039c83fa219f82214f2c4d99a1a275eb9a8cf024e64d3.json",
+      "hash": "4ecda4ebd0185bda806ad5f5b367e0389ea71a1de985c1843de9ab5163d3f8fd",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/reports/Reports.tsx",
+      "hash": "762e245edba6bb62edc374cab5511b840895f2b5a473b836306bd07a24a0e16f",
+      "mod_time": "2026-11-16T17:41:54Z"
+    },
+    {
+      "path": "docs/SECURITY.md",
+      "hash": "aaf586ba76be27fd956cc595f310a2f151434b60958ea9d2b0032d6682e4f466",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/e86de89ac1fa2dcc58d205a5eac23b25c240ae4740035f91635d0c887e97a174.json",
+      "hash": "f8343bb1a58c0cfd110644f017d205005f05e7b537ef0d0ba3aabd40450d19ec",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.py",
+      "hash": "934feb3d4664d90d1b4f3de99a77ed6d8cfca430112ccc613177b4edbf002eaa",
+      "mod_time": "2026-11-16T14:33:45Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8339384258028204354c46670364b5a25e7e2f109bd64b92818072c739cdca4b.json",
+      "hash": "3f3baf32b5928aa34ac62b2dd25a3475075f4788190a73cd43039d4a65ca61ea",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/github-and-merge.md",
+      "hash": "1b36d67bd92de0f5ea76ec3b84d1c1103a197c6093b9954995cbaf0abac9fac3",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/repo.py",
+      "hash": "aa18fd365555681095b827637350f99b6675045407d6305ac13d186d34d7cd7e",
+      "mod_time": "2026-11-16T17:35:54Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/05-NEXT-CLAUDE-CODE-PROMPT.md",
+      "hash": "122c5afa6cf567da9f4965b2ab504d9366ac3324f7787dfa063a9ad707d48124",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/37b6cc5ed85ba36b5dea620c66d21d47a75ded4f9e2058659b802ec2af2a4d64.json",
+      "hash": "f9bcc57ba4d716c3b938c2b69e2fa384f467caa671f9e46239a7cd98142301b6",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/infra/demo-users/users.json",
+      "hash": "3ee7fa67b2047ce75fb7037d6ff46b34c0a93fca00f2f3dd046b8a20f8d25463",
+      "mod_time": "2026-11-16T08:55:12Z"
+    },
+    {
       "path": "docker-compose.test.yml",
       "hash": "9ede4a56c8f6d1a32e16dd9f5d964dfcd7d12517df7dd49faf23c8e2a363d0b1",
       "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md",
-      "hash": "1d86f9f9c75072b376cdd2728e7c622c7fd26ded6c1e2a209abd81119732d3aa",
-      "mod_time": "2026-11-16T08:15:20Z"
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/43dca8e8ea4cfab5d12f69977396fa819a4fc67de93d534159f86716d456f65d.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/env.py",
-      "hash": "8d54e53b2fdddf955ec9e589802d2636282fd385ff4b6dd7e8d64a246086b2da",
-      "mod_time": "2026-11-16T08:15:21Z"
+      "path": "infra/keycloak/sethu-realm.json",
+      "hash": "1f6fb283180df4147a2d6c6d2e232986904770baac5b55ae18a6d847d1da9166",
+      "mod_time": "2026-11-15T19:19:16Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/02-PS-COVERAGE-CHECKLIST.md",
-      "hash": "103b0013abe5646b040b0b0f625260a2784805f12673a4ea447a199b03e7207a",
-      "mod_time": "2026-11-16T15:12:14Z"
+      "path": "web/src/api.ts",
+      "hash": "3c066e540294c8656b933e0e8238f888d1179286635f37de4bad5655a3e52804",
+      "mod_time": "2026-11-16T10:39:03Z"
     },
     {
-      "path": "LICENSE",
-      "hash": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
-      "mod_time": "2026-11-15T17:00:50Z"
+      "path": "backend/sethu_backend.egg-info/PKG-INFO",
+      "hash": "c68ca729f9111153fb4f74bb90d21b73508fd5de20c424b088ef05d44b894a0a",
+      "mod_time": "2026-11-15T19:33:49Z"
     },
     {
-      "path": "backend/app/modules/complaints/repo.py",
-      "hash": "843e156f7c36becfe8a7ccb9d1e33a5b4b40357fb0565f7e6d6797274401ca93",
-      "mod_time": "2026-11-16T11:28:49Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/schemas.py",
+      "hash": "89d7ee638293842d48cdc5489eef23ce38988ad760f07e2bb8c464626d909a05",
+      "mod_time": "2026-11-16T17:34:37Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/e36d24c1f6af95b5fee37a5f4f02d10806013a08fe5243fbd0d1128958d17266.json",
+      "hash": "fef43886bcfa81e7fa2acb83417a5ed0165f487f7985a5ab202b1c6ce3049da8",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/InstitutionProfile.tsx",
+      "hash": "0879234a2b3f86dcbd076060b5e906a8214e51544b08935a53b65a718fc3e6cc",
+      "mod_time": "2026-11-16T16:29:22Z"
+    },
+    {
+      "path": "backend/app/modules/alerts/repo.py",
+      "hash": "a0264aa672f46f4f8c6f7a5ffc67d1d3208150f6c77ca090df539c2e2af6c79b",
+      "mod_time": "2026-11-16T15:21:56Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/61261ceb48b7496d0f846788518361958ab5b533d78246abff5ac5a3a6e615d8.json",
+      "hash": "dff4fd0500598c9ad2d4149e3e322d6d0501bb84ebedd89d278e2d1c29c55194",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/skills/graphify/references/exports.md",
+      "hash": "f1debd1003b168c3c1c9fe284bf3018609372740ae8856bea2b10bba0a07b34b",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/d2eca4a9ff750aef7b90d16bd01ca971d046255ee24834803a6a33aba5b9fd9c.json",
+      "hash": "992e3f3082d65dda7ef9f7b5a8fbf75845056e2622bdb40703087a8bf0b814c8",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8f1411004c0a9fe076a4136a06aa28e6445db99ebeefefdad95fae5422f50522.json",
+      "hash": "c9742c89cedd3ec42d6f01cd5589da610b533d6d90e62fe7bd97ac71a0e3318e",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/f48fb1795bcf23b07eca7e9ea9288c6fbac255adba112cd9c513d073e9868963.json",
+      "hash": "400a0943bf47050a428fa99562c5ca76b320b725f98e8b8cd1754c7d125dc1d6",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "web/Dockerfile",
+      "hash": "afbe5d58f0ecd538bdcfcef4293b1058aa29168c20d62c8094d7419ade9693e5",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "web/index.html",
+      "hash": "940dcfb95360b54f2c0ac2022a4657b914b834cf316db5c6cc524f481739c211",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/3e937fbd21cd18f695c9d2dba17dfaa57d7500afa0a05ffb4c0bde93ed252800.json",
+      "hash": "29c16ee1e5c4012ca5ab6fa8f2f11b26913bcee4b8b44d04e2397cb7a0539a7d",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": "backend/app/modules/alerts/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T15:21:56Z"
+    },
+    {
+      "path": "graphify-out/.graphify_labels.json",
+      "hash": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/956502637e862b79549d6b91af6993ea67d41f6d21f14c4a137df866e8f2427b.json",
+      "hash": "4242b4985a8637776f79fa6d9471f0029eb50ce996e017192fc7bdb5af27307c",
+      "mod_time": "2026-11-16T17:09:14Z"
     },
     {
       "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/CLAUDE.md",
@@ -1153,38 +2258,268 @@
       "mod_time": "2026-11-16T08:15:20Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/complaints.csv",
-      "hash": "d8b19659ec3fdd522f1b0f1c9a5d0c4ad50f672e2bd7a4eb8c2c990916595ccd",
-      "mod_time": "2026-11-16T10:00:14Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/4c623299048093bebca81c20631d7e624a88beb32ebb031d2cc89bf5ed6978ec.json",
+      "hash": "69257956e315a432101d70500b3daf6de838c2a17d86bc5cbf477230f7becc67",
+      "mod_time": "2026-11-16T16:36:02Z"
     },
     {
-      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.py",
-      "hash": "06917b73a18bd19e7874e92d9872664966afd653241cab5c2374095adcdeb4db",
-      "mod_time": "2026-11-16T10:00:14Z"
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/5917a224af4122a8f05f1e0d534acbf908107bd3c5475917e10210de9fceaf12.json",
+      "hash": "79aa01e8504ad3c09a464bca54ff91a43824eaa01955c512b111c542dc62a963",
+      "mod_time": "2026-11-16T17:44:21Z"
     },
     {
-      "path": "backend/alembic/versions/0001_core_schema.py",
-      "hash": "b95015e1672265640e8161e37973a6593e79dfe6b5e2fe5b69d131494bea902d",
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/956502637e862b79549d6b91af6993ea67d41f6d21f14c4a137df866e8f2427b.json",
+      "hash": "4242b4985a8637776f79fa6d9471f0029eb50ce996e017192fc7bdb5af27307c",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": "backend/app/modules/complaints/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "backend/app/modules/overlaps/service.py",
+      "hash": "8a464f64badea830ae42f815d4ba4b70512461ff1589a606ff53be9e19c79c8c",
+      "mod_time": "2026-11-16T15:21:56Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/repo.py",
+      "hash": "a0264aa672f46f4f8c6f7a5ffc67d1d3208150f6c77ca090df539c2e2af6c79b",
+      "mod_time": "2026-11-16T14:31:30Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/016df9a3f27104eb487de019bb6571b07ded177aef0f131da8509cbc59659caf.json",
+      "hash": "8da7a85bd646f948637473676939375144a3ed66f2f628e9ecdd45575f0075f7",
+      "mod_time": "2026-11-16T17:44:20Z"
+    },
+    {
+      "path": "backend/Dockerfile",
+      "hash": "57f36ee5bd10e015cfc464c2a2b416bbcffe0f67c4a67e6b3eacebfcc21b37b1",
+      "mod_time": "2026-11-16T15:38:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/7d58618dfdf78625ff4867e9f626c15feb316c3bf5c15339025a9d75ed066a68.json",
+      "hash": "104c9ddaf933c59f96176792669cfd7a2ecda86c4d314a9a21dacfe2a258c43f",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
+      "hash": "ffb475cc26685ddda4165c13fbb8aaabeda5f72adbbb84bda53f9d4ca1b138ac",
+      "mod_time": "2026-11-16T17:38:51Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/api.py",
+      "hash": "d3bb895732833ae451e53c26308c919254e2cd73c69c220ec2c55440ed41a4d8",
+      "mod_time": "2026-11-16T11:04:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/dashboard/Dashboard.tsx",
+      "hash": "2a38f0bd39f77f902f2a70533f625eedea207241a2f7257f767e21540ad677ec",
+      "mod_time": "2026-11-16T16:28:46Z"
+    },
+    {
+      "path": "backend/alembic/versions/0002_case_tracking.py",
+      "hash": "6e37f1f2eacf681f99147a5f8cc34cc261f10261007831f130780f737574d6ea",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": "backend/app/modules/audit_view/api.py",
+      "hash": "a4c38418a9c1f88c2881b1079a65a6556842ef1eb843e904719bfead9e7257bf",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/1817ea55b5ebaa5ea40801b339db72c1fd4f0b3bf8253f1db110fa968343f52e.json",
+      "hash": "b2b45ec17c1eaebc3bf2732b7de57fcf825f27dbb455c45d976dcc515cccba12",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/8e9260403f25c4acaca5946c09169a16ad47e2ff9f5e6ec04fee718c37568065.json",
+      "hash": "2f8f99820035f4285e59d30ba7f1acc674e93f34efc7e30fcc975fe964a4a7d4",
+      "mod_time": "2026-11-16T16:36:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/web/.dockerignore",
+      "hash": "8dddd5bb92e96a3ba01bbf50fcbaebe72b7816695816f212e21d29022c6c11b7",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/15953d1b8f0ed8f6161dfae971fb9d4b739cc1566eb67611772f12f481886231.json",
+      "hash": "c1b9816d541a6d6676938c0796d8bdf061c4fcacc7164fe1922249753d962675",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "seed/generate.py",
+      "hash": "a67b3b987f2ad2a6ffd3fe2fcfaaaccab11ac73153088a04f767bf0b573c0b94",
+      "mod_time": "2026-11-16T10:39:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/adr/README.md",
+      "hash": "425b42c88c8ae030ee470fe0b8eaebf951bd13983a447b87f8f5ea49674a7820",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/1817ea55b5ebaa5ea40801b339db72c1fd4f0b3bf8253f1db110fa968343f52e.json",
+      "hash": "b2b45ec17c1eaebc3bf2732b7de57fcf825f27dbb455c45d976dcc515cccba12",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": "backend/app/db/session.py",
+      "hash": "b50f8d33bedbd2fc38505b7e80e5d9753075bf5b23bc116797138a581158aa96",
       "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/193a54346ae97090bd5a2528233b41553db4a2fb329a0f91d049309921d189fa.json",
+      "hash": "8b00a4563ab3ae8520746674f8bfa67f5120cb90263375a1d45ed4d465e32e31",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/query.md",
+      "hash": "f10b5aa8a0621d2ed7e85eb655cdc45ce39fa85e34ff3fddbb211b59ceb03a62",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/5161809beb3f09e451e638667c9378053022a34d29e5bba5e6d0e84767394b85.json",
+      "hash": "0251f66b1d8d8e4b9c7ff691398cca39ea49487113dd8971dd792d022c2a9584",
+      "mod_time": "2026-11-16T17:44:20Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/78709814f125b156f1f0a7791ac865740024a6a119646f59363cb1cd7910c7e9.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": "backend/app/modules/complaints/schemas.py",
+      "hash": "f758e8a6cd80767418422b222d77fb1b078643b01213baeb6fd09442075056a1",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "infra/demo-users/import.sh",
+      "hash": "b62a4b7fab32bb1cc90404afd2b20a31717e853dca33f1e080bbbb411cd6b28d",
+      "mod_time": "2026-11-16T09:27:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/repo.py",
+      "hash": "09517b633427aaba7cd711995c5f43d8cf46ecc58c3e9efff72f0780b1a80578",
+      "mod_time": "2026-11-16T17:38:51Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/docs/04-MOCK-DATA-SPEC.md",
+      "hash": "d80279858d0ca56bc9769c59058981e5754a3e532e3272f7378c254d99a3d700",
+      "mod_time": "2026-11-16T08:55:12Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/dee03db1bb148cb7185e257cad8597b40a3dee70fdf3d9a339e6beb70cb22753.json",
+      "hash": "445cc6699da6657983976e35f4fbcdc69f218e60159bdcda6dfed5f8f183f13a",
+      "mod_time": "2026-11-16T16:36:00Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/seed/institutions.csv",
+      "hash": "ccb4f940f0e97cca89049df86b50c768b4681be5a6e980475a0e24ab7a66d89c",
+      "mod_time": "2026-11-16T10:00:14Z"
+    },
+    {
+      "path": "backend/app/api/routes.py",
+      "hash": "93ca422e135d8bbea8dd6c5659ef2f74ac8bad1904cd23d72c5570d2a0c88cc6",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "LICENSE",
+      "hash": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+      "mod_time": "2026-11-15T17:00:50Z"
+    },
+    {
+      "path": "backend/sethu_backend.egg-info/top_level.txt",
+      "hash": "8a8f60ecb09b7e64c6d5214a8043865e608507db8c3f61f995eae6d078875901",
+      "mod_time": "2026-11-15T19:33:49Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic.ini",
+      "hash": "fdacda19d394cd705fffe539585c9d6b3510809da415c08618dda2a17b68340b",
+      "mod_time": "2026-11-16T08:15:21Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/642d86ac29361a72be4fb87935563d90ae762f04deb952ff866f694cba5aa6ac.json",
+      "hash": "8e8d196a565ffe375faffa5bf56bc3d4af6f82067806c08f5376a13f77178b38",
+      "mod_time": "2026-11-16T16:35:59Z"
+    },
+    {
+      "path": "backend/app/audit/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-15T19:19:16Z"
+    },
+    {
+      "path": "backend/app/modules/audit_view/schemas.py",
+      "hash": "0769e1bea66fa28f793b3eef212e87e75e4a2a3a7b01b92b9801d250586036b4",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/.claude/skills/graphify/references/update.md",
+      "hash": "582b4c23a1d3e2c0989a0c5dfc2f7c6bf17ad19087aece2c78eb03c0a202bb88",
+      "mod_time": "2026-11-16T08:15:20Z"
+    },
+    {
+      "path": "graphify-out/.graphify_labels.json.sig",
+      "hash": "3f7e6de0e85d80e37bab8cfaeade5f015b849541dec150810df4c7be4b9a3c6b",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/c75df1136c7c56f5cdd806a24601b944ede3de838f78a917dca86599f3561b1c.json",
+      "hash": "436b073b1a2c5e3a10ba314bda87a18b7fe7deedf14c79b99583a5b4457f9e52",
+      "mod_time": "2026-11-16T16:36:03Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view/__init__.py",
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mod_time": "2026-11-16T16:22:35Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
+      "hash": "9ea2aaa2977d2cb36fdfc86bd5e03e5cb8c504572f1975d06f497c449535f296",
+      "mod_time": "2026-11-16T08:17:02Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/.graphify_build_state.json",
+      "hash": "c4b8c0a652ed880e6b6dd84305c772bfa9cd67eca44547e73d3fa226ed9a123f",
+      "mod_time": "2026-11-16T17:51:39Z"
+    },
+    {
+      "path": ".claude/worktrees/jolly-feynman-1a9f96/graphify-out/.graphify_labels.pending.json",
+      "hash": "5b880f4eafeab00185087d521fe0c52e8664980c6fda8db176ecf30093722a58",
+      "mod_time": "2026-11-16T17:44:27Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/def266960510bbce99e864228441cff51dd9fb5650754e0d6539bb9edf8d05ae.json",
+      "hash": "31fdab7a1d4ec5b5c05dfe35a77d920f28c420a973ec820e5e319dbdea2edbcb",
+      "mod_time": "2026-11-16T17:09:14Z"
+    },
+    {
+      "path": "backend/app/modules/complaints/api.py",
+      "hash": "a2a0a85d6b2b97bfc7db737c03b13fd99fb0476e525104859ef5bb45a8cb4a50",
+      "mod_time": "2026-11-16T11:28:49Z"
+    },
+    {
+      "path": "graphify-out/cache/ast/v0.9.109-s46-g460503b3f2a4/14ce2c9d4a7e4c0451cd3cba5cc4a8bbb6aa8901979d8f60dae318f4022737c0.json",
+      "hash": "4691a38342a1cac5c373112bcc6058bbcf680c5d890b9bd2dea5a8cae9abe3bd",
+      "mod_time": "2026-11-16T17:09:14Z"
     }
   ],
-  "fact_count": 1495,
-  "insight_count": 145,
+  "fact_count": 1934,
+  "insight_count": 156,
   "enola_version": "0.4.21",
-  "snapshot_id": "sha256:fd2ae4166c3056d50dafcf30363ba0487572a6b45d678bb48b64262f6bfe39f3",
+  "snapshot_id": "sha256:e6d2894f1f63d98e404deef492754d12907138f5696e4e8cc73936c2a6428d79",
   "git": {
     "ref": "main",
-    "commit": "de050dd01ef0beb1d87cc3b6804ef01de796d7c7",
+    "commit": "6f681a55718c3186c41cc55340d7f304ad6317cd",
     "dirty": true,
     "remote": "github.com/sdnikil1sn-ops/sethu"
   },
   "config_hash": "sha256:73d78ea79f51e19979d4c7d00bd9463ae684ebcb909116abad86675323c32c05",
   "extractor_version": "v270",
-  "files_seen": 226,
-  "files_parsed": 142,
-  "source_bytes": 688633,
-  "files_skipped": 21,
-  "dirs_skipped": 6,
+  "files_seen": 493,
+  "files_parsed": 173,
+  "source_bytes": 807454,
+  "files_skipped": 27,
+  "dirs_skipped": 5,
   "skipped_sample": [
     ".claude/worktrees/jolly-feynman-1a9f96/.enola/ (glob: **/.enola/**)",
     ".claude/worktrees/jolly-feynman-1a9f96/.git (glob: **/.git/**)",
@@ -1194,35 +2529,35 @@
     ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/conftest.py (glob: **/conftest.py)",
     ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_alerts.py (glob: **/test_*.py)",
     ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_audit.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_audit_view.py (glob: **/test_*.py)",
     ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_auth_and_api.py (glob: **/test_*.py)",
     ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_cases.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_dashboard.py (glob: **/test_*.py)",
     ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_institutions.py (glob: **/test_*.py)",
     ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_overlaps.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_reports.py (glob: **/test_*.py)",
     ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_rls.py (glob: **/test_*.py)",
+    ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_search.py (glob: **/test_*.py)",
     ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_seed.py (glob: **/test_*.py)",
-    ".claude/worktrees/jolly-feynman-1a9f96/web/dist/ (glob: **/dist/**)",
     ".claude/worktrees/jolly-feynman-1a9f96/web/node_modules/ (glob: **/node_modules/**)",
-    ".git/ (glob: **/.git/**)",
-    "backend/tests/__init__.py (glob: **/tests/**/*.py)",
-    "backend/tests/conftest.py (glob: **/conftest.py)",
-    "backend/tests/test_alerts.py (glob: **/test_*.py)"
+    ".git/ (glob: **/.git/**)"
   ],
   "ignore_glob_hash": "sha256:7523cc6397a498e151125a682d28fbf6df20c6f51f6dfaf18fd8f5239a20d2d8",
-  "heuristic_insights": 143,
+  "heuristic_insights": 154,
   "coverage": {
     "services_total": 0,
     "coverage_gaps": 0,
     "unresolved_edges": 0,
     "extractors_reporting": 1,
-    "extraction_unresolved": 126
+    "extraction_unresolved": 117
   },
   "census": {
-    "files_walked": 247,
-    "parsed": 142,
-    "excluded_by_ignore": 21,
-    "excluded_by_kind": 58,
+    "files_walked": 520,
+    "parsed": 173,
+    "excluded_by_ignore": 27,
+    "excluded_by_kind": 286,
     "excluded_kinds": {
-      "(no extension)": 7,
+      "(no extension)": 8,
       ".conf": 4,
       ".css": 2,
       ".csv": 8,
@@ -1231,18 +2566,21 @@
       ".example": 2,
       ".gitattributes": 2,
       ".gitignore": 2,
+      ".graphify_root": 2,
       ".graphify_version": 2,
       ".ini": 2,
-      ".json": 8,
+      ".json": 230,
+      ".nudges": 1,
       ".sh": 4,
+      ".sig": 2,
       ".txt": 4,
       ".yml": 6
     },
-    "skipped_with_cause": 26,
+    "skipped_with_cause": 34,
     "top_skip_causes": [
       {
         "cause": "claimed by python, no facts emitted",
-        "count": 20
+        "count": 26
       },
       {
         "cause": "claimed by manifests, no facts emitted",
@@ -1250,20 +2588,20 @@
       },
       {
         "cause": "claimed by typescript, no facts emitted",
-        "count": 2
+        "count": 4
       }
     ]
   },
   "output_hashes": {
-    "facts.jsonl": "sha256:fadc51337dd2a6d4efea21821ef2a24585d24dd1eb3f7e203aaaeb5a20e455a0",
-    "insights.json": "sha256:b7842752e1b0f4d2a8521e01c66a4c23572db1e2f9956eca40b66c7702642a0a",
-    "llm_context.md": "sha256:5b2c4fd2ed6dad5c163a37fe6156a45110f0038650b8c0371e3fa169e584431e"
+    "facts.jsonl": "sha256:9b3e80719667815ad1f599205d68ca152ba7c2baa2f2f6428a0f89ca1264f472",
+    "insights.json": "sha256:7914e2ff3afc900fc678c2fc6aa22396ceb24d432691c8d47414d3f36ca5c77a",
+    "llm_context.md": "sha256:df6db54b3cdbc32a328cb671c075751349da8145b2d15d0e69800f683f089147"
   },
   "unseen": {
-    "files_excluded_by_ignore": 21,
-    "dirs_excluded_by_ignore": 6,
+    "files_excluded_by_ignore": 27,
+    "dirs_excluded_by_ignore": 5,
     "outside_graph": {
-      "imports": 254
+      "imports": 322
     },
     "outside_graph_prefixes": {
       "react-dom": 2

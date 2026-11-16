@@ -64,3 +64,13 @@ header form[role="search"] { display: flex; gap: 0.4rem; }
 header form[role="search"] input { width: 16rem; max-width: 60vw; }
 .hits { padding-left: 1.2rem; }
 .hits li { margin: 0.3rem 0; }
+.graph { margin: 1rem 0; }
+.graph svg { width: 100%; height: auto; max-height: 20rem; display: block; background: var(--soft); border-radius: 0.5rem; }
+.graph text { font-size: 13px; fill: currentColor; }
+.graph .edge { stroke: currentColor; stroke-opacity: 0.45; stroke-width: 1.5; }
+.graph .overlap-proposed { stroke-dasharray: 6 4; stroke-opacity: 0.8; }
+.graph .overlap-approved { stroke-opacity: 0.9; stroke-width: 2.5; }
+.graph .node { fill: var(--soft); stroke: currentColor; stroke-width: 1.5; }
+.graph .institution { stroke-width: 2.5; }
+.graph a:hover .node, .graph a:focus .node { stroke-width: 3; }
+.graph figcaption { font-size: 0.85rem; opacity: 0.75; margin-top: 0.25rem; }

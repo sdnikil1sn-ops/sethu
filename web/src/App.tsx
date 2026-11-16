@@ -6,6 +6,7 @@ import { AuditLog } from "./features/audit/AuditLog";
 import { CaseDetail } from "./features/cases/CaseDetail";
 import { CaseList } from "./features/cases/CaseList";
 import { Dashboard } from "./features/dashboard/Dashboard";
+import { FindingsPage } from "./features/findings/Findings";
 import { InstitutionList } from "./features/institutions/InstitutionList";
 import { InstitutionProfile } from "./features/institutions/InstitutionProfile";
 import { OverlapsPage } from "./features/overlaps/Overlaps";
@@ -16,20 +17,23 @@ import { SearchBox, SearchResults } from "./features/search/Search";
 type Me = { name: string; role: string };
 const CAN_RESOLVE = ["officer", "bureau_head", "admin"];
 const CAN_AUDIT = ["auditor", "oversight", "admin"];
+const CAN_DECIDE = ["bureau_head", "oversight"];
 
-function useHashRoute(): string {
-  const [route, setRoute] = useState(window.location.hash.slice(1) || "/");
+/** The route, and a count of hash changes. The case list rewrites its own address with replaceState
+ * (no hashchange), so the stored route can be stale; `visit` changes whenever a link is followed. */
+function useHashRoute(): { route: string; visit: number } {
+  const [state, setState] = useState({ route: window.location.hash.slice(1) || "/", visit: 0 });
   useEffect(() => {
-    const onChange = () => setRoute(window.location.hash.slice(1) || "/");
+    const onChange = () => setState((s) => ({ route: window.location.hash.slice(1) || "/", visit: s.visit + 1 }));
     window.addEventListener("hashchange", onChange);
     return () => window.removeEventListener("hashchange", onChange);
   }, []);
-  return route;
+  return state;
 }
 
 // Feature screens live under src/features/<feature>/ and are routed here by URL hash.
 export function App() {
-  const route = useHashRoute();
+  const { route, visit } = useHashRoute();
   const { data: me } = useLoad<Me>("/me");
   const profileId = route.match(/^\/institutions\/([0-9a-f-]{36})$/)?.[1];
   const caseId = route.match(/^\/cases\/([0-9a-f-]{36})$/)?.[1];
@@ -55,6 +59,9 @@ export function App() {
           </a>
           <a href="#/alerts" aria-current={route === "/alerts" ? "page" : undefined}>
             Alerts
+          </a>
+          <a href="#/findings" aria-current={route === "/findings" ? "page" : undefined}>
+            Findings
           </a>
           <a href="#/queue" aria-current={route === "/queue" ? "page" : undefined}>
             Unmatched names
@@ -82,7 +89,7 @@ export function App() {
         ) : caseId ? (
           <CaseDetail key={caseId} id={caseId} />
         ) : caseList ? (
-          <CaseList key={route} initial={caseList[1] ?? ""} />
+          <CaseList key={visit} initial={caseList[1] ?? ""} />
         ) : profileId ? (
           <InstitutionProfile id={profileId} />
         ) : route === "/alerts" ? (
@@ -91,6 +98,8 @@ export function App() {
           <OverlapsPage canDetect={me?.role === "admin"} />
         ) : route === "/queue" ? (
           <ResolutionQueue canResolve={!!me && CAN_RESOLVE.includes(me.role)} />
+        ) : route === "/findings" ? (
+          <FindingsPage canDecide={!!me && CAN_DECIDE.includes(me.role)} canDetect={me?.role === "admin"} />
         ) : route === "/reports" ? (
           <ReportsPage />
         ) : route === "/audit" ? (

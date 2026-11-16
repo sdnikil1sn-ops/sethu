@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from sqlalchemy.orm import Session
 
 from app.modules.dashboard import repo
+from app.modules.findings import service as findings
 
 WEEKS = 27  # this week and the 26 before it: a little over six months
 OVERDUE_SHOWN = 15
@@ -21,6 +22,7 @@ def overview(session: Session) -> dict:
         "by_category": repo.by_column(session, "category"),
         "weekly": repo.weekly(session, WEEKS),
         "attention": pending | {
+            "findings_open": findings.open_count(session),
             "overdue_total": overdue[0]["total"] if overdue else 0,
             "overdue": [{k: v for k, v in r.items() if k != "total"} for r in overdue],
         },
