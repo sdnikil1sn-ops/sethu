@@ -76,7 +76,8 @@ export function FindingsPage({ canDecide, canDetect }: { canDecide: boolean; can
       <h1>Findings</h1>
       <p>
         Cases that bounce between bureaus without anyone acknowledging them, and queues where too many cases are old
-        or overdue. Checked every 5 minutes. A transfer loop or stalled transfer also puts an alert in the Alerts
+        or overdue. Open findings come first: transfer loops, then stalled transfers, then bottlenecks, worst first.
+        Checked every 5 minutes. A transfer loop or stalled transfer also puts an alert in the Alerts
         screen, where a bureau head or oversight decides whether it is sent.
       </p>
       <form className="filters" onSubmit={(e) => e.preventDefault()}>

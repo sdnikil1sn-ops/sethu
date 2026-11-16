@@ -102,9 +102,9 @@
     "semantic_hash": ""
   },
   "backend/app/core/config.py": {
-    "mtime": 1794856802.206659,
-    "seen": 1794857264.0421407,
-    "ast_hash": "4e49d8e12f35eee39e2d5ed9d93aeb6b",
+    "mtime": 1794860059.0219417,
+    "seen": 1794860214.9314377,
+    "ast_hash": "e7cd884700a84c28319cf16e492eee5b",
     "semantic_hash": ""
   },
   "backend/app/core/logging.py": {
@@ -630,9 +630,9 @@
     "semantic_hash": ""
   },
   "docs/ARCHITECTURE.md": {
-    "mtime": 1794857204.5961728,
-    "seen": 1794857264.0436566,
-    "ast_hash": "abdec0800b7105ee614ad2ace4ba1225",
+    "mtime": 1794860059.024779,
+    "seen": 1794860214.9324398,
+    "ast_hash": "0e934b88628c320f316dcfa9d5ce96c9",
     "semantic_hash": ""
   },
   "docs/DATA-MODEL.md": {
@@ -642,9 +642,9 @@
     "semantic_hash": ""
   },
   "docs/RUNBOOK.md": {
-    "mtime": 1794857204.5998986,
-    "seen": 1794857264.0436566,
-    "ast_hash": "ea1d929ad54539f3825ce66972a89e4b",
+    "mtime": 1794860059.024779,
+    "seen": 1794860214.9324398,
+    "ast_hash": "abbc45502068565f29f906d401df2531",
     "semantic_hash": ""
   },
   "docs/SECURITY.md": {
@@ -774,9 +774,9 @@
     "semantic_hash": ""
   },
   "backend/app/modules/findings/repo.py": {
-    "mtime": 1794857236.3230984,
-    "seen": 1794857264.0421407,
-    "ast_hash": "5c3873be6b657aba62a2036257389bdf",
+    "mtime": 1794860059.0237706,
+    "seen": 1794860214.9314377,
+    "ast_hash": "94bd09a49f99c7a436713e8b1783e43b",
     "semantic_hash": ""
   },
   "backend/app/modules/findings/schemas.py": {
@@ -786,9 +786,9 @@
     "semantic_hash": ""
   },
   "backend/app/modules/findings/service.py": {
-    "mtime": 1794856782.230172,
-    "seen": 1794857264.0421407,
-    "ast_hash": "fdee66003944e9ce4f41fa7df4321355",
+    "mtime": 1794860059.0237706,
+    "seen": 1794860214.9314377,
+    "ast_hash": "b48fe2e53e37ae18e972b323455acad4",
     "semantic_hash": ""
   },
   "backend/tests/test_filters.py": {
@@ -798,15 +798,15 @@
     "semantic_hash": ""
   },
   "backend/tests/test_findings.py": {
-    "mtime": 1794857236.386484,
-    "seen": 1794857264.0421407,
-    "ast_hash": "d54ba7ddfdfdb30c88881362bdab41c8",
+    "mtime": 1794860153.272274,
+    "seen": 1794860214.9314377,
+    "ast_hash": "a77e0b24c8cf70c768e8f94c6a450a99",
     "semantic_hash": ""
   },
   "web/src/features/findings/Findings.tsx": {
-    "mtime": 1794857204.5928526,
-    "seen": 1794857264.0436566,
-    "ast_hash": "17e22104f8a10495055e71779b9d9e88",
+    "mtime": 1794860059.0257783,
+    "seen": 1794860214.9324398,
+    "ast_hash": "1f76bbd08ea56ebfb6d764c630302ebe",
     "semantic_hash": ""
   },
   "web/src/features/institutions/Graph.tsx": {
