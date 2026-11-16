@@ -23,15 +23,20 @@
     ]
   },
   {
-    "title": "Cyclic dependency detected (4 modules)",
+    "title": "Cyclic dependency detected (5 modules)",
     "source": "cycles",
-    "description": "The following modules form a dependency cycle: web/src -\u003e web/src/features/cases -\u003e web/src/features/institutions -\u003e web/src/features/overlaps -\u003e web/src. This can cause initialization issues, make refactoring harder, and indicates tight coupling.",
+    "description": "The following modules form a dependency cycle: web/src -\u003e web/src/features/alerts -\u003e web/src/features/cases -\u003e web/src/features/institutions -\u003e web/src/features/overlaps -\u003e web/src. This can cause initialization issues, make refactoring harder, and indicates tight coupling.",
     "confidence": 1,
     "evidence": [
       {
         "fact": "web/src",
         "detail": "module \"web/src\" is part of the cycle",
         "fact_id": "a72cc02fb272871b835207fbb02402cb"
+      },
+      {
+        "fact": "web/src/features/alerts",
+        "detail": "module \"web/src/features/alerts\" is part of the cycle",
+        "fact_id": "6e046c0e7832f77e58b9a91db5dd0e3a"
       },
       {
         "fact": "web/src/features/cases",
@@ -100,15 +105,15 @@
     ]
   },
   {
-    "title": "High fan-in symbol: backend/app/db/session.get_session (32 dependents)",
+    "title": "High fan-in symbol: backend/app/db/session.get_session (36 dependents)",
     "source": "god-class",
-    "description": "\"backend/app/db/session.get_session\" is depended upon by 32 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
+    "description": "\"backend/app/db/session.get_session\" is depended upon by 36 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
     "confidence": 0.95,
     "evidence": [
       {
         "file": "backend/app/db/session.py",
         "symbol": "backend/app/db/session.get_session",
-        "detail": "32 symbols depend on this",
+        "detail": "36 symbols depend on this",
         "line": 47,
         "fact_id": "63a3f02e4bd845e10e3afe05af473c3c"
       },
@@ -116,6 +121,16 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.audit_verify",
         "detail": "depends on backend/app/db/session.get_session",
         "fact_id": "7782befdda67da03232b8fe802b5b526"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/api.decide",
+        "detail": "depends on backend/app/db/session.get_session",
+        "fact_id": "a42549905e622e8c0b268c1555ac7cf3"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/api.list_alerts",
+        "detail": "depends on backend/app/db/session.get_session",
+        "fact_id": "17ac94cb31b80810efe535e969f7d0a6"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.act",
@@ -141,16 +156,6 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.list_cases",
         "detail": "depends on backend/app/db/session.get_session",
         "fact_id": "92bc8a874c146533431ab9b9a26ae607"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.options",
-        "detail": "depends on backend/app/db/session.get_session",
-        "fact_id": "a1bf1a2850c5bc3dcae23e26cd4cce22"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/api.institution_profile",
-        "detail": "depends on backend/app/db/session.get_session",
-        "fact_id": "3eab214f61d058c50a11023e09ba0c58"
       }
     ],
     "suggested_actions": [
@@ -160,15 +165,15 @@
     ]
   },
   {
-    "title": "High fan-in symbol: backend/app/audit/service.record (20 dependents)",
+    "title": "High fan-in symbol: backend/app/audit/service.record (24 dependents)",
     "source": "god-class",
-    "description": "\"backend/app/audit/service.record\" is depended upon by 20 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
+    "description": "\"backend/app/audit/service.record\" is depended upon by 24 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
     "confidence": 0.95,
     "evidence": [
       {
         "file": "backend/app/audit/service.py",
         "symbol": "backend/app/audit/service.record",
-        "detail": "20 symbols depend on this",
+        "detail": "24 symbols depend on this",
         "line": 24,
         "fact_id": "fe96df61844d3fc0018f96cd1d7df48c"
       },
@@ -176,6 +181,16 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.audit_verify",
         "detail": "depends on backend/app/audit/service.record",
         "fact_id": "7782befdda67da03232b8fe802b5b526"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service._send_one",
+        "detail": "depends on backend/app/audit/service.record",
+        "fact_id": "8032f8f92be6925445d9f8995a381c7e"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.decide",
+        "detail": "depends on backend/app/audit/service.record",
+        "fact_id": "c3cfd3eee259a311f25469933ba5cdfb"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/service.act",
@@ -201,16 +216,6 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/service.decide",
         "detail": "depends on backend/app/audit/service.record",
         "fact_id": "68932617d293fa9d4ac0d764f67c71fa"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/service.detect",
-        "detail": "depends on backend/app/audit/service.record",
-        "fact_id": "95809363e5fef79689c65b830b0c0e02"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.verify_chain",
-        "detail": "depends on backend/app/audit/service.record",
-        "fact_id": "f6b91067af59233be362528117f6bb69"
       }
     ],
     "suggested_actions": [
@@ -220,75 +225,15 @@
     ]
   },
   {
-    "title": "High fan-in symbol: .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad (11 dependents)",
+    "title": "High fan-in symbol: backend/app/db/session.session_for (13 dependents)",
     "source": "god-class",
-    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad\" is depended upon by 11 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.95,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/api.ts",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "detail": "11 symbols depend on this",
-        "line": 25,
-        "fact_id": "7523965578301508cef68064a6051eb7"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src.App",
-        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "fact_id": "6ffede4ffa3401b5c5dc4ed1cc50e489"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.ActionForm",
-        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "fact_id": "f71b24d9f48ea95179a555705a6dd365"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.CaseDetail",
-        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "fact_id": "f957ff348d355290a868da2aa609ba20"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.CaseList",
-        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "fact_id": "adc60801a9db115cf034ffcc020cb2de"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.InstitutionTimeline",
-        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "fact_id": "114e349de86116ea090f120629188cb9"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.InstitutionList",
-        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "fact_id": "e5872704583359bf21aba91cfd75119f"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.InstitutionProfile",
-        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "fact_id": "c6a98a6befd68e62a23ad8bbd8a09ca7"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.ResolutionQueue",
-        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "fact_id": "f16af13edd67173fd94e8665ae1aeb47"
-      }
-    ],
-    "suggested_actions": [
-      "Split the symbol along distinct responsibilities its callers use",
-      "Introduce narrower interfaces so callers depend only on what they need",
-      "Stabilize its public contract to limit churn for dependents"
-    ]
-  },
-  {
-    "title": "High fan-in symbol: backend/app/db/session.session_for (11 dependents)",
-    "source": "god-class",
-    "description": "\"backend/app/db/session.session_for\" is depended upon by 11 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
+    "description": "\"backend/app/db/session.session_for\" is depended upon by 13 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
     "confidence": 0.95,
     "evidence": [
       {
         "file": "backend/app/db/session.py",
         "symbol": "backend/app/db/session.session_for",
-        "detail": "11 symbols depend on this",
+        "detail": "13 symbols depend on this",
         "line": 40,
         "fact_id": "4c1c21be4020e1b5c683c2de3b94a814"
       },
@@ -296,6 +241,11 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.ready",
         "detail": "depends on backend/app/db/session.session_for",
         "fact_id": "02066f925915657778d1bc2a9f00b469"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+        "detail": "depends on backend/app/db/session.session_for",
+        "fact_id": "704dc5451f9f4f08e82b4a6a8e091fe9"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.detect_overlaps",
@@ -326,11 +276,6 @@
         "symbol": "backend/app/db/session.get_session",
         "detail": "depends on backend/app/db/session.session_for",
         "fact_id": "63a3f02e4bd845e10e3afe05af473c3c"
-      },
-      {
-        "symbol": "backend/app/worker.detect_overlaps",
-        "detail": "depends on backend/app/db/session.session_for",
-        "fact_id": "c269166a421a2cf8177c0788bad6cbc5"
       }
     ],
     "suggested_actions": [
@@ -340,15 +285,135 @@
     ]
   },
   {
-    "title": "High fan-in symbol: web/src.useLoad (11 dependents)",
+    "title": "High fan-in symbol: .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad (12 dependents)",
     "source": "god-class",
-    "description": "\"web/src.useLoad\" is depended upon by 11 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
+    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad\" is depended upon by 12 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
+    "confidence": 0.95,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/api.ts",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "detail": "12 symbols depend on this",
+        "line": 25,
+        "fact_id": "7523965578301508cef68064a6051eb7"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src.App",
+        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "fact_id": "6ffede4ffa3401b5c5dc4ed1cc50e489"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts.AlertsPage",
+        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "fact_id": "9e79c8572de19bd2685c0beede98d63f"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.ActionForm",
+        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "fact_id": "f71b24d9f48ea95179a555705a6dd365"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.CaseDetail",
+        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "fact_id": "f957ff348d355290a868da2aa609ba20"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.CaseList",
+        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "fact_id": "adc60801a9db115cf034ffcc020cb2de"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.InstitutionTimeline",
+        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "fact_id": "114e349de86116ea090f120629188cb9"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.InstitutionList",
+        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "fact_id": "e5872704583359bf21aba91cfd75119f"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.InstitutionProfile",
+        "detail": "depends on .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "fact_id": "c6a98a6befd68e62a23ad8bbd8a09ca7"
+      }
+    ],
+    "suggested_actions": [
+      "Split the symbol along distinct responsibilities its callers use",
+      "Introduce narrower interfaces so callers depend only on what they need",
+      "Stabilize its public contract to limit churn for dependents"
+    ]
+  },
+  {
+    "title": "High fan-in symbol: backend/app/core/config.get_settings (12 dependents)",
+    "source": "god-class",
+    "description": "\"backend/app/core/config.get_settings\" is depended upon by 12 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
+    "confidence": 0.95,
+    "evidence": [
+      {
+        "file": "backend/app/core/config.py",
+        "symbol": "backend/app/core/config.get_settings",
+        "detail": "12 symbols depend on this",
+        "line": 31,
+        "fact_id": "4ec6378d8826a6b5a6589582a683418d"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/auth.get_principal",
+        "detail": "depends on backend/app/core/config.get_settings",
+        "fact_id": "b0cecee79f243ee9ea34e94d25f55add"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/db/session.get_engine",
+        "detail": "depends on backend/app/core/config.get_settings",
+        "fact_id": "01823ee3cb5e6dbac235617a7f465b47"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/main.create_app",
+        "detail": "depends on backend/app/core/config.get_settings",
+        "fact_id": "819395740efb8df92f4ab0266800f0d4"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/api.list_alerts",
+        "detail": "depends on backend/app/core/config.get_settings",
+        "fact_id": "17ac94cb31b80810efe535e969f7d0a6"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+        "detail": "depends on backend/app/core/config.get_settings",
+        "fact_id": "704dc5451f9f4f08e82b4a6a8e091fe9"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
+        "detail": "depends on backend/app/core/config.get_settings",
+        "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
+      },
+      {
+        "symbol": "backend/app/core/auth.get_principal",
+        "detail": "depends on backend/app/core/config.get_settings",
+        "fact_id": "3e10e1363649ede5f39e5f4a898a800b"
+      },
+      {
+        "symbol": "backend/app/db/session.get_engine",
+        "detail": "depends on backend/app/core/config.get_settings",
+        "fact_id": "80edbf2a1f503a766a6ecd189cc7f7bf"
+      }
+    ],
+    "suggested_actions": [
+      "Split the symbol along distinct responsibilities its callers use",
+      "Introduce narrower interfaces so callers depend only on what they need",
+      "Stabilize its public contract to limit churn for dependents"
+    ]
+  },
+  {
+    "title": "High fan-in symbol: web/src.useLoad (12 dependents)",
+    "source": "god-class",
+    "description": "\"web/src.useLoad\" is depended upon by 12 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
     "confidence": 0.95,
     "evidence": [
       {
         "file": "web/src/api.ts",
         "symbol": "web/src.useLoad",
-        "detail": "11 symbols depend on this",
+        "detail": "12 symbols depend on this",
         "line": 25,
         "fact_id": "ea24b452fa99fe167aa7b6e1e2991c0d"
       },
@@ -356,6 +421,11 @@
         "symbol": "web/src.App",
         "detail": "depends on web/src.useLoad",
         "fact_id": "d92f7e66624fe64f19eb872df419185e"
+      },
+      {
+        "symbol": "web/src/features/alerts.AlertsPage",
+        "detail": "depends on web/src.useLoad",
+        "fact_id": "677336df65a7f858e9c698f0e9b1e23e"
       },
       {
         "symbol": "web/src/features/cases.ActionForm",
@@ -386,11 +456,6 @@
         "symbol": "web/src/features/institutions.InstitutionProfile",
         "detail": "depends on web/src.useLoad",
         "fact_id": "b3cbbab768fae3622de5e66d6dbe73a1"
-      },
-      {
-        "symbol": "web/src/features/institutions.ResolutionQueue",
-        "detail": "depends on web/src.useLoad",
-        "fact_id": "0933033bbdfda66d3398fac0a2fdb4c9"
       }
     ],
     "suggested_actions": [
@@ -400,75 +465,15 @@
     ]
   },
   {
-    "title": "High fan-in symbol: backend/app/core/config.get_settings (8 dependents)",
-    "source": "god-class",
-    "description": "\"backend/app/core/config.get_settings\" is depended upon by 8 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.8708518441300463,
-    "evidence": [
-      {
-        "file": "backend/app/core/config.py",
-        "symbol": "backend/app/core/config.get_settings",
-        "detail": "8 symbols depend on this",
-        "line": 31,
-        "fact_id": "4ec6378d8826a6b5a6589582a683418d"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/core/auth.get_principal",
-        "detail": "depends on backend/app/core/config.get_settings",
-        "fact_id": "b0cecee79f243ee9ea34e94d25f55add"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/db/session.get_engine",
-        "detail": "depends on backend/app/core/config.get_settings",
-        "fact_id": "01823ee3cb5e6dbac235617a7f465b47"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/main.create_app",
-        "detail": "depends on backend/app/core/config.get_settings",
-        "fact_id": "819395740efb8df92f4ab0266800f0d4"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
-        "detail": "depends on backend/app/core/config.get_settings",
-        "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
-      },
-      {
-        "symbol": "backend/app/core/auth.get_principal",
-        "detail": "depends on backend/app/core/config.get_settings",
-        "fact_id": "3e10e1363649ede5f39e5f4a898a800b"
-      },
-      {
-        "symbol": "backend/app/db/session.get_engine",
-        "detail": "depends on backend/app/core/config.get_settings",
-        "fact_id": "80edbf2a1f503a766a6ecd189cc7f7bf"
-      },
-      {
-        "symbol": "backend/app/main.create_app",
-        "detail": "depends on backend/app/core/config.get_settings",
-        "fact_id": "53173af9fad9245e0fcb814da094bf79"
-      },
-      {
-        "symbol": "seed/load.load",
-        "detail": "depends on backend/app/core/config.get_settings",
-        "fact_id": "5e97cbdd0647d63fb1816a83b56a03a4"
-      }
-    ],
-    "suggested_actions": [
-      "Split the symbol along distinct responsibilities its callers use",
-      "Introduce narrower interfaces so callers depend only on what they need",
-      "Stabilize its public contract to limit churn for dependents"
-    ]
-  },
-  {
-    "title": "Call-graph hotspot: backend/app/db/session.get_session (fan-in 32, fan-out 4)",
+    "title": "Call-graph hotspot: backend/app/db/session.get_session (fan-in 36, fan-out 4)",
     "source": "hotspots",
-    "description": "\"backend/app/db/session.get_session\" is a pinch point: 32 symbols call into it and it calls out to 4 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "description": "\"backend/app/db/session.get_session\" is a pinch point: 36 symbols call into it and it calls out to 4 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
     "confidence": 0.7,
     "evidence": [
       {
         "file": "backend/app/db/session.py",
         "symbol": "backend/app/db/session.get_session",
-        "detail": "fan-in 32 × fan-out 4 = score 128",
+        "detail": "fan-in 36 × fan-out 4 = score 144",
         "line": 47,
         "fact_id": "63a3f02e4bd845e10e3afe05af473c3c"
       },
@@ -476,6 +481,16 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.audit_verify",
         "detail": "calls into backend/app/db/session.get_session",
         "fact_id": "7782befdda67da03232b8fe802b5b526"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/api.decide",
+        "detail": "calls into backend/app/db/session.get_session",
+        "fact_id": "a42549905e622e8c0b268c1555ac7cf3"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/api.list_alerts",
+        "detail": "calls into backend/app/db/session.get_session",
+        "fact_id": "17ac94cb31b80810efe535e969f7d0a6"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.act",
@@ -486,16 +501,6 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.assignees",
         "detail": "calls into backend/app/db/session.get_session",
         "fact_id": "f28cc7721249ba4bb29fb994c251e04d"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.case",
-        "detail": "calls into backend/app/db/session.get_session",
-        "fact_id": "dbaf22c383e53d6a0582e28f67746cc7"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.institution_timeline",
-        "detail": "calls into backend/app/db/session.get_session",
-        "fact_id": "9bbc354a086f27d55e6dcfd5b6b2c903"
       },
       {
         "symbol": "Depends",
@@ -593,15 +598,15 @@
     ]
   },
   {
-    "title": "Call-graph hotspot: .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad (fan-in 11, fan-out 7)",
+    "title": "Call-graph hotspot: .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad (fan-in 12, fan-out 7)",
     "source": "hotspots",
-    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad\" is a pinch point: 11 symbols call into it and it calls out to 7 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad\" is a pinch point: 12 symbols call into it and it calls out to 7 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
     "confidence": 0.7,
     "evidence": [
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/api.ts",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "detail": "fan-in 11 × fan-out 7 = score 77",
+        "detail": "fan-in 12 × fan-out 7 = score 84",
         "line": 25,
         "fact_id": "7523965578301508cef68064a6051eb7"
       },
@@ -609,6 +614,11 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src.App",
         "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
         "fact_id": "6ffede4ffa3401b5c5dc4ed1cc50e489"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts.AlertsPage",
+        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
+        "fact_id": "9e79c8572de19bd2685c0beede98d63f"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.ActionForm",
@@ -624,11 +634,6 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.CaseList",
         "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
         "fact_id": "adc60801a9db115cf034ffcc020cb2de"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.InstitutionTimeline",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/web/src.useLoad",
-        "fact_id": "114e349de86116ea090f120629188cb9"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src",
@@ -660,15 +665,15 @@
     ]
   },
   {
-    "title": "Call-graph hotspot: web/src.useLoad (fan-in 11, fan-out 7)",
+    "title": "Call-graph hotspot: web/src.useLoad (fan-in 12, fan-out 7)",
     "source": "hotspots",
-    "description": "\"web/src.useLoad\" is a pinch point: 11 symbols call into it and it calls out to 7 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "description": "\"web/src.useLoad\" is a pinch point: 12 symbols call into it and it calls out to 7 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
     "confidence": 0.7,
     "evidence": [
       {
         "file": "web/src/api.ts",
         "symbol": "web/src.useLoad",
-        "detail": "fan-in 11 × fan-out 7 = score 77",
+        "detail": "fan-in 12 × fan-out 7 = score 84",
         "line": 25,
         "fact_id": "ea24b452fa99fe167aa7b6e1e2991c0d"
       },
@@ -676,6 +681,11 @@
         "symbol": "web/src.App",
         "detail": "calls into web/src.useLoad",
         "fact_id": "d92f7e66624fe64f19eb872df419185e"
+      },
+      {
+        "symbol": "web/src/features/alerts.AlertsPage",
+        "detail": "calls into web/src.useLoad",
+        "fact_id": "677336df65a7f858e9c698f0e9b1e23e"
       },
       {
         "symbol": "web/src/features/cases.ActionForm",
@@ -691,11 +701,6 @@
         "symbol": "web/src/features/cases.CaseList",
         "detail": "calls into web/src.useLoad",
         "fact_id": "5ea458d29e8d4d9113295e349dec8e99"
-      },
-      {
-        "symbol": "web/src/features/cases.InstitutionTimeline",
-        "detail": "calls into web/src.useLoad",
-        "fact_id": "3fbd2e3ac0075fcdaabd2cad30017a1f"
       },
       {
         "symbol": "web/src",
@@ -727,15 +732,73 @@
     ]
   },
   {
-    "title": "Call-graph hotspot: docs/RUNBOOK.md (fan-in 5, fan-out 13)",
+    "title": "Call-graph hotspot: backend/app/audit/service.record (fan-in 24, fan-out 3)",
     "source": "hotspots",
-    "description": "\"docs/RUNBOOK.md\" is a pinch point: 5 symbols call into it and it calls out to 13 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "description": "\"backend/app/audit/service.record\" is a pinch point: 24 symbols call into it and it calls out to 3 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "backend/app/audit/service.py",
+        "symbol": "backend/app/audit/service.record",
+        "detail": "fan-in 24 × fan-out 3 = score 72",
+        "line": 24,
+        "fact_id": "fe96df61844d3fc0018f96cd1d7df48c"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.audit_verify",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "7782befdda67da03232b8fe802b5b526"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service._send_one",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "8032f8f92be6925445d9f8995a381c7e"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.decide",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "c3cfd3eee259a311f25469933ba5cdfb"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/service.act",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "a3b4847130f412e928a423509163ee68"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/service.actor_id",
+        "detail": "calls into backend/app/audit/service.record",
+        "fact_id": "98cae8dea48a3d05081e016be004877c"
+      },
+      {
+        "symbol": "app.core.auth.Principal.role",
+        "detail": "called by backend/app/audit/service.record"
+      },
+      {
+        "symbol": "app.core.auth.Principal.subject",
+        "detail": "called by backend/app/audit/service.record"
+      },
+      {
+        "symbol": "backend/app/audit",
+        "detail": "called by backend/app/audit/service.record",
+        "fact_id": "552fca117ae9c768e3d75a31204698d0"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
+    "title": "Call-graph hotspot: docs/RUNBOOK.md (fan-in 5, fan-out 14)",
+    "source": "hotspots",
+    "description": "\"docs/RUNBOOK.md\" is a pinch point: 5 symbols call into it and it calls out to 14 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
     "confidence": 0.7,
     "evidence": [
       {
         "file": "docs/RUNBOOK.md",
         "symbol": "docs/RUNBOOK.md",
-        "detail": "fan-in 5 × fan-out 13 = score 65",
+        "detail": "fan-in 5 × fan-out 14 = score 70",
         "line": 1,
         "fact_id": "d655d08a79738fd7b654480cba904d26"
       },
@@ -796,55 +859,61 @@
     ]
   },
   {
-    "title": "Call-graph hotspot: backend/app/audit/service.record (fan-in 20, fan-out 3)",
+    "title": "Call-graph hotspot: backend/app/db/session.session_for (fan-in 13, fan-out 4)",
     "source": "hotspots",
-    "description": "\"backend/app/audit/service.record\" is a pinch point: 20 symbols call into it and it calls out to 3 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "description": "\"backend/app/db/session.session_for\" is a pinch point: 13 symbols call into it and it calls out to 4 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
     "confidence": 0.7,
     "evidence": [
       {
-        "file": "backend/app/audit/service.py",
-        "symbol": "backend/app/audit/service.record",
-        "detail": "fan-in 20 × fan-out 3 = score 60",
-        "line": 24,
-        "fact_id": "fe96df61844d3fc0018f96cd1d7df48c"
+        "file": "backend/app/db/session.py",
+        "symbol": "backend/app/db/session.session_for",
+        "detail": "fan-in 13 × fan-out 4 = score 52",
+        "line": 40,
+        "fact_id": "4c1c21be4020e1b5c683c2de3b94a814"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.audit_verify",
-        "detail": "calls into backend/app/audit/service.record",
-        "fact_id": "7782befdda67da03232b8fe802b5b526"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.ready",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "02066f925915657778d1bc2a9f00b469"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/service.act",
-        "detail": "calls into backend/app/audit/service.record",
-        "fact_id": "a3b4847130f412e928a423509163ee68"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "704dc5451f9f4f08e82b4a6a8e091fe9"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/service.actor_id",
-        "detail": "calls into backend/app/audit/service.record",
-        "fact_id": "98cae8dea48a3d05081e016be004877c"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.detect_overlaps",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "60a221c6d238f841e2906634387bb1ef"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.resolve_by_officer",
-        "detail": "calls into backend/app/audit/service.record",
-        "fact_id": "c948a03e112d9af47232f7da55d0f80e"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.resolve_pending",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "a217e297fa3e9b341bca5541a1a781e9"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.resolve_pending",
-        "detail": "calls into backend/app/audit/service.record",
-        "fact_id": "8a1ba8b67cdcd77169cc4806a29e50e1"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.verify_chain",
+        "detail": "calls into backend/app/db/session.session_for",
+        "fact_id": "f6b91067af59233be362528117f6bb69"
       },
       {
-        "symbol": "app.core.auth.Principal.role",
-        "detail": "called by backend/app/audit/service.record"
+        "symbol": "Session",
+        "detail": "called by backend/app/db/session.session_for"
       },
       {
-        "symbol": "app.core.auth.Principal.subject",
-        "detail": "called by backend/app/audit/service.record"
+        "symbol": "backend/app/db",
+        "detail": "called by backend/app/db/session.session_for",
+        "fact_id": "d9b5ae4dddec30d50558e9b39181a40d"
       },
       {
-        "symbol": "backend/app/audit",
-        "detail": "called by backend/app/audit/service.record",
-        "fact_id": "552fca117ae9c768e3d75a31204698d0"
+        "symbol": "backend/app/db/session.apply_context",
+        "detail": "called by backend/app/db/session.session_for",
+        "fact_id": "f1a74f361e90c50ad9e4a97eb5826c98"
+      },
+      {
+        "symbol": "backend/app/db/session.get_engine",
+        "detail": "called by backend/app/db/session.session_for",
+        "fact_id": "80edbf2a1f503a766a6ecd189cc7f7bf"
       }
     ],
     "suggested_actions": [
@@ -983,61 +1052,56 @@
     ]
   },
   {
-    "title": "Call-graph hotspot: backend/app/db/session.session_for (fan-in 11, fan-out 4)",
+    "title": "Call-graph hotspot: .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md (fan-in 3, fan-out 14)",
     "source": "hotspots",
-    "description": "\"backend/app/db/session.session_for\" is a pinch point: 11 symbols call into it and it calls out to 4 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "description": "\".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md\" is a pinch point: 3 symbols call into it and it calls out to 14 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
     "confidence": 0.7,
     "evidence": [
       {
-        "file": "backend/app/db/session.py",
-        "symbol": "backend/app/db/session.session_for",
-        "detail": "fan-in 11 × fan-out 4 = score 44",
-        "line": 40,
-        "fact_id": "4c1c21be4020e1b5c683c2de3b94a814"
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "detail": "fan-in 3 × fan-out 14 = score 42",
+        "line": 1,
+        "fact_id": "879e645f2a5ac0daaed30c186a4bb243"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.ready",
-        "detail": "calls into backend/app/db/session.session_for",
-        "fact_id": "02066f925915657778d1bc2a9f00b469"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md#commands",
+        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "7dbda8f3f28243ec8b646e92392d07a4"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.detect_overlaps",
-        "detail": "calls into backend/app/db/session.session_for",
-        "fact_id": "60a221c6d238f841e2906634387bb1ef"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md#read-first",
+        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "315a0e7580aa8ac4ccac16caaa7f521b"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.resolve_pending",
-        "detail": "calls into backend/app/db/session.session_for",
-        "fact_id": "a217e297fa3e9b341bca5541a1a781e9"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/README.md#quick-start-windows-powershell",
+        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "a96d13de323ac11b6eff536878b23c4d"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.verify_chain",
-        "detail": "calls into backend/app/db/session.session_for",
-        "fact_id": "f6b91067af59233be362528117f6bb69"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
-        "detail": "calls into backend/app/db/session.session_for",
-        "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#1-first-start",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "8fda8358a5cd87f26debb02e9bb65fed"
       },
       {
-        "symbol": "Session",
-        "detail": "called by backend/app/db/session.session_for"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#2-daily-use",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "0944eb871e91017aa8f185ee573dab6b"
       },
       {
-        "symbol": "backend/app/db",
-        "detail": "called by backend/app/db/session.session_for",
-        "fact_id": "d9b5ae4dddec30d50558e9b39181a40d"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#3-database",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "de07a7660681f6acf93c24f71780ec5e"
       },
       {
-        "symbol": "backend/app/db/session.apply_context",
-        "detail": "called by backend/app/db/session.session_for",
-        "fact_id": "f1a74f361e90c50ad9e4a97eb5826c98"
-      },
-      {
-        "symbol": "backend/app/db/session.get_engine",
-        "detail": "called by backend/app/db/session.session_for",
-        "fact_id": "80edbf2a1f503a766a6ecd189cc7f7bf"
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#4-backup-and-restore",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "3cccfe673db3915d4dc5390578ce4d2f"
       }
     ],
     "suggested_actions": [
@@ -1107,65 +1171,6 @@
         "symbol": "docs/04-MOCK-DATA-SPEC.md#files-to-generate",
         "detail": "called by docs/04-MOCK-DATA-SPEC.md",
         "fact_id": "b220932e80344999e84e1331078c3a19"
-      }
-    ],
-    "suggested_actions": [
-      "Add focused tests around this chokepoint before refactoring",
-      "Consider decomposing it so call paths don't all funnel through one symbol",
-      "Verify it isn't doing orchestration that belongs in callers"
-    ]
-  },
-  {
-    "title": "Call-graph hotspot: .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md (fan-in 3, fan-out 13)",
-    "source": "hotspots",
-    "description": "\".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md\" is a pinch point: 3 symbols call into it and it calls out to 13 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "detail": "fan-in 3 × fan-out 13 = score 39",
-        "line": 1,
-        "fact_id": "879e645f2a5ac0daaed30c186a4bb243"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md#commands",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "7dbda8f3f28243ec8b646e92392d07a4"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md#read-first",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "315a0e7580aa8ac4ccac16caaa7f521b"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/README.md#quick-start-windows-powershell",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "a96d13de323ac11b6eff536878b23c4d"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#1-first-start",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "8fda8358a5cd87f26debb02e9bb65fed"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#2-daily-use",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "0944eb871e91017aa8f185ee573dab6b"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#3-database",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "de07a7660681f6acf93c24f71780ec5e"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#4-backup-and-restore",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "3cccfe673db3915d4dc5390578ce4d2f"
       }
     ],
     "suggested_actions": [
@@ -1362,132 +1367,92 @@
     ]
   },
   {
-    "title": "Call-graph hotspot: .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank (fan-in 3, fan-out 7)",
-    "source": "hotspots",
-    "description": "\".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank\" is a pinch point: 3 symbols call into it and it calls out to 7 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
-        "detail": "fan-in 3 × fan-out 7 = score 21",
-        "line": 44,
-        "fact_id": "0d60fc15c5682efa3a3c0fb3a1771c04"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.list_institutions",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
-        "fact_id": "56c37399821e58f28cc0f1ccdd205bd6"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.queue",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
-        "fact_id": "cc7bd1c989dc657ce470041d47592c45"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.resolve_pending",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
-        "fact_id": "8a1ba8b67cdcd77169cc4806a29e50e1"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
-        "fact_id": "4106d7619f0a1f6426262fc9692ecc98"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service._candidate",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
-        "fact_id": "0faefea7ce6fe07f3c5faa42e0b6db47"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.normalize",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
-        "fact_id": "df4141986f465a2527e4c3165d21d3f3"
-      },
-      {
-        "symbol": "SequenceMatcher",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank"
-      },
-      {
-        "symbol": "backend/app/modules/institutions/repo.by_acronym",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
-        "fact_id": "c67dd51c38781e49ee231a25c4a127db"
-      }
-    ],
-    "suggested_actions": [
-      "Add focused tests around this chokepoint before refactoring",
-      "Consider decomposing it so call paths don't all funnel through one symbol",
-      "Verify it isn't doing orchestration that belongs in callers"
-    ]
-  },
-  {
-    "title": "Call-graph hotspot: backend/app/modules/institutions/service.rank (fan-in 3, fan-out 7)",
-    "source": "hotspots",
-    "description": "\"backend/app/modules/institutions/service.rank\" is a pinch point: 3 symbols call into it and it calls out to 7 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": "backend/app/modules/institutions/service.py",
-        "symbol": "backend/app/modules/institutions/service.rank",
-        "detail": "fan-in 3 × fan-out 7 = score 21",
-        "line": 44,
-        "fact_id": "a998f4bb12a702c5a833fd08f2f6d488"
-      },
-      {
-        "symbol": "backend/app/modules/institutions/service.list_institutions",
-        "detail": "calls into backend/app/modules/institutions/service.rank",
-        "fact_id": "b672953d1c85a10820b6305eb4fe02b9"
-      },
-      {
-        "symbol": "backend/app/modules/institutions/service.queue",
-        "detail": "calls into backend/app/modules/institutions/service.rank",
-        "fact_id": "f6f97c50a9c3c16b456996e4beb87f87"
-      },
-      {
-        "symbol": "backend/app/modules/institutions/service.resolve_pending",
-        "detail": "calls into backend/app/modules/institutions/service.rank",
-        "fact_id": "54faa7f6323ddc1a897d40bc8c23be5c"
-      },
-      {
-        "symbol": "SequenceMatcher",
-        "detail": "called by backend/app/modules/institutions/service.rank"
-      },
-      {
-        "symbol": "backend/app/modules/institutions",
-        "detail": "called by backend/app/modules/institutions/service.rank",
-        "fact_id": "4960acf08907390285f3378b7e594e41"
-      },
-      {
-        "symbol": "backend/app/modules/institutions/repo.by_acronym",
-        "detail": "called by backend/app/modules/institutions/service.rank",
-        "fact_id": "c67dd51c38781e49ee231a25c4a127db"
-      },
-      {
-        "symbol": "backend/app/modules/institutions/repo.by_permanent_id",
-        "detail": "called by backend/app/modules/institutions/service.rank",
-        "fact_id": "9b5063934fbedd5f9e6836a422d68c31"
-      },
-      {
-        "symbol": "backend/app/modules/institutions/repo.candidates",
-        "detail": "called by backend/app/modules/institutions/service.rank",
-        "fact_id": "150a3d1e6430fa2e49b02a82eab3ab7e"
-      }
-    ],
-    "suggested_actions": [
-      "Add focused tests around this chokepoint before refactoring",
-      "Consider decomposing it so call paths don't all funnel through one symbol",
-      "Verify it isn't doing orchestration that belongs in callers"
-    ]
-  },
-  {
-    "title": "Deep dependency chain: .claude/worktrees/jolly-feynman-1a9f96/backend/app (depth 5)",
+    "title": "Deep dependency chain: .claude/worktrees/jolly-feynman-1a9f96/backend/app (depth 6)",
     "source": "dependency-depth",
-    "description": "Module \".claude/worktrees/jolly-feynman-1a9f96/backend/app\" has a longest dependency chain of 5 modules: .claude/worktrees/jolly-feynman-1a9f96/backend/app -\u003e backend/app/modules/complaints -\u003e backend/app/modules/overlaps -\u003e backend/app/audit -\u003e backend/app/core. Deep chains slow comprehension and widen rebuild/retest impact when a module near the bottom changes.",
+    "description": "Module \".claude/worktrees/jolly-feynman-1a9f96/backend/app\" has a longest dependency chain of 6 modules: .claude/worktrees/jolly-feynman-1a9f96/backend/app -\u003e backend/app/modules/alerts -\u003e backend/app/modules/complaints -\u003e backend/app/modules/overlaps -\u003e backend/app/audit -\u003e backend/app/core. Deep chains slow comprehension and widen rebuild/retest impact when a module near the bottom changes.",
     "confidence": 0.7,
     "evidence": [
       {
         "fact": ".claude/worktrees/jolly-feynman-1a9f96/backend/app",
         "fact_id": "1c3a52ca020846cf86ecc5bb4fb72925"
+      },
+      {
+        "fact": "backend/app/modules/alerts",
+        "fact_id": "621a21252d8a51f52b3a9947b49e6f12"
+      },
+      {
+        "fact": "backend/app/modules/complaints",
+        "fact_id": "f9e015f82312be0d5534290dd00e6372"
+      },
+      {
+        "fact": "backend/app/modules/overlaps",
+        "fact_id": "7797655ba24ce763671ea737bad97697"
+      },
+      {
+        "fact": "backend/app/audit",
+        "fact_id": "552fca117ae9c768e3d75a31204698d0"
+      },
+      {
+        "fact": "backend/app/core",
+        "fact_id": "f9f65072bf896cda0ecc29288d517109"
+      }
+    ],
+    "suggested_actions": [
+      "Flatten the chain by depending on shared abstractions instead of deep transitive modules",
+      "Check whether intermediate modules are pass-through layers that can be removed",
+      "Introduce interfaces to decouple the deepest modules from their consumers"
+    ]
+  },
+  {
+    "title": "Deep dependency chain: .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts (depth 6)",
+    "source": "dependency-depth",
+    "description": "Module \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts\" has a longest dependency chain of 6 modules: .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts -\u003e backend/app/modules/alerts -\u003e backend/app/modules/complaints -\u003e backend/app/modules/overlaps -\u003e backend/app/audit -\u003e backend/app/core. Deep chains slow comprehension and widen rebuild/retest impact when a module near the bottom changes.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "fact": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts",
+        "fact_id": "b886cbdc1a87a7e6930d8ddfbc91021a"
+      },
+      {
+        "fact": "backend/app/modules/alerts",
+        "fact_id": "621a21252d8a51f52b3a9947b49e6f12"
+      },
+      {
+        "fact": "backend/app/modules/complaints",
+        "fact_id": "f9e015f82312be0d5534290dd00e6372"
+      },
+      {
+        "fact": "backend/app/modules/overlaps",
+        "fact_id": "7797655ba24ce763671ea737bad97697"
+      },
+      {
+        "fact": "backend/app/audit",
+        "fact_id": "552fca117ae9c768e3d75a31204698d0"
+      },
+      {
+        "fact": "backend/app/core",
+        "fact_id": "f9f65072bf896cda0ecc29288d517109"
+      }
+    ],
+    "suggested_actions": [
+      "Flatten the chain by depending on shared abstractions instead of deep transitive modules",
+      "Check whether intermediate modules are pass-through layers that can be removed",
+      "Introduce interfaces to decouple the deepest modules from their consumers"
+    ]
+  },
+  {
+    "title": "Deep dependency chain: backend/app (depth 6)",
+    "source": "dependency-depth",
+    "description": "Module \"backend/app\" has a longest dependency chain of 6 modules: backend/app -\u003e backend/app/modules/alerts -\u003e backend/app/modules/complaints -\u003e backend/app/modules/overlaps -\u003e backend/app/audit -\u003e backend/app/core. Deep chains slow comprehension and widen rebuild/retest impact when a module near the bottom changes.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "fact": "backend/app",
+        "fact_id": "5cf2525140116eb67576b028fc6162b0"
+      },
+      {
+        "fact": "backend/app/modules/alerts",
+        "fact_id": "621a21252d8a51f52b3a9947b49e6f12"
       },
       {
         "fact": "backend/app/modules/complaints",
@@ -1579,14 +1544,14 @@
     ]
   },
   {
-    "title": "Deep dependency chain: backend/app (depth 5)",
+    "title": "Deep dependency chain: backend/app/modules/alerts (depth 5)",
     "source": "dependency-depth",
-    "description": "Module \"backend/app\" has a longest dependency chain of 5 modules: backend/app -\u003e backend/app/modules/complaints -\u003e backend/app/modules/overlaps -\u003e backend/app/audit -\u003e backend/app/core. Deep chains slow comprehension and widen rebuild/retest impact when a module near the bottom changes.",
+    "description": "Module \"backend/app/modules/alerts\" has a longest dependency chain of 5 modules: backend/app/modules/alerts -\u003e backend/app/modules/complaints -\u003e backend/app/modules/overlaps -\u003e backend/app/audit -\u003e backend/app/core. Deep chains slow comprehension and widen rebuild/retest impact when a module near the bottom changes.",
     "confidence": 0.7,
     "evidence": [
       {
-        "fact": "backend/app",
-        "fact_id": "5cf2525140116eb67576b028fc6162b0"
+        "fact": "backend/app/modules/alerts",
+        "fact_id": "621a21252d8a51f52b3a9947b49e6f12"
       },
       {
         "fact": "backend/app/modules/complaints",
@@ -1612,9 +1577,42 @@
     ]
   },
   {
-    "title": "Large public surface:  exports 136 of 153 symbols (89%)",
+    "title": "Deep dependency chain: web/src (depth 5)",
+    "source": "dependency-depth",
+    "description": "Module \"web/src\" has a longest dependency chain of 5 modules: web/src -\u003e web/src/features/alerts -\u003e web/src/features/cases -\u003e web/src/features/institutions -\u003e web/src/features/overlaps. Deep chains slow comprehension and widen rebuild/retest impact when a module near the bottom changes.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "fact": "web/src",
+        "fact_id": "a72cc02fb272871b835207fbb02402cb"
+      },
+      {
+        "fact": "web/src/features/alerts",
+        "fact_id": "6e046c0e7832f77e58b9a91db5dd0e3a"
+      },
+      {
+        "fact": "web/src/features/cases",
+        "fact_id": "4ae6d616fc1a429bcce80b848fea4479"
+      },
+      {
+        "fact": "web/src/features/institutions",
+        "fact_id": "d933f3db41dbe48500c68a227ddc86b1"
+      },
+      {
+        "fact": "web/src/features/overlaps",
+        "fact_id": "6bbffe97db100c4409bf32b4ba0faae4"
+      }
+    ],
+    "suggested_actions": [
+      "Flatten the chain by depending on shared abstractions instead of deep transitive modules",
+      "Check whether intermediate modules are pass-through layers that can be removed",
+      "Introduce interfaces to decouple the deepest modules from their consumers"
+    ]
+  },
+  {
+    "title": "Large public surface:  exports 154 of 175 symbols (88%)",
     "source": "exported-surface",
-    "description": "Module \"\" exports 136 of its 153 symbols (89%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
+    "description": "Module \"\" exports 154 of its 175 symbols (88%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
     "confidence": 0.6,
     "evidence": [
       {
@@ -1653,9 +1651,9 @@
         "fact_id": "c3215d5c05f10468e0f8cb0f54a70b59"
       },
       {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/api/routes.audit_verify",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.downgrade",
         "detail": "exported",
-        "fact_id": "7782befdda67da03232b8fe802b5b526"
+        "fact_id": "1d151575a14d47b4530df5fba6ee1fee"
       }
     ],
     "suggested_actions": [
@@ -1918,6 +1916,46 @@
     ]
   },
   {
+    "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src.App (17)",
+    "source": "complexity-outliers",
+    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src.App\" has a cyclomatic complexity of 17 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/App.tsx",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src.App",
+        "detail": "cyclomatic complexity 17 at line 26",
+        "line": 26,
+        "fact_id": "6ffede4ffa3401b5c5dc4ed1cc50e489"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
+    "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts.AlertCard (17)",
+    "source": "complexity-outliers",
+    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts.AlertCard\" has a cyclomatic complexity of 17 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts/Alerts.tsx",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts.AlertCard",
+        "detail": "cyclomatic complexity 17 at line 32",
+        "line": 32,
+        "fact_id": "bf2b9571052b513248a6e44c3c991fd0"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
     "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps.LinkCard (17)",
     "source": "complexity-outliers",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps.LinkCard\" has a cyclomatic complexity of 17 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
@@ -1938,17 +1976,17 @@
     ]
   },
   {
-    "title": "High cyclomatic complexity: web/src/features/overlaps.LinkCard (17)",
+    "title": "High cyclomatic complexity: web/src.App (17)",
     "source": "complexity-outliers",
-    "description": "\"web/src/features/overlaps.LinkCard\" has a cyclomatic complexity of 17 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "description": "\"web/src.App\" has a cyclomatic complexity of 17 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
     "confidence": 0.7,
     "evidence": [
       {
-        "file": "web/src/features/overlaps/Overlaps.tsx",
-        "symbol": "web/src/features/overlaps.LinkCard",
-        "detail": "cyclomatic complexity 17 at line 34",
-        "line": 34,
-        "fact_id": "1d572e2f43fed275554319329d6ae8ab"
+        "file": "web/src/App.tsx",
+        "symbol": "web/src.App",
+        "detail": "cyclomatic complexity 17 at line 26",
+        "line": 26,
+        "fact_id": "d92f7e66624fe64f19eb872df419185e"
       }
     ],
     "suggested_actions": [
@@ -1958,57 +1996,17 @@
     ]
   },
   {
-    "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps.OverlapsPage (16)",
+    "title": "High cyclomatic complexity: web/src/features/alerts.AlertCard (17)",
     "source": "complexity-outliers",
-    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps.OverlapsPage\" has a cyclomatic complexity of 16 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "description": "\"web/src/features/alerts.AlertCard\" has a cyclomatic complexity of 17 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
     "confidence": 0.7,
     "evidence": [
       {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps/Overlaps.tsx",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps.OverlapsPage",
-        "detail": "cyclomatic complexity 16 at line 134",
-        "line": 134,
-        "fact_id": "eaf0c02f9ed1a728e36f5a8fb2fbfa94"
-      }
-    ],
-    "suggested_actions": [
-      "Extract guard clauses and nested branches into helper functions",
-      "Replace deep conditionals with table/strategy dispatch where possible",
-      "Add tests covering the distinct branches before refactoring"
-    ]
-  },
-  {
-    "title": "High cyclomatic complexity: web/src/features/overlaps.OverlapsPage (16)",
-    "source": "complexity-outliers",
-    "description": "\"web/src/features/overlaps.OverlapsPage\" has a cyclomatic complexity of 16 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": "web/src/features/overlaps/Overlaps.tsx",
-        "symbol": "web/src/features/overlaps.OverlapsPage",
-        "detail": "cyclomatic complexity 16 at line 134",
-        "line": 134,
-        "fact_id": "375afa66d03cbff9831d9b1c75e5c101"
-      }
-    ],
-    "suggested_actions": [
-      "Extract guard clauses and nested branches into helper functions",
-      "Replace deep conditionals with table/strategy dispatch where possible",
-      "Add tests covering the distinct branches before refactoring"
-    ]
-  },
-  {
-    "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src.App (15)",
-    "source": "complexity-outliers",
-    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src.App\" has a cyclomatic complexity of 15 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/App.tsx",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src.App",
-        "detail": "cyclomatic complexity 15 at line 25",
-        "line": 25,
-        "fact_id": "6ffede4ffa3401b5c5dc4ed1cc50e489"
+        "file": "web/src/features/alerts/Alerts.tsx",
+        "symbol": "web/src/features/alerts.AlertCard",
+        "detail": "cyclomatic complexity 17 at line 32",
+        "line": 32,
+        "fact_id": "10edc3a41409068df3de0a7865b33ab1"
       }
     ],
     "suggested_actions": [
@@ -2025,7 +2023,7 @@
     "evidence": [
       {
         "fact": "backend/app/core",
-        "detail": "Ca=17 Ce=0 N=4 I=0.00 A=0.00 D=1.00",
+        "detail": "Ca=19 Ce=0 N=4 I=0.00 A=0.00 D=1.00",
         "fact_id": "f9f65072bf896cda0ecc29288d517109"
       }
     ],
@@ -2034,14 +2032,14 @@
     ]
   },
   {
-    "title": "Most depended-upon package: backend/app/core (Ca=17)",
+    "title": "Most depended-upon package: backend/app/core (Ca=19)",
     "source": "package-metrics",
-    "description": "\"backend/app/core\" is depended upon by 17 other packages — a change-risk concentrator. Edits ripple across dependents, so keep its public contract stable.",
+    "description": "\"backend/app/core\" is depended upon by 19 other packages — a change-risk concentrator. Edits ripple across dependents, so keep its public contract stable.",
     "confidence": 0.6,
     "evidence": [
       {
         "fact": "backend/app/core",
-        "detail": "Ca=17 I=0.00",
+        "detail": "Ca=19 I=0.00",
         "fact_id": "f9f65072bf896cda0ecc29288d517109"
       }
     ],
@@ -2119,6 +2117,29 @@
     ]
   },
   {
+    "title": "Dead code candidate: function .claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.downgrade",
+    "source": "dead-code",
+    "description": "function \".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.downgrade\" is isolated — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.downgrade",
+        "detail": "function · isolated · .claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.py:57",
+        "line": 57,
+        "fact_id": "1d151575a14d47b4530df5fba6ee1fee"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.downgrade",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "1d151575a14d47b4530df5fba6ee1fee"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
     "title": "Dead code candidate: function backend/alembic/versions/0001_core_schema.downgrade",
     "source": "dead-code",
     "description": "function \"backend/alembic/versions/0001_core_schema.downgrade\" is isolated — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
@@ -2181,6 +2202,29 @@
         "symbol": "backend/alembic/versions/0003_overlap_policies.downgrade",
         "detail": "exported — may be used outside this snapshot; verify before removal",
         "fact_id": "717dccabf840c217545653d90b3887a4"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function backend/alembic/versions/0004_alert_approval.downgrade",
+    "source": "dead-code",
+    "description": "function \"backend/alembic/versions/0004_alert_approval.downgrade\" is isolated — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": "backend/alembic/versions/0004_alert_approval.py",
+        "symbol": "backend/alembic/versions/0004_alert_approval.downgrade",
+        "detail": "function · isolated · backend/alembic/versions/0004_alert_approval.py:57",
+        "line": 57,
+        "fact_id": "aae6dad1127448d86e53a76deb2cb867"
+      },
+      {
+        "symbol": "backend/alembic/versions/0004_alert_approval.downgrade",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "aae6dad1127448d86e53a76deb2cb867"
       }
     ],
     "suggested_actions": [
@@ -2257,6 +2301,52 @@
     ]
   },
   {
+    "title": "Dead code candidate: function .claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.upgrade",
+    "source": "dead-code",
+    "description": "function \".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.upgrade\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.upgrade",
+        "detail": "function · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.py:53",
+        "line": 53,
+        "fact_id": "fc97693f969027e565182f95b6a06cec"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.upgrade",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "fc97693f969027e565182f95b6a06cec"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function .claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.deliver_alerts",
+    "source": "dead-code",
+    "description": "function \".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.deliver_alerts\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.deliver_alerts",
+        "detail": "function · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py:59",
+        "line": 59,
+        "fact_id": "3f22b6a3e69bc235717dc29cd3f6cece"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.deliver_alerts",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "3f22b6a3e69bc235717dc29cd3f6cece"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
     "title": "Dead code candidate: function .claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.detect_overlaps",
     "source": "dead-code",
     "description": "function \".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.detect_overlaps\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
@@ -2265,8 +2355,8 @@
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.detect_overlaps",
-        "detail": "function · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py:50",
-        "line": 50,
+        "detail": "function · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py:52",
+        "line": 52,
         "fact_id": "60a221c6d238f841e2906634387bb1ef"
       },
       {
@@ -2288,8 +2378,8 @@
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.verify_chain",
-        "detail": "function · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py:33",
-        "line": 33,
+        "detail": "function · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/worker.py:35",
+        "line": 35,
         "fact_id": "f6b91067af59233be362528117f6bb69"
       },
       {
@@ -2372,6 +2462,52 @@
     ]
   },
   {
+    "title": "Dead code candidate: function backend/alembic/versions/0004_alert_approval.upgrade",
+    "source": "dead-code",
+    "description": "function \"backend/alembic/versions/0004_alert_approval.upgrade\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": "backend/alembic/versions/0004_alert_approval.py",
+        "symbol": "backend/alembic/versions/0004_alert_approval.upgrade",
+        "detail": "function · unreferenced · backend/alembic/versions/0004_alert_approval.py:53",
+        "line": 53,
+        "fact_id": "388e3238a9b6b98dc23975d89312b658"
+      },
+      {
+        "symbol": "backend/alembic/versions/0004_alert_approval.upgrade",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "388e3238a9b6b98dc23975d89312b658"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: function backend/app/worker.deliver_alerts",
+    "source": "dead-code",
+    "description": "function \"backend/app/worker.deliver_alerts\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.8,
+    "evidence": [
+      {
+        "file": "backend/app/worker.py",
+        "symbol": "backend/app/worker.deliver_alerts",
+        "detail": "function · unreferenced · backend/app/worker.py:59",
+        "line": 59,
+        "fact_id": "b38a5e529d7090f2db99342b0f858462"
+      },
+      {
+        "symbol": "backend/app/worker.deliver_alerts",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "b38a5e529d7090f2db99342b0f858462"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
     "title": "Dead code candidate: function backend/app/worker.detect_overlaps",
     "source": "dead-code",
     "description": "function \"backend/app/worker.detect_overlaps\" is unreferenced — nothing in the snapshot graph references it (high confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
@@ -2380,8 +2516,8 @@
       {
         "file": "backend/app/worker.py",
         "symbol": "backend/app/worker.detect_overlaps",
-        "detail": "function · unreferenced · backend/app/worker.py:50",
-        "line": 50,
+        "detail": "function · unreferenced · backend/app/worker.py:52",
+        "line": 52,
         "fact_id": "c269166a421a2cf8177c0788bad6cbc5"
       },
       {
@@ -2403,14 +2539,37 @@
       {
         "file": "backend/app/worker.py",
         "symbol": "backend/app/worker.verify_chain",
-        "detail": "function · unreferenced · backend/app/worker.py:33",
-        "line": 33,
+        "detail": "function · unreferenced · backend/app/worker.py:35",
+        "line": 35,
         "fact_id": "20e03f4d10467336d4e35a4996e3d51e"
       },
       {
         "symbol": "backend/app/worker.verify_chain",
         "detail": "exported — may be used outside this snapshot; verify before removal",
         "fact_id": "20e03f4d10467336d4e35a4996e3d51e"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/schemas.DecisionIn",
+    "source": "dead-code",
+    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/schemas.DecisionIn\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/schemas.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/schemas.DecisionIn",
+        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/schemas.py:31",
+        "line": 31,
+        "fact_id": "e5333f1a5ad0148ee29c4f60dedb8cc2"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/schemas.DecisionIn",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "e5333f1a5ad0148ee29c4f60dedb8cc2"
       }
     ],
     "suggested_actions": [
@@ -2694,6 +2853,29 @@
     ]
   },
   {
+    "title": "Dead code candidate: class backend/app/modules/alerts/schemas.DecisionIn",
+    "source": "dead-code",
+    "description": "class \"backend/app/modules/alerts/schemas.DecisionIn\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "file": "backend/app/modules/alerts/schemas.py",
+        "symbol": "backend/app/modules/alerts/schemas.DecisionIn",
+        "detail": "class · unreferenced · backend/app/modules/alerts/schemas.py:31",
+        "line": 31,
+        "fact_id": "5ef7c0981f51992e34e8b4bd43aa972f"
+      },
+      {
+        "symbol": "backend/app/modules/alerts/schemas.DecisionIn",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "5ef7c0981f51992e34e8b4bd43aa972f"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
     "title": "Dead code candidate: class backend/app/modules/complaints/schemas.ActionIn",
     "source": "dead-code",
     "description": "class \"backend/app/modules/complaints/schemas.ActionIn\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
@@ -2970,9 +3152,9 @@
     ]
   },
   {
-    "title": "Additional dead-code candidates: 374 more (see find_orphans)",
+    "title": "Additional dead-code candidates: 376 more (see find_orphans)",
     "source": "dead-code",
-    "description": "0 further high/medium-confidence orphan(s) were omitted from individual insights and 374 low-confidence orphan(s) (methods/types/consts/vars — usage not edge-tracked) were not surfaced individually. Use the find_orphans tool (output_mode=full) for the complete list.",
+    "description": "0 further high/medium-confidence orphan(s) were omitted from individual insights and 376 low-confidence orphan(s) (methods/types/consts/vars — usage not edge-tracked) were not surfaced individually. Use the find_orphans tool (output_mode=full) for the complete list.",
     "confidence": 0.4,
     "evidence": null,
     "suggested_actions": [
@@ -3212,6 +3394,40 @@
     ]
   },
   {
+    "title": "Performance risk (call-in-loop, O(n²)): .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+    "source": "performance",
+    "description": "Calls app.db.session.session_for, app.modules.alerts.repo.claim_next, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service._send_one inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+        "detail": "Calls app.db.session.session_for, app.modules.alerts.repo.claim_next, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service._send_one inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
+        "line": 99,
+        "fact_id": "704dc5451f9f4f08e82b4a6a8e091fe9"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+        "detail": "call_in_loop=app.db.session.session_for",
+        "fact_id": "704dc5451f9f4f08e82b4a6a8e091fe9"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+        "detail": "call_in_loop=app.modules.alerts.repo.claim_next",
+        "fact_id": "704dc5451f9f4f08e82b4a6a8e091fe9"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+        "detail": "call_in_loop=.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service._send_one",
+        "fact_id": "704dc5451f9f4f08e82b4a6a8e091fe9"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
     "title": "Performance risk (call-in-loop, O(n²)): .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/service.tier1",
     "source": "performance",
     "description": "Calls app.modules.overlaps.repo.tier1_pairs inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
@@ -3228,6 +3444,40 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/service.tier1",
         "detail": "call_in_loop=app.modules.overlaps.repo.tier1_pairs",
         "fact_id": "8bb2271fe07f64f4e8d40353339f075b"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
+    "title": "Performance risk (call-in-loop, O(n²)): backend/app/modules/alerts/service.deliver",
+    "source": "performance",
+    "description": "Calls app.db.session.session_for, app.modules.alerts.repo.claim_next, backend/app/modules/alerts/service._send_one inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "file": "backend/app/modules/alerts/service.py",
+        "symbol": "backend/app/modules/alerts/service.deliver",
+        "detail": "Calls app.db.session.session_for, app.modules.alerts.repo.claim_next, backend/app/modules/alerts/service._send_one inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
+        "line": 99,
+        "fact_id": "26cbbe056e3b2b677199adf46368dd35"
+      },
+      {
+        "symbol": "backend/app/modules/alerts/service.deliver",
+        "detail": "call_in_loop=app.db.session.session_for",
+        "fact_id": "26cbbe056e3b2b677199adf46368dd35"
+      },
+      {
+        "symbol": "backend/app/modules/alerts/service.deliver",
+        "detail": "call_in_loop=app.modules.alerts.repo.claim_next",
+        "fact_id": "26cbbe056e3b2b677199adf46368dd35"
+      },
+      {
+        "symbol": "backend/app/modules/alerts/service.deliver",
+        "detail": "call_in_loop=backend/app/modules/alerts/service._send_one",
+        "fact_id": "26cbbe056e3b2b677199adf46368dd35"
       }
     ],
     "suggested_actions": [
@@ -3404,6 +3654,30 @@
     ]
   },
   {
+    "title": "Performance risk (call-in-loop, O(n)): .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service._send_one",
+    "source": "performance",
+    "description": "Calls app.audit.service.record inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service._send_one",
+        "detail": "Calls app.audit.service.record inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
+        "line": 63,
+        "fact_id": "8032f8f92be6925445d9f8995a381c7e"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service._send_one",
+        "detail": "call_in_loop=app.audit.service.record",
+        "fact_id": "8032f8f92be6925445d9f8995a381c7e"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
     "title": "Performance risk (call-in-loop, O(n)): .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.list_institutions",
     "source": "performance",
     "description": "Calls app.modules.institutions.repo.candidates inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
@@ -3444,6 +3718,30 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/service.detect",
         "detail": "call_in_loop=app.audit.service.record",
         "fact_id": "95809363e5fef79689c65b830b0c0e02"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
+    "title": "Performance risk (call-in-loop, O(n)): backend/app/modules/alerts/service._send_one",
+    "source": "performance",
+    "description": "Calls app.audit.service.record inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.9,
+    "evidence": [
+      {
+        "file": "backend/app/modules/alerts/service.py",
+        "symbol": "backend/app/modules/alerts/service._send_one",
+        "detail": "Calls app.audit.service.record inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
+        "line": 63,
+        "fact_id": "99e1d018dd30cc2dbe7a2b59053cda44"
+      },
+      {
+        "symbol": "backend/app/modules/alerts/service._send_one",
+        "detail": "call_in_loop=app.audit.service.record",
+        "fact_id": "99e1d018dd30cc2dbe7a2b59053cda44"
       }
     ],
     "suggested_actions": [
@@ -3884,6 +4182,30 @@
     ]
   },
   {
+    "title": "Performance risk (compounded, O(n²)): .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+    "source": "performance",
+    "description": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n²). Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.55,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+        "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n²).",
+        "line": 99,
+        "fact_id": "704dc5451f9f4f08e82b4a6a8e091fe9"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service.deliver",
+        "detail": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/service._send_one (loop_depth=1)",
+        "fact_id": "704dc5451f9f4f08e82b4a6a8e091fe9"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
     "title": "Performance risk (compounded, O(n²)): .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/service.links",
     "source": "performance",
     "description": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n²). Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
@@ -3924,6 +4246,30 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.History",
         "detail": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.unacknowledged (loop_depth=1)",
         "fact_id": "c64303246a82542d17e5a7b1f1970d9c"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm the hot path with a profiler or benchmark before optimizing",
+      "Batch or hoist per-iteration I/O out of loops; add memoization or an iterative rewrite for recursion"
+    ]
+  },
+  {
+    "title": "Performance risk (compounded, O(n²)): backend/app/modules/alerts/service.deliver",
+    "source": "performance",
+    "description": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n²). Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "confidence": 0.55,
+    "evidence": [
+      {
+        "file": "backend/app/modules/alerts/service.py",
+        "symbol": "backend/app/modules/alerts/service.deliver",
+        "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n²).",
+        "line": 99,
+        "fact_id": "26cbbe056e3b2b677199adf46368dd35"
+      },
+      {
+        "symbol": "backend/app/modules/alerts/service.deliver",
+        "detail": "backend/app/modules/alerts/service._send_one (loop_depth=1)",
+        "fact_id": "26cbbe056e3b2b677199adf46368dd35"
       }
     ],
     "suggested_actions": [
