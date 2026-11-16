@@ -60,3 +60,7 @@ caption h2 { margin-bottom: 0.25rem; }
 .trend rect { fill: currentColor; opacity: 0.55; }
 .trend rect:hover { opacity: 0.9; }
 .trend figcaption { font-size: 0.85rem; opacity: 0.75; margin-top: 0.25rem; }
+header form[role="search"] { display: flex; gap: 0.4rem; }
+header form[role="search"] input { width: 16rem; max-width: 60vw; }
+.hits { padding-left: 1.2rem; }
+.hits li { margin: 0.3rem 0; }

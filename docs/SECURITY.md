@@ -30,6 +30,8 @@ Status key: **Built** (tested in this repo), **Scaffolded** (configured, not yet
 | 16 | Insider with admin rights changes configuration silently | Maker-checker for admin changes; every change audited | Planned |
 | 17 | Sensitive data in logs | Logs carry identifiers only; request bodies are never logged | Built (convention) |
 | 18 | Bureau staff read the whole audit ledger | The audit screen and `/api/v1/audit` admit only `auditor`, `oversight` and `admin`; entries hold identifiers and decisions, never complaint text. Not enforced by the database: `sethu_app` can SELECT every `audit_log` row, because the chain trigger reads the last row as whoever inserts, and the no-`SECURITY DEFINER` rule rules out the usual fix | Built (API only) |
+| 19 | A report export leaks complaint text or another bureau's figures | Reports have no text or complainant columns; bureau staff get their own bureau only (query scope from the session context, policies for links and alerts); every export is audited with report, filters and row count; CSV cells that start with = + - @ are made inert for spreadsheets | Built |
+| 20 | Search reveals another bureau's complaint text | Text matching goes through `sethu.complaints`, which Row-Level Security empties for other bureaus; results carry summary fields and match reasons only | Built |
 
 ## Rules for contributors
 

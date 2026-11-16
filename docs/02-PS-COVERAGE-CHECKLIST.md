@@ -41,9 +41,9 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 
 ## 8. Reports
 - [ ] Institution report (profile, cases, overlaps, timeline), exportable
-- [ ] Bureau summary report, exportable
-- [ ] Overlap report, exportable
-- [ ] Export is logged in the audit log
+- [x] Bureau summary report, exportable
+- [x] Overlap report, exportable
+- [x] Export is logged in the audit log
 
 ## Cross-cutting
 - [ ] Login with roles: Officer, Bureau Head, Admin, Auditor (read-only)

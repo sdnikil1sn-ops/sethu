@@ -135,6 +135,32 @@ def list_institutions(session: Session, q: str | None, state: str | None, limit:
     return [r for r in results if not state or r["state"] == state][:limit]
 
 
+def lookup(session: Session, q: str, limit: int) -> list[dict]:
+    """For the top-bar search: institutions by name or alias (pg_trgm), acronym or city, each with why it matched."""
+    q = q.strip()
+    found: dict[UUID, dict] = {}
+
+    def add(row: dict, score: float, why: str) -> None:
+        if row["id"] not in found or score > found[row["id"]]["score"]:
+            found[row["id"]] = {k: row[k] for k in ("id", "permanent_id", "name", "state", "district")} | {
+                "score": round(score, 1), "why": why}
+
+    for row in repo.candidates(session, q, limit * 3):
+        exact = row["label"].lower() == q.lower()
+        what = "name" if row["label"] == row["name"] else f"also known as \"{row['label']}\""
+        add(row, 100 if exact else row["similarity"] * 100,
+            f"{what}: {'same spelling' if exact else 'similar spelling'}")
+    for row in repo.in_district(session, q, limit):
+        add(row, 60, f"city: {row['district']}")
+    if (pid := PERMANENT_ID.search(q)) and (inst := repo.by_permanent_id(session, pid.group())):
+        add(inst, 100, "permanent id")
+    first = q.split(" ")[0].strip(".,")
+    if first.isalpha() and 2 <= len(first) <= 6:
+        for inst in repo.by_acronym(session, first):
+            add(inst, 75, f"initials {first.upper()}")
+    return sorted(found.values(), key=lambda r: (-r["score"], r["name"]))[:limit]
+
+
 def profile(session: Session, institution_id: UUID) -> dict | None:
     inst = repo.get(session, institution_id)
     if not inst:
