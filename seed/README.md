@@ -14,7 +14,7 @@ python seed/load.py         # load them into an EMPTY database (see docs/RUNBOOK
 | File | Rows | Notes |
 |---|---|---|
 | `institutions.csv` | 40 | 6 states. `aliases` is `\|`-separated; only Greenfield has any |
-| `users.csv` | 17 | 12 officers, 3 bureau heads, 1 admin, 1 auditor. `desk` is the RB desk (`RB-D1` to `RB-D3`) |
+| `users.csv` | 18 | 12 officers, 3 bureau heads, 1 oversight, 1 admin, 1 auditor. `rao`, `iyer`, `fernandes`, `menon` and `das` are also Keycloak demo logins (docs/RUNBOOK.md). `desk` is the RB desk (`RB-D1` to `RB-D3`) |
 | `complaints.csv` | 300 | `institution_pid` and `seed_tags` are the answer key and are not loaded |
 | `actions.csv` | 983 | filed, assigned, transferred, acknowledged, replied, closed, note |
 

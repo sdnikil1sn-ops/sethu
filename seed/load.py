@@ -10,7 +10,7 @@ import csv
 import hashlib
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from uuid import NAMESPACE_URL, uuid5
+from uuid import NAMESPACE_URL, UUID, uuid5
 
 from sqlalchemy import Engine, text
 from sqlalchemy.orm import Session
@@ -21,6 +21,12 @@ from app.db.session import SYSTEM, session_for
 
 HERE = Path(__file__).parent
 BUREAUS = {"PGRC": "Public Grievance Redressal Cell", "RB": "Regional Bureau (Western Region)"}
+
+
+def user_id(username: str) -> UUID:
+    """Also the Keycloak id of the demo logins (infra/demo-users/users.json), so a token's
+    `sub` matches the seeded app_users row."""
+    return uuid5(NAMESPACE_URL, f"sethu:user:{username}")
 
 
 def rows(name: str) -> list[dict[str, str]]:
@@ -65,7 +71,7 @@ def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str,
         for u in rows("users"):
             user[u["username"]] = insert(
                 s, "app_users", "user.created", {"role": u["role"], "bureau": u["bureau"]},
-                subject=f"seed:{u['username']}", display_name=u["display_name"], email=u["email"],
+                subject=str(user_id(u["username"])), display_name=u["display_name"], email=u["email"],
                 role=u["role"], bureau_id=bureau[u["bureau"]])
 
         known_name = {}  # exact canonical name or alias -> institution id

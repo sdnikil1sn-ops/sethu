@@ -108,6 +108,25 @@ services:
     networks: [app, data]
     deploy: { resources: { limits: { memory: 1g } } }
 
+  demo-users:                         # dev and demo only: creates the demo logins, then exits
+    <<: *hardening
+    image: quay.io/keycloak/keycloak:26.0
+    profiles: ["dev"]
+    restart: "no"
+    entrypoint: ["/bin/bash", "/demo/import.sh"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    environment:
+      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USER:-sethu-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      DEMO_USER_PASSWORD: ${DEMO_USER_PASSWORD:-}
+    volumes:
+      - ./infra/demo-users:/demo:ro
+    depends_on:
+      keycloak: { condition: service_started }
+    networks: [app]
+    deploy: { resources: { limits: { memory: 384m } } }
+
   backend:
     <<: *hardening
     build: ./backend

@@ -6,7 +6,7 @@ Rule: every record is synthetic. Do not paste real complaints, names, emails or 
 - 40 institutions across 6 states (fictional names, plausible cities)
 - 300 complaints over the last 180 days
 - 2 bureaus (PGRC, RB), with 3 desks inside RB
-- 12 officers, 3 bureau heads, 1 admin, 1 auditor
+- 12 officers, 3 bureau heads, 1 oversight, 1 admin, 1 auditor
 
 ## Fixed demo records (do not randomise)
 Greenfield Institute of Technology, Pune, Maharashtra. Aliases: "Greenfield Inst. of Tech., Pune", "GIT Pune", "Greenfield Institute of Tech".

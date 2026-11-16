@@ -1,4 +1,4 @@
-"""Create .env from .env.example, replacing every CHANGE_ME with a random secret.
+"""Create .env from .env.example, replacing every CHANGE_ME value with a random secret.
 
 Usage:  python scripts/init_env.py          (refuses to overwrite an existing .env)
 """
@@ -16,7 +16,7 @@ def main() -> int:
         return 1
     lines = []
     for line in SOURCE.read_text(encoding="utf-8").splitlines():
-        if line.endswith("=CHANGE_ME"):
+        if not line.startswith("#") and line.endswith("CHANGE_ME"):  # may carry a prefix: Demo1-CHANGE_ME
             # URL-safe: these values are embedded in connection URLs.
             line = line.replace("CHANGE_ME", secrets.token_urlsafe(32))
         lines.append(line)

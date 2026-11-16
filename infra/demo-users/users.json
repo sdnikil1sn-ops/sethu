@@ -1,0 +1,114 @@
+{
+  "users": [
+    {
+      "id": "4b86889b-c258-57ca-95ac-3d833785c73a",
+      "username": "rao",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "rao@sethu.test",
+      "firstName": "Anita",
+      "lastName": "Rao",
+      "realmRoles": [
+        "officer"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "__DEMO_USER_PASSWORD__",
+          "temporary": false
+        }
+      ],
+      "attributes": {
+        "bureau_id": [
+          "ee0576ff-f3c5-5152-8fda-44af486c1266"
+        ]
+      }
+    },
+    {
+      "id": "9aab8b9f-43a4-5c5c-a9d3-e1654e31a701",
+      "username": "iyer",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "iyer@sethu.test",
+      "firstName": "Suresh",
+      "lastName": "Iyer",
+      "realmRoles": [
+        "bureau_head"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "__DEMO_USER_PASSWORD__",
+          "temporary": false
+        }
+      ],
+      "attributes": {
+        "bureau_id": [
+          "cec18029-b5c8-56a0-98de-8831f4e8c964"
+        ]
+      }
+    },
+    {
+      "id": "7c1005c2-79cf-56ed-b653-75107a718350",
+      "username": "fernandes",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "fernandes@sethu.test",
+      "firstName": "Maria",
+      "lastName": "Fernandes",
+      "realmRoles": [
+        "bureau_head"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "__DEMO_USER_PASSWORD__",
+          "temporary": false
+        }
+      ],
+      "attributes": {
+        "bureau_id": [
+          "ee0576ff-f3c5-5152-8fda-44af486c1266"
+        ]
+      }
+    },
+    {
+      "id": "7ee4b89e-43ef-5b64-a6fc-6f35588b1784",
+      "username": "menon",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "menon@sethu.test",
+      "firstName": "Kavita",
+      "lastName": "Menon",
+      "realmRoles": [
+        "oversight"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "__DEMO_USER_PASSWORD__",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "7e9512e4-eb9d-5330-bf7c-963f7ab816d3",
+      "username": "das",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "das@sethu.test",
+      "firstName": "Arun",
+      "lastName": "Das",
+      "realmRoles": [
+        "auditor"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "__DEMO_USER_PASSWORD__",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

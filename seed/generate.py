@@ -118,17 +118,19 @@ HI = {
                                    "के अधिकांश छात्रों को कोई प्रस्ताव नहीं मिला। शुल्क {amount} रुपये।",
 }
 
-# username, display name, role, bureau, desk. Rao and Iyer are the demo characters.
+# username, display name, role, bureau, desk. rao, iyer, fernandes, menon and das are the demo
+# logins: infra/demo-users/users.json must list the same usernames, roles and bureaus.
 USERS = [
-    ("rao", "Anita Rao", "officer", "PGRC", ""), ("mdas", "Meera Das", "officer", "PGRC", ""),
+    ("rao", "Anita Rao", "officer", "PGRC", ""), ("mdutta", "Meera Dutta", "officer", "PGRC", ""),
     ("kjoshi", "Kiran Joshi", "officer", "PGRC", ""), ("averma", "Arjun Verma", "officer", "PGRC", ""),
     ("dpillai", "Divya Pillai", "officer", "PGRC", ""), ("rbose", "Rohan Bose", "officer", "PGRC", ""),
     ("snair", "Sneha Nair", "officer", "RB", "RB-D1"), ("vpatel", "Vikram Patel", "officer", "RB", "RB-D1"),
-    ("pmenon", "Pooja Menon", "officer", "RB", "RB-D2"), ("fkhan", "Farhan Khan", "officer", "RB", "RB-D2"),
+    ("pmathew", "Pooja Mathew", "officer", "RB", "RB-D2"), ("fkhan", "Farhan Khan", "officer", "RB", "RB-D2"),
     ("greddy", "Gauri Reddy", "officer", "RB", "RB-D3"), ("dgupta", "Dev Gupta", "officer", "RB", "RB-D3"),
-    ("lsharma", "Lata Sharma", "bureau_head", "PGRC", ""), ("iyer", "Suresh Iyer", "bureau_head", "RB", ""),
+    ("fernandes", "Maria Fernandes", "bureau_head", "PGRC", ""), ("iyer", "Suresh Iyer", "bureau_head", "RB", ""),
     ("mkulkarni", "Manoj Kulkarni", "bureau_head", "RB", ""),
-    ("admin", "Asha Chopra", "admin", "", ""), ("auditor", "Tara Singh", "auditor", "", ""),
+    ("menon", "Kavita Menon", "oversight", "", ""), ("admin", "Asha Chopra", "admin", "", ""),
+    ("das", "Arun Das", "auditor", "", ""),
 ]
 
 
@@ -168,7 +170,7 @@ def build() -> dict[str, list[dict]]:
     users = [{"username": u, "display_name": n, "email": f"{u}@sethu.test", "role": r, "bureau": b, "desk": d}
              for u, n, r, b, d in USERS]
     officers = {b: [u for u in users if u["role"] == "officer" and u["bureau"] == b] for b in ("PGRC", "RB")}
-    head = {"PGRC": "lsharma", "RB": "iyer"}
+    head = {"PGRC": "fernandes", "RB": "iyer"}
 
     complaints: list[dict] = []
     actions: list[dict] = []

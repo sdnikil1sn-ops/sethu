@@ -52,6 +52,41 @@ cd backend; alembic revision -m "describe change"; cd ..
 docker compose up --build migrate
 ```
 
+### Demo logins (dev and demo only)
+
+`docker compose --profile dev up` runs a one-shot `demo-users` service that creates five Keycloak users. They are the same people as in `seed/users.csv`, with the same ids, so what they do in the app is tied to their seeded history.
+
+| Username | Person | Role | Bureau |
+|---|---|---|---|
+| `rao` | Ms. Anita Rao | officer | PGRC |
+| `iyer` | Mr. Suresh Iyer | bureau_head | RB |
+| `fernandes` | Ms. Maria Fernandes | bureau_head | PGRC |
+| `menon` | Dr. Kavita Menon | oversight | none |
+| `das` | Mr. Arun Das | auditor | none |
+
+All five share the password in `DEMO_USER_PASSWORD` in `.env`. The repository holds only a placeholder (`infra/demo-users/users.json`). A `.env` created before this variable existed needs the line added by hand: 12 or more characters with upper case, lower case and a digit.
+
+The production start (section 7) does not use the `dev` profile, so these users are never created there. Do not add users to `infra/keycloak/sethu-realm.json`: that file is shared with production.
+
+### Re-importing the realm on an existing stack
+
+Keycloak imports `infra/keycloak/sethu-realm.json` only when the `sethu` realm does not exist yet, so editing the file changes nothing on a stack that has already started.
+
+Demo users only (new password in `.env`, or a user was changed or deleted). Safe to repeat; other users and all SETHU data are untouched:
+
+```powershell
+docker compose --profile dev run --rm demo-users
+```
+
+The whole realm (roles, client, token settings changed in the realm file). This empties Keycloak's own database and keeps the SETHU data. Every Keycloak user and session is lost; the demo users come back with the same ids:
+
+```powershell
+docker compose stop keycloak
+docker compose exec postgres psql -U postgres -c "DROP DATABASE keycloak" -c "CREATE DATABASE keycloak OWNER keycloak"
+docker compose --profile dev up -d keycloak demo-users
+docker compose logs -f demo-users          # ends with "demo users imported"
+```
+
 ### Seeding the demo data
 
 Load into an empty database only (after a first start or a reset, section 5). The files and the patterns they contain are described in `seed/README.md`.
@@ -106,5 +141,7 @@ docker compose --profile dev down -v
 ```powershell
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
+
+Before giving a production user a `bureau_id`, set Realm settings > General > Unmanaged attributes to "Only administrators can write" in the Keycloak console; otherwise Keycloak discards the attribute and the user cannot log in. (The demo import does this for dev.)
 
 Needs certificates in `infra/certs/`, `PUBLIC_BASE_URL=https://...`, a real SMTP relay, secrets from Docker secrets or Vault, images pinned by digest, and backups scheduled. The production override has not been exercised.

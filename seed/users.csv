@@ -1,18 +1,19 @@
 username,display_name,email,role,bureau,desk
 rao,Anita Rao,rao@sethu.test,officer,PGRC,
-mdas,Meera Das,mdas@sethu.test,officer,PGRC,
+mdutta,Meera Dutta,mdutta@sethu.test,officer,PGRC,
 kjoshi,Kiran Joshi,kjoshi@sethu.test,officer,PGRC,
 averma,Arjun Verma,averma@sethu.test,officer,PGRC,
 dpillai,Divya Pillai,dpillai@sethu.test,officer,PGRC,
 rbose,Rohan Bose,rbose@sethu.test,officer,PGRC,
 snair,Sneha Nair,snair@sethu.test,officer,RB,RB-D1
 vpatel,Vikram Patel,vpatel@sethu.test,officer,RB,RB-D1
-pmenon,Pooja Menon,pmenon@sethu.test,officer,RB,RB-D2
+pmathew,Pooja Mathew,pmathew@sethu.test,officer,RB,RB-D2
 fkhan,Farhan Khan,fkhan@sethu.test,officer,RB,RB-D2
 greddy,Gauri Reddy,greddy@sethu.test,officer,RB,RB-D3
 dgupta,Dev Gupta,dgupta@sethu.test,officer,RB,RB-D3
-lsharma,Lata Sharma,lsharma@sethu.test,bureau_head,PGRC,
+fernandes,Maria Fernandes,fernandes@sethu.test,bureau_head,PGRC,
 iyer,Suresh Iyer,iyer@sethu.test,bureau_head,RB,
 mkulkarni,Manoj Kulkarni,mkulkarni@sethu.test,bureau_head,RB,
+menon,Kavita Menon,menon@sethu.test,oversight,,
 admin,Asha Chopra,admin@sethu.test,admin,,
-auditor,Tara Singh,auditor@sethu.test,auditor,,
+das,Arun Das,das@sethu.test,auditor,,

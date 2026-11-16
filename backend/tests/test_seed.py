@@ -4,10 +4,12 @@ is the simplest reading of the spec, applied to the CSV files and compared with
 the answer key in the seed_tags column.
 """
 import hashlib
+import json
 import sys
 from collections import Counter, defaultdict
 from itertools import combinations
 from pathlib import Path
+from uuid import NAMESPACE_URL, uuid5
 
 import pytest
 from sqlalchemy import text
@@ -99,10 +101,26 @@ def test_volume():
     assert len(COMPLAINTS) == 300 == len({c["ref"] for c in COMPLAINTS})
     assert all(1 <= int(c["filed_days_ago"]) <= 180 for c in COMPLAINTS)
     assert {c["bureau"] for c in COMPLAINTS} == {"PGRC", "RB"}
-    assert Counter(u["role"] for u in USERS) == {"officer": 12, "bureau_head": 3, "admin": 1, "auditor": 1}
+    assert Counter(u["role"] for u in USERS) == {
+        "officer": 12, "bureau_head": 3, "oversight": 1, "admin": 1, "auditor": 1}
     assert len({u["desk"] for u in USERS if u["desk"]}) == 3
     assert all(u["email"].endswith("@sethu.test") for u in USERS)
     assert all(HISTORY[c["ref"]][0]["action"] == "filed" for c in COMPLAINTS)
+
+
+def test_keycloak_demo_logins_match_the_seed():
+    """A demo user's token must point at the seeded person: same id, role and bureau."""
+    demo = json.loads((generate.HERE.parent / "infra/demo-users/users.json").read_text(encoding="utf-8"))["users"]
+    seeded = {u["username"]: u for u in USERS}
+    assert [u["username"] for u in demo] == ["rao", "iyer", "fernandes", "menon", "das"]
+    for u in demo:
+        row = seeded[u["username"]]
+        assert u["id"] == str(load.user_id(u["username"]))
+        assert (u["realmRoles"], u["email"]) == ([row["role"]], row["email"])
+        assert f'{u["firstName"]} {u["lastName"]}' == row["display_name"]
+        bureau = [str(uuid5(NAMESPACE_URL, f"sethu:bureau:{row['bureau']}"))] if row["bureau"] else None
+        assert u.get("attributes", {}).get("bureau_id") == bureau
+        assert u["credentials"][0]["value"] == "__DEMO_USER_PASSWORD__", "passwords come from .env, never the repo"
 
 
 def test_demo_records():
