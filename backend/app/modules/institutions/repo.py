@@ -64,6 +64,12 @@ def candidates(session: Session, q: str, limit: int) -> list[dict]:
          ORDER BY similarity DESC, i.name LIMIT :limit""", q=q, limit=limit)  # noqa: S608
 
 
+def in_district(session: Session, q: str, limit: int) -> list[dict]:
+    """Institutions whose district (the city) is q, ignoring case."""
+    return _all(session, f"SELECT {COLUMNS} FROM sethu.institutions i WHERE lower(i.district) = lower(:q)"  # noqa: S608
+                         " ORDER BY i.name LIMIT :limit", q=q, limit=limit)
+
+
 def by_acronym(session: Session, acronym: str) -> list[dict]:
     """Institutions whose initials spell the acronym: 'GIT' finds Greenfield Institute of Technology."""
     return _all(session, f"""

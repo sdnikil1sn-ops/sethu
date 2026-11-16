@@ -33,7 +33,16 @@ export function CaseList({ initial }: { initial: string }) {
   };
 
   const query = new URLSearchParams({ limit: String(PAGE), offset: String(offset) });
-  for (const [name, value] of Object.entries({ ...filters, q })) if (value) query.set(name, value);
+  const shared = new URLSearchParams();
+  for (const [name, value] of Object.entries({ ...filters, q })) if (value) (query.set(name, value), shared.set(name, value));
+
+  // Keep the filters in the address so a filtered view can be bookmarked or shared. replaceState does not
+  // fire hashchange, so the list is not rebuilt (and the search box keeps focus) while someone types.
+  const sharedQuery = shared.toString();
+  useEffect(() => {
+    const hash = `#/cases${sharedQuery ? `?${sharedQuery}` : ""}`;
+    if (window.location.hash !== hash) window.history.replaceState(null, "", hash);
+  }, [sharedQuery]);
 
   const { data: options } = useLoad<Options>("/cases/options");
   const { data: institutions } = useLoad<{ id: string; name: string }[]>("/institutions?limit=200");
@@ -89,7 +98,10 @@ export function CaseList({ initial }: { initial: string }) {
           Clear filters
         </button>
       </form>
-      <p className="note">Complaint text is searched only in cases you are allowed to read.</p>
+      <p className="note">
+        Complaint text is searched only in cases you are allowed to read. The address of this page keeps the
+        filters, so you can bookmark or share this view.
+      </p>
 
       {error && <p role="alert">{error}</p>}
       {data && (

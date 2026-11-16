@@ -91,6 +91,16 @@ docker compose logs -f demo-users          # ends with "demo users imported"
 
 Approved alerts are emailed within 15 seconds, one email per recipient, to Mailpit at http://localhost:8025 (the Alerts page links to it). An alert that could not be sent stays "Approved, queued to send" on the Alerts page with the error and is retried; check `docker compose logs worker` and that `mailpit` is running.
 
+### Reports and exports
+
+The Reports screen exports CSV. Each export is a `report.export` entry in the audit log (who, which report, date range, scope, row count): on the Audit log screen choose the action `report.*`, or run
+
+```powershell
+docker compose exec postgres psql -U sethu_auditor -d sethu -c "SELECT seq, ts, actor, entity_id, payload FROM sethu.audit_log WHERE action = 'report.export' ORDER BY seq DESC LIMIT 20;"
+```
+
+Exports hold counts and reference data only. Officers and bureau heads get their own bureau's figures; oversight, admin and auditor get every bureau.
+
 ### Seeding the demo data
 
 Load into an empty database only (after a first start or a reset, section 5). The files and the patterns they contain are described in `seed/README.md`.

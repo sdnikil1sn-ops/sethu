@@ -13,6 +13,8 @@ from app.modules.complaints.api import router as cases
 from app.modules.dashboard.api import router as dashboard
 from app.modules.institutions.api import router as institutions
 from app.modules.overlaps.api import router as overlaps
+from app.modules.reports.api import router as reports
+from app.modules.search.api import router as search
 
 log = logging.getLogger("sethu.http")
 
@@ -51,6 +53,8 @@ def create_app() -> FastAPI:
     app.include_router(alerts)
     app.include_router(dashboard)
     app.include_router(audit_view)
+    app.include_router(search)
+    app.include_router(reports)
     return app
 
 

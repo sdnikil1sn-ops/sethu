@@ -59,6 +59,14 @@ def search(session: Session, filters: dict[str, Any], limit: int, offset: int) -
     return {"total": rows[0]["total"] if rows else 0, "items": [r | _sla(r) for r in rows]}
 
 
+def lookup(session: Session, q: str, limit: int) -> dict:
+    """For the top-bar search. Summary fields only: matching on complaint text is done
+    in the database, where Row-Level Security limits it to text the caller may read."""
+    rows = repo.lookup(session, _like(q.strip()), limit)
+    keep = ("id", "ref", "bureau", "institution_id", "institution", "category", "status", "filed_at", "readable", "why")
+    return {"total": rows[0]["total"] if rows else 0, "items": [{k: r[k] for k in keep} for r in rows]}
+
+
 def can_act(principal: Principal, case: dict) -> bool:
     """Only the bureau holding the case works it. (The sender of an unacknowledged
     transfer can still read it, but no longer holds it.)"""

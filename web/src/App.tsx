@@ -10,6 +10,8 @@ import { InstitutionList } from "./features/institutions/InstitutionList";
 import { InstitutionProfile } from "./features/institutions/InstitutionProfile";
 import { OverlapsPage } from "./features/overlaps/Overlaps";
 import { ResolutionQueue } from "./features/institutions/ResolutionQueue";
+import { ReportsPage } from "./features/reports/Reports";
+import { SearchBox, SearchResults } from "./features/search/Search";
 
 type Me = { name: string; role: string };
 const CAN_RESOLVE = ["officer", "bureau_head", "admin"];
@@ -32,6 +34,7 @@ export function App() {
   const profileId = route.match(/^\/institutions\/([0-9a-f-]{36})$/)?.[1];
   const caseId = route.match(/^\/cases\/([0-9a-f-]{36})$/)?.[1];
   const caseList = route.match(/^\/cases(?:\?(.*))?$/);
+  const searched = route.match(/^\/search\?(.*)$/) ? new URLSearchParams(route.split("?")[1]).get("q") ?? "" : null;
 
   return (
     <>
@@ -56,12 +59,16 @@ export function App() {
           <a href="#/queue" aria-current={route === "/queue" ? "page" : undefined}>
             Unmatched names
           </a>
+          <a href="#/reports" aria-current={route === "/reports" ? "page" : undefined}>
+            Reports
+          </a>
           {me && CAN_AUDIT.includes(me.role) && (
             <a href="#/audit" aria-current={route === "/audit" ? "page" : undefined}>
               Audit log
             </a>
           )}
         </nav>
+        <SearchBox key={searched ?? ""} initial={searched ?? ""} />
         <span>
           {me && `${me.name} (${me.role.replace("_", " ")})`}{" "}
           <button type="button" onClick={logout}>
@@ -70,7 +77,9 @@ export function App() {
         </span>
       </header>
       <main>
-        {caseId ? (
+        {searched !== null ? (
+          <SearchResults key={searched} q={searched} />
+        ) : caseId ? (
           <CaseDetail key={caseId} id={caseId} />
         ) : caseList ? (
           <CaseList key={route} initial={caseList[1] ?? ""} />
@@ -82,6 +91,8 @@ export function App() {
           <OverlapsPage canDetect={me?.role === "admin"} />
         ) : route === "/queue" ? (
           <ResolutionQueue canResolve={!!me && CAN_RESOLVE.includes(me.role)} />
+        ) : route === "/reports" ? (
+          <ReportsPage />
         ) : route === "/audit" ? (
           <AuditLog />
         ) : route === "/institutions" ? (

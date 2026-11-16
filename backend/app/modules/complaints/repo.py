@@ -33,6 +33,17 @@ FILTERS = {
     "q": "(s.ref ILIKE :q OR i.name ILIKE :q OR c.institution_name_raw ILIKE :q OR c.body ILIKE :q)",
 }
 
+# Why a case matched the top-bar search. Metadata reasons work across bureaus; the last two
+# read `c`, which Row-Level Security leaves NULL where the caller may not read the text.
+REASONS = """array_remove(ARRAY[
+    CASE WHEN s.ref ILIKE :q THEN 'reference' END,
+    CASE WHEN s.category ILIKE :q THEN 'category' END,
+    CASE WHEN replace(s.status, '_', ' ') ILIKE :q THEN 'status' END,
+    CASE WHEN b.code ILIKE :q OR b.name ILIKE :q THEN 'bureau' END,
+    CASE WHEN i.name ILIKE :q THEN 'institution' END,
+    CASE WHEN c.institution_name_raw ILIKE :q THEN 'institution name as typed' END,
+    CASE WHEN c.body ILIKE :q THEN 'complaint text' END], NULL)"""
+
 HISTORY = """
     SELECT a.id, c.ref, a.action, fb.code AS from_bureau, tb.code AS to_bureau, u.display_name AS actor,
            au.display_name AS assignee, a.note, a.created_at, a.acknowledged_at
@@ -52,6 +63,16 @@ def _all(session: Session, sql: str, **params: Any) -> list[dict]:
 def _one(session: Session, sql: str, **params: Any) -> dict | None:
     rows = _all(session, sql, **params)
     return rows[0] if rows else None
+
+
+def lookup(session: Session, q: str, limit: int) -> list[dict]:
+    """Cases matching q, each with the reasons it matched; reference matches first."""
+    return _all(session, f"""
+        SELECT * , count(*) OVER () AS total FROM (
+            {SUMMARY.format(extra=f", {REASONS} AS why")}) m
+         WHERE cardinality(m.why) > 0
+         ORDER BY 'reference' = ANY(m.why) DESC, m.filed_at DESC, m.ref LIMIT :limit""",  # noqa: S608
+                q=q, limit=limit)
 
 
 def search(session: Session, filters: dict[str, Any], limit: int, offset: int) -> list[dict]:

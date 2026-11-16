@@ -31,8 +31,8 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
 
 | Component | Responsibility | Status |
 |---|---|---|
-| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, dashboard, case list, case detail and actions, overlaps, alerts, audit log with Verify chain. Run end to end in dev; the production TLS config is not yet run |
-| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile, alias search, resolution cascade), `complaints` (case list, detail, history, actions), `overlaps` (Tier 1 view, Tier 2 suggestions, approval, alert outbox row), `alerts` (approval of held alerts, delivery), `dashboard` (counts, weekly trend, needs-attention list), `audit_view` (audit log browser, Verify chain). Other features: Planned |
+| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, dashboard, case list, case detail and actions, overlaps, alerts, audit log with Verify chain, top-bar search, reports with CSV export; the case list keeps its filters in the address. Run end to end in dev; the production TLS config is not yet run |
+| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile, alias search, resolution cascade), `complaints` (case list, detail, history, actions), `overlaps` (Tier 1 view, Tier 2 suggestions, approval, alert outbox row), `alerts` (approval of held alerts, delivery), `dashboard` (counts, weekly trend, needs-attention list), `audit_view` (audit log browser, Verify chain), `search` (top-bar search over institutions and cases), `reports` (three reports, audited CSV export). Other features: Planned |
 | worker (Celery) | Ingestion, matching, graph jobs, alert delivery, nightly audit verification | Built: nightly audit verify; institution resolution and Tier 2 overlap detection every 5 minutes; alert delivery every 15 seconds. The rest: Planned |
 | postgres | System of record, Row-Level Security, audit ledger | Built and tested (migrations 0001 to 0004) |
 | keycloak | Login, MFA, roles, `bureau_id` claim | Built for dev: realm imports, demo users are created by the `demo-users` service. Production realm settings: not yet run |
@@ -90,6 +90,10 @@ An officer sees *that* another bureau has a matching case and who to coordinate 
 
 The case screens follow the same rule. The case list joins the summaries to `sethu.complaints`, which Row-Level Security empties for rows the caller may not read, so free-text search can only match text the caller is allowed to see, and a case from another bureau opens with its summary fields only (no text, no history). Tested in `tests/test_cases.py`.
 
+The top-bar search (`search`) works the same way. Institutions match by name or alias (pg_trgm), initials or city. Cases match by reference, category, status, bureau and institution for everyone, and by complaint text or the institution name as typed only through `c`, so only where Row-Level Security lets the caller read the case. Each hit says why it matched; a hit never carries complaint text. Tested in `tests/test_search.py`, including every other-bureau complaint's own words searched by a PGRC officer.
+
+Reports (`reports`) read only `complaint_summaries`, `overlap_links` and `alerts`, and have no column for text or complainant details. Bureau staff see their own bureau only: case figures are limited by `sethu.ctx_bureau()` in the query, because the summaries view is cross-bureau by design; overlap links and alerts are already limited by their policies. Each CSV export is an audit entry (`report.export`: report, date range, scope, row count) in the same transaction.
+
 Transfers: the receiving bureau holds the case at once (`bureau_id`) with status `transferred`; the sender is kept in `transferred_from_bureau_id` and can still read the case until the receiver acknowledges, but only the holder can act on it. The database lets a bureau hand a case over only by naming itself as the sender. An acknowledgement is its own `case_actions` row (history is never updated), so an unacknowledged transfer is one with no acknowledgement after it. That is what deadlock detection will read.
 
 ## 8. Module rules
@@ -97,7 +101,7 @@ Transfers: the receiving bureau holds the case at once (`bureau_id`) with status
 - One package per feature under `backend/app/modules/`: `api.py` (HTTP, roles), `service.py` (rules, audit), `repo.py` (SQL), `schemas.py` (Pydantic).
 - Dependencies point inward: `api -> service -> repo`. A module calls another module through its `service`, never its `repo` or tables.
 - `core`, `db` and `audit` are shared kernel; they import no feature module.
-- Built modules: `institutions`, `complaints`, `overlaps`, `alerts`, `dashboard`, `audit_view`. Planned modules: `intake`, `reports`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
+- Built modules: `institutions`, `complaints`, `overlaps`, `alerts`, `dashboard`, `audit_view`, `search`, `reports`. Planned modules: `intake`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
 
 ## 9. Failure behaviour
 
@@ -116,7 +120,7 @@ Stateless API and workers scale horizontally behind the edge. PostgreSQL gets a 
 
 ## 11. What has been verified
 
-- Migrations 0001 to 0004 applied to PostgreSQL 16; 82 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates, seed patterns, institution resolution, case visibility, case actions and their audit entries, overlap detection, approval and its alert, alert delivery to a fake SMTP relay with retry and no duplicates, dashboard counts against the seed and per-role visibility, audit screen roles and filters, Verify chain naming a tampered row and passing again after the runbook's restore).
+- Migrations 0001 to 0004 applied to PostgreSQL 16; 97 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates, seed patterns, institution resolution, case visibility, case actions and their audit entries, overlap detection, approval and its alert, alert delivery to a fake SMTP relay with retry and no duplicates, dashboard counts against the seed and per-role visibility, audit screen roles and filters, Verify chain naming a tampered row and passing again after the runbook's restore, top-bar search including bureau isolation of complaint text, report scoping by role, date ranges, CSV export and its audit entry).
 - Web app type-checks and builds.
 - A full `docker compose --profile dev up` on a fresh, isolated copy of the stack: realm import, demo-user import, seeding, sign-in through Nginx and Keycloak, the case list, case detail and one recorded action in a browser; the overlap worker task (6 suggestions on the seeded data), one approval and its alert delivered to Mailpit (one email per bureau head), shown as sent on the Alerts page.
 - Both Compose files parse (`docker compose config`).
