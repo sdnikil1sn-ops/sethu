@@ -40,7 +40,7 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [x] Sent alerts are listed with time and recipient
 
 ## 8. Reports
-- [ ] Institution report (profile, cases, overlaps, timeline), exportable
+- [x] Institution report: the institution profile screen (profile, every bureau's cases, overlaps, timeline, relationship graph); its counts are in the exportable "Complaints by institution" report
 - [x] Bureau summary report, exportable
 - [x] Overlap report, exportable
 - [x] Export is logged in the audit log
@@ -54,6 +54,6 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 
 ## Flagship features (Tier B)
 - [ ] Graph: institution view shows bureaus and complaints as nodes, overlaps as highlighted edges
-- [ ] Deadlock: seeded transfer loop is detected and shown as "Bottleneck detected"
+- [x] Deadlock: seeded transfer loop is detected and shown as "Bottleneck detected"
 - [ ] Profile DNA: 6 measures visible on the institution page
 - [ ] Early warning: one regional spike flagged, with the baseline shown

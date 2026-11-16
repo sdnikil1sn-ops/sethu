@@ -39,6 +39,7 @@ class Attention(BaseModel):
     overlaps_confirmed: int
     alerts_to_approve: int
     alerts_unsent: int
+    findings_open: int
     overdue_total: int
     overdue: list[OverdueCase]
 

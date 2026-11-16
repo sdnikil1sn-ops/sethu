@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api, useLoad } from "../../api";
+import type { Options } from "../cases/types";
 
 // Mirrors backend/app/modules/overlaps/schemas.py
 type LinkedCase = { id: string; ref: string; bureau: string; status: string; filed_at: string };
@@ -96,10 +97,11 @@ function LinkCard({ link, onChanged }: { link: Link; onChanged: () => void }) {
 }
 
 /** Tier 2 links the signed-in person may see. With `institutionId`, only that institution's. */
-export function Links({ institutionId, status }: { institutionId?: string; status?: string }) {
+export function Links({ institutionId, status, bureau }: { institutionId?: string; status?: string; bureau?: string }) {
   const query = new URLSearchParams();
   if (institutionId) query.set("institution_id", institutionId);
   if (status) query.set("status", status);
+  if (bureau) query.set("bureau", bureau);
   const { data, error, reload } = useLoad<Link[]>(`/overlaps?${query}`);
   if (error) return <p role="alert">{error}</p>;
   if (!data) return <p>Loading…</p>;
@@ -133,9 +135,12 @@ export function SameInstitution({ institutionId }: { institutionId: string }) {
 
 export function OverlapsPage({ canDetect }: { canDetect: boolean }) {
   const [status, setStatus] = useState("proposed");
+  const [bureau, setBureau] = useState("");
+  const { data: options } = useLoad<Options>("/cases/options");
   const [message, setMessage] = useState<string | null>(null);
   const [round, setRound] = useState(0);
   const { data: tier1, error } = useLoad<Tier1[]>("/overlaps/tier1");
+  const shown = tier1?.filter((t) => !bureau || t.bureaus.includes(bureau));
 
   async function detect() {
     try {
@@ -163,20 +168,34 @@ export function OverlapsPage({ canDetect }: { canDetect: boolean }) {
           <option value="rejected">Rejected</option>
           <option value="">All</option>
         </select>
-      </label>
+      </label>{" "}
+      <label>
+        Bureau
+        <select value={bureau} onChange={(e) => setBureau(e.target.value)}>
+          <option value="">All</option>
+          {(options?.bureaus ?? []).map((b) => (
+            <option key={b.code} value={b.code}>
+              {b.code}: {b.name}
+            </option>
+          ))}
+        </select>
+      </label>{" "}
       {canDetect && (
         <button type="button" onClick={detect}>
           Look for new overlaps now
         </button>
       )}
       {message && <p role="status">{message}</p>}
-      <Links key={`${status}${round}`} status={status || undefined} />
+      <Links key={`${status}${bureau}${round}`} status={status || undefined} bureau={bureau || undefined} />
 
       <h2>Same institution in two bureaus</h2>
-      <p>Institutions where more than one bureau holds an open case. Shown for awareness; no link is suggested.</p>
+      <p>
+        Institutions where more than one bureau holds an open case. Shown for awareness; no link is suggested.
+        {bureau && ` Only those where ${bureau} is one of the bureaus.`}
+      </p>
       {error && <p role="alert">{error}</p>}
-      {tier1 && tier1.length === 0 && <p>None right now.</p>}
-      {tier1 && tier1.length > 0 && (
+      {shown && shown.length === 0 && <p>None right now.</p>}
+      {shown && shown.length > 0 && (
         <table>
           <thead>
             <tr>
@@ -186,7 +205,7 @@ export function OverlapsPage({ canDetect }: { canDetect: boolean }) {
             </tr>
           </thead>
           <tbody>
-            {tier1.map((t) => (
+            {shown.map((t) => (
               <tr key={t.institution_id}>
                 <td>
                   <a href={`#/institutions/${t.institution_id}`}>{t.institution}</a>

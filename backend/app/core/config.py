@@ -26,6 +26,11 @@ class Settings(BaseSettings):
 
     sla_days: int = 21
 
+    # Deadlock and bottleneck detection (app/modules/findings/service.py).
+    stalled_transfer_days: int = 7     # a transfer nobody acknowledged for this long is a finding
+    bottleneck_min_open: int = 3       # queues smaller than this are never a bottleneck
+    bottleneck_share: float = 0.5      # share of a queue overdue, or older than the median, that is one
+
 
 @lru_cache
 def get_settings() -> Settings:

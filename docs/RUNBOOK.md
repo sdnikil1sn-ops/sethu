@@ -101,6 +101,22 @@ docker compose exec postgres psql -U sethu_auditor -d sethu -c "SELECT seq, ts, 
 
 Exports hold counts and reference data only. Officers and bureau heads get their own bureau's figures; oversight, admin and auditor get every bureau.
 
+### Findings (deadlocks and bottlenecks)
+
+The worker checks transfers and queues every 5 minutes; an admin can also press **Check now** on the Findings screen. On the seeded data C-090 shows as "Bottleneck detected: transfer loop", with an alert waiting on the Alerts screen for a bureau head or oversight. Thresholds are environment variables read by the backend and worker: `SETHU_STALLED_TRANSFER_DAYS` (7), `SETHU_BOTTLENECK_MIN_OPEN` (3), `SETHU_BOTTLENECK_SHARE` (0.5). Changing one does not rewrite existing findings; the next run resolves those that no longer hold and adds new ones.
+
+### Manual check of the screens (no browser tests)
+
+The backend tests cover what each filter sends and returns. Before a demo, sign in as `rao` (PGRC officer) and check by eye:
+
+1. Institutions: search `madurai`, `GIT`, `Greenfeild`, `Tamil Nadu`; each finds the same institutions as the top-bar search, with Cases, Open and Matched on. Clear the box: all 40 return.
+2. Cases: set each filter in turn (unit, category, status, institution, state, dates, overdue, overlaps, text); the count drops and the address changes. Copy the address into a new tab: the same view opens. Press **Clear filters**, or follow the Cases link: the full list returns.
+3. Overlaps: Show and Bureau change the list; the Same institution table follows the bureau.
+4. Alerts: each status shows only that status; All restores.
+5. Audit log (sign in as `das`): action, actor, target type, target id, from, to, then **Clear**.
+6. Reports: change dates on each report; a From after To shows an error; scope reads "your bureau only" for `rao`, "all bureaus" for `menon`.
+7. Findings: kind, status and bureau filters; C-090 listed; the Meadowvale profile draws the loop in red; the dashboard shows the open findings count.
+
 ### Seeding the demo data
 
 Load into an empty database only (after a first start or a reset, section 5). The files and the patterns they contain are described in `seed/README.md`.
@@ -114,6 +130,7 @@ The worker links misspelt institution names and suggests overlaps every 5 minute
 ```powershell
 docker compose exec worker celery -A app.worker:celery call sethu.institutions.resolve_pending
 docker compose exec worker celery -A app.worker:celery call sethu.overlaps.detect
+docker compose exec worker celery -A app.worker:celery call sethu.findings.detect
 ```
 
 Dates are relative to the moment of loading, so reset and reseed before each rehearsal. To change the data, edit `seed/generate.py`, run `python seed/generate.py` and commit the CSV files.

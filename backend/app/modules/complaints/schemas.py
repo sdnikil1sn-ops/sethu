@@ -1,8 +1,10 @@
 from datetime import date, datetime
-from typing import Literal
+from typing import Any, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+
+from app.core.params import blank_to_none
 
 
 class CaseRow(BaseModel):
@@ -96,3 +98,9 @@ class Filters(BaseModel):
     overdue: bool | None = None
     overlapping: bool | None = None  # true: only cases in a suggested or approved overlap
     q: str | None = Field(None, max_length=200)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _blanks(cls, values: Any) -> Any:
+        """A blank or all-space filter is no filter (app/core/params.py)."""
+        return {k: blank_to_none(v) for k, v in values.items()} if isinstance(values, dict) else values

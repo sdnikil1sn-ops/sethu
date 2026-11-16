@@ -1,7 +1,7 @@
 """Reports: role scoping, date ranges, CSV export and its audit entry."""
 import csv
 import io
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, time, timedelta
 from statistics import median
 
 import pytest
@@ -64,8 +64,12 @@ def test_date_range(world):
     tomorrow = date.today() + timedelta(days=2)
     assert report(world, "menon", "institutions", tomorrow)["rows"] == []
     assert all(r["filed"] == 0 for r in report(world, "menon", "bureaus", tomorrow)["rows"])
-    last_week = report(world, "rao", "bureaus", date.today() - timedelta(days=7))["rows"][0]["filed"]
-    assert last_week == sum(c["bureau"] == "PGRC" and float(c["filed_days_ago"]) <= 7 for c in COMPLAINTS)
+    # The database cuts dates at midnight in its own time zone (UTC), not the test machine's.
+    start = datetime.now(UTC).date() - timedelta(days=7)
+    cutoff, now = datetime.combine(start, time(), UTC), datetime.now(UTC)
+    last_week = report(world, "rao", "bureaus", start)["rows"][0]["filed"]
+    assert last_week == sum(c["bureau"] == "PGRC" and now - timedelta(days=float(c["filed_days_ago"])) >= cutoff
+                            for c in COMPLAINTS)
 
 
 def test_overlap_outcomes(world):

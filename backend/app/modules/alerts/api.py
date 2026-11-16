@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.core.auth import Principal, require_roles
 from app.core.config import get_settings
+from app.core.params import Blank
 from app.db.session import get_session
 from app.modules.alerts import schemas, service
 
@@ -17,7 +18,7 @@ DECIDE = require_roles("bureau_head", "oversight")  # and the database checks th
 
 @router.get("", response_model=schemas.AlertPage)
 def list_alerts(
-    status: Literal["pending_approval", "approved", "sent", "rejected", "failed"] | None = None,
+    status: Annotated[Literal["pending_approval", "approved", "sent", "rejected", "failed"] | None, Blank] = None,
     principal: Principal = Depends(READ),
     session: Session = Depends(get_session),
 ) -> dict:

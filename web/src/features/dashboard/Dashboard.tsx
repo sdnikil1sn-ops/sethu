@@ -24,6 +24,7 @@ type Overview = {
     overlaps_confirmed: number;
     alerts_to_approve: number;
     alerts_unsent: number;
+    findings_open: number;
     overdue_total: number;
     overdue: OverdueCase[];
   };
@@ -142,6 +143,12 @@ export function Dashboard() {
               <small>({a.alerts_unsent} approved but not sent yet)</small>
             </>
           )}
+        </li>
+        <li>
+          <a href="#/findings">
+            {a.findings_open} open finding{a.findings_open === 1 ? "" : "s"}
+          </a>{" "}
+          <small>(transfer loops, stalled transfers, bottlenecks)</small>
         </li>
         <li>
           <a href={cases("overdue", "true")}>{a.overdue_total} overdue case{a.overdue_total === 1 ? "" : "s"}</a>

@@ -124,20 +124,23 @@ def resolve_by_officer(session: Session, principal: Principal, complaint_id: UUI
 
 
 def list_institutions(session: Session, q: str | None, state: str | None, limit: int, offset: int) -> list[dict]:
-    """All institutions by name, or the ones matching q (names and aliases), best first."""
+    """All institutions by name, or the ones matching q (the same search as the top bar), best first.
+    Each row carries its case counts across all bureaus."""
+    state = (state or "").strip() or None
     if not (q and q.strip()):
         return repo.list_institutions(session, state, limit, offset)
-    found: dict[UUID, dict] = {}
-    for row in repo.candidates(session, q.strip(), limit * 3):
-        found.setdefault(row["id"], row | {"matched": row["label"], "score": round(row["similarity"] * 100, 1)})
-    # Nothing looks alike (an unknown acronym, say): fall back to the cascade's suggestions.
-    results = list(found.values()) or rank(session, q)[1]
-    return [r for r in results if not state or r["state"] == state][:limit]
+    hits = [h for h in lookup(session, q, 200) if not state or h["state"] == state][offset:offset + limit]
+    found = repo.counts(session, [h["id"] for h in hits])
+    return [h | {"complaints": found.get(h["id"], {}).get("complaints", 0),
+                 "open": found.get(h["id"], {}).get("open", 0)} for h in hits]
 
 
 def lookup(session: Session, q: str, limit: int) -> list[dict]:
-    """For the top-bar search: institutions by name or alias (pg_trgm), acronym or city, each with why it matched."""
+    """The one institution search, used by the Institutions screen and the top-bar search.
+    Matches name or alias (pg_trgm), permanent id, initials, city (district) or state; each hit says why."""
     q = q.strip()
+    if not q:
+        return []
     found: dict[UUID, dict] = {}
 
     def add(row: dict, score: float, why: str) -> None:
@@ -148,10 +151,14 @@ def lookup(session: Session, q: str, limit: int) -> list[dict]:
     for row in repo.candidates(session, q, limit * 3):
         exact = row["label"].lower() == q.lower()
         what = "name" if row["label"] == row["name"] else f"also known as \"{row['label']}\""
-        add(row, 100 if exact else row["similarity"] * 100,
+        # A match on one word of a long name ("Greenfeild", "Pune") counts for less than the whole name.
+        add(row, 100 if exact else max(row["similarity"] * 100, row["word"] * 70),
             f"{what}: {'same spelling' if exact else 'similar spelling'}")
-    for row in repo.in_district(session, q, limit):
-        add(row, 60, f"city: {row['district']}")
+    for row in repo.in_place(session, q, limit):
+        if row["in_district"]:
+            add(row, 80, f"city: {row['district']}")
+        else:
+            add(row, 70, f"state: {row['state']}")
     if (pid := PERMANENT_ID.search(q)) and (inst := repo.by_permanent_id(session, pid.group())):
         add(inst, 100, "permanent id")
     first = q.split(" ")[0].strip(".,")

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLoad } from "../../api";
 import { type InstitutionRow, place } from "./types";
 
+/** Uses the same institution search as the top-bar search box (GET /institutions?q= calls it). */
 export function InstitutionList() {
   const [typed, setTyped] = useState("");
   const [q, setQ] = useState("");
@@ -16,12 +17,12 @@ export function InstitutionList() {
     <section>
       <h1>Institutions</h1>
       <label>
-        Search by name, alias or acronym
+        Search by name, other spelling, initials, city, state or permanent id
         <input
           type="search"
           value={typed}
           onChange={(e) => setTyped(e.target.value)}
-          placeholder="e.g. GIT Pune"
+          placeholder="e.g. Greenfield, GIT, Madurai, Tamil Nadu"
           autoFocus
         />
       </label>
@@ -33,8 +34,9 @@ export function InstitutionList() {
             <tr>
               <th>Institution</th>
               <th>Place</th>
-              {q ? <th>Matched spelling</th> : <th className="num">Cases</th>}
-              {q ? <th className="num">Match</th> : <th className="num">Open</th>}
+              <th className="num">Cases</th>
+              <th className="num">Open</th>
+              {q && <th>Matched on</th>}
             </tr>
           </thead>
           <tbody>
@@ -44,8 +46,9 @@ export function InstitutionList() {
                   <a href={`#/institutions/${i.id}`}>{i.name}</a>
                 </td>
                 <td>{place(i)}</td>
-                {q ? <td>{i.matched ?? "–"}</td> : <td className="num">{i.complaints}</td>}
-                {q ? <td className="num">{i.score}%</td> : <td className="num">{i.open}</td>}
+                <td className="num">{i.complaints}</td>
+                <td className="num">{i.open}</td>
+                {q && <td>{i.why ?? "–"}</td>}
               </tr>
             ))}
           </tbody>

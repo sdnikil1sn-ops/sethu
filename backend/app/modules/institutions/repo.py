@@ -56,18 +56,31 @@ def summaries(session: Session, institution_id: UUID) -> list[dict]:
 
 
 def candidates(session: Session, q: str, limit: int) -> list[dict]:
-    """Spellings close to q by pg_trgm, or containing it. One row per spelling."""
+    """Spellings close to q by pg_trgm (whole spelling, or q close to a word in it: "Greenfeild"
+    scores 0.55 against Greenfield, under pg_trgm's default word threshold of 0.6), or containing it.
+    One row per spelling. shortcut: scans every spelling (a few hundred); use the `<%` index at scale."""
     return _all(session, f"""
-        SELECT {COLUMNS}, n.label, similarity(n.label, :q) AS similarity
+        SELECT {COLUMNS}, n.label, similarity(n.label, :q) AS similarity, word_similarity(:q, n.label) AS word
           FROM {NAMES} n JOIN sethu.institutions i ON i.id = n.institution_id
-         WHERE n.label % :q OR strpos(lower(n.label), lower(:q)) > 0
+         WHERE n.label % :q OR word_similarity(:q, n.label) >= 0.5 OR strpos(lower(n.label), lower(:q)) > 0
          ORDER BY similarity DESC, i.name LIMIT :limit""", q=q, limit=limit)  # noqa: S608
 
 
-def in_district(session: Session, q: str, limit: int) -> list[dict]:
-    """Institutions whose district (the city) is q, ignoring case."""
-    return _all(session, f"SELECT {COLUMNS} FROM sethu.institutions i WHERE lower(i.district) = lower(:q)"  # noqa: S608
-                         " ORDER BY i.name LIMIT :limit", q=q, limit=limit)
+def in_place(session: Session, q: str, limit: int) -> list[dict]:
+    """Institutions whose district (the city) or state is q, ignoring case."""
+    return _all(session, f"""
+        SELECT {COLUMNS}, lower(i.district) = lower(:q) AS in_district FROM sethu.institutions i
+         WHERE lower(i.district) = lower(:q) OR lower(i.state) = lower(:q)
+         ORDER BY i.name LIMIT :limit""", q=q, limit=limit)  # noqa: S608
+
+
+def counts(session: Session, ids: list[UUID]) -> dict[UUID, dict]:
+    """Case counts (all bureaus, from the summaries view) for the given institutions."""
+    rows = _all(session, """
+        SELECT s.institution_id AS id, count(*) AS complaints, count(*) FILTER (WHERE s.status <> 'closed') AS open
+          FROM sethu.complaint_summaries s WHERE s.institution_id = ANY(:ids) GROUP BY s.institution_id""",
+                ids=list(ids))
+    return {r["id"]: r for r in rows}
 
 
 def by_acronym(session: Session, acronym: str) -> list[dict]:
