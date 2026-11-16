@@ -87,6 +87,10 @@ docker compose --profile dev up -d keycloak demo-users
 docker compose logs -f demo-users          # ends with "demo users imported"
 ```
 
+### Alert mail (dev and demo)
+
+Approved alerts are emailed within 15 seconds, one email per recipient, to Mailpit at http://localhost:8025 (the Alerts page links to it). An alert that could not be sent stays "Approved, queued to send" on the Alerts page with the error and is retried; check `docker compose logs worker` and that `mailpit` is running.
+
 ### Seeding the demo data
 
 Load into an empty database only (after a first start or a reset, section 5). The files and the patterns they contain are described in `seed/README.md`.

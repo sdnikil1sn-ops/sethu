@@ -112,8 +112,7 @@ def decide(session: Session, principal: Principal, link_id: UUID, approve: bool)
         body = (f"{BANNER}\n\n"
                 f"Case {first['ref']} ({first['bureau']}) and case {second['ref']} ({second['bureau']}) "
                 f"appear to concern the same matter.\n"
-                f"Institution: {link['institution']}\nCategory: {link['category']}\n"
-                f"Confirmed by: {principal.name} ({principal.role.replace('_', ' ')})\n\n"
+                f"Institution: {link['institution']}\nCategory: {link['category']}\n\n"
                 f"Open SETHU to see your bureau's case and coordinate with the other bureau.")
         alert_id = repo.insert_alert(session, link_id, recipients, f"{BANNER}: {cases[0]} and {cases[1]}", body, actor)
         payload |= {"alert_id": str(alert_id), "recipients": len(recipients)}

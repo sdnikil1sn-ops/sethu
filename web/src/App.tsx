@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLoad } from "./api";
 import { logout } from "./auth";
+import { AlertsPage } from "./features/alerts/Alerts";
 import { CaseDetail } from "./features/cases/CaseDetail";
 import { CaseList } from "./features/cases/CaseList";
 import { InstitutionList } from "./features/institutions/InstitutionList";
@@ -43,6 +44,9 @@ export function App() {
           <a href="#/overlaps" aria-current={route === "/overlaps" ? "page" : undefined}>
             Overlaps
           </a>
+          <a href="#/alerts" aria-current={route === "/alerts" ? "page" : undefined}>
+            Alerts
+          </a>
           <a href="#/queue" aria-current={route === "/queue" ? "page" : undefined}>
             Unmatched names
           </a>
@@ -61,6 +65,8 @@ export function App() {
           <CaseList key={route} initial={caseList[1] ?? ""} />
         ) : profileId ? (
           <InstitutionProfile id={profileId} />
+        ) : route === "/alerts" ? (
+          <AlertsPage />
         ) : route === "/overlaps" ? (
           <OverlapsPage canDetect={me?.role === "admin"} />
         ) : route === "/queue" ? (

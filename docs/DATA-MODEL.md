@@ -1,6 +1,6 @@
 # Data Model
 
-All tables live in schema `sethu`, created by `backend/alembic/versions/0001_core_schema.py` and changed by `0002_case_tracking.py` and `0003_overlap_policies.py`.
+All tables live in schema `sethu`, created by `backend/alembic/versions/0001_core_schema.py` and changed by `0002_case_tracking.py`, `0003_overlap_policies.py` and `0004_alert_approval.py`.
 
 ## Tables
 
@@ -13,7 +13,7 @@ All tables live in schema `sethu`, created by `backend/alembic/versions/0001_cor
 | `complaints` | One complaint | `bureau_id` owner; `institution_name_raw` as typed; `resolution_state`; `body_sha256` for duplicates; `complainant_enc` encrypted by the application; **Row-Level Security** |
 | `case_actions` | Timeline of a complaint | insert-only for the app role; transfers carry `from`/`to` bureau; an acknowledgement is its own row (`acknowledged`, with `acknowledged_at`); `assignee_id` on assignments; **Row-Level Security** |
 | `overlap_links` | A suggested or decided link between two complaints | `tier` (only 2 is stored today), `score`, `reasons`, `status` (`proposed` is the suggestion, then `approved` or `rejected`), who decided; **Row-Level Security** |
-| `alerts` | Outbox of emails | `pending_approval -> approved -> sent` (or `rejected`, `failed`); an overlap alert is written already `approved`, by the approval of its link; **Row-Level Security** |
+| `alerts` | Outbox of emails | `pending_approval -> approved -> sent` (or `rejected`, `failed`); an overlap alert is written already `approved`, by the approval of its link; each email sent is an `alert.delivered` audit entry; **Row-Level Security** |
 | `audit_log` | Hash-chained ledger | append-only; see ARCHITECTURE section 6 |
 | `complaint_summaries` (view) | Complaint metadata without text | visible across bureaus |
 
@@ -38,7 +38,7 @@ The API sets three transaction-local settings: `app.user_id`, `app.role`, `app.b
 | `complaints` | the bureau holding the case, the bureau named in `transferred_from_bureau_id` (sender of an unacknowledged transfer), or role in `oversight`, `admin`, `auditor`, `system` | insert: own bureau for `officer` and `bureau_head`. Update: only the holding bureau, and the new row must stay with it or name it as the sender (a transfer). Any for `admin`, `system` |
 | `case_actions` | if the parent complaint is readable | insert: `officer` and `bureau_head` of the bureau holding the case, `admin`, `system` (not `oversight` or `auditor`); never updated |
 | `overlap_links` | a party (a bureau holding one of the two cases), or role in `oversight`, `admin`, `auditor`, `system` | insert: `admin`, `system` (the detector). Update (the decision): `officer` and `bureau_head` of a party only |
-| `alerts` | whoever can read the alert's link or its case | insert: `admin`, `system`, or `officer` and `bureau_head` for a link or case they can read. Update (delivery): `admin`, `system` |
+| `alerts` | whoever can read the alert's link or its case | insert: `admin`, `system`, or `officer` and `bureau_head` for a link or case they can read. Update: `admin` and `system` (delivery); a `bureau_head` of a bureau the alert concerns, or `oversight`, may move a `pending_approval` alert to `approved` or `rejected`. Outside `admin` and `system` a trigger lets an update change only `status`, `approved_by` and `approved_at` |
 
 The audit trigger reads the same context: `actor` and `actor_role` of a new `audit_log` row come from `app.user_id` and `app.role` when they are set.
 

@@ -36,8 +36,8 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 ## 7. Alerts
 - [x] Overlap alert is queued to an email outbox for both bureau heads
 - [x] Alert is held until an officer approves it (human approval)
-- [ ] A local mail catcher shows the delivered email during the demo
-- [ ] Sent alerts are listed with time and recipient
+- [x] A local mail catcher shows the delivered email during the demo
+- [x] Sent alerts are listed with time and recipient
 
 ## 8. Reports
 - [ ] Institution report (profile, cases, overlaps, timeline), exportable

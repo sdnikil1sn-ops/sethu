@@ -31,13 +31,13 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
 
 | Component | Responsibility | Status |
 |---|---|---|
-| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, case list, case detail and actions, overlaps. Run end to end in dev; the production TLS config is not yet run |
-| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile, alias search, resolution cascade), `complaints` (case list, detail, history, actions), `overlaps` (Tier 1 view, Tier 2 suggestions, approval, alert outbox row). Other features: Planned |
-| worker (Celery) | Ingestion, matching, graph jobs, alert delivery, nightly audit verification | Built: nightly audit verify, and every 5 minutes institution resolution and Tier 2 overlap detection. Alert delivery and the rest: Planned |
+| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, case list, case detail and actions, overlaps, alerts. Run end to end in dev; the production TLS config is not yet run |
+| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile, alias search, resolution cascade), `complaints` (case list, detail, history, actions), `overlaps` (Tier 1 view, Tier 2 suggestions, approval, alert outbox row), `alerts` (approval of held alerts, delivery). Other features: Planned |
+| worker (Celery) | Ingestion, matching, graph jobs, alert delivery, nightly audit verification | Built: nightly audit verify; institution resolution and Tier 2 overlap detection every 5 minutes; alert delivery every 15 seconds. The rest: Planned |
 | postgres | System of record, Row-Level Security, audit ledger | Built and tested (migrations 0001 to 0003) |
 | keycloak | Login, MFA, roles, `bureau_id` claim | Built for dev: realm imports, demo users are created by the `demo-users` service. Production realm settings: not yet run |
 | redis | Celery broker | Scaffolded |
-| mailpit | Catches alert email in dev and demo | Scaffolded |
+| mailpit | Catches alert email in dev and demo | Built (dev profile): receives the alert emails, inbox at http://localhost:8025 |
 | object storage | Complaint attachments | Planned (ADR 0006) |
 
 ## 3. Trust boundaries and how each is defended
@@ -54,7 +54,7 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
 2. `require_roles("officer","bureau_head")` admits the caller; `get_session` opens a transaction and sets the context.
 3. `overlaps.service.decide` loads the link (RLS shows it only to the two bureaus involved and the reading roles), sets `status='approved'`, inserts an `alerts` row in `approved` state addressed to the heads of both bureaus, and calls `audit.record("overlap.approve", ...)`. The alert holds case references, never complaint text. A rejection writes the decision and its audit entry, and no alert.
 4. The transaction commits. Link, outbox row and audit entry are saved together or not at all.
-5. The worker picks up approved outbox rows, sends mail through the relay, marks them `sent`, and audits the send. A crash between steps re-sends at most once more; nothing is lost (ADR 0004).
+5. Every 15 seconds the worker takes one `approved` alert at a time with `FOR UPDATE SKIP LOCKED` (so two workers never hold the same row), sends one email per recipient through the relay, records each email in the audit log, and marks the alert `sent`, all in one transaction. If a send fails, the alert stays `approved` with the attempt count and the error, the emails already sent stay recorded, and the next run sends only to the recipients not reached yet. A crash in the middle can repeat the emails of the alert in hand at most once (ADR 0004). Mail goes only to addresses that belong to active SETHU users; an alert with any other address is marked `failed` and nothing is sent.
 
 ## 5. Processing pipeline (worker)
 
@@ -95,7 +95,7 @@ Transfers: the receiving bureau holds the case at once (`bureau_id`) with status
 - One package per feature under `backend/app/modules/`: `api.py` (HTTP, roles), `service.py` (rules, audit), `repo.py` (SQL), `schemas.py` (Pydantic).
 - Dependencies point inward: `api -> service -> repo`. A module calls another module through its `service`, never its `repo` or tables.
 - `core`, `db` and `audit` are shared kernel; they import no feature module.
-- Built modules: `institutions`, `complaints`, `overlaps`. Planned modules: `intake`, `alerts`, `dashboard`, `reports`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
+- Built modules: `institutions`, `complaints`, `overlaps`, `alerts`. Planned modules: `intake`, `dashboard`, `reports`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
 
 ## 9. Failure behaviour
 
@@ -103,7 +103,7 @@ Transfers: the receiving bureau holds the case at once (`bureau_id`) with status
 |---|---|
 | Database down | `/health/ready` returns 503; API returns errors; nothing is half-written (single transaction per request) |
 | Redis or worker down | API keeps working; jobs and alerts queue in PostgreSQL (outbox) and drain on recovery |
-| Mail relay down | Outbox rows stay `approved`, attempts are counted, retried with backoff, surfaced on the dashboard |
+| Mail relay down | Outbox rows stay `approved`, attempts are counted and the last error is shown on the Alerts page; retried every 15 seconds (no backoff yet) |
 | Keycloak down | Existing tokens work until expiry (5 minutes); new logins fail; no anonymous fallback |
 | AI model missing or slow | Deterministic fallback runs; item is marked as fallback-processed |
 | Audit chain broken | Nightly job logs an error and raises an admin alert; the ledger is never auto-repaired |
@@ -114,8 +114,8 @@ Stateless API and workers scale horizontally behind the edge. PostgreSQL gets a 
 
 ## 11. What has been verified
 
-- Migrations 0001 to 0003 applied to PostgreSQL 16; 67 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates, seed patterns, institution resolution, case visibility, case actions and their audit entries, overlap detection, approval and its alert).
+- Migrations 0001 to 0004 applied to PostgreSQL 16; 75 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates, seed patterns, institution resolution, case visibility, case actions and their audit entries, overlap detection, approval and its alert, alert delivery to a fake SMTP relay with retry and no duplicates).
 - Web app type-checks and builds.
-- A full `docker compose --profile dev up` on a fresh, isolated copy of the stack: realm import, demo-user import, seeding, sign-in through Nginx and Keycloak, the case list, case detail and one recorded action in a browser; the overlap worker task (6 suggestions on the seeded data), one approval and its queued alert.
+- A full `docker compose --profile dev up` on a fresh, isolated copy of the stack: realm import, demo-user import, seeding, sign-in through Nginx and Keycloak, the case list, case detail and one recorded action in a browser; the overlap worker task (6 suggestions on the seeded data), one approval and its alert delivered to Mailpit (one email per bureau head), shown as sent on the Alerts page.
 - Both Compose files parse (`docker compose config`).
-- **Not yet verified:** the production TLS override and production realm settings, anything using `pgvector`, mail delivery, and the Keycloak login page under the Nginx content security policy (it logs blocked inline scripts; sign-in still works).
+- **Not yet verified:** the production TLS override and production realm settings, anything using `pgvector`, a real SMTP relay (only Mailpit and a fake relay in tests), and the Keycloak login page under the Nginx content security policy (it logs blocked inline scripts; sign-in still works).

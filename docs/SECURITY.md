@@ -26,7 +26,7 @@ Status key: **Built** (tested in this repo), **Scaffolded** (configured, not yet
 | 12 | Malicious upload | ClamAV scan before storage; type and size limits | Planned (no uploads yet) |
 | 13 | Container breakout or lateral movement | Non-root users, `cap_drop: ALL`, `no-new-privileges`, read-only filesystems, memory limits | Scaffolded |
 | 14 | Secrets in the repository | `.env` git-ignored, generated per machine; production uses Docker secrets or Vault | Built (dev) / Planned (prod) |
-| 15 | Alert sent without authorisation | Outbox rows start `pending_approval`; only an approved row is delivered; approval is audited | Planned (table exists) |
+| 15 | Alert sent without authorisation | Only an approved row is delivered: overlap alerts are approved by a person's decision on the link, other alerts start `pending_approval` for a bureau head or oversight; every decision and every email is audited; mail goes only to active SETHU users | Built |
 | 16 | Insider with admin rights changes configuration silently | Maker-checker for admin changes; every change audited | Planned |
 | 17 | Sensitive data in logs | Logs carry identifiers only; request bodies are never logged | Built (convention) |
 
