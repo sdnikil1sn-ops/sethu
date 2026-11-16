@@ -19,9 +19,9 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [x] Officer must approve or reject the link; both choices are logged
 
 ## 4. Real-time dashboard
-- [ ] Counts by bureau, status, category, overdue
+- [x] Counts by bureau, status, category, overdue
 - [ ] Updates within 5 seconds when a case changes (poll or websocket)
-- [ ] Overlap count and open alerts shown
+- [x] Overlap count and open alerts shown
 
 ## 5. Action history
 - [x] Timeline per case: filed, assigned, transferred, replied, closed, with actor and time
@@ -47,8 +47,8 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 
 ## Cross-cutting
 - [ ] Login with roles: Officer, Bureau Head, Admin, Auditor (read-only)
-- [ ] Audit log with hash chain; a "Verify chain" button returns OK
-- [ ] Tamper test: change one row directly in the database, "Verify chain" fails and names the row
+- [x] Audit log with hash chain; a "Verify chain" button returns OK
+- [x] Tamper test: change one row directly in the database, "Verify chain" fails and names the row
 - [ ] One command starts everything: `docker compose up`
 - [ ] Runs with Wi-Fi off
 

@@ -31,10 +31,10 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
 
 | Component | Responsibility | Status |
 |---|---|---|
-| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, case list, case detail and actions, overlaps, alerts. Run end to end in dev; the production TLS config is not yet run |
-| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile, alias search, resolution cascade), `complaints` (case list, detail, history, actions), `overlaps` (Tier 1 view, Tier 2 suggestions, approval, alert outbox row), `alerts` (approval of held alerts, delivery). Other features: Planned |
+| web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, dashboard, case list, case detail and actions, overlaps, alerts, audit log with Verify chain. Run end to end in dev; the production TLS config is not yet run |
+| backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile, alias search, resolution cascade), `complaints` (case list, detail, history, actions), `overlaps` (Tier 1 view, Tier 2 suggestions, approval, alert outbox row), `alerts` (approval of held alerts, delivery), `dashboard` (counts, weekly trend, needs-attention list), `audit_view` (audit log browser, Verify chain). Other features: Planned |
 | worker (Celery) | Ingestion, matching, graph jobs, alert delivery, nightly audit verification | Built: nightly audit verify; institution resolution and Tier 2 overlap detection every 5 minutes; alert delivery every 15 seconds. The rest: Planned |
-| postgres | System of record, Row-Level Security, audit ledger | Built and tested (migrations 0001 to 0003) |
+| postgres | System of record, Row-Level Security, audit ledger | Built and tested (migrations 0001 to 0004) |
 | keycloak | Login, MFA, roles, `bureau_id` claim | Built for dev: realm imports, demo users are created by the `demo-users` service. Production realm settings: not yet run |
 | redis | Celery broker | Scaffolded |
 | mailpit | Catches alert email in dev and demo | Built (dev profile): receives the alert emails, inbox at http://localhost:8025 |
@@ -75,6 +75,8 @@ Institution resolution cascade: exact permanent ID; exact alias within state or 
 
 Each row stores `prev_hash` and `hash = SHA-256(prev_hash, seq, ts, actor, role, action, entity, payload)`. A `BEFORE INSERT` trigger takes a lock, reads the last row and fills in `seq`, `ts`, `prev_hash` and `hash`, ignoring anything the client supplied. Triggers reject UPDATE, DELETE and TRUNCATE. `sethu.audit_verify()` walks the chain and returns the first broken sequence number. Since migration 0002 the trigger also takes `actor` and `actor_role` from the request context when one is set, so application code cannot record an entry under another person's name.
 
+The audit screen (`audit_view`, for `auditor`, `oversight` and `admin`) lists entries newest first with filters, and its **Verify chain** button runs `sethu.audit_verify()`: it shows "chain intact, N entries" or the first broken sequence number with that row as it is stored now. Each verification is itself an `audit.verify` entry. Reading the ledger is limited to those roles by the API only: `audit_log` has no Row-Level Security, because the chain trigger must read the last row whoever inserts, and a policy hiding rows from officers would break their inserts. Entries hold identifiers and decisions, never complaint text (SECURITY.md row 18). The runbook has the tamper demonstration.
+
 What this proves: any edit, deletion or reordering of past entries is detected, even if done by someone with owner rights who disables the triggers (tested). What it does not prove on its own: that the entire chain was not rebuilt from scratch by a database superuser. The mitigation is **Planned**: export the head hash nightly to write-once storage and email it to the auditor, so an outside copy anchors the chain.
 
 ## 7. Cross-bureau visibility without leaking content
@@ -95,7 +97,7 @@ Transfers: the receiving bureau holds the case at once (`bureau_id`) with status
 - One package per feature under `backend/app/modules/`: `api.py` (HTTP, roles), `service.py` (rules, audit), `repo.py` (SQL), `schemas.py` (Pydantic).
 - Dependencies point inward: `api -> service -> repo`. A module calls another module through its `service`, never its `repo` or tables.
 - `core`, `db` and `audit` are shared kernel; they import no feature module.
-- Built modules: `institutions`, `complaints`, `overlaps`, `alerts`. Planned modules: `intake`, `dashboard`, `reports`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
+- Built modules: `institutions`, `complaints`, `overlaps`, `alerts`, `dashboard`, `audit_view`. Planned modules: `intake`, `reports`, `graph`, `bottlenecks`, `profile_dna`, `early_warning`.
 
 ## 9. Failure behaviour
 
@@ -114,7 +116,7 @@ Stateless API and workers scale horizontally behind the edge. PostgreSQL gets a 
 
 ## 11. What has been verified
 
-- Migrations 0001 to 0004 applied to PostgreSQL 16; 75 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates, seed patterns, institution resolution, case visibility, case actions and their audit entries, overlap detection, approval and its alert, alert delivery to a fake SMTP relay with retry and no duplicates).
+- Migrations 0001 to 0004 applied to PostgreSQL 16; 82 backend tests pass (hash chain, tamper detection, append-only, Row-Level Security, token validation, role gates, seed patterns, institution resolution, case visibility, case actions and their audit entries, overlap detection, approval and its alert, alert delivery to a fake SMTP relay with retry and no duplicates, dashboard counts against the seed and per-role visibility, audit screen roles and filters, Verify chain naming a tampered row and passing again after the runbook's restore).
 - Web app type-checks and builds.
 - A full `docker compose --profile dev up` on a fresh, isolated copy of the stack: realm import, demo-user import, seeding, sign-in through Nginx and Keycloak, the case list, case detail and one recorded action in a browser; the overlap worker task (6 suggestions on the seeded data), one approval and its alert delivered to Mailpit (one email per bureau head), shown as sent on the Alerts page.
 - Both Compose files parse (`docker compose config`).

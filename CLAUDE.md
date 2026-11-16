@@ -45,7 +45,7 @@ Do not add features outside the scope docs. New ideas go to the parking lot in `
 backend/app/core/      config, logging, auth (JWT to Principal)
 backend/app/db/        session_for(principal): the only way to reach the database
 backend/app/audit/     append-only ledger: record(), verify()
-backend/app/api/       platform routes (health, me, audit verify)
+backend/app/api/       platform routes (health, me); the audit screen and Verify chain are in modules/audit_view
 backend/app/modules/   one package per feature (create as features are built)
 backend/app/worker.py  Celery app and scheduled jobs
 backend/alembic/       migrations (run as sethu_owner)

@@ -12,7 +12,7 @@ export function InstitutionProfile({ id }: { id: string }) {
   return (
     <section>
       <p>
-        <a href="#/">← All institutions</a>
+        <a href="#/institutions">← All institutions</a>
       </p>
       <h1>{p.name}</h1>
       <p>

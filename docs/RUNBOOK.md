@@ -148,6 +148,26 @@ docker compose --profile dev down -v
 3. Switch Wi-Fi off. `docker compose --profile dev up -d` must still work: every image is local and nothing calls out.
 4. Run the script in `docs/03-DEMO-STORY.md` twice.
 
+### Tamper demonstration
+
+Shows that an edit made directly in the database, even by the owner with the append-only trigger switched off, is caught. Use it on demo data only.
+
+1. Sign in as Mr. Das (auditor) or Dr. Menon (oversight), open **Audit log**, click **Verify chain**: "Chain intact, N entries".
+2. Alter entry 5, as the database owner:
+
+```powershell
+docker compose exec postgres psql -U sethu_owner -d sethu -c "ALTER TABLE sethu.audit_log DISABLE TRIGGER audit_log_no_change; UPDATE sethu.audit_log SET payload = payload || jsonb_build_object('tampered', true) WHERE seq = 5; ALTER TABLE sethu.audit_log ENABLE TRIGGER audit_log_no_change;"
+```
+
+3. Click **Verify chain** again. The screen reports "Chain broken at entry #5: row content does not match its hash. The 4 entries before it are intact." and shows entry 5 as stored now, with `"tampered": true` in its payload.
+4. Restore the row, which makes the chain verify again:
+
+```powershell
+docker compose exec postgres psql -U sethu_owner -d sethu -c "ALTER TABLE sethu.audit_log DISABLE TRIGGER audit_log_no_change; UPDATE sethu.audit_log SET payload = payload - 'tampered' WHERE seq = 5; ALTER TABLE sethu.audit_log ENABLE TRIGGER audit_log_no_change;"
+```
+
+Each `psql -c` runs its three statements in one transaction, so the trigger is never left off. Removing the key restores the payload exactly, so entry 5 matches its hash again; the two `audit.verify` entries the demonstration added stay in the log. If you changed anything else, reseed instead (section 5, then section 3). `backend/tests/test_audit_view.py` runs these exact statements.
+
 ## 7. Production differences
 
 ```powershell

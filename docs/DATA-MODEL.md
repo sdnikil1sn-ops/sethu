@@ -14,7 +14,7 @@ All tables live in schema `sethu`, created by `backend/alembic/versions/0001_cor
 | `case_actions` | Timeline of a complaint | insert-only for the app role; transfers carry `from`/`to` bureau; an acknowledgement is its own row (`acknowledged`, with `acknowledged_at`); `assignee_id` on assignments; **Row-Level Security** |
 | `overlap_links` | A suggested or decided link between two complaints | `tier` (only 2 is stored today), `score`, `reasons`, `status` (`proposed` is the suggestion, then `approved` or `rejected`), who decided; **Row-Level Security** |
 | `alerts` | Outbox of emails | `pending_approval -> approved -> sent` (or `rejected`, `failed`); an overlap alert is written already `approved`, by the approval of its link; each email sent is an `alert.delivered` audit entry; **Row-Level Security** |
-| `audit_log` | Hash-chained ledger | append-only; see ARCHITECTURE section 6 |
+| `audit_log` | Hash-chained ledger | append-only; no Row-Level Security (the chain trigger reads the last row as whoever inserts); the API shows it to `auditor`, `oversight` and `admin` only; see ARCHITECTURE section 6 |
 | `complaint_summaries` (view) | Complaint metadata without text | visible across bureaus |
 
 `overlap_links` stores each pair once (`complaint_a < complaint_b`).

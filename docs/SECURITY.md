@@ -17,7 +17,7 @@ Status key: **Built** (tested in this repo), **Scaffolded** (configured, not yet
 | 3 | API bug forgets an access filter | RLS applies in the database regardless; no request context returns nothing | Built |
 | 4 | Forged or replayed token | RS256/ES256 only, issuer, audience and expiry checked, 5-minute lifetime; HS256 tokens rejected | Built |
 | 5 | Privilege escalation through token claims | Only five known roles accepted; bureau-scoped roles require a `bureau_id`; `system` cannot come from a token | Built |
-| 6 | Someone edits or deletes history | Append-only triggers; app role has no UPDATE/DELETE; hash chain detects tampering by privileged users | Built |
+| 6 | Someone edits or deletes history | Append-only triggers; app role has no UPDATE/DELETE; hash chain detects tampering by privileged users; the Verify chain button names the first broken row | Built |
 | 7 | Whole audit chain rebuilt by a database superuser | Nightly head-hash exported to write-once storage and emailed to the auditor | Planned |
 | 8 | SQL injection | Bound parameters everywhere; ruff `S` rules in lint | Built (convention + lint) |
 | 9 | Stolen database dump reveals complainants | `complainant_enc` encrypted by the application with a key held outside the database | Planned (column exists) |
@@ -29,6 +29,7 @@ Status key: **Built** (tested in this repo), **Scaffolded** (configured, not yet
 | 15 | Alert sent without authorisation | Only an approved row is delivered: overlap alerts are approved by a person's decision on the link, other alerts start `pending_approval` for a bureau head or oversight; every decision and every email is audited; mail goes only to active SETHU users | Built |
 | 16 | Insider with admin rights changes configuration silently | Maker-checker for admin changes; every change audited | Planned |
 | 17 | Sensitive data in logs | Logs carry identifiers only; request bodies are never logged | Built (convention) |
+| 18 | Bureau staff read the whole audit ledger | The audit screen and `/api/v1/audit` admit only `auditor`, `oversight` and `admin`; entries hold identifiers and decisions, never complaint text. Not enforced by the database: `sethu_app` can SELECT every `audit_log` row, because the chain trigger reads the last row as whoever inserts, and the no-`SECURITY DEFINER` rule rules out the usual fix | Built (API only) |
 
 ## Rules for contributors
 

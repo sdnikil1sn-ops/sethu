@@ -1,13 +1,10 @@
-"""Platform endpoints. Feature routers live in app/modules/<feature>/api.py."""
-from dataclasses import asdict
-
+"""Platform endpoints. Feature routers live in app/modules/<feature>/api.py
+(the audit screen and "Verify chain" are in app/modules/audit_view)."""
 from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy import text
-from sqlalchemy.orm import Session
 
-from app.audit import service as audit
-from app.core.auth import Principal, get_principal, require_roles
-from app.db.session import SYSTEM, get_session, session_for
+from app.core.auth import Principal, get_principal
+from app.db.session import SYSTEM, session_for
 
 health = APIRouter(prefix="/health", tags=["health"])
 api = APIRouter(prefix="/api/v1", tags=["platform"])
@@ -38,12 +35,3 @@ def me(principal: Principal = Depends(get_principal)) -> dict[str, str | None]:
         "bureau_id": str(principal.bureau_id) if principal.bureau_id else None,
     }
 
-
-@api.get("/audit/verify")
-def audit_verify(
-    principal: Principal = Depends(require_roles("auditor", "admin", "oversight")),
-    session: Session = Depends(get_session),
-) -> dict:
-    result = audit.verify(session)
-    audit.record(session, principal, "audit.verify", payload={"ok": result.ok, "checked": result.checked})
-    return asdict(result)
