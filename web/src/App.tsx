@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useLoad } from "./api";
 import { logout } from "./auth";
 import { AlertsPage } from "./features/alerts/Alerts";
+import { AuditLog } from "./features/audit/AuditLog";
 import { CaseDetail } from "./features/cases/CaseDetail";
 import { CaseList } from "./features/cases/CaseList";
+import { Dashboard } from "./features/dashboard/Dashboard";
 import { InstitutionList } from "./features/institutions/InstitutionList";
 import { InstitutionProfile } from "./features/institutions/InstitutionProfile";
 import { OverlapsPage } from "./features/overlaps/Overlaps";
@@ -11,6 +13,7 @@ import { ResolutionQueue } from "./features/institutions/ResolutionQueue";
 
 type Me = { name: string; role: string };
 const CAN_RESOLVE = ["officer", "bureau_head", "admin"];
+const CAN_AUDIT = ["auditor", "oversight", "admin"];
 
 function useHashRoute(): string {
   const [route, setRoute] = useState(window.location.hash.slice(1) || "/");
@@ -35,7 +38,10 @@ export function App() {
       <header>
         <strong>SETHU</strong>
         <nav aria-label="Main">
-          <a href="#/" aria-current={route === "/" || profileId ? "page" : undefined}>
+          <a href="#/" aria-current={route === "/" ? "page" : undefined}>
+            Dashboard
+          </a>
+          <a href="#/institutions" aria-current={route === "/institutions" || profileId ? "page" : undefined}>
             Institutions
           </a>
           <a href="#/cases" aria-current={caseId || caseList ? "page" : undefined}>
@@ -50,6 +56,11 @@ export function App() {
           <a href="#/queue" aria-current={route === "/queue" ? "page" : undefined}>
             Unmatched names
           </a>
+          {me && CAN_AUDIT.includes(me.role) && (
+            <a href="#/audit" aria-current={route === "/audit" ? "page" : undefined}>
+              Audit log
+            </a>
+          )}
         </nav>
         <span>
           {me && `${me.name} (${me.role.replace("_", " ")})`}{" "}
@@ -71,8 +82,12 @@ export function App() {
           <OverlapsPage canDetect={me?.role === "admin"} />
         ) : route === "/queue" ? (
           <ResolutionQueue canResolve={!!me && CAN_RESOLVE.includes(me.role)} />
-        ) : (
+        ) : route === "/audit" ? (
+          <AuditLog />
+        ) : route === "/institutions" ? (
           <InstitutionList />
+        ) : (
+          <Dashboard />
         )}
       </main>
     </>
