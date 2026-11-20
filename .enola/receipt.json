@@ -1,15 +1,15 @@
 {
-  "snapshot_id": "sha256:c4a76fbfaf7e92391b42dc465d5f69e0177e767c98b14da27b49c824298167c5",
+  "snapshot_id": "sha256:6914b45af9800d21e9dc05d17d2bdf304cd45bc2a33e2c4b35d69487078d3e25",
   "format_version": 1,
   "enola_version": "0.4.21",
   "extractor_version": "v270",
-  "generated_at": "2026-11-16T18:56:22Z",
-  "duration": "964.3563ms",
+  "generated_at": "2026-11-17T20:03:05Z",
+  "duration": "2.3048654s",
   "repo_path": "E:\\App\\Project\\SETHU",
   "git": {
     "ref": "main",
-    "commit": "292c0a5b598fb192eab1154d49fc58059aa684c2",
-    "dirty": true,
+    "commit": "31cc8cf74ec107cd13f98ae9fd8ef634788d719f",
+    "dirty": false,
     "remote": "github.com/sdnikil1sn-ops/sethu"
   },
   "extractors": [
@@ -48,16 +48,16 @@
   "config_hash": "sha256:73d78ea79f51e19979d4c7d00bd9463ae684ebcb909116abad86675323c32c05",
   "ignore_glob_hash": "sha256:7523cc6397a498e151125a682d28fbf6df20c6f51f6dfaf18fd8f5239a20d2d8",
   "output_hashes": {
-    "facts.jsonl": "sha256:2c65517b55a5f855931ffc825adc9a5fb16a3a3c39033591882067223e27e646",
-    "insights.json": "sha256:dfd587c04769167299966487238d1dcca0e2774de08ac477b7751d7837681254",
-    "llm_context.md": "sha256:d62eb306c29c751d908f52cf9b7766d21b1447b75b468b43e28c8e8b271c800a"
+    "facts.jsonl": "sha256:5fed1983397e0df2c013154cde7e2444285ba2ff2b4af250af35345e86845440",
+    "insights.json": "sha256:5c5f428a98022b2ef011a94cc3a8afdcf73107b6e466aa9881f803cdf3489fbb",
+    "llm_context.md": "sha256:c4ccd14be704c70e7f792f463217710af578c85d753d995d92b6c62ed483f009"
   },
-  "fact_count": 2035,
-  "insight_count": 157,
+  "fact_count": 2305,
+  "insight_count": 161,
   "quality": {
-    "files_seen": 526,
-    "files_parsed": 182,
-    "files_skipped": 29,
+    "files_seen": 629,
+    "files_parsed": 198,
+    "files_skipped": 33,
     "dirs_skipped": 5,
     "skipped_sample": [
       ".claude/worktrees/jolly-feynman-1a9f96/.enola/ (glob: **/.enola/**)",
@@ -72,29 +72,29 @@
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_auth_and_api.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_cases.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_dashboard.py (glob: **/test_*.py)",
+      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_filters.py (glob: **/test_*.py)",
+      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_findings.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_institutions.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_overlaps.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_reports.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_rls.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_search.py (glob: **/test_*.py)",
-      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_seed.py (glob: **/test_*.py)",
-      ".claude/worktrees/jolly-feynman-1a9f96/web/node_modules/ (glob: **/node_modules/**)",
-      ".git/ (glob: **/.git/**)"
+      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_seed.py (glob: **/test_*.py)"
     ],
     "parse_errors": 0,
-    "heuristic_insights": 155,
+    "heuristic_insights": 159,
     "coverage": {
       "services_total": 0,
       "coverage_gaps": 0,
       "unresolved_edges": 0,
       "extractors_reporting": 1,
-      "extraction_unresolved": 118
+      "extraction_unresolved": 130
     },
     "census": {
-      "files_walked": 555,
-      "parsed": 182,
-      "excluded_by_ignore": 29,
-      "excluded_by_kind": 308,
+      "files_walked": 662,
+      "parsed": 198,
+      "excluded_by_ignore": 33,
+      "excluded_by_kind": 393,
       "excluded_kinds": {
         "(no extension)": 9,
         ".conf": 4,
@@ -108,17 +108,18 @@
         ".graphify_root": 2,
         ".graphify_version": 2,
         ".ini": 2,
-        ".json": 252,
+        ".json": 336,
+        ".nudges": 1,
         ".sh": 4,
         ".sig": 2,
         ".txt": 4,
         ".yml": 6
       },
-      "skipped_with_cause": 36,
+      "skipped_with_cause": 38,
       "top_skip_causes": [
         {
           "cause": "claimed by python, no facts emitted",
-          "count": 28
+          "count": 30
         },
         {
           "cause": "claimed by manifests, no facts emitted",
