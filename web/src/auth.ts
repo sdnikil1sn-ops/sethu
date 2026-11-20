@@ -5,7 +5,7 @@ const OIDC = "/auth/realms/sethu/protocol/openid-connect";
 const CLIENT_ID = "sethu-web";
 const PENDING = "sethu.login";
 
-type Tokens = { access: string; refresh: string; expiresAt: number };
+type Tokens = { access: string; refresh: string; id?: string; expiresAt: number };
 let tokens: Tokens | null = null;
 
 const redirectUri = () => `${window.location.origin}/`;
@@ -21,8 +21,13 @@ async function requestTokens(params: Record<string, string>): Promise<Tokens | n
     body: new URLSearchParams({ client_id: CLIENT_ID, ...params }),
   });
   if (!response.ok) return null;
-  const t = (await response.json()) as { access_token: string; refresh_token: string; expires_in: number };
-  return { access: t.access_token, refresh: t.refresh_token, expiresAt: Date.now() + t.expires_in * 1000 };
+  const t = (await response.json()) as {
+    access_token: string;
+    refresh_token: string;
+    id_token?: string;
+    expires_in: number;
+  };
+  return { access: t.access_token, refresh: t.refresh_token, id: t.id_token, expiresAt: Date.now() + t.expires_in * 1000 };
 }
 
 async function login(): Promise<never> {
@@ -78,6 +83,11 @@ export async function accessToken(): Promise<string> {
 
 export function logout(): void {
   window.location.assign(
-    `${OIDC}/logout?${new URLSearchParams({ client_id: CLIENT_ID, post_logout_redirect_uri: redirectUri() })}`,
+    // With the ID token as a hint Keycloak signs out at once, without asking "Do you want to log out?".
+    `${OIDC}/logout?${new URLSearchParams({
+      client_id: CLIENT_ID,
+      post_logout_redirect_uri: redirectUri(),
+      ...(tokens?.id ? { id_token_hint: tokens.id } : {}),
+    })}`,
   );
 }

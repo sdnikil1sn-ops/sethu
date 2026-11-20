@@ -118,7 +118,7 @@ HI = {
                                    "के अधिकांश छात्रों को कोई प्रस्ताव नहीं मिला। शुल्क {amount} रुपये।",
 }
 
-# username, display name, role, bureau, desk. rao, iyer, fernandes, menon and das are the demo
+# username, display name, role, bureau, desk. rao, iyer, fernandes, menon, admin and das are the demo
 # logins: infra/demo-users/users.json must list the same usernames, roles and bureaus.
 USERS = [
     ("rao", "Anita Rao", "officer", "PGRC", ""), ("mdutta", "Meera Dutta", "officer", "PGRC", ""),

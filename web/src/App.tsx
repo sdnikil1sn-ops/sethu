@@ -91,7 +91,7 @@ export function App() {
         ) : caseList ? (
           <CaseList key={visit} initial={caseList[1] ?? ""} />
         ) : profileId ? (
-          <InstitutionProfile id={profileId} />
+          <InstitutionProfile key={profileId} id={profileId} />
         ) : route === "/alerts" ? (
           <AlertsPage />
         ) : route === "/overlaps" ? (

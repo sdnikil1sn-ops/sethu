@@ -1,4 +1,5 @@
 """Institutions: profile, alias search and the resolution cascade, on the seeded data."""
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
@@ -17,6 +18,27 @@ from tests.test_seed import COMPLAINTS, INSTITUTIONS, load
 GREENFIELD = "Greenfield Institute of Technology"
 ANSWER = {c["ref"]: c["institution_pid"] for c in COMPLAINTS}  # the seed's answer key
 PID_OF_NAME = {i["name"]: i["permanent_id"] for i in INSTITUTIONS}
+
+
+def test_profile_dna_measures():
+    now = datetime(2026, 11, 1, tzinfo=UTC)
+
+    def case(category, bureau, filed_days_ago, closed_after=None):
+        filed = now - timedelta(days=filed_days_ago)
+        return {"category": category, "bureau": bureau, "filed_at": filed,
+                "closed_at": filed + timedelta(days=closed_after) if closed_after is not None else None}
+
+    cases = [case("Fee refund", "PGRC", 300, 10), case("Fee refund", "RB", 200, 20),  # 100 days apart: a repeat
+             case("Fee refund", "PGRC", 10), case("Ragging", "RB", 150, 30),         # 190 days later: not one
+             case(None, "PGRC", 400, 4)]
+    dna = service.dna(cases, now)
+    assert dna["category_mix"][0] == {"category": "Fee refund", "cases": 3, "share": 0.6}
+    assert dna["volume"] == {"total": 5, "last_12_months": 4, "per_month": 0.3}
+    assert dna["recurrence"] == {"repeat_cases": 1, "share": 0.2, "categories": ["Fee refund"], "window_days": 180}
+    assert dna["disposal"] == {"closed": 4, "median_days": 15.0}  # 4, 10, 20, 30 days
+    assert dna["bureaus"] == [{"bureau": "PGRC", "cases": 3}, {"bureau": "RB", "cases": 2}]
+    assert dna["trend"] == {"recent": 1, "previous": 1, "window_days": 90, "direction": "flat"}
+    assert service.dna([], now)["disposal"]["median_days"] is None
 
 
 def test_normalize_expands_abbreviations():
@@ -159,6 +181,13 @@ def test_api_search_and_role_gates(seeded):
             assert rows[0]["name"] == GREENFIELD
         profile = client.get(f"/api/v1/institutions/{rows[0]['id']}")
         assert profile.status_code == 200 and len(profile.json()["complaints"]) == 3
+        dna = profile.json()["dna"]  # Greenfield: C-101 and C-102 faculty shortage, C-103 fee refund, all open
+        mix = [(c["category"], c["cases"]) for c in dna["category_mix"]]
+        assert mix == [("Faculty shortage", 2), ("Fee refund", 1)]
+        assert dna["recurrence"]["repeat_cases"] == 1 and dna["recurrence"]["categories"] == ["Faculty shortage"]
+        assert dna["disposal"] == {"closed": 0, "median_days": None}
+        assert dna["bureaus"] == [{"bureau": "PGRC", "cases": 2}, {"bureau": "RB", "cases": 1}]
+        assert (dna["volume"]["total"], dna["trend"]["recent"], dna["trend"]["direction"]) == (3, 3, "up")
         assert client.get(f"/api/v1/institutions/{uuid4()}").status_code == 404
         assert len(client.get("/api/v1/institutions/resolution/queue", params={"limit": 200}).json()) == 38
         # An auditor reads but never resolves.

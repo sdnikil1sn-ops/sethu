@@ -1,25 +1,25 @@
-# Graph Report - jolly-feynman-1a9f96  (2026-11-17)
+# Graph Report - jolly-feynman-1a9f96  (2026-11-20)
 
 ## Corpus Check
-- 135 files · ~59,516 words
+- 136 files · ~60,987 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 18 file(s) not represented in the graph (top: (none) 8, .csv 4, .conf 2)
 
 ## Summary
-- 1372 nodes · 2952 edges · 101 communities (76 shown, 25 thin omitted)
+- 1391 nodes · 2988 edges · 119 communities (83 shown, 36 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 43 edges (avg confidence: 0.93)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f5e90929`
+- Built from commit: `b5e8e62a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- overlaps/service.py
+- session.py
 - test_seed.py
 - complaints/service.py
-- uuid
+- overlaps/repo.py
 - institutions/repo.py
 - alerts/repo.py
 - test_alerts.py
@@ -31,74 +31,83 @@
 - options
 - CaseDetail.tsx
 - useLoad
-- test_auth_and_api.py
+- pytest
 - dashboard/repo.py
 - Principal
 - test_overlaps.py
 - postgres
-- routes.py
-- auth.py
+- export
+- findings/service.py
 - web
-- test_reports.py
+- test_auth_and_api.py
 - demo-users
 - Runbook
-- load.py
-- Architecture
+- env.py
+- decide
 - compilerOptions
-- alerts/service.py
-- detect
-- test_institutions.py
+- test_findings.py
 - redis
-- keycloak
 - environment
-- findings/service.py
+- load.py
+- findings/repo.py
 - services
 - 01. Scope Lock
 - 02. PS Coverage Checklist (SIH26264)
 - AuditLog.tsx
 - Overlaps.tsx
-- sqlalchemy
+- conftest.py
 - resources
 - migrate
 - api.ts
 - healthcheck
 - reports/service.py
-- services
+- x-backend-env
 - Architecture Decision Records
 - Architecture Snapshot
 - App.tsx
-- generate.py
+- services
 - Dashboard.tsx
-- pathlib
+- auth.py
 - 03. Demo Story: "Institution A"
 - 04. Mock Data Spec
 - Data Model
 - Security
 - worker
 - 05. Next Claude Code Prompts
-- OverlapError
+- list_findings
 - postgres
 - import.sh
 - SETHU
 - .claude/CLAUDE.md
 - 01-roles.sh
 - sethu-backend
-- overlaps/repo.py
-- environment
-- test_findings.py
-- main.py
-- datetime
-- Seed data
 - test_filters.py
-- test_cases.py
+- environment
+- test_search.py
+- main.py
+- audit_view/schemas.py
 - list_links
+- test_reports.py
 - institutions/schemas.py
 - Findings.tsx
 - dashboard/schemas.py
 - overlaps/schemas.py
 - SETHU
 - findings/schemas.py
+- generate.py
+- UUID
+- Architecture
+- sqlalchemy_orm
+- detect_findings
+- approved
+- search/schemas.py
+- alerts/schemas.py
+- networks
+- pathlib
 - add
+- Seed data
+- listing
+- queue_findings
 
 ## God Nodes (most connected - your core abstractions)
 1. `session_for()` - 104 edges
@@ -109,16 +118,16 @@
 6. `decide()` - 20 edges
 7. `get_principal()` - 19 edges
 8. `detect()` - 18 edges
-9. `get_settings()` - 17 edges
-10. `App()` - 17 edges
+9. `App()` - 17 edges
+10. `get_settings()` - 17 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `7. Cross-bureau visibility without leaking content` --references--> `lookup()`  [INFERRED]
+  docs/ARCHITECTURE.md → backend/app/modules/institutions/service.py
 - `3. Trust boundaries and how each is defended` --references--> `session_for()`  [INFERRED]
   docs/ARCHITECTURE.md → backend/app/db/session.py
 - `6. Audit ledger` --references--> `verify()`  [INFERRED]
   docs/ARCHITECTURE.md → backend/app/audit/service.py
-- `7. Cross-bureau visibility without leaking content` --references--> `lookup()`  [INFERRED]
-  docs/ARCHITECTURE.md → backend/app/modules/institutions/service.py
 - `Tamper demonstration` --references--> `verify()`  [INFERRED]
   docs/RUNBOOK.md → backend/app/audit/service.py
 - `Non-negotiable rules` --references--> `get_session()`  [INFERRED]
@@ -127,47 +136,47 @@
 ## Import Cycles
 - None detected.
 
-## Communities (101 total, 25 thin omitted)
+## Communities (119 total, 36 thin omitted)
 
-### Community 0 - "overlaps/service.py"
-Cohesion: 0.22
-Nodes (8): _can_decide(), _cases(), decide(), linked_case_ids(), links(), _shape(), tier1(), test_alert_status_filter()
+### Community 0 - "session.py"
+Cohesion: 0.13
+Nodes (11): get_principal(), _jwks_client(), get_settings(), Settings, counts(), expected(), overdue(), test_a_bureau_sees_no_text_it_cannot_read_and_only_its_own_work() (+3 more)
 
 ### Community 1 - "test_seed.py"
 Cohesion: 0.18
 Nodes (12): cross_bureau_pairs(), deadlocks(), duplicate_pairs(), not_closed(), silent(), spikes(), tagged(), tagged_pairs() (+4 more)
 
 ### Community 2 - "complaints/service.py"
-Cohesion: 0.11
-Nodes (28): _all(), bureaus(), case_counts(), ensure_user(), exists(), find(), history(), insert_action() (+20 more)
+Cohesion: 0.10
+Nodes (29): _all(), bureaus(), case_counts(), ensure_user(), exists(), find(), history(), insert_action() (+21 more)
 
-### Community 3 - "uuid"
-Cohesion: 0.20
-Nodes (7): Alert, AlertPage, DecisionIn, ComplaintHit, ComplaintHits, InstitutionHit, Results
+### Community 3 - "overlaps/repo.py"
+Cohesion: 0.23
+Nodes (10): _all(), decide(), head_emails(), insert_alert(), linked_case_ids(), links(), _one(), refs() (+2 more)
 
 ### Community 4 - "institutions/repo.py"
 Cohesion: 0.08
 Nodes (28): institution_profile(), list_institutions(), resolution_queue(), resolve(), run_resolution(), add_alias(), aliases(), _all() (+20 more)
 
 ### Community 5 - "alerts/repo.py"
-Cohesion: 0.06
-Nodes (20): decide(), list_alerts(), _all(), claim_next(), decide(), delivered_to(), known_addresses(), listing() (+12 more)
+Cohesion: 0.08
+Nodes (15): decide(), list_alerts(), _all(), claim_next(), decide(), delivered_to(), known_addresses(), listing() (+7 more)
 
 ### Community 6 - "test_alerts.py"
 Cohesion: 0.15
 Nodes (13): alert_row(), audit_count(), closed_port(), deliver(), kinds(), SMTPSession, test_a_bureau_sees_only_alerts_it_is_party_to(), test_a_failed_send_stays_approved_and_is_retried_without_duplicates() (+5 more)
 
 ### Community 7 - "backend"
-Cohesion: 0.14
-Nodes (15): build, cap_drop, depends_on, deploy, networks, read_only, restart, security_opt (+7 more)
+Cohesion: 0.15
+Nodes (14): build, cap_drop, depends_on, networks, read_only, restart, security_opt, tmpfs (+6 more)
 
 ### Community 8 - "audit_view/repo.py"
 Cohesion: 0.14
 Nodes (7): list_entries(), verify(), actions(), entries(), entry(), entries(), verify()
 
 ### Community 9 - "session_for"
-Cohesion: 0.27
-Nodes (9): verify(), _append(), test_actor_comes_from_the_session_not_the_caller(), test_chain_is_valid_and_sequential(), test_client_cannot_choose_seq_or_hash(), test_deleted_row_is_detected(), test_runtime_role_cannot_rewrite_history(), test_tampering_by_a_privileged_user_is_detected() (+1 more)
+Cohesion: 0.20
+Nodes (13): ChainStatus, verify(), apply_context(), get_engine(), session_for(), _append(), test_actor_comes_from_the_session_not_the_caller(), test_chain_is_valid_and_sequential() (+5 more)
 
 ### Community 10 - "complaints/api.py"
 Cohesion: 0.11
@@ -178,48 +187,48 @@ Cohesion: 0.10
 Nodes (23): react-dom, @types/react, @types/react-dom, typescript, vite, @vitejs/plugin-react, dependencies, react@^18.3.1 (+15 more)
 
 ### Community 12 - "options"
-Cohesion: 0.11
-Nodes (24): logging, logging, driver, options, cap_drop, image, logging, networks (+16 more)
+Cohesion: 0.19
+Nodes (15): logging, logging, driver, options, logging, max-file, max-size, logging (+7 more)
 
 ### Community 13 - "CaseDetail.tsx"
 Cohesion: 0.19
 Nodes (18): ActionForm(), ACTIONS, CaseDetail(), CaseList(), EMPTY, Filters, History(), unacknowledged() (+10 more)
 
 ### Community 14 - "useLoad"
-Cohesion: 0.16
-Nodes (23): useLoad(), App(), InstitutionTimeline(), CENTRE, curve(), Link, place(), RelationshipGraph() (+15 more)
+Cohesion: 0.13
+Nodes (26): useLoad(), InstitutionTimeline(), DnaPanel(), pct(), TREND, CENTRE, curve(), Link (+18 more)
 
-### Community 15 - "test_auth_and_api.py"
-Cohesion: 0.14
-Nodes (12): AuthError, decode_token(), get_principal(), _jwks_client(), principal_from_claims(), Settings, decode(), test_bad_tokens_are_rejected() (+4 more)
+### Community 15 - "pytest"
+Cohesion: 0.26
+Nodes (8): audit_rows(), scalar(), test_every_action_is_audited_and_the_chain_verifies(), test_list_filters_search_and_institution_timeline(), test_loop_case_c090_shows_both_unacknowledged_transfers(), test_officer_cannot_read_or_change_another_bureaus_complaint(), test_transfer_and_acknowledgement_appear_in_the_history(), test_case_action_history_cannot_be_edited()
 
 ### Community 16 - "dashboard/repo.py"
 Cohesion: 0.20
 Nodes (8): overview(), _all(), by_bureau(), by_column(), overdue_cases(), pending(), weekly(), overview()
 
 ### Community 17 - "Principal"
-Cohesion: 0.15
-Nodes (22): Principal, apply_context(), get_engine(), session_for(), _count(), linked(), _refs(), test_a_bureau_can_only_hand_a_case_over_as_itself() (+14 more)
+Cohesion: 0.18
+Nodes (18): Principal, _count(), linked(), _refs(), test_a_bureau_can_only_hand_a_case_over_as_itself(), test_a_bureau_cannot_read_links_or_alerts_it_is_not_party_to(), test_auditor_cannot_modify_complaints(), test_findings_are_read_by_the_bureaus_involved_and_written_by_the_detector() (+10 more)
 
 ### Community 18 - "test_overlaps.py"
-Cohesion: 0.21
-Nodes (12): detected(), scalar(), suggested_pairs(), tagged_pairs(), test_api_decisions_detection_and_the_overlapping_filter(), test_approval_writes_link_alert_and_audit_together(), test_closed_or_far_apart_cases_are_not_tier2(), test_detector_suggests_exactly_the_six_tier2_pairs() (+4 more)
+Cohesion: 0.16
+Nodes (13): OverlapError, detected(), scalar(), suggested_pairs(), tagged_pairs(), test_api_decisions_detection_and_the_overlapping_filter(), test_approval_writes_link_alert_and_audit_together(), test_closed_or_far_apart_cases_are_not_tier2() (+5 more)
 
 ### Community 19 - "postgres"
-Cohesion: 0.12
-Nodes (17): KEYCLOAK_DB_PASSWORD, POSTGRES_DB, POSTGRES_INITDB_ARGS, POSTGRES_PASSWORD, POSTGRES_USER, SETHU_APP_PASSWORD, SETHU_AUDITOR_PASSWORD, SETHU_OWNER_PASSWORD (+9 more)
+Cohesion: 0.11
+Nodes (18): KEYCLOAK_DB_PASSWORD, POSTGRES_DB, POSTGRES_INITDB_ARGS, POSTGRES_PASSWORD, POSTGRES_USER, SETHU_APP_PASSWORD, SETHU_AUDITOR_PASSWORD, SETHU_OWNER_PASSWORD (+10 more)
 
-### Community 20 - "routes.py"
-Cohesion: 0.38
-Nodes (3): live(), me(), ready()
+### Community 20 - "export"
+Cohesion: 0.15
+Nodes (9): live(), me(), ready(), _check(), export(), report(), _cell(), export() (+1 more)
 
 ### Community 22 - "web"
 Cohesion: 0.12
 Nodes (16): condition, depends_on, backend, keycloak, condition, web, build, cap_drop (+8 more)
 
-### Community 23 - "test_reports.py"
-Cohesion: 0.17
-Nodes (9): detected(), client(), report(), test_bureau_performance_is_scoped_by_role(), test_date_range(), test_export_is_csv_without_text_and_is_audited(), test_institution_report_counts_only_the_callers_cases(), test_overlap_outcomes() (+1 more)
+### Community 23 - "test_auth_and_api.py"
+Cohesion: 0.20
+Nodes (9): AuthError, decode_token(), principal_from_claims(), decode(), test_bad_tokens_are_rejected(), test_highest_role_wins(), test_me_and_role_gate(), test_valid_token_maps_to_principal() (+1 more)
 
 ### Community 24 - "demo-users"
 Cohesion: 0.13
@@ -229,41 +238,33 @@ Nodes (15): cap_drop, entrypoint, environment, image, networks, profiles, read_o
 Cohesion: 0.11
 Nodes (17): 1. First start, 2. Daily use, 3. Database, 4. Backup and restore, 5. Reset everything (destroys data), 6. Demo day, 7. Production differences, Alert mail (dev and demo) (+9 more)
 
-### Community 26 - "load.py"
-Cohesion: 0.18
-Nodes (5): test_keycloak_demo_logins_match_the_seed(), insert(), load(), rows(), user_id()
-
-### Community 27 - "Architecture"
-Cohesion: 0.15
-Nodes (12): 10. Scaling path (after the hackathon), 11. What has been verified, 1. Shape, 2. Components, 3. Trust boundaries and how each is defended, 4. Request flow (example: approve an overlap link), 5. Processing pipeline (worker), 6. Audit ledger (+4 more)
+### Community 27 - "decide"
+Cohesion: 0.19
+Nodes (8): _can_decide(), _cases(), decide(), linked_case_ids(), links(), _shape(), tier1(), 4. Request flow (example: approve an overlap link)
 
 ### Community 28 - "compilerOptions"
 Cohesion: 0.15
 Nodes (12): compilerOptions, jsx, lib, module, moduleResolution, noEmit, noUnusedLocals, noUnusedParameters (+4 more)
 
-### Community 30 - "detect"
-Cohesion: 0.17
-Nodes (6): detect(), approved(), FakeSMTP, held(), relay(), test_overlap_filters()
-
-### Community 31 - "test_institutions.py"
-Cohesion: 0.23
-Nodes (10): normalize(), scalar(), seeded(), test_api_search_and_role_gates(), test_cascade_resolves_most_variants_and_queues_the_rest(), test_greenfield_spellings_resolve_to_one_institution(), test_normalize_expands_abbreviations(), test_officer_picks_from_the_queue() (+2 more)
+### Community 31 - "test_findings.py"
+Cohesion: 0.11
+Nodes (22): normalize(), detected(), findings_as(), hop(), test_a_second_run_adds_nothing(), test_dismiss_reopen_and_resolve_are_audited_and_limited(), test_findings_are_scoped_to_the_bureaus_involved(), test_loop_detection_finds_c090_and_queues_an_alert_for_approval() (+14 more)
 
 ### Community 32 - "redis"
 Cohesion: 0.17
 Nodes (12): REDIS_PASSWORD, cap_add, cap_drop, command, environment, image, networks, read_only (+4 more)
 
-### Community 33 - "keycloak"
-Cohesion: 0.17
-Nodes (12): postgres, cap_drop, command, depends_on, image, networks, restart, security_opt (+4 more)
+### Community 33 - "environment"
+Cohesion: 0.08
+Nodes (24): postgres, KC_BOOTSTRAP_ADMIN_PASSWORD, KC_BOOTSTRAP_ADMIN_USERNAME, KC_DB, KC_DB_PASSWORD, KC_DB_URL, KC_DB_USERNAME, KC_HEALTH_ENABLED (+16 more)
 
-### Community 34 - "environment"
-Cohesion: 0.17
-Nodes (12): KC_BOOTSTRAP_ADMIN_PASSWORD, KC_BOOTSTRAP_ADMIN_USERNAME, KC_DB, KC_DB_PASSWORD, KC_DB_URL, KC_DB_USERNAME, KC_HEALTH_ENABLED, KC_HOSTNAME (+4 more)
+### Community 34 - "load.py"
+Cohesion: 0.18
+Nodes (5): test_keycloak_demo_logins_match_the_seed(), insert(), load(), rows(), user_id()
 
-### Community 35 - "findings/service.py"
-Cohesion: 0.07
-Nodes (27): decide(), detect(), list_findings(), trend(), _all(), bureau_codes(), bureau_queues(), existing() (+19 more)
+### Community 35 - "findings/repo.py"
+Cohesion: 0.21
+Nodes (12): _all(), bureau_codes(), bureau_queues(), existing(), head_emails(), insert(), insert_alert(), institution_queues() (+4 more)
 
 ### Community 36 - "services"
 Cohesion: 0.18
@@ -285,33 +286,33 @@ Nodes (8): AuditLog(), ChainReport, EMPTY, Entry, EntryPage, moment(), target(),
 Cohesion: 0.16
 Nodes (16): api(), Alert, AlertCard(), decide(), AlertPage, AlertsPage(), moment(), STATUS (+8 more)
 
-### Community 41 - "sqlalchemy"
-Cohesion: 0.12
-Nodes (11): run_migrations_online(), _url(), app_engine(), clean_db(), owner_engine(), world(), person(), client() (+3 more)
+### Community 41 - "conftest.py"
+Cohesion: 0.29
+Nodes (5): app_engine(), clean_db(), owner_engine(), world(), person()
 
 ### Community 42 - "resources"
 Cohesion: 0.22
-Nodes (9): deploy, resources, deploy, memory, deploy, deploy, limits, deploy (+1 more)
+Nodes (9): deploy, deploy, resources, deploy, memory, deploy, limits, deploy (+1 more)
 
 ### Community 43 - "migrate"
 Cohesion: 0.20
 Nodes (10): MIGRATION_DATABASE_URL, build, cap_drop, command, environment, networks, read_only, restart (+2 more)
 
 ### Community 44 - "api.ts"
-Cohesion: 0.35
-Nodes (9): accessToken(), base64url(), login(), logout(), redirectUri(), requestTokens(), start(), Tokens (+1 more)
+Cohesion: 0.20
+Nodes (15): download(), accessToken(), base64url(), login(), logout(), redirectUri(), requestTokens(), start() (+7 more)
 
 ### Community 45 - "healthcheck"
 Cohesion: 0.53
 Nodes (6): interval, retries, test, timeout, healthcheck, healthcheck
 
 ### Community 46 - "reports/service.py"
-Cohesion: 0.12
-Nodes (11): _check(), export(), report(), _all(), bureaus(), _in_range(), institutions(), overlaps() (+3 more)
+Cohesion: 0.25
+Nodes (5): _all(), bureaus(), _in_range(), institutions(), overlaps()
 
-### Community 47 - "services"
-Cohesion: 0.10
-Nodes (20): internal, internal, name, networks, app, data, edge, services (+12 more)
+### Community 47 - "x-backend-env"
+Cohesion: 0.22
+Nodes (9): x-backend-env, SETHU_DATABASE_URL, SETHU_ENVIRONMENT, SETHU_OIDC_AUDIENCE, SETHU_OIDC_ISSUER, SETHU_OIDC_JWKS_URL, SETHU_REDIS_URL, SETHU_SMTP_HOST (+1 more)
 
 ### Community 48 - "Architecture Decision Records"
 Cohesion: 0.22
@@ -322,16 +323,20 @@ Cohesion: 0.22
 Nodes (8): Architecture Pattern, Architecture Snapshot, Critical Modules, Dependency Rules, Entry Points, Extraction Quality, Repository Map, Routes
 
 ### Community 50 - "App.tsx"
-Cohesion: 0.14
-Nodes (18): react, download(), CAN_AUDIT, CAN_DECIDE, CAN_RESOLVE, Me, useHashRoute(), NOTES (+10 more)
+Cohesion: 0.19
+Nodes (13): react, App(), CAN_AUDIT, CAN_DECIDE, CAN_RESOLVE, Me, useHashRoute(), ComplaintHit (+5 more)
 
-### Community 51 - "generate.py"
-Cohesion: 0.20
-Nodes (7): test_files_are_what_the_generator_produces(), build(), details(), fresh(), two_wordings(), render(), variant()
+### Community 51 - "services"
+Cohesion: 0.13
+Nodes (14): cap_drop, image, logging, networks, ports, profiles, restart, security_opt (+6 more)
 
 ### Community 52 - "Dashboard.tsx"
 Cohesion: 0.39
 Nodes (8): cases(), Count, CountTable(), Dashboard(), day(), OverdueCase, Overview, Trend()
+
+### Community 53 - "auth.py"
+Cohesion: 0.15
+Nodes (4): require_roles(), get_session(), Column, Report
 
 ### Community 54 - "03. Demo Story: "Institution A""
 Cohesion: 0.25
@@ -357,6 +362,10 @@ Nodes (11): disable, worker, build, cap_drop, command, healthcheck, networks, re
 Cohesion: 0.33
 Nodes (5): 05. Next Claude Code Prompts, After that, in this order, Prompt 1: bring the stack up, Prompt 2: mock data, Prompt 3: first feature (institutions and resolution)
 
+### Community 60 - "list_findings"
+Cohesion: 0.18
+Nodes (6): decide(), detect(), list_findings(), trend(), listing(), trend()
+
 ### Community 62 - "postgres"
 Cohesion: 0.40
 Nodes (4): networks, ports, services, postgres
@@ -369,45 +378,37 @@ Nodes (3): kcadm(), login(), import.sh script
 Cohesion: 0.50
 Nodes (3): Quick start (Windows, PowerShell), SETHU, What is here
 
-### Community 78 - "overlaps/repo.py"
-Cohesion: 0.23
-Nodes (10): _all(), decide(), head_emails(), insert_alert(), linked_case_ids(), links(), _one(), refs() (+2 more)
+### Community 78 - "test_filters.py"
+Cohesion: 0.14
+Nodes (14): detect(), board(), get(), test_alert_status_filter(), test_audit_filters_narrow_combine_and_ignore_blanks(), test_each_case_filter_narrows_and_blank_is_no_filter(), total(), test_institution_list_filters() (+6 more)
 
 ### Community 79 - "environment"
 Cohesion: 0.36
 Nodes (10): environment, SETHU_DATABASE_URL, SETHU_ENVIRONMENT, SETHU_OIDC_AUDIENCE, SETHU_OIDC_ISSUER, SETHU_OIDC_JWKS_URL, SETHU_REDIS_URL, SETHU_SMTP_HOST (+2 more)
 
-### Community 80 - "test_findings.py"
-Cohesion: 0.08
-Nodes (25): search(), board(), counts(), expected(), overdue(), test_a_bureau_sees_no_text_it_cannot_read_and_only_its_own_work(), test_counts_match_the_seeded_data(), test_cross_bureau_numbers_are_the_same_for_everyone() (+17 more)
+### Community 80 - "test_search.py"
+Cohesion: 0.11
+Nodes (13): search(), search(), client(), test_newest_first_with_filters(), test_only_auditor_oversight_and_admin_read_the_ledger(), test_verify_names_a_corrupted_row_and_restoring_it_heals_the_chain(), test_an_acknowledgement_or_any_action_breaks_the_loop(), find() (+5 more)
 
 ### Community 82 - "main.py"
-Cohesion: 0.15
-Nodes (5): get_settings(), configure_logging(), JsonFormatter, create_app(), search()
+Cohesion: 0.26
+Nodes (3): configure_logging(), JsonFormatter, create_app()
 
-### Community 83 - "datetime"
-Cohesion: 0.16
-Nodes (5): ChainReport, Entry, EntryPage, Column, Report
+### Community 83 - "audit_view/schemas.py"
+Cohesion: 0.47
+Nodes (3): ChainReport, Entry, EntryPage
 
-### Community 84 - "Seed data"
-Cohesion: 0.40
-Nodes (4): Files, Negative cases: no alert expected, Seed data, What the loader does
-
-### Community 85 - "test_filters.py"
-Cohesion: 0.19
-Nodes (10): get(), test_audit_filters_narrow_combine_and_ignore_blanks(), test_each_case_filter_narrows_and_blank_is_no_filter(), total(), test_institution_list_filters(), test_institution_search_by_city_state_initials_typo_and_permanent_id(), test_institutions_screen_and_top_bar_search_agree(), test_report_dates_blank_and_reversed() (+2 more)
-
-### Community 87 - "test_cases.py"
-Cohesion: 0.21
-Nodes (9): CaseError, audit_rows(), scalar(), test_every_action_is_audited_and_the_chain_verifies(), test_list_filters_search_and_institution_timeline(), test_loop_case_c090_shows_both_unacknowledged_transfers(), test_officer_cannot_read_or_change_another_bureaus_complaint(), test_transfer_and_acknowledgement_appear_in_the_history() (+1 more)
-
-### Community 88 - "list_links"
+### Community 87 - "list_links"
 Cohesion: 0.19
 Nodes (4): decide(), detect(), list_links(), tier1()
 
+### Community 88 - "test_reports.py"
+Cohesion: 0.22
+Nodes (8): client(), report(), test_bureau_performance_is_scoped_by_role(), test_date_range(), test_export_is_csv_without_text_and_is_audited(), test_institution_report_counts_only_the_callers_cases(), test_overlap_outcomes(), test_viewing_is_not_audited_and_bad_names_are_refused()
+
 ### Community 89 - "institutions/schemas.py"
-Cohesion: 0.27
-Nodes (10): Alias, Candidate, CaseSummary, Institution, InstitutionRow, Profile, QueueItem, ResolveIn (+2 more)
+Cohesion: 0.17
+Nodes (17): Alias, BureauCount, Candidate, CaseSummary, CategoryShare, Disposal, Dna, Institution (+9 more)
 
 ### Community 90 - "Findings.tsx"
 Cohesion: 0.25
@@ -429,29 +430,65 @@ Nodes (9): record(), Commands, graphify, Layout, Non-negotiable rules, Read firs
 Cohesion: 0.39
 Nodes (5): DecisionIn, DetectOut, Finding, Trend, TrendRow
 
-### Community 96 - "add"
+### Community 96 - "generate.py"
+Cohesion: 0.20
+Nodes (7): test_files_are_what_the_generator_produces(), build(), details(), fresh(), two_wordings(), render(), variant()
+
+### Community 101 - "UUID"
+Cohesion: 0.21
+Nodes (6): open_count(), _alert(), decide(), FindingError, open_count(), _set()
+
+### Community 102 - "Architecture"
+Cohesion: 0.17
+Nodes (11): 10. Scaling path (after the hackathon), 11. What has been verified, 1. Shape, 2. Components, 3. Trust boundaries and how each is defended, 5. Processing pipeline (worker), 6. Audit ledger, 7. Cross-bureau visibility without leaking content (+3 more)
+
+### Community 104 - "detect_findings"
+Cohesion: 0.20
+Nodes (5): deliver_alerts(), detect_findings(), detect_overlaps(), resolve_pending(), verify_chain()
+
+### Community 105 - "approved"
+Cohesion: 0.20
+Nodes (4): approved(), FakeSMTP, held(), relay()
+
+### Community 106 - "search/schemas.py"
+Cohesion: 0.43
+Nodes (4): ComplaintHit, ComplaintHits, InstitutionHit, Results
+
+### Community 107 - "alerts/schemas.py"
+Cohesion: 0.47
+Nodes (3): Alert, AlertPage, DecisionIn
+
+### Community 108 - "networks"
+Cohesion: 0.33
+Nodes (6): internal, internal, networks, app, data, edge
+
+### Community 110 - "add"
 Cohesion: 0.70
 Nodes (5): add(), act(), assign(), close(), transfer()
 
+### Community 111 - "Seed data"
+Cohesion: 0.40
+Nodes (4): Files, Negative cases: no alert expected, Seed data, What the loader does
+
 ## Knowledge Gaps
 - **1 isolated node(s):** `sethu-backend`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 563 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **25 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 572 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Principal` connect `Principal` to `overlaps/service.py`, `complaints/service.py`, `institutions/repo.py`, `alerts/repo.py`, `test_alerts.py`, `audit_view/repo.py`, `session_for`, `complaints/api.py`, `test_auth_and_api.py`, `test_overlaps.py`, `routes.py`, `auth.py`, `alerts/service.py`, `detect`, `test_institutions.py`, `findings/service.py`, `sqlalchemy`, `reports/service.py`, `list_links`, `SETHU`?**
-  _High betweenness centrality (0.106) - this node is a cross-community bridge._
+- **Why does `Principal` connect `Principal` to `session.py`, `complaints/service.py`, `institutions/repo.py`, `alerts/repo.py`, `test_alerts.py`, `audit_view/repo.py`, `session_for`, `complaints/api.py`, `test_overlaps.py`, `export`, `findings/service.py`, `test_auth_and_api.py`, `decide`, `alerts/service.py`, `test_findings.py`, `findings/repo.py`, `conftest.py`, `reports/service.py`, `auth.py`, `list_findings`, `test_filters.py`, `test_search.py`, `list_links`, `SETHU`, `UUID`, `sqlalchemy_orm`?**
+  _High betweenness centrality (0.100) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `session_for()` (e.g. with `Principal` and `3. Trust boundaries and how each is defended`) actually correct?**
   _`session_for()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `sethu-backend` to the rest of the system?**
   _1 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `complaints/service.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.1096938775510204 - nodes in this community are weakly interconnected._
-- **Why does `session_for()` connect `Principal` to `overlaps/service.py`, `test_seed.py`, `alerts/repo.py`, `test_alerts.py`, `sqlalchemy`, `session_for`, `test_findings.py`, `test_overlaps.py`, `routes.py`, `auth.py`, `test_filters.py`, `test_cases.py`, `test_reports.py`, `load.py`, `Architecture`, `alerts/service.py`, `detect`, `test_institutions.py`?**
-  _High betweenness centrality (0.051) - this node is a cross-community bridge._
+- **Should `session.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.1282051282051282 - nodes in this community are weakly interconnected._
+- **Why does `session_for()` connect `session_for` to `session.py`, `test_seed.py`, `alerts/repo.py`, `test_alerts.py`, `pytest`, `Principal`, `test_overlaps.py`, `export`, `alerts/service.py`, `test_findings.py`, `load.py`, `conftest.py`, `auth.py`, `test_filters.py`, `test_search.py`, `test_reports.py`, `Architecture`, `detect_findings`, `approved`?**
+  _High betweenness centrality (0.076) - this node is a cross-community bridge._
 - **Are the 15 inferred relationships involving `Principal` (e.g. with `me()` and `record()`) actually correct?**
   _`Principal` has 15 INFERRED edges - model-reasoned connections that need verification._
-- **Should `institutions/repo.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.07796610169491526 - nodes in this community are weakly interconnected._
+- **Should `complaints/service.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.10105580693815988 - nodes in this community are weakly interconnected._

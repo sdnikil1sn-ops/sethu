@@ -92,6 +92,25 @@
       ]
     },
     {
+      "id": "82561b59-f883-5225-bf92-91deaaf3b2f4",
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "admin@sethu.test",
+      "firstName": "Asha",
+      "lastName": "Chopra",
+      "realmRoles": [
+        "admin"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "__DEMO_USER_PASSWORD__",
+          "temporary": false
+        }
+      ]
+    },
+    {
       "id": "7e9512e4-eb9d-5330-bf7c-963f7ab816d3",
       "username": "das",
       "enabled": true,

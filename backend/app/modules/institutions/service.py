@@ -10,7 +10,10 @@ Anything else stays `unresolved` and shows in the officer queue with the best
 five candidates. Fully deterministic: no AI model is involved.
 """
 import re
+from collections import Counter
+from datetime import UTC, datetime, timedelta
 from difflib import SequenceMatcher
+from statistics import median
 from uuid import UUID
 
 from sqlalchemy.orm import Session
@@ -168,6 +171,48 @@ def lookup(session: Session, q: str, limit: int) -> list[dict]:
     return sorted(found.values(), key=lambda r: (-r["score"], r["name"]))[:limit]
 
 
+RECURRENCE_DAYS = 180  # a complaint "recurs" if the same category was raised here this recently
+TREND_DAYS = 90
+
+
+def dna(cases: list[dict], now: datetime) -> dict:
+    """Profile DNA: six measures from case summaries only (no text), counts not judgements.
+
+    category_mix  cases per category, largest first
+    volume        all cases, the last 12 months, and the monthly average over those 12 months
+    recurrence    cases whose category was already raised here in the 180 days before
+    disposal      closed cases and the median days from filing to closing
+    bureaus       cases per bureau
+    trend         the last 90 days against the 90 before
+    """
+    total = len(cases)
+    by_category = Counter(c["category"] or "Uncategorised" for c in cases)
+    last_year = sum(c["filed_at"] >= now - timedelta(days=365) for c in cases)
+
+    repeats, seen = [], {}
+    for c in sorted(cases, key=lambda c: c["filed_at"]):
+        key = c["category"] or "Uncategorised"
+        if key in seen and c["filed_at"] - seen[key] <= timedelta(days=RECURRENCE_DAYS):
+            repeats.append(key)
+        seen[key] = c["filed_at"]
+
+    days = [(c["closed_at"] - c["filed_at"]).total_seconds() / 86400 for c in cases if c["closed_at"]]
+    recent = sum(c["filed_at"] >= now - timedelta(days=TREND_DAYS) for c in cases)
+    previous = sum(now - timedelta(days=2 * TREND_DAYS) <= c["filed_at"] < now - timedelta(days=TREND_DAYS)
+                   for c in cases)
+    return {
+        "category_mix": [{"category": k, "cases": n, "share": round(n / total, 2)}
+                         for k, n in sorted(by_category.items(), key=lambda kv: (-kv[1], kv[0]))],
+        "volume": {"total": total, "last_12_months": last_year, "per_month": round(last_year / 12, 1)},
+        "recurrence": {"repeat_cases": len(repeats), "share": round(len(repeats) / total, 2) if total else 0.0,
+                       "categories": sorted(set(repeats)), "window_days": RECURRENCE_DAYS},
+        "disposal": {"closed": len(days), "median_days": round(median(days), 1) if days else None},
+        "bureaus": [{"bureau": b, "cases": n} for b, n in sorted(Counter(c["bureau"] for c in cases).items())],
+        "trend": {"recent": recent, "previous": previous, "window_days": TREND_DAYS,
+                  "direction": "up" if recent > previous else "down" if recent < previous else "flat"},
+    }
+
+
 def profile(session: Session, institution_id: UUID) -> dict | None:
     inst = repo.get(session, institution_id)
     if not inst:
@@ -181,4 +226,5 @@ def profile(session: Session, institution_id: UUID) -> dict | None:
         "closed": len(cases) - len(still_open),
         "oldest_open": min(still_open, key=lambda c: c["filed_at"], default=None),
         "complaints": cases,
+        "dna": dna(cases, datetime.now(UTC)),
     }
