@@ -1,15 +1,15 @@
 {
-  "snapshot_id": "sha256:5e00149fa546573161cbddb1a3704ec916b3849bcbdad3188fce30608569f996",
+  "snapshot_id": "sha256:59081570c620779fef031868804131a9f2854886ecbbd14e2f5e344b80caf8fe",
   "format_version": 1,
   "enola_version": "0.4.21",
   "extractor_version": "v270",
-  "generated_at": "2026-11-20T10:43:53Z",
-  "duration": "8.168615s",
+  "generated_at": "2026-11-20T12:49:49Z",
+  "duration": "2.783411s",
   "repo_path": "E:\\App\\Project\\SETHU",
   "git": {
     "ref": "main",
-    "commit": "ab3a47096780a85ec178c665d975d48505767890",
-    "dirty": true,
+    "commit": "46a9be4ef1d752b3e13f2be94459b7e901187354",
+    "dirty": false,
     "remote": "github.com/sdnikil1sn-ops/sethu"
   },
   "extractors": [
@@ -48,16 +48,16 @@
   "config_hash": "sha256:73d78ea79f51e19979d4c7d00bd9463ae684ebcb909116abad86675323c32c05",
   "ignore_glob_hash": "sha256:7523cc6397a498e151125a682d28fbf6df20c6f51f6dfaf18fd8f5239a20d2d8",
   "output_hashes": {
-    "facts.jsonl": "sha256:045a79a665c4079e2b303508c72a9186615b215ed5ee54c5310ffaecda26b44f",
-    "insights.json": "sha256:a7089e149938b71f4b7a2704ea30d56d96978771c29f1ffe5b4b17f44ad5d14c",
-    "llm_context.md": "sha256:13918ddf28778b4ce9cebb2829714d792d0717150a53526c3f6a5008edfb0094"
+    "facts.jsonl": "sha256:fd0b38128199c556948004899387ab76c1d17d98ad33845dc739d13c4f286db7",
+    "insights.json": "sha256:516c5d54b3ac46453a6460ff0bb1ce84330a8fa2a7d7223f84c6b2da8143d99d",
+    "llm_context.md": "sha256:e9070350d3600631b3ba03c077a3c1c52ea83e7ed4456f333d308d5699878d41"
   },
-  "fact_count": 2363,
+  "fact_count": 2375,
   "insight_count": 162,
   "quality": {
-    "files_seen": 676,
-    "files_parsed": 201,
-    "files_skipped": 33,
+    "files_seen": 710,
+    "files_parsed": 202,
+    "files_skipped": 34,
     "dirs_skipped": 5,
     "skipped_sample": [
       ".claude/worktrees/jolly-feynman-1a9f96/.enola/ (glob: **/.enola/**)",
@@ -71,6 +71,7 @@
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_audit_view.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_auth_and_api.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_cases.py (glob: **/test_*.py)",
+      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_config.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_dashboard.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_filters.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_findings.py (glob: **/test_*.py)",
@@ -78,8 +79,7 @@
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_overlaps.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_reports.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_rls.py (glob: **/test_*.py)",
-      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_search.py (glob: **/test_*.py)",
-      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_seed.py (glob: **/test_*.py)"
+      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_search.py (glob: **/test_*.py)"
     ],
     "parse_errors": 0,
     "heuristic_insights": 160,
@@ -88,18 +88,18 @@
       "coverage_gaps": 0,
       "unresolved_edges": 0,
       "extractors_reporting": 1,
-      "extraction_unresolved": 126
+      "extraction_unresolved": 159
     },
     "census": {
-      "files_walked": 709,
-      "parsed": 201,
-      "excluded_by_ignore": 33,
-      "excluded_by_kind": 437,
+      "files_walked": 744,
+      "parsed": 202,
+      "excluded_by_ignore": 34,
+      "excluded_by_kind": 470,
       "excluded_kinds": {
         "(no extension)": 9,
         ".conf": 4,
         ".css": 2,
-        ".csv": 8,
+        ".csv": 9,
         ".dockerignore": 4,
         ".env": 1,
         ".example": 2,
@@ -108,7 +108,7 @@
         ".graphify_root": 2,
         ".graphify_version": 2,
         ".ini": 2,
-        ".json": 380,
+        ".json": 412,
         ".nudges": 1,
         ".sh": 4,
         ".sig": 2,

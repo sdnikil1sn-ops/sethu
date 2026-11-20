@@ -2,72 +2,41 @@
 
 ## Repository Map
 
-| Module | Language | Symbols | Exported |
-|--------|----------|---------|----------|
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic` | python | 2 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions` | python | 12 | 12 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app` | python | 6 | 6 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/api` | python | 3 | 3 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/audit` | python | 3 | 3 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/core` | python | 16 | 13 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/db` | python | 4 | 4 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | python | 0 | 0 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts` | python | 19 | 15 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view` | python | 10 | 10 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` | python | 48 | 41 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard` | python | 14 | 13 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` | python | 36 | 32 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions` | python | 46 | 43 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` | python | 30 | 24 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports` | python | 13 | 9 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search` | python | 6 | 6 |
-| `.claude/worktrees/jolly-feynman-1a9f96/scripts` | python | 1 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/seed` | python | 9 | 9 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web` | typescript | 1 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src` | typescript | 22 | 7 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts` | typescript | 6 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/audit` | typescript | 9 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases` | typescript | 21 | 15 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/dashboard` | typescript | 9 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/findings` | typescript | 9 | 2 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions` | typescript | 26 | 15 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps` | typescript | 10 | 4 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/reports` | typescript | 5 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/search` | typescript | 5 | 2 |
-| `backend/alembic` | python | 2 | 1 |
-| `backend/alembic/versions` | python | 10 | 10 |
-| `backend/app` | python | 6 | 6 |
-| `backend/app/api` | python | 3 | 3 |
-| `backend/app/audit` | python | 3 | 3 |
-| `backend/app/core` | python | 13 | 12 |
-| `backend/app/db` | python | 4 | 4 |
-| `backend/app/modules` | python | 0 | 0 |
-| `backend/app/modules/alerts` | python | 19 | 15 |
-| `backend/app/modules/audit_view` | python | 10 | 10 |
-| `backend/app/modules/complaints` | python | 48 | 41 |
-| `backend/app/modules/dashboard` | python | 14 | 13 |
-| `backend/app/modules/findings` | python | 33 | 29 |
-| `backend/app/modules/institutions` | python | 46 | 43 |
-| `backend/app/modules/overlaps` | python | 30 | 24 |
-| `backend/app/modules/reports` | python | 13 | 9 |
-| `backend/app/modules/search` | python | 6 | 6 |
-| `scripts` | python | 1 | 1 |
-| `seed` | python | 8 | 8 |
-| `web` | typescript | 1 | 1 |
-| `web/src` | typescript | 22 | 7 |
-| `web/src/features/alerts` | typescript | 6 | 1 |
-| `web/src/features/audit` | typescript | 9 | 1 |
-| `web/src/features/cases` | typescript | 21 | 15 |
-| `web/src/features/dashboard` | typescript | 9 | 1 |
-| `web/src/features/findings` | typescript | 8 | 2 |
-| `web/src/features/institutions` | typescript | 26 | 15 |
-| `web/src/features/overlaps` | typescript | 10 | 4 |
-| `web/src/features/reports` | typescript | 5 | 1 |
-| `web/src/features/search` | typescript | 5 | 2 |
+62 modules, 831 symbols, grouped by area. Every module is in `facts.jsonl`, or query_facts(kind="module").
+
+| Area | Modules | Symbols | Languages |
+|------|---------|---------|-----------|
+| `.claude` | 32 | 430 | python, typescript |
+| `backend` | 17 | 268 | python |
+| `web` | 11 | 123 | typescript |
+| `seed` | 1 | 9 | python |
+| `scripts` | 1 | 1 | python |
+
+Largest modules:
+- `backend/app/modules/complaints` — 48 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` — 47 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions` — 46 symbols (python)
+- `backend/app/modules/institutions` — 46 symbols (python)
+- `backend/app/modules/findings` — 36 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` — 35 symbols (python)
+- `backend/app/modules/overlaps` — 30 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` — 29 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions` — 26 symbols (typescript)
+- `web/src/features/institutions` — 26 symbols (typescript)
+- `.claude/worktrees/jolly-feynman-1a9f96/web/src` — 22 symbols (typescript)
+- `web/src` — 22 symbols (typescript)
+- `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases` — 21 symbols (typescript)
+- `web/src/features/cases` — 21 symbols (typescript)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts` — 19 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/bureaus` — 19 symbols (python)
+- `backend/app/modules/alerts` — 19 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/core` — 16 symbols (python)
+- `backend/app/core` — 16 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions` — 14 symbols (python)
 
 ## Extraction Quality
 
-- Files parsed: **202** / 710 seen (34 file(s) + 5 directory tree(s) skipped by ignore globs)
+- Files parsed: **213** / 774 seen (36 file(s) + 5 directory tree(s) skipped by ignore globs)
 - Parse errors: 0
 
 ## Architecture Pattern
@@ -78,7 +47,9 @@ _No specific architecture pattern detected._
 
 - **main**: `.claude/worktrees/jolly-feynman-1a9f96/scripts/init_env.main` (.claude/worktrees/jolly-feynman-1a9f96/scripts/init_env.py)
 - **main**: `scripts/init_env.main` (scripts/init_env.py)
-66 routes, 15 shown:
+70 routes, 15 shown:
+- **route** GET `/api/v1/admin/bureaus` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/bureaus/api.py)
+- **route** GET `/api/v1/admin/users` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/users/api.py)
 - **route** GET `/api/v1/alerts` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts/api.py)
 - **route** GET `/api/v1/alerts` (backend/app/modules/alerts/api.py)
 - **route** GET `/api/v1/audit/verify` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view/api.py)
@@ -92,34 +63,32 @@ _No specific architecture pattern detected._
 - **route** GET `/api/v1/cases/{complaint_id}/assignees` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.py)
 - **route** GET `/api/v1/cases/{complaint_id}/assignees` (backend/app/modules/complaints/api.py)
 - **route** GET `/api/v1/cases/{complaint_id}` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.py)
-- **route** GET `/api/v1/cases/{complaint_id}` (backend/app/modules/complaints/api.py)
-- **route** GET `/api/v1/cases` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.py)
-- … and 51 more (query_facts(kind="route") for all)
+- … and 55 more (query_facts(kind="route") for all)
 
 ## Routes
 
-66 routes, grouped by path prefix. query_facts(kind="route") for all of them.
+70 routes, grouped by path prefix. query_facts(kind="route") for all of them.
 
 | Prefix | Routes | Methods | Example |
 |--------|--------|---------|----------|
-| `/api` | 60 | GET, POST | `/api/v1` |
+| `/api` | 64 | GET, PATCH, POST | `/api/v1` |
 | `/health` | 4 | GET | `/health/live` |
 | `/auth` | 2 | POST | `/auth/realms/sethu/protocol/openid-connect/token` |
 
 ## Dependency Rules
 
-82 internal module dependencies. The modules that reach furthest; traverse() or query_facts(kind="dependency") for the edges themselves.
+88 internal module dependencies. The modules that reach furthest; traverse() or query_facts(kind="dependency") for the edges themselves.
 
 | Module | Depends on |
 |--------|------------|
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app` | 7 modules |
 | `backend/app` | 7 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` | 4 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` | 4 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` | 4 modules |
 | `.` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts` | 3 modules |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` | 3 modules |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` | 3 modules |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search` | 3 modules |
 | `backend/app/modules/alerts` | 3 modules |
 | `backend/app/modules/complaints` | 3 modules |
@@ -142,6 +111,9 @@ _No specific architecture pattern detected._
 | `web/src/features` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic` | 1 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions` | 1 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/api` | 1 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/bureaus` | 1 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/users` | 1 modules |
 | `backend/alembic` | 1 modules |
 | `backend/alembic/versions` | 1 modules |
 
@@ -149,12 +121,12 @@ _No specific architecture pattern detected._
 
 | Module | Fan-In | Fan-Out | Criticality |
 |--------|--------|---------|-------------|
-| `backend/app/db` | 24 | 0 | high |
-| `backend/app/audit` | 18 | 0 | high |
+| `backend/app/db` | 26 | 0 | high |
+| `backend/app/audit` | 20 | 0 | high |
+| `backend/alembic` | 14 | 1 | high |
 | `backend/app/core` | 15 | 0 | high |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | 0 | 14 | high |
 | `backend/app/modules/complaints` | 10 | 4 | high |
-| `backend/alembic` | 12 | 1 | high |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | 0 | 12 | high |
 | `backend/app/modules` | 0 | 12 | high |
 | `backend/app/modules/findings` | 6 | 4 | high |
 | `backend/app/modules/overlaps` | 6 | 4 | high |
@@ -166,4 +138,4 @@ _No specific architecture pattern detected._
 
 ---
 
-*Generated at 2026-11-20T12:49:49Z in 2.783411s. 2375 facts, 162 insights.*
+*Generated at 2026-11-20T13:26:45Z in 3.7989632s. 2473 facts, 163 insights.*
