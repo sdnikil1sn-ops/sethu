@@ -41,7 +41,7 @@ function ActionForm({ c, onDone }: { c: Case; onDone: (updated: Case) => void })
     }
   }
 
-  const others = (options?.bureaus ?? []).filter((b) => b.code !== c.bureau);
+  const others = (options?.bureaus ?? []).filter((b) => b.active && b.code !== c.bureau);
   return (
     <form className="action" onSubmit={submit}>
       <h2>Take action</h2>
@@ -153,6 +153,34 @@ export function CaseDetail({ id }: { id: string }) {
         <p role="note">
           This case is held by {c.bureau_name} ({c.bureau}). The complaint text and history are visible to that unit
           only. Contact its head to coordinate.
+        </p>
+      )}
+
+      {c.complainant && (
+        <>
+          <h2>Complainant</h2>
+          <dl className="complainant">
+            <dt>Name</dt>
+            <dd>{c.complainant.name}</dd>
+            {c.complainant.email && (
+              <>
+                <dt>E-mail</dt>
+                <dd>{c.complainant.email}</dd>
+              </>
+            )}
+            {c.complainant.phone && (
+              <>
+                <dt>Phone</dt>
+                <dd>{c.complainant.phone}</dd>
+              </>
+            )}
+          </dl>
+          <p className="note">Shown to the bureau holding the case only. Do not copy it into notes or e-mail.</p>
+        </>
+      )}
+      {c.complainant_withheld && (
+        <p role="note">
+          Complainant: withheld. Only the officers and head of the bureau holding the case see who complained.
         </p>
       )}
 

@@ -29,6 +29,8 @@ class Principal:
     name: str
     role: str
     bureau_id: UUID | None
+    email: str | None = None       # the token's `email` claim; kept in app_users for alert mail
+    full_name: str | None = None   # the token's `name` claim (first and last name)
 
 
 class AuthError(Exception):
@@ -59,6 +61,8 @@ def principal_from_claims(claims: dict[str, Any]) -> Principal:
         name=str(claims.get("preferred_username") or subject),
         role=role,
         bureau_id=bureau_id,
+        email=str(claims["email"]) if claims.get("email") else None,
+        full_name=str(claims["name"]).strip() or None if claims.get("name") else None,
     )
 
 

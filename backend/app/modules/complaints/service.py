@@ -17,7 +17,10 @@ from sqlalchemy.orm import Session
 
 from app.audit import service as audit
 from app.core.auth import Principal
+from app.core.config import get_settings
+from app.core.crypto import Keyring, KeyringError, key_id_of, load_keyring
 from app.modules.complaints import repo
+from app.modules.users import service as users
 
 # action -> (case_actions.action, statuses it is allowed from, status afterwards; None keeps it)
 ACTIONS: dict[str, tuple[str, set[str], str | None]] = {
@@ -62,7 +65,7 @@ def search(session: Session, filters: dict[str, Any], limit: int, offset: int) -
 def lookup(session: Session, q: str, limit: int) -> dict:
     """For the top-bar search. Summary fields only: matching on complaint text is done
     in the database, where Row-Level Security limits it to text the caller may read."""
-    rows = repo.lookup(session, _like(q.strip()), limit)
+    rows = repo.lookup(session, _like(q.strip()), q.strip(), limit)  # a bureau code must match exactly
     keep = ("id", "ref", "bureau", "institution_id", "institution", "category", "status", "filed_at", "readable", "why")
     return {"total": rows[0]["total"] if rows else 0, "items": [{k: r[k] for k in keep} for r in rows]}
 
@@ -75,16 +78,49 @@ def can_act(principal: Principal, case: dict) -> bool:
     return principal.role in ("officer", "bureau_head") and case["holder_id"] == principal.bureau_id
 
 
+def keyring() -> Keyring:
+    path = get_settings().complainant_keys_file
+    if not path:
+        raise KeyringError("SETHU_COMPLAINANT_KEYS_FILE is not set (docs/RUNBOOK.md, complainant details)")
+    return load_keyring(path)
+
+
+def complainant_visible(principal: Principal, case: dict) -> bool:
+    """Only the officers and heads of the bureau holding the case see who complained. The sender of an
+    unacknowledged transfer, oversight, admin and auditor see that details exist, not what they are."""
+    return principal.role in ("officer", "bureau_head") and principal.bureau_id is not None \
+        and principal.bureau_id == case["holder_id"]
+
+
 def get(session: Session, principal: Principal, complaint_id: UUID) -> dict:
     case = repo.find(session, complaint_id)
     if case is None:
         raise CaseError(404, "case not found")
     readable = case["readable"]
+    sealed = case.pop("complainant_enc", None)
+    shown = sealed is not None and complainant_visible(principal, case)
     return case | _sla(case) | {
+        "complainant": keyring().decrypt(sealed, str(case["id"])) if shown else None,
+        "complainant_withheld": sealed is not None and not shown,
         "history": repo.history(session, complaint_id) if readable else [],
         "can_act": readable and can_act(principal, case) and case["status"] != "closed",
         "awaiting_acknowledgement": case["status"] == "transferred",
     }
+
+
+def rotate_complainant_keys(session: Session, principal: Principal, batch: int = 500) -> dict:
+    """Re-encrypt one batch of complainant details onto the active key. Run until it returns 0 left
+    (complaints.worker task sethu.complainant.rotate_keys does). Audited with counts and key ids only."""
+    ring = keyring()
+    rows = repo.not_on_key(session, ring.active, batch)
+    old = sorted({key_id_of(r["complainant_enc"]) for r in rows})
+    for r in rows:
+        aad = str(r["id"])
+        repo.set_complainant(session, r["id"], ring.encrypt(ring.decrypt(r["complainant_enc"], aad), aad))
+    if rows:
+        audit.record(session, principal, "complainant.rekeyed", entity_type="complaints",
+                     payload={"rows": len(rows), "to_key": ring.active, "from_keys": old})
+    return {"rekeyed": len(rows), "left": len(repo.not_on_key(session, ring.active, 1))}
 
 
 def institution_timeline(session: Session, institution_id: UUID) -> dict:
@@ -105,12 +141,8 @@ def assignees(session: Session, complaint_id: UUID) -> list[dict]:
 
 
 def actor_id(session: Session, principal: Principal) -> UUID:
-    """The app_users id of a signed-in person, registered (and audited) on first use."""
-    user_id, created = repo.ensure_user(session, principal)
-    if created:
-        audit.record(session, principal, "user.registered", entity_type="app_users", entity_id=str(user_id),
-                     payload={"role": principal.role})
-    return user_id
+    """The app_users id of a signed-in person, kept in step with the token (users.sync)."""
+    return users.sync(session, principal)
 
 
 def act(session: Session, principal: Principal, complaint_id: UUID, action: str, *, note: str | None = None,
@@ -129,8 +161,10 @@ def act(session: Session, principal: Principal, complaint_id: UUID, action: str,
     holder, sender = case["bureau_id"], case["transferred_from_bureau_id"]
     row: dict[str, Any] = {"complaint_id": complaint_id, "action": db_action, "note": note}
     payload: dict[str, Any] = {"ref": case["ref"], "status": new_status or case["status"]}
-    by_code = {b["code"]: b["id"] for b in repo.bureaus(session)}
+    known = repo.bureaus(session)
+    by_code = {b["code"]: b["id"] for b in known}
     code_of = {v: k for k, v in by_code.items()}
+    receiving = {b["code"]: b["id"] for b in known if b["active"]}  # a deactivated bureau takes no new cases
 
     if action == "note" and not note:
         raise CaseError(422, "a note needs some text")
@@ -140,7 +174,7 @@ def act(session: Session, principal: Principal, complaint_id: UUID, action: str,
         row["assignee_id"] = assignee_id
         payload["assignee_id"] = str(assignee_id)
     if action == "transfer":
-        target = by_code.get(to_bureau or "")
+        target = receiving.get(to_bureau or "")
         if target is None or target == holder:
             raise CaseError(422, "choose another bureau to transfer to")
         row |= {"from_bureau_id": holder, "to_bureau_id": target}

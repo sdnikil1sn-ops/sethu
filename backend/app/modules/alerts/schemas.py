@@ -13,6 +13,7 @@ class Alert(BaseModel):
     subject: str
     body: str
     recipients: list[str]
+    missing_recipients: list[str]  # bureaus with no head who has an e-mail address: shown, not dropped
     cases: list[str]
     created_at: datetime
     approved_at: datetime | None
@@ -20,7 +21,9 @@ class Alert(BaseModel):
     sent_at: datetime | None
     attempts: int
     last_error: str | None
+    next_attempt_at: datetime | None  # after a failed send: not tried again before this
     can_decide: bool
+    can_retry: bool
 
 
 class AlertPage(BaseModel):

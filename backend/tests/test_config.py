@@ -1,9 +1,13 @@
 """Production configuration: the backend refuses unsafe settings, and the seed loader and the
 demo-user import refuse a production configuration. No database needed."""
+import base64
+import json
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import pytest
 from pydantic import ValidationError
@@ -15,15 +19,28 @@ sys.path.insert(0, str(ROOT))  # repo root, for the seed package
 from seed import load  # noqa: E402
 
 STRONG = "Zq8vN3kLp0TwXy7RbD2m"  # 20 characters, no dev word (test value only)
+SECRETS = Path(tempfile.mkdtemp(prefix="sethu-test-secrets-"))
+(SECRETS / "app").write_text(STRONG + "\n")  # a trailing newline, as editors leave one
+(SECRETS / "redis").write_text(STRONG + "a")
+(SECRETS / "keys.json").write_text(json.dumps({"active": "k", "keys": {"k": base64.b64encode(bytes(32)).decode()}}))
 GOOD = {
     "environment": "prod",
-    "database_url": f"postgresql+psycopg://sethu_app:{STRONG}@postgres:5432/sethu",
-    "redis_url": f"redis://:{STRONG}a@redis:6379/0",
+    "database_url": "postgresql+psycopg://sethu_app@postgres:5432/sethu",
+    "database_password_file": str(SECRETS / "app"),
+    "redis_url": "redis://redis:6379/0",
+    "redis_password_file": str(SECRETS / "redis"),
+    "complainant_keys_file": str(SECRETS / "keys.json"),
     "oidc_issuer": "https://sethu.aicte.example/auth/realms/sethu",
     "oidc_jwks_url": "http://keycloak:8080/auth/realms/sethu/protocol/openid-connect/certs",
     "smtp_host": "relay.aicte.example",
+    "smtp_security": "starttls",
     "alert_from": "sethu-alerts@aicte.example",
 }
+
+
+for name, value in (("empty", ""), ("short", "CHANGE_ME"), ("placeholder", "CHANGE_ME_CHANGE_ME_1"),
+                    ("seedtest", "seedtest-seedtest-seedtest")):
+    (SECRETS / name).write_text(value)
 
 
 def settings(**changes) -> Settings:
@@ -42,16 +59,23 @@ def test_a_complete_production_configuration_starts():
 
 @pytest.mark.parametrize(("changes", "says"), [
     ({"debug": True}, "SETHU_DEBUG is on"),
-    ({"database_url": "postgresql+psycopg://sethu_app:@postgres:5432/sethu"}, "SETHU_DATABASE_URL is missing"),
-    ({"database_url": "postgresql+psycopg://sethu_app:CHANGE_ME@postgres/sethu"}, "SETHU_DATABASE_URL is shorter"),
-    ({"database_url": "postgresql+psycopg://sethu_app:CHANGE_ME_CHANGE_ME_1@postgres/sethu"},
-     "SETHU_DATABASE_URL is a placeholder or dev value"),
-    ({"database_url": "postgresql+psycopg://sethu_app:seedtest-seedtest-seedtest@postgres/sethu"},
-     "SETHU_DATABASE_URL is a placeholder or dev value"),
-    ({"redis_url": "redis://redis:6379/0"}, "SETHU_REDIS_URL is missing"),  # the built-in default
+    ({"database_password_file": str(SECRETS / "empty")}, "SETHU_DATABASE_URL is missing"),
+    ({"database_password_file": str(SECRETS / "short")}, "SETHU_DATABASE_URL is shorter"),
+    ({"database_password_file": str(SECRETS / "placeholder")}, "SETHU_DATABASE_URL is a placeholder or dev value"),
+    ({"database_password_file": str(SECRETS / "seedtest")}, "SETHU_DATABASE_URL is a placeholder or dev value"),
+    ({"redis_password_file": None}, "SETHU_REDIS_PASSWORD_FILE is not set"),
+    ({"database_password_file": None}, "SETHU_DATABASE_PASSWORD_FILE is not set"),
+    ({"database_url": f"postgresql+psycopg://sethu_app:{STRONG}@postgres/sethu"},
+     "SETHU_DATABASE_URL carries a password: use the matching *_PASSWORD_FILE secret instead"),
+    ({"smtp_password": STRONG}, "SETHU_SMTP_PASSWORD carries a password"),
+    ({"complainant_keys_file": None}, "SETHU_COMPLAINANT_KEYS_FILE is not set"),
+    ({"complainant_keys_file": str(SECRETS / "short")}, "SETHU_COMPLAINANT_KEYS_FILE: the keyring is not valid"),
     ({"oidc_issuer": "http://localhost:8080/auth/realms/sethu"}, "SETHU_OIDC_ISSUER is not https"),
     ({"smtp_host": "mailpit"}, "SETHU_SMTP_HOST is the dev mail catcher"),
     ({"alert_from": "sethu-alerts@sethu.test"}, "SETHU_ALERT_FROM uses the test domain"),
+    ({"smtp_security": "none"}, "SETHU_SMTP_SECURITY is none"),
+    ({"smtp_username": "relay-user"}, "SETHU_SMTP_USERNAME is set but SETHU_SMTP_PASSWORD is missing"),
+    ({"smtp_ca_file": "/no/such/ca.pem"}, "SETHU_SMTP_CA_FILE does not exist"),
 ])
 def test_each_unsafe_value_is_refused_by_name(changes, says):
     message = refused(**changes)
@@ -68,6 +92,7 @@ def test_all_problems_are_reported_at_once():
 def test_dev_and_test_keep_working_with_dev_values():
     for environment in ("dev", "test"):
         dev = settings(environment=environment, debug=True, smtp_host="mailpit", alert_from="a@sethu.test",
+                       smtp_security="none",
                        database_url="postgresql+psycopg://sethu_app:seedtest@127.0.0.1/sethu",
                        redis_url="redis://redis:6379/0", oidc_issuer="http://localhost:8080/auth/realms/sethu")
         assert dev.environment == environment
@@ -99,3 +124,17 @@ def test_the_demo_user_import_refuses_production():
     dev = subprocess.run([_shell(), "-s"], input=script, capture_output=True, text=True,  # noqa: S603
                          env={"SETHU_ENVIRONMENT": "dev"}, timeout=30)
     assert "refusing" not in dev.stderr and "DEMO_USER_PASSWORD" in dev.stderr
+
+
+def test_passwords_come_from_secret_files_url_encoded():
+    (SECRETS / "odd").write_text("p@ss/word:with%chars-0123456789\n")
+    loaded = settings(database_password_file=str(SECRETS / "odd"))
+    assert urlsplit(loaded.database_url).password == "p%40ss%2Fword%3Awith%25chars-0123456789"  # noqa: S105 - test value
+    assert urlsplit(loaded.redis_url).password == STRONG + "a"
+    (SECRETS / "smtp").write_text("relay-secret-0123456789\n")
+    assert settings(smtp_password_file=str(SECRETS / "smtp")).smtp_password == "relay-secret-0123456789"  # noqa: S105
+
+
+def test_an_unreadable_secret_file_is_named_not_shown():
+    message = refused(database_password_file=str(SECRETS / "does-not-exist"))
+    assert "SETHU_DATABASE_PASSWORD_FILE: the secret file cannot be read" in message

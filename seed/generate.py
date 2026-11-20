@@ -51,6 +51,12 @@ SHORT = {"Institute": "Inst.", "Technology": "Tech.", "College": "Coll.", "Engin
          "Management": "Mgmt.", "Polytechnic": "Poly.", "Architecture": "Arch.", "Pharmacy": "Pharm."}
 GREENFIELD_ALIASES = ["Greenfield Inst. of Tech., Pune", "GIT Pune", "Greenfield Institute of Tech"]
 
+# Invented complainant names (two parts, so a full name rarely repeats). Not real people.
+COMPLAINANT_FIRST = ("Aarav Ishita Kabir Meher Neel Ojas Pari Reyansh Saanvi Tanay Uma Vihaan Yamini Zoya "
+                     "Advait Bhavna Chirag Diya Eshan Farah Gauri Hridaan").split()
+COMPLAINANT_LAST = ("Varkey Lalwani Sodhi Pathare Mirchandani Kotian Barua Dutt Rajput Shenoy Tandel Wadia "
+                    "Zaveri Ahluwalia Bhonsle Chettiar Dhillon Engineer Gadgil Hegde").split()
+
 CATEGORIES = [
     "Faculty shortage", "Fee refund", "Infrastructure", "Ragging",
     "Admission irregularity", "Scholarship delay", "Examination", "Placement misrepresentation",
@@ -415,6 +421,15 @@ def build() -> dict[str, list[dict]]:
     add(ab_home, category_for(ab_home), rng.randint(40, 120), "closed", "transfer-ack", bureau="AB",
         flow="misrouted", sent_from="NRB", ref=next(extra_refs))
     add(ab_home, quiet(ab_home), rng.randint(1, 4), "open", "", bureau="AB", ref=next(extra_refs))
+
+    # Complainant details: invented, from their own random stream so nothing above changes. The CSV
+    # holds them in the clear (mock data); the loader stores them only encrypted (app/core/crypto.py).
+    crng = random.Random(SEED + 1)  # noqa: S311 - reproducible test data
+    for c in complaints:
+        first, last = crng.choice(COMPLAINANT_FIRST), crng.choice(COMPLAINANT_LAST)
+        c["complainant_name"] = f"{first} {last}"
+        c["complainant_email"] = f"{first}.{last}.{crng.randrange(100, 999)}@sethu.test".lower()
+        c["complainant_phone"] = f"+91 90000 {crng.randrange(10000, 99999)}"  # a range no real number uses here
 
     for i in institutions:
         del i["home"]

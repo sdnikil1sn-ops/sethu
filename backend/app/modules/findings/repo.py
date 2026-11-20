@@ -100,19 +100,13 @@ def reopen(session: Session, finding_id: UUID, evidence: dict, bureau_ids: list[
          WHERE id = :id"""), {"id": finding_id, "e": json.dumps(evidence), "b": bureau_ids}).rowcount == 1
 
 
-def head_emails(session: Session, bureau_ids: list[UUID]) -> list[str]:
-    return [r["email"] for r in _all(session, """
-        SELECT email FROM sethu.app_users
-         WHERE role = 'bureau_head' AND active AND email IS NOT NULL AND bureau_id = ANY(:b)
-         ORDER BY email""", b=bureau_ids)]
-
-
-def insert_alert(session: Session, complaint_id: UUID, recipients: list[str], subject: str, body: str) -> UUID:
+def insert_alert(session: Session, complaint_id: UUID, recipients: list[str], missing: list[str], subject: str,
+                 body: str) -> UUID:
     """Into the existing outbox, held for a person's approval. Nothing is sent before that."""
     return session.execute(text("""
-        INSERT INTO sethu.alerts (kind, complaint_id, status, recipients, subject, body)
-        VALUES ('bottleneck', :c, 'pending_approval', CAST(:r AS jsonb), :subject, :body)
-        RETURNING id"""), {"c": complaint_id, "r": json.dumps(recipients), "subject": subject,
+        INSERT INTO sethu.alerts (kind, complaint_id, status, recipients, missing_recipients, subject, body)
+        VALUES ('bottleneck', :c, 'pending_approval', CAST(:r AS jsonb), :missing, :subject, :body)
+        RETURNING id"""), {"c": complaint_id, "r": json.dumps(recipients), "missing": missing, "subject": subject,
                            "body": body}).scalar_one()
 
 

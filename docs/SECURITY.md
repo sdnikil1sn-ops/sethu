@@ -20,12 +20,12 @@ Status key: **Built** (tested in this repo), **Scaffolded** (configured, not yet
 | 6 | Someone edits or deletes history | Append-only triggers; app role has no UPDATE/DELETE; hash chain detects tampering by privileged users; the Verify chain button names the first broken row | Built |
 | 7 | Whole audit chain rebuilt by a database superuser | Nightly head-hash exported to write-once storage and emailed to the auditor | Planned |
 | 8 | SQL injection | Bound parameters everywhere; ruff `S` rules in lint | Built (convention + lint) |
-| 9 | Stolen database dump reveals complainants | `complainant_enc` encrypted by the application with a key held outside the database | Planned (column exists) |
+| 9 | Stolen database dump reveals complainants | `complainant_enc` encrypted by the application (AES-256-GCM, bound to the complaint id) with a key held outside the database, in a keyring file mounted as a secret; rotatable; shown only to the holding bureau's officers and head; absent from search, lists, reports, exports, logs and audit (tested) | Built |
 | 10 | Brute-force login | Keycloak brute-force detection (production realm: 5 failures, waits up to 15 minutes), password policy (12+ with upper, lower, digit, special; not username, e-mail or last 5); strict edge rate limit on sign-in and token requests; TOTP available, not yet required | Built (production realm imported and checked; MFA planned) |
 | 11 | XSS, clickjacking | CSP `default-src 'self'`, `frame-ancestors 'none'`, no inline scripts, React escaping | Scaffolded |
 | 12 | Malicious upload | ClamAV scan before storage; type and size limits | Planned (no uploads yet) |
 | 13 | Container breakout or lateral movement | Non-root users, `cap_drop: ALL`, `no-new-privileges`, read-only filesystems, memory limits | Scaffolded |
-| 14 | Secrets in the repository | `.env` git-ignored, generated per machine; production uses Docker secrets or Vault | Built (dev) / Planned (prod) |
+| 14 | Secrets in the repository, an image or an environment variable | `.env` and `secrets/` git-ignored; production passwords and keys are files mounted read-only under `/run/secrets` into only the containers that need them; the backend refuses inline passwords; rotation per secret in the RUNBOOK (tested for the app database password) | Built |
 | 15 | Alert sent without authorisation | Only an approved row is delivered: overlap alerts are approved by a person's decision on the link, other alerts start `pending_approval` for a bureau head or oversight; every decision and every email is audited; mail goes only to active SETHU users | Built |
 | 16 | Insider with admin rights changes configuration silently | Maker-checker for admin changes; every change audited | Planned |
 | 17 | Sensitive data in logs | Logs carry identifiers only; request bodies are never logged | Built (convention) |
@@ -35,8 +35,11 @@ Status key: **Built** (tested in this repo), **Scaffolded** (configured, not yet
 | 22 | Production runs with a placeholder, dev or missing secret, debug on, an http issuer or the dev mail catcher | Backend and worker refuse to start in `prod` and name each variable (never its value, never the other settings); Compose refuses to start without the production variables | Built (tests; production-mode stack) |
 | 23 | Keycloak administration reachable from the internet | Admin console and `master` realm return 404 on the public edge; administration on a TLS port bound to the host's loopback, via SSH tunnel; `KC_HOSTNAME_ADMIN` set | Built (production-mode stack) |
 | 24 | Demo logins or mock data reach production | The seed loader and the demo-user import refuse `SETHU_ENVIRONMENT=prod`; the production override disables Mailpit and demo-users even under `--profile dev`; the production realm has no users | Built (tests) |
+| 26 | Someone raises their own role, or writes another person's or a bureau's record | `app_users` and `bureaus` have Row-Level Security: a person writes only their own row and only with their token's role and bureau; only `admin` writes bureaus; every change audited | Built (tests) |
 | 25 | Open redirect after sign-in or sign-out | Production realm: exact redirect and post-logout URIs from `PUBLIC_BASE_URL`, exact web origin; dev realm: `+` (the same as its redirect URIs) | Built |
 | 20 | Search reveals another bureau's complaint text | Text matching goes through `sethu.complaints`, which Row-Level Security empties for other bureaus; results carry summary fields and match reasons only | Built |
+| 27 | Loss of the database, or a stolen backup | `backup` service: both databases every 24 h, encrypted with gpg AES-256 under a key kept apart from the backups; restore only into an empty database, ends with Verify chain; drill passed (RUNBOOK section 4). Off-host copy is an operator step | Built |
+| 28 | Expired or wrong edge certificate | `scripts/install_cert.py`: refuses non-PEM or expired files, `nginx -t` before reload, puts the old pair back on failure; no rebuild needed. Renewal is manual | Built |
 
 ## Rules for contributors
 
@@ -54,4 +57,4 @@ Status key: **Built** (tested in this repo), **Scaffolded** (configured, not yet
 
 ## Before any real deployment
 
-Run an OWASP Top 10 review, a dependency audit (`pip-audit`, `npm audit`), an image scan, and a restore test from backup. Pin container images by digest. None of this has been done yet.
+Run an OWASP Top 10 review, a dependency audit (`pip-audit`, `npm audit`), and an image scan. Pin container images by digest. None of this has been done yet. (A restore test from backup was done: RUNBOOK section 4.)

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { accessToken } from "./auth";
 
-export async function api<T>(path: string, body?: unknown): Promise<T> {
+export async function api<T>(path: string, body?: unknown, method?: "POST" | "PATCH"): Promise<T> {
   const response = await fetch(`/api/v1${path}`, {
-    method: body === undefined ? "GET" : "POST",
+    method: body === undefined ? "GET" : (method ?? "POST"),
     headers: {
       Authorization: `Bearer ${await accessToken()}`,
       ...(body === undefined ? {} : { "Content-Type": "application/json" }),

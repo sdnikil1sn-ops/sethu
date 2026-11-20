@@ -38,13 +38,15 @@ export type Case = CaseRow & {
   language: string | null;
   source: string | null;
   resolution_state: string | null;
+  complainant: { name: string; email: string | null; phone: string | null } | null;
+  complainant_withheld: boolean;
   history: Action[];
   can_act: boolean;
   awaiting_acknowledgement: boolean;
 };
 
 export type Options = {
-  bureaus: { id: string; code: string; name: string }[];
+  bureaus: { id: string; code: string; name: string; active: boolean }[];
   categories: string[];
   states: string[];
   statuses: string[];

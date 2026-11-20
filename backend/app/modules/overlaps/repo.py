@@ -111,17 +111,11 @@ def decide(session: Session, link_id: UUID, status: str, actor_id: UUID) -> bool
          WHERE id = :id AND status = 'proposed'"""), {"id": link_id, "status": status, "actor": actor_id}).rowcount == 1
 
 
-def head_emails(session: Session, bureau_ids: list[UUID]) -> list[str]:
-    return [r["email"] for r in _all(session, """
-        SELECT email FROM sethu.app_users
-         WHERE role = 'bureau_head' AND active AND email IS NOT NULL AND bureau_id = ANY(:b)
-         ORDER BY email""", b=bureau_ids)]
-
-
-def insert_alert(session: Session, link_id: UUID, recipients: list[str], subject: str, body: str,
-                 approved_by: UUID) -> UUID:
+def insert_alert(session: Session, link_id: UUID, recipients: list[str], missing: list[str], subject: str,
+                 body: str, approved_by: UUID) -> UUID:
     return session.execute(text("""
-        INSERT INTO sethu.alerts (kind, overlap_link_id, status, recipients, subject, body, approved_by, approved_at)
-        VALUES ('overlap', :link, 'approved', CAST(:recipients AS jsonb), :subject, :body, :by, now())
-        RETURNING id"""), {"link": link_id, "recipients": json.dumps(recipients), "subject": subject,
-                           "body": body, "by": approved_by}).scalar_one()
+        INSERT INTO sethu.alerts (kind, overlap_link_id, status, recipients, missing_recipients, subject, body,
+                                  approved_by, approved_at)
+        VALUES ('overlap', :link, 'approved', CAST(:recipients AS jsonb), :missing, :subject, :body, :by, now())
+        RETURNING id"""), {"link": link_id, "recipients": json.dumps(recipients), "missing": missing,
+                           "subject": subject, "body": body, "by": approved_by}).scalar_one()

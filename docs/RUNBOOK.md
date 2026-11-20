@@ -38,6 +38,10 @@ docker compose logs -f backend worker
 docker compose down
 ```
 
+### Scheduler
+
+Scheduled jobs (alert delivery every 15 s, detectors every 5 min, the nightly chain check) are put on the queue by the `scheduler` service (Celery beat) and run by `worker`. Run exactly one scheduler; workers can be scaled (`up -d --scale worker=2`). A second scheduler cannot run: the first holds the Redis lock `sethu:beat:lock` (renewed every 20 s, expires 60 s after a scheduler dies), and another refuses to start while it is held (`another scheduler holds sethu:beat:lock`), keeps restarting as a standby, and takes over within a minute if the first one dies. Tests: `tests/test_scheduler.py` (needs a throwaway Redis, see the file).
+
 ## 3. Database
 
 ```powershell
@@ -90,7 +94,34 @@ docker compose logs -f demo-users          # ends with "demo users imported"
 
 ### Alert mail (dev and demo)
 
+A send that fails is tried again after 1, 2, 4, 8 and 16 minutes (never more than an hour apart); after six attempts the alert is `failed` and shows why on the Alerts screen (filter "Failed"). An admin, or a head of a bureau the alert concerns, presses Retry to put it back in the queue with a fresh set of attempts; the retry is in the audit log. Settings: `SETHU_ALERT_MAX_ATTEMPTS`, `SETHU_ALERT_RETRY_BASE_SECONDS`, `SETHU_ALERT_RETRY_MAX_SECONDS`.
+
+In production mail must be encrypted: `SMTP_SECURITY=starttls` (usually port 587) or `tls` (usually 465). The relay's certificate and host name are always verified; for a relay with a private CA, mount the CA certificate into the backend and worker and set `SMTP_CA_FILE` to its path inside the container. The backend refuses to start with `SMTP_SECURITY=none`, with a username but no password, or with an `SMTP_CA_FILE` that does not exist.
+
 Approved alerts are emailed within 15 seconds, one email per recipient, to Mailpit at http://localhost:8025 (the Alerts page links to it). An alert that could not be sent stays "Approved, queued to send" on the Alerts page with the error and is retried; check `docker compose logs worker` and that `mailpit` is running.
+
+### Complainant details: keys
+
+Complainant name, e-mail and phone are stored only encrypted (`complaints.complainant_enc`), with a key from a keyring file mounted into the backend and worker as a secret (`/run/secrets/complainant_keys`). The file is in `secrets/complainant_keys.json` (git-ignored; `SETHU_SECRETS_DIR` moves it). Only the officers and head of the bureau holding a case see the details; everyone else sees "withheld".
+
+Create (dev: `python scripts/init_env.py` does it; production: once, on the server):
+
+```powershell
+python scripts/complainant_key.py new secrets/complainant_keys.json
+```
+
+On Linux the containers run as uid 10001, so give them the file and nobody else: `sudo chown 10001:10001 secrets/complainant_keys.json` and `chmod 600`.
+
+Rotate (for example yearly, or at once if the file may have leaked):
+
+```powershell
+python scripts/complainant_key.py add secrets/complainant_keys.json        # new key, now active
+docker compose -f docker-compose.yml -f docker-compose.prod.yml restart backend worker
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec worker celery -A app.worker:celery call sethu.complainant.rotate_keys
+python scripts/complainant_key.py show secrets/complainant_keys.json       # key ids only
+```
+
+The task re-encrypts every value onto the active key and writes a `complainant.rekeyed` audit entry per batch (counts and key ids only). When it has finished (`docker compose ... logs worker` shows `rekeyed`), and only then, drop the old key with `python scripts/complainant_key.py remove secrets/complainant_keys.json <old id>` and restart backend and worker. Keep a copy of the keyring apart from the database backups: a backup without its keyring cannot show who complained, and a backup with it is the data.
 
 ### Reports and exports
 
@@ -154,14 +185,49 @@ pytest -q
 
 Without those variables the database tests are skipped and only the token and API tests run.
 
-## 4. Backup and restore
+The scheduler-lock tests (`tests/test_scheduler.py`) also need a throwaway Redis; without it they are skipped:
 
 ```powershell
-docker compose exec postgres pg_dump -U postgres -Fc sethu -f /tmp/sethu.dump
-docker compose cp postgres:/tmp/sethu.dump .\sethu.dump
+docker run -d --rm --name sethu-test-redis -p 127.0.0.1:6390:6379 redis:7-alpine
+$env:SETHU_TEST_REDIS_URL = "redis://127.0.0.1:6390/0"
 ```
 
-Restore into a fresh stack: start `postgres` only, `pg_restore -U postgres -d sethu --clean /tmp/sethu.dump`, then run `audit_verify()`; it must return `ok = true`. Dumps contain complaint data: keep them inside AICTE storage, never in the repo (`*.dump` is git-ignored).
+FastAPI must be 0.165 or newer (`pyproject.toml`); an older one already installed fails the case-list tests with 422 "filters field required". `pip install -e ".[dev]"` upgrades it.
+
+## 4. Backup and restore
+
+In production the `backup` service (`docker-compose.prod.yml`, script `infra/backup/backup.sh`) backs up **both** databases, `sethu` and `keycloak`, once at start and then every `BACKUP_INTERVAL_HOURS` (default 24). Each is a `pg_dump` custom-format dump piped straight into `gpg` (AES-256, with an integrity check) under the passphrase in the `backup_key` secret; nothing unencrypted touches the disk. Files land in `SETHU_BACKUP_DIR` (default `./backups`, git-ignored) as `<stamp>-sethu.dump.gpg` and `<stamp>-keycloak.dump.gpg`; files older than `BACKUP_KEEP_DAYS` (default 14) are deleted. The service turns unhealthy when the last good backup is older than one interval plus an hour.
+
+- **Copy the backups off this host** (AICTE storage) on your own schedule: a backup on the same disk does not survive the disk. They are encrypted, so the copy may sit on ordinary storage.
+- **Keep `backup_key` apart from the backups** (with the other secrets, section 7). Without it the backups cannot be read; with both, anyone can.
+- Restoring also needs `complainant_keys.json`: the complainant details inside the dump are encrypted with it.
+
+```powershell
+$C = "docker compose -f docker-compose.yml -f docker-compose.prod.yml"
+Invoke-Expression "$C exec backup bash /backup.sh once"    # a backup now
+Invoke-Expression "$C exec backup bash /backup.sh list"
+```
+
+### Restore
+
+The script restores only into **empty** databases: the audit ledger is append-only, so it never merges into or drops a live one (it refuses and names the database). So a restore is: wipe the data volume, start PostgreSQL alone (its init script recreates the roles and empty databases from the secret files), restore, then start everything else. `migrate` then finds the schema already at the restored revision.
+
+```powershell
+$C = "docker compose -f docker-compose.yml -f docker-compose.prod.yml"
+Invoke-Expression "$C exec backup bash /backup.sh counts sethu" > counts-before.txt   # if the old stack still runs
+Invoke-Expression "$C down"
+docker volume rm sethu_pgdata                                                           # DESTROYS the database
+Invoke-Expression "$C up -d --wait postgres"
+Invoke-Expression "$C run --rm backup restore <stamp>"     # both databases; ends with 'verify chain: ok=true checked=N'
+Invoke-Expression "$C up -d"
+Invoke-Expression "$C run --rm --no-deps backup counts sethu" > counts-after.txt
+```
+
+The restore must end with `verify chain: ok=true`; if it says `ok=false`, stop and treat the backup as suspect (SECURITY.md).
+
+### Restore drill (2026-11-20, throwaway production-mode stack)
+
+On a stack started from the base file plus `docker-compose.prod.yml`, with every password and key from secret files: the seed loaded (310 complaints, 1,013 case actions, 24 people); backend, worker and Keycloak stopped so nothing wrote during the backup; `backup.sh once` wrote both encrypted files (no `PGDMP` marker or plain text in them); row counts taken; the stack brought down and its `pgdata` volume **deleted**; PostgreSQL started alone; `backup.sh restore` restored both databases and printed `verify chain: ok=true checked=1438`. Counts after the restore were identical, table by table, to the counts before: all 11 tables in `sethu` (audit_log 1,438, complaints 310, case_actions 1,013, app_users 24, ...) and all 87 in `keycloak` (2 realms, the users). A second `restore` over the restored data was refused ("database sethu already has 11 tables"). Migrate then found nothing to do and the backend came up healthy on the restored data. Repeat the drill after any schema change and at least every quarter.
 
 ## 5. Reset everything (destroys data)
 
@@ -202,8 +268,8 @@ Production is the base file plus `docker-compose.prod.yml`. Never add `--profile
 
 ### Start
 
-1. Certificates from the AICTE/NIC CA in `infra/certs/server.crt` and `infra/certs/server.key` (git-ignored).
-2. `python scripts/init_env.py`, then in `.env`: `SETHU_ENVIRONMENT=prod`, `PUBLIC_BASE_URL=https://<host>`, `SMTP_HOST`, `SMTP_PORT`, `ALERT_FROM`, and delete `DEMO_USER_PASSWORD`.
+1. Certificates: see TLS below (`python scripts/install_cert.py`).
+2. Secrets: `python scripts/init_secrets.py` (see Secrets below). Then `.env` holds settings only, no passwords: `SETHU_ENVIRONMENT=prod`, `PUBLIC_BASE_URL=https://<host>`, `SETHU_SECRETS_DIR` (if not `./secrets`), `KEYCLOAK_ADMIN_USER`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURITY`, `SMTP_USERNAME` (if the relay needs a login), `ALERT_FROM`; and the password names left empty (`POSTGRES_SUPERUSER_PASSWORD=` and the others) so Compose does not warn about them.
 3. Start:
 
 ```powershell
@@ -220,6 +286,47 @@ If `backend` or `worker` keeps restarting, read why: `docker compose -f docker-c
 - `ALERT_FROM` is a `.test` address.
 
 Compose itself stops before starting anything if `PUBLIC_BASE_URL`, `SMTP_HOST`, `SMTP_PORT` or `ALERT_FROM` is unset. The seed loader (`seed/load.py`) and the demo-user import refuse to run when `SETHU_ENVIRONMENT=prod`.
+
+### Secrets
+
+In production every password and key is a file in `SETHU_SECRETS_DIR` (default `./secrets`, git-ignored), mounted read-only under `/run/secrets` into only the containers that need it. None is in `.env`, an image or an environment variable; the backend refuses to start if its database or Redis URL, or `SMTP_PASSWORD`, carries a password instead.
+
+```powershell
+python scripts/init_secrets.py            # creates every missing file with a random value; never overwrites
+```
+
+On a Linux host: `sudo chown root:root secrets && sudo chmod 700 secrets` (the files themselves are 0644 so each container's own user can read the ones mounted into it; nobody else on the host can open the folder). Back the folder up apart from the database backups.
+
+| File | Used by | Rotate |
+|---|---|---|
+| `postgres_superuser_password` | PostgreSQL, first start only | `python scripts/init_secrets.py rotate postgres_superuser_password`, then the printed `psql` command |
+| `sethu_owner_password` | migrations | `rotate sethu_owner_password`, the printed `psql` command; used at the next `migrate` |
+| `sethu_app_password` | backend, worker | `rotate sethu_app_password`, the printed `psql` command, `restart backend worker` (done on a production-mode stack: healthy again, `/health/ready` 200) |
+| `sethu_auditor_password` | direct auditor logins | `rotate sethu_auditor_password`, the printed `psql` command |
+| `keycloak_db_password` | Keycloak | `rotate keycloak_db_password`, the printed `psql` command, `restart keycloak` |
+| `redis_password`, `redis_conf` | Redis; backend and worker | `rotate redis_password` (rewrites both), `restart redis backend worker` |
+| `keycloak_admin_password` | Keycloak's bootstrap admin, first start only | create a named admin per person in the console, then delete the bootstrap user; the file is not read again |
+| `smtp_password` | backend, worker (only if `SMTP_USERNAME` is set) | write the relay's new password into the file, `restart backend worker` |
+| `backup_key` | backup service | write a new value (`python -c "import secrets; print(secrets.token_urlsafe(32))"` into the file), `restart backup`. Old backups stay readable only with the old value: keep it until they have aged out |
+| `complainant_keys.json` | backend, worker | `python scripts/complainant_key.py add`, then re-encrypt (Complainant details: keys) |
+
+The printed `psql` command pipes `infra/postgres/rotate_role.sql` into the postgres container, which reads the new value from its own mounted copy: the password never appears on a command line. `rotate` rewrites the file in place, so the containers see the new value at once.
+
+There is no Keycloak client secret: `sethu-web` is a public client using PKCE, by design (a browser cannot keep a secret).
+
+### TLS certificate
+
+The edge serves the certificate in `SETHU_CERTS_DIR` (default `infra/certs`, git-ignored): `server.crt` (the server certificate first, then the intermediates) and `server.key`. The folder is mounted read-only into the web container, so installing or renewing a certificate needs no rebuild and no restart:
+
+```powershell
+python scripts/install_cert.py C:\path\to\fullchain.pem C:\path\to\private-key.pem
+```
+
+The script refuses a file that is not a PEM certificate or key, or a certificate that has expired; prints the certificate's names and expiry; writes both files in place (keeping the previous pair as `*.prev`); runs `nginx -t`; and reloads nginx only if it passes. If nginx rejects the pair (a key that does not match, a broken chain file) the previous pair is put back and nothing is reloaded. Tried on a production-mode stack (2026-11-20): a renewed certificate was served right after the reload, with the web container never restarted; then a key that did not match was refused (`key values mismatch`), the previous pair was put back and the renewed certificate stayed live.
+
+- Get the certificate from the AICTE/NIC CA for the public host name in `PUBLIC_BASE_URL`. Never commit a certificate or key: `infra/certs/` is git-ignored.
+- On a Linux host: `sudo chmod 700 infra/certs` (the key is 0644 so nginx's own user can read it inside the container; nobody else on the host can open the folder).
+- Renew before expiry; put the expiry date in the operations calendar. Automatic renewal (ACME) needs a CA that offers it and outbound access: not set up.
 
 ### Published ports
 
@@ -244,7 +351,7 @@ then open https://localhost:9443/auth/admin/ and sign in with `KEYCLOAK_ADMIN_US
 
 Keycloak imports `infra/keycloak-prod/sethu-realm.json` (not the dev realm) the first time it starts. It has no users. It sets: exact redirect and post-logout URIs from `PUBLIC_BASE_URL`; the `bureau_id` attribute (administrators may edit it, users may not) and its token mapper; brute-force detection (5 failures, waits up to 15 minutes); a password policy (12+ characters with upper, lower, digit and special character, not the username or e-mail, not one of the last 5); TLS for every request; access tokens of 5 minutes, sessions idle out after 30 minutes and end after 10 hours, single-use refresh tokens.
 
-To add a person: in the admin console, realm `sethu` > Users > Add user (username, e-mail, first and last name), set a temporary password under Credentials, assign one realm role (`officer`, `bureau_head`, `oversight`, `admin` or `auditor`), and for `officer` and `bureau_head` add the attribute `bureau_id` = the bureau's id (`SELECT id, code FROM sethu.bureaus`). SETHU registers the person in `sethu.app_users` on their first action (audited as `user.registered`), without an e-mail address: until PRODUCTION-READINESS row 47 is fixed, set `email` on a bureau head's row by hand, or that bureau's alerts have no recipient. Bureaus themselves can only be created with SQL today (row 46).
+To add a person: in the admin console, realm `sethu` > Users > Add user (username, e-mail, first and last name), set a temporary password under Credentials, assign one realm role (`officer`, `bureau_head`, `oversight`, `admin` or `auditor`), and for `officer` and `bureau_head` add the attribute `bureau_id` = the bureau's id (`SELECT id, code FROM sethu.bureaus`). SETHU brings the person's record (`sethu.app_users`) in step with their token each time they sign in: name, e-mail, role and bureau. Alert mail goes to that e-mail, so give every bureau head one in Keycloak; Admin > People flags anyone without one, and an alert names any bureau it could not reach. Bureaus are created, renamed and deactivated on Admin > Bureaus (`admin` only); the bureau's id for the `bureau_id` attribute is shown in the API (`GET /api/v1/admin/bureaus`) and in `SELECT id, code FROM sethu.bureaus`.
 
 Like the dev realm, the file is read only when the realm does not exist yet; a change to it reaches a running system only through the console or a full re-import (section 3).
 
@@ -254,15 +361,18 @@ Like the dev realm, the file is read only when the realm does not exist yet; a c
 |---|---|---|---|
 | `SETHU_ENVIRONMENT` | backend, worker, demo-user import, seed loader | `dev` | `prod` |
 | `PUBLIC_BASE_URL` | Keycloak hostname and realm URIs, the backend's token issuer | `http://localhost:8080` | `https://<host>`, required |
-| `POSTGRES_SUPERUSER_PASSWORD` | PostgreSQL bootstrap | random | random |
-| `SETHU_OWNER_PASSWORD` | migrations (`sethu_owner`) | random | random |
-| `SETHU_APP_PASSWORD` | backend and worker (`sethu_app`) | random | random, 16+, checked |
-| `SETHU_AUDITOR_PASSWORD` | direct read access for auditors | random | random |
-| `KEYCLOAK_DB_PASSWORD` | Keycloak's database | random | random |
-| `REDIS_PASSWORD` | Redis, backend and worker | random | random, 16+, checked |
+| `POSTGRES_SUPERUSER_PASSWORD` | PostgreSQL bootstrap | random | empty: the secret file `postgres_superuser_password` |
+| `SETHU_OWNER_PASSWORD` | migrations (`sethu_owner`) | random | empty: the secret file `sethu_owner_password` |
+| `SETHU_APP_PASSWORD` | backend and worker (`sethu_app`) | random | empty: the secret file `sethu_app_password` |
+| `SETHU_AUDITOR_PASSWORD` | direct read access for auditors | random | empty: the secret file `sethu_auditor_password` |
+| `KEYCLOAK_DB_PASSWORD` | Keycloak's database | random | empty: the secret file `keycloak_db_password` |
+| `REDIS_PASSWORD` | Redis, backend and worker | random | empty: the secret file `redis_password` (`redis_conf` too for Redis) |
 | `KEYCLOAK_ADMIN_USER`, `KEYCLOAK_ADMIN_PASSWORD` | Keycloak bootstrap administrator | `sethu-admin`, random | change the name; disable after creating named admins |
 | `DEMO_USER_PASSWORD` | demo-user import | set | not set (the import refuses production) |
 | `SMTP_HOST`, `SMTP_PORT` | alert delivery | `mailpit`, `1025` | the relay, required; Mailpit refused |
+| `SMTP_SECURITY` | alert delivery | `none` (Mailpit) | `starttls` or `tls`, required |
+| `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_CA_FILE` | alert delivery | empty | as the relay needs; checked at start |
 | `ALERT_FROM` | sender of alert mail | not used (default `sethu-alerts@sethu.test`) | required; not a `.test` address |
 | `SETHU_DEBUG` | FastAPI debug pages | `false` | must be `false` |
+| `SETHU_SECRETS_DIR` | where the secret files are (`complainant_keys.json`, ...) | `./secrets` | a directory readable by uid 10001 only |
 | `SETHU_STALLED_TRANSFER_DAYS`, `SETHU_BOTTLENECK_MIN_OPEN`, `SETHU_BOTTLENECK_SHARE`, `SETHU_SPIKE_MIN_COUNT`, `SETHU_SPIKE_RATIO` | findings detector | 7, 3, 0.6, 5, 3.0 | same unless tuned |

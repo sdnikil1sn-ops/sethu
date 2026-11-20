@@ -17,6 +17,7 @@ from app.audit import service as audit
 from app.core.auth import Principal
 from app.modules.complaints import service as complaints
 from app.modules.overlaps import repo
+from app.modules.users import service as users
 
 # pg_trgm's own default for "similar". On the seeded data the six planted pairs score
 # 0.34 to 0.62 and cross-bureau pairs in different categories at most 0.26.
@@ -109,15 +110,16 @@ def decide(session: Session, principal: Principal, link_id: UUID, approve: bool)
     cases = [first["ref"], second["ref"]]
     payload: dict = {"cases": cases, "tier": link["tier"]}
     if approve:
-        recipients = repo.head_emails(session, [link["a_bureau_id"], link["b_bureau_id"]])
+        recipients, missing = users.recipients(session, [link["a_bureau_id"], link["b_bureau_id"]])
         # References only. Complaint text never goes into an alert.
         body = (f"{BANNER}\n\n"
                 f"Case {first['ref']} ({first['bureau']}) and case {second['ref']} ({second['bureau']}) "
                 f"appear to concern the same matter.\n"
                 f"Institution: {link['institution']}\nCategory: {link['category']}\n\n"
                 f"Open SETHU to see your bureau's case and coordinate with the other bureau.")
-        alert_id = repo.insert_alert(session, link_id, recipients, f"{BANNER}: {cases[0]} and {cases[1]}", body, actor)
-        payload |= {"alert_id": str(alert_id), "recipients": len(recipients)}
+        alert_id = repo.insert_alert(session, link_id, recipients, missing, f"{BANNER}: {cases[0]} and {cases[1]}",
+                                     body, actor)
+        payload |= {"alert_id": str(alert_id), "recipients": len(recipients), "missing_recipients": missing}
     audit.record(session, principal, "overlap.approve" if approve else "overlap.reject",
                  entity_type="overlap_links", entity_id=str(link_id), payload=payload)
     return _shape(principal, repo.links(session, link_id=link_id)[0])

@@ -1,4 +1,6 @@
 .env
+# keys and secret files: created per machine (scripts/init_env.py, scripts/complainant_key.py)
+secrets/
 infra/certs/
 __pycache__/
 *.pyc
@@ -12,3 +14,4 @@ dist/
 # real data never belongs in the repository
 data/
 *.dump
+backups/

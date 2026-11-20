@@ -18,7 +18,7 @@ Risk: **high** = could expose complaint data, let the wrong person in, or lose d
 
 | # | Area | What is wrong or missing today | Risk | Phase | Status |
 |---|---|---|---|---|---|
-| 1 | Secrets | All secrets live in a plain `.env` file read by Compose. No Docker secrets, Vault or rotation procedure. | high | 2 | Open |
+| 1 | Secrets | All secrets live in a plain `.env` file read by Compose. No Docker secrets, Vault or rotation procedure. | high | 2 | Done (Phase 2, item 4: Compose secret files for every password and the key; backend refuses inline passwords; a production-mode stack ran with none in any environment; rotation scripted and tried) |
 | 2 | Environment validation | The backend starts in `prod` with a missing, empty, placeholder (`CHANGE_ME`) or dev password in its database or Redis URL, an `http://` Keycloak issuer, Mailpit as the mail host, or a `@sethu.test` sender. | high | 1 | Done (tests: `test_config.py`; a production-mode stack refused a short password and Mailpit by name) |
 | 3 | Environment validation | No `debug` switch is checked; nothing stops a debug build reaching production. | medium | 1 | Done (`SETHU_DEBUG` added; refused in prod; test) |
 | 4 | Environment validation | Interactive API docs (`/api/docs`) are off in `prod`. | low | 1 | Done (code: `app/main.py`, `interactive_docs`) |
@@ -38,7 +38,7 @@ Risk: **high** = could expose complaint data, let the wrong person in, or lose d
 | 18 | Keycloak | No second factor required, not even for `admin` and `oversight`. | medium | 2 | Open |
 | 19 | Keycloak | Login and admin events are not recorded. | medium | 3 | Open |
 | 20 | Keycloak | The Keycloak bootstrap admin is a permanent account named by default `sethu-admin`. | medium | 2 | Open |
-| 21 | TLS and headers | The production nginx config (TLS 1.3, HSTS) exists but has never been run; certificate issuance and renewal are undocumented. | high | 2 | Open |
+| 21 | TLS and headers | The production nginx config (TLS 1.3, HSTS) exists but has never been run; certificate issuance and renewal are undocumented. | high | 2 | Done (Phase 2, item 7: `scripts/install_cert.py` installs and renews into a mounted folder, checks with `nginx -t`, reloads without a rebuild, rolls back a bad pair; tried on a production-mode stack: renewal served without a restart, a mismatched key refused and rolled back; RUNBOOK section 7, TLS) |
 | 22 | TLS and headers | No port 80 listener redirecting to HTTPS. | low | 2 | Open |
 | 23 | TLS and headers | CSP allows `'unsafe-inline'` styles (React inline styles). | low | 4 | Open |
 | 24 | TLS and headers | App responses carry CSP, `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`; HSTS in production. | low | 1 | Done (nginx configs; browser saw them on 8081) |
@@ -46,22 +46,22 @@ Risk: **high** = could expose complaint data, let the wrong person in, or lose d
 | 26 | Database | Least-privilege roles; the runtime role is `NOBYPASSRLS`; Row-Level Security on complaint tables. | low | 1 | Done (tests: `test_rls.py`) |
 | 27 | Database | `sethu_app` can read every `audit_log` row (SECURITY.md row 18). | medium | 3 | Open |
 | 28 | Database | Connections inside the `data` network are not TLS. | low | 2 | Open |
-| 29 | Backups | Manual `pg_dump` of the `sethu` database only: no schedule, no off-host copy, no restore drill, and the `keycloak` database is not in the procedure. | high | 2 | Open |
+| 29 | Backups | Manual `pg_dump` of the `sethu` database only: no schedule, no off-host copy, no restore drill, and the `keycloak` database is not in the procedure. | high | 2 | Done (Phase 2, item 5: `backup` service, both databases, gpg AES-256 with a key from the secret store, 14-day retention; restore script; drill on a production-mode stack: volume deleted, restored, chain ok, every table count equal; RUNBOOK section 4) |
 | 30 | Backups | The audit-chain head hash is not exported to write-once storage (ARCHITECTURE section 6, planned). | medium | 2 | Open |
-| 31 | Data | `complaints.complainant_enc` is described as encrypted by the application, but no code encrypts or writes it. Harmless with mock data; must exist before real intake. | high | 2 | Open |
+| 31 | Data | `complaints.complainant_enc` is described as encrypted by the application, but no code encrypts or writes it. Harmless with mock data; must exist before real intake. | high | 2 | Done (Phase 2, item 3: AES-256-GCM with rotatable keys from a secret file; holding bureau only; absent from search, reports, exports, logs, audit; rotation tested; seed encrypts; browser checked) |
 | 32 | Logging | JSON logs to Docker's file driver with rotation; no central collection, retention policy or alerting. | medium | 3 | Open |
 | 33 | Logging | Request bodies are never logged; identifiers only. | low | 1 | Done (code: `app/main.py` logs method, path, status) |
 | 34 | Health checks | `keycloak`, `web` and `worker` have no health check (the worker's is disabled). | medium | 1 | Done (Keycloak, web and worker checks added; all services turned healthy on the dev and production-mode stacks) |
 | 35 | Health checks | `/health/ready` is reachable from outside through nginx. | low | 3 | Open |
 | 36 | Resource limits | Memory limits on long-running services; none on `migrate` or `mailpit`; no CPU limits. | low | 1 | Partly: `migrate` limited; Mailpit is dev only; CPU limits left for phase 3 |
-| 37 | Reliability | Celery beat runs inside the worker: a second worker would run every scheduled job twice. | medium | 3 | Open |
+| 37 | Reliability | Celery beat runs inside the worker: a second worker would run every scheduled job twice. | medium | 3 | Done (Phase 2, item 6: `scheduler` service; the worker no longer runs beat; a Redis lock stops a second scheduler; tests/test_scheduler.py) |
 | 38 | Bureaus | Bureau codes and names are written in `seed/load.py`; application logic does not branch on a code (only comments name PGRC and RB). The seed has two bureaus, so cross-bureau behaviour is only ever PGRC and RB. | low | 1 | Done (bureaus come from `seed/bureaus.csv`; NRB and AB added; the old records are byte-identical) |
-| 39 | Mail | SMTP is plain (no STARTTLS, no authentication); the sender defaults to `sethu-alerts@sethu.test`. | medium | 2 | Open |
+| 39 | Mail | SMTP is plain (no STARTTLS, no authentication); the sender defaults to `sethu-alerts@sethu.test`. | medium | 2 | Done (Phase 2, item 2: STARTTLS or TLS with certificate verification, refused plain in production; backoff, max attempts, Retry; tests) |
 | 40 | Dependencies | Python dependencies are ranges with no lock file; images are pinned by tag, not digest (`keycloak:26.0`, `pg16`, `redis:7-alpine`, `python:3.12-slim`, `node:22-alpine`, `nginx-unprivileged:1.27-alpine`). | medium | 4 | Open |
 | 41 | Testing | No CI runs the tests; no browser tests (screens are checked by hand, RUNBOOK). | medium | 4 | Open |
 | 42 | Containers | `postgres` and `keycloak` are not read-only (their images write to their own paths). | low | 3 | Open |
 | 43 | Checklist | Unticked: updates within 5 seconds when a case changes; runs with Wi-Fi off (not tested); graph line asks for complaints as nodes (bureaus are drawn instead). | medium | 5 | Open |
 | 44 | Configuration | The findings thresholds (`SETHU_STALLED_TRANSFER_DAYS`, `SETHU_BOTTLENECK_*`, `SETHU_SPIKE_*`) were documented as settable in `.env` but Compose never passed them to the backend or worker (found during this audit). | medium | 1 | Done (passed through with the same defaults; `docker compose config` shows them) |
 | 45 | Logging | A settings error printed a shortened copy of all settings, which can include a password (found during this audit). | high | 1 | Done (`hide_input_in_errors`; test) |
-| 46 | Bureaus | Production has no way to create a bureau: the seed loader refuses `prod` and there is no API or screen, so the first bureaus need SQL (not audited by the application). | high | 2 | Open (found while signing in to the production-mode stack) |
-| 47 | Identity | A person is registered in `app_users` from the token on first use, without an e-mail address, and later role or bureau changes in Keycloak never reach that row. A bureau head registered this way receives no alerts. | high | 2 | Open (found while signing in to the production-mode stack) |
+| 46 | Bureaus | Production has no way to create a bureau: the seed loader refuses `prod` and there is no API or screen, so the first bureaus need SQL (not audited by the application). | high | 2 | Done (Phase 2, item 1: Admin > Bureaus and `/api/v1/admin/bureaus`, admin only, audited; RLS refuses other roles; tests and a browser check) |
+| 47 | Identity | A person is registered in `app_users` from the token on first use, without an e-mail address, and later role or bureau changes in Keycloak never reach that row. A bureau head registered this way receives no alerts. | high | 2 | Done (Phase 2, item 1: record synced from the token on sign-in and on every action; e-mail and name mappers in both realms; admin list flags no e-mail; alerts name unreachable bureaus; tests) |

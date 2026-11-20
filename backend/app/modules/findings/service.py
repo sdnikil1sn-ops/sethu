@@ -30,6 +30,7 @@ from app.core.auth import Principal
 from app.core.config import get_settings
 from app.modules.complaints import service as complaints
 from app.modules.findings import repo
+from app.modules.users import service as users
 
 TREND_DAYS = 30
 SPIKE_RECENT_DAYS, SPIKE_BASELINE_DAYS = 30, 90
@@ -113,7 +114,8 @@ def _alert(session: Session, f: dict, codes: dict[UUID, str]) -> UUID:
     body = (f"{subject}\n\nCase {f['ref']} has moved {bureaus} with no acknowledgement for "
             f"{f['evidence']['days_unacknowledged']} days ({f['evidence']['transfers']} transfer(s) in a row).\n\n"
             "Open SETHU to see the case history and agree which bureau will act on it.")
-    return repo.insert_alert(session, f["complaint_id"], repo.head_emails(session, f["bureau_ids"]), subject, body)
+    recipients, missing = users.recipients(session, f["bureau_ids"])
+    return repo.insert_alert(session, f["complaint_id"], recipients, missing, subject, body)
 
 
 def detect(session: Session, principal: Principal) -> dict[str, int]:

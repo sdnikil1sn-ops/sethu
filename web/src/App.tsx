@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLoad } from "./api";
 import { logout } from "./auth";
+import { AdminPage } from "./features/admin/Admin";
 import { AlertsPage } from "./features/alerts/Alerts";
 import { AuditLog } from "./features/audit/AuditLog";
 import { CaseDetail } from "./features/cases/CaseDetail";
@@ -69,6 +70,11 @@ export function App() {
           <a href="#/reports" aria-current={route === "/reports" ? "page" : undefined}>
             Reports
           </a>
+          {me?.role === "admin" && (
+            <a href="#/admin" aria-current={route === "/admin" ? "page" : undefined}>
+              Admin
+            </a>
+          )}
           {me && CAN_AUDIT.includes(me.role) && (
             <a href="#/audit" aria-current={route === "/audit" ? "page" : undefined}>
               Audit log
@@ -102,6 +108,8 @@ export function App() {
           <FindingsPage canDecide={!!me && CAN_DECIDE.includes(me.role)} canDetect={me?.role === "admin"} />
         ) : route === "/reports" ? (
           <ReportsPage />
+        ) : route === "/admin" ? (
+          <AdminPage />
         ) : route === "/audit" ? (
           <AuditLog />
         ) : route === "/institutions" ? (

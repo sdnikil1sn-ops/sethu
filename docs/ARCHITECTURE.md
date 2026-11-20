@@ -34,6 +34,8 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
 | web (Nginx + React) | Serve the app, terminate TLS, proxy `/api` and `/auth`, rate-limit, set CSP | Built: Keycloak sign-in (PKCE), institutions, unmatched-names queue, dashboard, case list, case detail and actions, overlaps, alerts, audit log with Verify chain, top-bar search, reports with CSV export; the case list keeps its filters in the address. Run end to end in dev; the production TLS config is not yet run |
 | backend (FastAPI) | HTTP API, role checks, business rules, audit writes | Built: config, auth, session context, audit, health, `institutions` (profile with Profile DNA, alias search, resolution cascade), `complaints` (case list, detail, history, actions), `overlaps` (Tier 1 view, Tier 2 suggestions, approval, alert outbox row), `alerts` (approval of held alerts, delivery), `dashboard` (counts, weekly trend, needs-attention list), `audit_view` (audit log browser, Verify chain), `search` (top-bar search over institutions and cases), `reports` (three reports, audited CSV export), `findings` (transfer loops, stalled transfers, queue bottlenecks, early-warning trend). Other features: Planned |
 | worker (Celery) | Ingestion, matching, graph jobs, alert delivery, nightly audit verification | Built: nightly audit verify; institution resolution, Tier 2 overlap detection and deadlock/bottleneck detection every 5 minutes; alert delivery every 15 seconds. The rest: Planned |
+| scheduler (Celery beat) | Puts the scheduled jobs on the queue; the worker runs them | Built: its own service, so workers scale without running jobs twice; holds a Redis lock, so a second scheduler refuses to start (`tests/test_scheduler.py`) |
+| backup (production) | Encrypted backups of the `sethu` and `keycloak` databases | Built: `pg_dump` into gpg AES-256 with a key from the secret store, every 24 h, 14-day retention; restore drill passed (RUNBOOK section 4) |
 | postgres | System of record, Row-Level Security, audit ledger | Built and tested (migrations 0001 to 0006) |
 | keycloak | Login, roles, `bureau_id` claim | Built: dev realm (`infra/keycloak`) with demo users from the `demo-users` service; production realm (`infra/keycloak-prod`, no users, URIs from `PUBLIC_BASE_URL`) imported and checked on a production-mode test stack. MFA: planned |
 | redis | Celery broker | Scaffolded |
@@ -94,6 +96,8 @@ The case screens follow the same rule. The case list joins the summaries to `set
 
 The top-bar search (`search`) works the same way. Institutions match by name or alias (pg_trgm), initials or city. Cases match by reference, category, status, bureau and institution for everyone, and by complaint text or the institution name as typed only through `c`, so only where Row-Level Security lets the caller read the case. Each hit says why it matched; a hit never carries complaint text. Tested in `tests/test_search.py`, including every other-bureau complaint's own words searched by a PGRC officer.
 
+Complainant details are encrypted by the application (`app/core/crypto.py`, AES-256-GCM, key id in each value, the complaint id as associated data) with a keyring mounted as a secret. Case detail decrypts them only for the officers and head of the holding bureau (`complaints.service.complainant_visible`); the sender of an unacknowledged transfer, oversight, admin and auditor see "withheld", other bureaus not even that. No list, search, report, export, log line or audit entry carries them (`tests/test_complainant.py`). Keys rotate with `sethu.complainant.rotate_keys` (RUNBOOK).
+
 Reports (`reports`) read only `complaint_summaries`, `overlap_links` and `alerts`, and have no column for text or complainant details. Bureau staff see their own bureau only: case figures are limited by `sethu.ctx_bureau()` in the query, because the summaries view is cross-bureau by design; overlap links and alerts are already limited by their policies. Each CSV export is an audit entry (`report.export`: report, date range, scope, row count) in the same transaction.
 
 Transfers: the receiving bureau holds the case at once (`bureau_id`) with status `transferred`; the sender is kept in `transferred_from_bureau_id` and can still read the case until the receiver acknowledges, but only the holder can act on it. The database lets a bureau hand a case over only by naming itself as the sender. An acknowledgement is its own `case_actions` row (history is never updated), so an unacknowledged transfer is one with no acknowledgement after it. That is what deadlock detection reads.
@@ -110,7 +114,7 @@ The Institutions screen and the top-bar search call one institution search (`ins
 - Dependencies point inward: `api -> service -> repo`. A module calls another module through its `service`, never its `repo` or tables.
 - `core`, `db` and `audit` are shared kernel; they import no feature module.
 - Bureaus are data (`sethu.bureaus`, seeded from `seed/bureaus.csv`): no application code branches on a bureau code. The seed has four (PGRC, RB, NRB, AB).
-- Built modules: `institutions`, `complaints`, `overlaps`, `alerts`, `dashboard`, `audit_view`, `search`, `reports`. Planned modules: `intake`. (The graph is a web component over existing endpoints; Profile DNA is part of the `institutions` profile; bottlenecks and the early-warning trend live in `findings`.)
+- Built modules: `users` (people kept in step with their tokens, admin list), `bureaus` (admin-managed), `institutions`, `complaints`, `overlaps`, `alerts`, `dashboard`, `audit_view`, `search`, `reports`. Planned modules: `intake`. (The graph is a web component over existing endpoints; Profile DNA is part of the `institutions` profile; bottlenecks and the early-warning trend live in `findings`.)
 
 ## 9. Failure behaviour
 
@@ -118,7 +122,7 @@ The Institutions screen and the top-bar search call one institution search (`ins
 |---|---|
 | Database down | `/health/ready` returns 503; API returns errors; nothing is half-written (single transaction per request) |
 | Redis or worker down | API keeps working; jobs and alerts queue in PostgreSQL (outbox) and drain on recovery |
-| Mail relay down | Outbox rows stay `approved`, attempts are counted and the last error is shown on the Alerts page; retried every 15 seconds (no backoff yet) |
+| Mail relay down | The alert stays `approved` with the error; the next attempt waits (1, 2, 4, 8... minutes, at most an hour); after `SETHU_ALERT_MAX_ATTEMPTS` (6) it becomes `failed` with the reason, and an admin or a head of a concerned bureau can Retry it (audited) |
 | Keycloak down | Existing tokens work until expiry (5 minutes); new logins fail; no anonymous fallback |
 | AI model missing or slow | Deterministic fallback runs; item is marked as fallback-processed |
 | Unsafe production configuration | Backend and worker exit at start with the list of variables to fix; Compose restarts them until it is fixed; nothing is served half-configured |

@@ -4,48 +4,131 @@
 # production anyway.
 #
 # Requires in .env: SETHU_ENVIRONMENT=prod, PUBLIC_BASE_URL=https://<host>, SMTP_HOST,
-# SMTP_PORT, ALERT_FROM, and certificates in infra/certs/server.crt and server.key.
-# The backend and worker refuse to start on a missing, placeholder or dev value
-# (app/core/config.py). Only the edge is published: 443, and 9443 on the host's own
-# loopback for Keycloak administration through an SSH tunnel.
+# SMTP_PORT, SMTP_SECURITY, ALERT_FROM; certificates in SETHU_CERTS_DIR (default infra/certs; scripts/install_cert.py);
+# and the secret files from `python scripts/init_secrets.py` in SETHU_SECRETS_DIR (default ./secrets).
+# Passwords are never in .env here: each service reads its own files under /run/secrets.
+# The backend and worker refuse to start on a missing, placeholder, dev or inline password
+# (app/core/config.py). Only the edge is published: 443, and 9443 on the host's own loopback for
+# Keycloak administration through an SSH tunnel.
 
 x-prod-backend-env: &prod-backend-env
   SETHU_ENVIRONMENT: prod
   SETHU_DEBUG: "false"
+  SETHU_DATABASE_URL: postgresql+psycopg://sethu_app@postgres:5432/sethu
+  SETHU_DATABASE_PASSWORD_FILE: /run/secrets/sethu_app_password
+  SETHU_REDIS_URL: redis://redis:6379/0
+  SETHU_REDIS_PASSWORD_FILE: /run/secrets/redis_password
   SETHU_OIDC_ISSUER: ${PUBLIC_BASE_URL:?set PUBLIC_BASE_URL to https://<host>}/auth/realms/sethu
   SETHU_SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST to the mail relay}
   SETHU_SMTP_PORT: ${SMTP_PORT:?set SMTP_PORT}
+  SETHU_SMTP_SECURITY: ${SMTP_SECURITY:?set SMTP_SECURITY to starttls or tls}
+  SETHU_SMTP_USERNAME: ${SMTP_USERNAME:-}
+  SETHU_SMTP_PASSWORD: ""
+  SETHU_SMTP_PASSWORD_FILE: /run/secrets/smtp_password
   SETHU_ALERT_FROM: ${ALERT_FROM:?set ALERT_FROM to the sender address}
 
+x-prod-backend-secrets: &prod-backend-secrets [sethu_app_password, redis_password, smtp_password, complainant_keys]
+
 services:
-  keycloak:
-    command: ["start", "--import-realm"]
+  postgres:
     environment:
+      POSTGRES_PASSWORD: ""
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_superuser_password
+      SETHU_OWNER_PASSWORD: ""
+      SETHU_OWNER_PASSWORD_FILE: /run/secrets/sethu_owner_password
+      SETHU_APP_PASSWORD: ""
+      SETHU_APP_PASSWORD_FILE: /run/secrets/sethu_app_password
+      SETHU_AUDITOR_PASSWORD: ""
+      SETHU_AUDITOR_PASSWORD_FILE: /run/secrets/sethu_auditor_password
+      KEYCLOAK_DB_PASSWORD: ""
+      KEYCLOAK_DB_PASSWORD_FILE: /run/secrets/keycloak_db_password
+    secrets: [postgres_superuser_password, sethu_owner_password, sethu_app_password, sethu_auditor_password,
+              keycloak_db_password]
+
+  redis:
+    # The password comes from a config file secret; the image still drops to its own user.
+    command: ["redis-server", "/run/secrets/redis_conf", "--appendonly", "yes", "--maxmemory", "256mb",
+              "--maxmemory-policy", "noeviction"]
+    environment:
+      REDIS_PASSWORD: ""
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$(cat /run/secrets/redis_password)\" --no-auth-warning ping | grep -q PONG"]
+    secrets: [redis_conf, redis_password]
+
+  migrate:
+    restart: "no"
+    environment:
+      MIGRATION_DATABASE_URL: postgresql+psycopg://sethu_owner@postgres:5432/sethu
+      MIGRATION_DATABASE_PASSWORD_FILE: /run/secrets/sethu_owner_password
+    secrets: [sethu_owner_password]
+
+  keycloak:
+    # Keycloak has no *_FILE settings: read the two secrets into its environment at start.
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - >-
+        export KC_DB_PASSWORD="$$(cat /run/secrets/keycloak_db_password)"
+        KC_BOOTSTRAP_ADMIN_PASSWORD="$$(cat /run/secrets/keycloak_admin_password)"
+        && exec /opt/keycloak/bin/kc.sh start --import-realm
+    environment:
+      KC_DB_PASSWORD: ""
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ""
       KC_HOSTNAME: ${PUBLIC_BASE_URL:?set PUBLIC_BASE_URL}/auth
       KC_HOSTNAME_ADMIN: https://localhost:9443/auth   # the admin console, through the tunnel only
       SETHU_PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?set PUBLIC_BASE_URL}   # read by the realm file
     volumes: !override
       - ./infra/keycloak-prod:/opt/keycloak/data/import:ro
+    secrets: [keycloak_db_password, keycloak_admin_password]
 
   backend:
     environment: *prod-backend-env
+    secrets: *prod-backend-secrets
 
   worker:
     environment: *prod-backend-env
+    secrets: *prod-backend-secrets
 
-  migrate:
-    restart: "no"
+  scheduler:
+    environment: *prod-backend-env
+    secrets: *prod-backend-secrets
 
   web:
     volumes: !override
       - ./infra/web/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./infra/certs:/etc/nginx/certs:ro
+      - ${SETHU_CERTS_DIR:-./infra/certs}:/etc/nginx/certs:ro   # scripts/install_cert.py; reload, no rebuild
     ports: !override
       - "443:8443"
       - "127.0.0.1:9443:9443"
     depends_on:
       backend: { condition: service_healthy }
       keycloak: { condition: service_healthy }
+
+  # Encrypted backups of both databases (docs/RUNBOOK.md section 5). Same image as the server, so
+  # pg_dump matches it. The host folder must be writable by uid 999: install -d -o 999 -g 999 -m 700 backups
+  backup:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    user: postgres
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    entrypoint: ["/bin/bash", "/backup.sh"]
+    command: ["loop"]
+    environment:
+      PGPASSWORD_FILE: /run/secrets/postgres_superuser_password
+      BACKUP_INTERVAL_HOURS: ${BACKUP_INTERVAL_HOURS:-24}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes:
+      - ./infra/backup/backup.sh:/backup.sh:ro
+      - ${SETHU_BACKUP_DIR:-./backups}:/backups
+    secrets: [postgres_superuser_password, backup_key]
+    depends_on:
+      postgres: { condition: service_healthy }
+    healthcheck:   # unhealthy when the last good backup is older than one interval plus an hour
+      test: ["CMD-SHELL", "test -n \"$$(find /backups/last-success -mmin -$$((BACKUP_INTERVAL_HOURS * 60 + 60)) 2>/dev/null)\""]
+      interval: 5m
+      start_period: 10m
+    networks: [data]
+    deploy: { resources: { limits: { memory: 512m } } }
 
   # Dev and demo only. Disabled here even if someone adds `--profile dev`.
   demo-users:
@@ -56,3 +139,15 @@ services:
   mailpit:
     profiles: !override ["never-in-production"]
     ports: !reset []
+
+secrets:
+  postgres_superuser_password: { file: "${SETHU_SECRETS_DIR:-./secrets}/postgres_superuser_password" }
+  sethu_owner_password: { file: "${SETHU_SECRETS_DIR:-./secrets}/sethu_owner_password" }
+  sethu_app_password: { file: "${SETHU_SECRETS_DIR:-./secrets}/sethu_app_password" }
+  sethu_auditor_password: { file: "${SETHU_SECRETS_DIR:-./secrets}/sethu_auditor_password" }
+  keycloak_db_password: { file: "${SETHU_SECRETS_DIR:-./secrets}/keycloak_db_password" }
+  keycloak_admin_password: { file: "${SETHU_SECRETS_DIR:-./secrets}/keycloak_admin_password" }
+  redis_password: { file: "${SETHU_SECRETS_DIR:-./secrets}/redis_password" }
+  redis_conf: { file: "${SETHU_SECRETS_DIR:-./secrets}/redis_conf" }
+  smtp_password: { file: "${SETHU_SECRETS_DIR:-./secrets}/smtp_password" }
+  backup_key: { file: "${SETHU_SECRETS_DIR:-./secrets}/backup_key" }
