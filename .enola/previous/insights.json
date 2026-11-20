@@ -492,7 +492,7 @@
     "title": "High fan-in symbol: .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo._all (9 dependents)",
     "source": "god-class",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo._all\" is depended upon by 9 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.8536937641899922,
+    "confidence": 0.8596377906080673,
     "evidence": [
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo.py",
@@ -552,7 +552,7 @@
     "title": "High fan-in symbol: backend/app/modules/institutions/repo._all (9 dependents)",
     "source": "god-class",
     "description": "\"backend/app/modules/institutions/repo._all\" is depended upon by 9 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.8536937641899922,
+    "confidence": 0.8596377906080673,
     "evidence": [
       {
         "file": "backend/app/modules/institutions/repo.py",
@@ -612,7 +612,7 @@
     "title": "High fan-in symbol: .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/repo._all (8 dependents)",
     "source": "god-class",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/repo._all\" is depended upon by 8 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.7588389015022153,
+    "confidence": 0.7641224805405044,
     "evidence": [
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/repo.py",
@@ -672,7 +672,7 @@
     "title": "High fan-in symbol: backend/app/modules/findings/repo._all (8 dependents)",
     "source": "god-class",
     "description": "\"backend/app/modules/findings/repo._all\" is depended upon by 8 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.7588389015022153,
+    "confidence": 0.7641224805405044,
     "evidence": [
       {
         "file": "backend/app/modules/findings/repo.py",
@@ -2182,6 +2182,59 @@
     ]
   },
   {
+    "title": "Large public surface: backend/app/modules/institutions/schemas exports 17 of 17 symbols (100%)",
+    "source": "exported-surface",
+    "description": "Module \"backend/app/modules/institutions/schemas\" exports 17 of its 17 symbols (100%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Alias",
+        "detail": "exported",
+        "fact_id": "e9ab0427807bcb61b728a758391c2a54"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.BureauCount",
+        "detail": "exported",
+        "fact_id": "372a670e05fce7b9125a4aa6a3d55869"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Candidate",
+        "detail": "exported",
+        "fact_id": "9c3d5c324eb86b892a9d8273703252a3"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.CaseSummary",
+        "detail": "exported",
+        "fact_id": "3ca880695765e9c071136e83d95199cb"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.CategoryShare",
+        "detail": "exported",
+        "fact_id": "aacf423956120f1a18dcf943b11c68ca"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Disposal",
+        "detail": "exported",
+        "fact_id": "71432a5c7da8d1210a637d62a365b7ae"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Dna",
+        "detail": "exported",
+        "fact_id": "354fe7fe227d7c5cf48bcca05d37c210"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Institution",
+        "detail": "exported",
+        "fact_id": "8ac0ff6cf07eb52fc4a0807ee8b6d507"
+      }
+    ],
+    "suggested_actions": [
+      "Unexport symbols that are only used within the module",
+      "Define a small, intentional public API and hide the rest",
+      "Split the module if it has several independent public responsibilities"
+    ]
+  },
+  {
     "title": "Large public surface: backend/app/modules/complaints/repo exports 15 of 17 symbols (88%)",
     "source": "exported-surface",
     "description": "Module \"backend/app/modules/complaints/repo\" exports 15 of its 17 symbols (88%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
@@ -2335,6 +2388,26 @@
     ]
   },
   {
+    "title": "High cyclomatic complexity: web/src/features/institutions.RelationshipGraph (29)",
+    "source": "complexity-outliers",
+    "description": "\"web/src/features/institutions.RelationshipGraph\" has a cyclomatic complexity of 29 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "web/src/features/institutions/Graph.tsx",
+        "symbol": "web/src/features/institutions.RelationshipGraph",
+        "detail": "cyclomatic complexity 29 at line 42",
+        "line": 42,
+        "fact_id": "b2cec62ab56ccf87b9bb6483f78c5049"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
     "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.CaseList (28)",
     "source": "complexity-outliers",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.CaseList\" has a cyclomatic complexity of 28 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
@@ -2406,26 +2479,6 @@
         "detail": "cyclomatic complexity 27 at line 150",
         "line": 150,
         "fact_id": "1b373b84f958728f73c2acb29352d218"
-      }
-    ],
-    "suggested_actions": [
-      "Extract guard clauses and nested branches into helper functions",
-      "Replace deep conditionals with table/strategy dispatch where possible",
-      "Add tests covering the distinct branches before refactoring"
-    ]
-  },
-  {
-    "title": "High cyclomatic complexity: web/src/features/institutions.RelationshipGraph (25)",
-    "source": "complexity-outliers",
-    "description": "\"web/src/features/institutions.RelationshipGraph\" has a cyclomatic complexity of 25 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": "web/src/features/institutions/Graph.tsx",
-        "symbol": "web/src/features/institutions.RelationshipGraph",
-        "detail": "cyclomatic complexity 25 at line 36",
-        "line": 36,
-        "fact_id": "b2cec62ab56ccf87b9bb6483f78c5049"
       }
     ],
     "suggested_actions": [
@@ -3717,9 +3770,9 @@
     ]
   },
   {
-    "title": "Additional dead-code candidates: 612 more (see find_orphans)",
+    "title": "Additional dead-code candidates: 624 more (see find_orphans)",
     "source": "dead-code",
-    "description": "33 further high/medium-confidence orphan(s) were omitted from individual insights and 579 low-confidence orphan(s) (methods/types/consts/vars — usage not edge-tracked) were not surfaced individually. Use the find_orphans tool (output_mode=full) for the complete list.",
+    "description": "38 further high/medium-confidence orphan(s) were omitted from individual insights and 586 low-confidence orphan(s) (methods/types/consts/vars — usage not edge-tracked) were not surfaced individually. Use the find_orphans tool (output_mode=full) for the complete list.",
     "confidence": 0.4,
     "evidence": null,
     "suggested_actions": [
@@ -3794,7 +3847,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.rank",
         "detail": "Calls app.modules.institutions.repo.candidates, app.modules.institutions.repo.by_acronym inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 44,
+        "line": 47,
         "fact_id": "a998f4bb12a702c5a833fd08f2f6d488"
       },
       {
@@ -3998,7 +4051,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.queue",
         "detail": "Calls backend/app/modules/institutions/service.rank inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 104,
+        "line": 107,
         "fact_id": "f6f97c50a9c3c16b456996e4beb87f87"
       },
       {
@@ -4022,7 +4075,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.resolve_pending",
         "detail": "Calls backend/app/modules/institutions/service.rank, app.modules.institutions.repo.set_resolution, app.audit.service.record inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 89,
+        "line": 92,
         "fact_id": "54faa7f6323ddc1a897d40bc8c23be5c"
       },
       {
@@ -4244,7 +4297,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.rank",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n³).",
-        "line": 44,
+        "line": 47,
         "fact_id": "a998f4bb12a702c5a833fd08f2f6d488"
       },
       {
@@ -4422,7 +4475,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.lookup",
         "detail": "Calls app.modules.institutions.repo.candidates, app.modules.institutions.repo.in_place, app.modules.institutions.repo.by_acronym inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 138,
+        "line": 141,
         "fact_id": "750264ef894caada215dfb5e8806d665"
       },
       {
@@ -4596,7 +4649,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.queue",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to O(n³+) — a deep structural estimate, verify before acting.",
-        "line": 104,
+        "line": 107,
         "fact_id": "f6f97c50a9c3c16b456996e4beb87f87"
       },
       {
@@ -4620,7 +4673,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.resolve_pending",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to O(n³+) — a deep structural estimate, verify before acting.",
-        "line": 89,
+        "line": 92,
         "fact_id": "54faa7f6323ddc1a897d40bc8c23be5c"
       },
       {
@@ -5052,7 +5105,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.rank",
         "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
-        "line": 44,
+        "line": 47,
         "fact_id": "a998f4bb12a702c5a833fd08f2f6d488"
       },
       {

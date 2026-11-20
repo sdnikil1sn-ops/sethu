@@ -1,15 +1,15 @@
 {
-  "snapshot_id": "sha256:d2ee54d79e0f7928e7cfdfba3b389d358520cffa3752c960e0362cf69eebf9ed",
+  "snapshot_id": "sha256:d493b81f7822f5594ce3c96b3406a9c7861faf34636e162d25b43dd6f1123935",
   "format_version": 1,
   "enola_version": "0.4.21",
   "extractor_version": "v270",
-  "generated_at": "2026-11-20T09:26:40Z",
-  "duration": "2.6642105s",
+  "generated_at": "2026-11-20T10:00:20Z",
+  "duration": "6.2817974s",
   "repo_path": "E:\\App\\Project\\SETHU",
   "git": {
     "ref": "main",
-    "commit": "8869779ae3c2c15f590b31a21b3bccae8fcb5346",
-    "dirty": false,
+    "commit": "ab3a47096780a85ec178c665d975d48505767890",
+    "dirty": true,
     "remote": "github.com/sdnikil1sn-ops/sethu"
   },
   "extractors": [
@@ -48,15 +48,15 @@
   "config_hash": "sha256:73d78ea79f51e19979d4c7d00bd9463ae684ebcb909116abad86675323c32c05",
   "ignore_glob_hash": "sha256:7523cc6397a498e151125a682d28fbf6df20c6f51f6dfaf18fd8f5239a20d2d8",
   "output_hashes": {
-    "facts.jsonl": "sha256:8d3ae510d091138dfe4649bb9a7b5f40f2bff6aa9bfed8998fdcfe319ba2aa6d",
-    "insights.json": "sha256:32a5de712e94daf9e8143bc39be10f7185081b642ea3706010290a91c8d10f46",
-    "llm_context.md": "sha256:18598325e28b8b38214997f382a8bb605b3c46d96fa1b3ed3c652f17fefcc33c"
+    "facts.jsonl": "sha256:a13b38ca9517e68fc0b1e223ac7a83a60854fe96e0a763691230f5abe6c6d99c",
+    "insights.json": "sha256:ae0df80a4015d9ee742f4a7ce5767007f9b5d000ffdbbdcc51b9e1b6012ebf15",
+    "llm_context.md": "sha256:de43f2f7beb98fceca5bc6b596428c5d5dd07332567258df64ffc8b93041019b"
   },
-  "fact_count": 2332,
-  "insight_count": 161,
+  "fact_count": 2359,
+  "insight_count": 162,
   "quality": {
-    "files_seen": 646,
-    "files_parsed": 199,
+    "files_seen": 663,
+    "files_parsed": 200,
     "files_skipped": 33,
     "dirs_skipped": 5,
     "skipped_sample": [
@@ -82,19 +82,19 @@
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_seed.py (glob: **/test_*.py)"
     ],
     "parse_errors": 0,
-    "heuristic_insights": 159,
+    "heuristic_insights": 160,
     "coverage": {
       "services_total": 0,
       "coverage_gaps": 0,
       "unresolved_edges": 0,
       "extractors_reporting": 1,
-      "extraction_unresolved": 129
+      "extraction_unresolved": 128
     },
     "census": {
-      "files_walked": 679,
-      "parsed": 199,
+      "files_walked": 696,
+      "parsed": 200,
       "excluded_by_ignore": 33,
-      "excluded_by_kind": 409,
+      "excluded_by_kind": 425,
       "excluded_kinds": {
         "(no extension)": 9,
         ".conf": 4,
@@ -108,7 +108,7 @@
         ".graphify_root": 2,
         ".graphify_version": 2,
         ".ini": 2,
-        ".json": 352,
+        ".json": 368,
         ".nudges": 1,
         ".sh": 4,
         ".sig": 2,

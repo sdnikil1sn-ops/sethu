@@ -5,7 +5,7 @@
 | Module | Language | Symbols | Exported |
 |--------|----------|---------|----------|
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic` | python | 2 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions` | python | 10 | 10 |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions` | python | 12 | 12 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app` | python | 6 | 6 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/api` | python | 3 | 3 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/audit` | python | 3 | 3 |
@@ -16,7 +16,7 @@
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view` | python | 10 | 10 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` | python | 48 | 41 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard` | python | 14 | 13 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` | python | 33 | 29 |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` | python | 35 | 31 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions` | python | 46 | 43 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` | python | 30 | 24 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports` | python | 13 | 9 |
@@ -67,7 +67,7 @@
 
 ## Extraction Quality
 
-- Files parsed: **200** / 663 seen (33 file(s) + 5 directory tree(s) skipped by ignore globs)
+- Files parsed: **201** / 676 seen (33 file(s) + 5 directory tree(s) skipped by ignore globs)
 - Parse errors: 0
 
 ## Architecture Pattern
@@ -153,8 +153,8 @@ _No specific architecture pattern detected._
 | `backend/app/audit` | 18 | 0 | high |
 | `backend/app/core` | 15 | 0 | high |
 | `backend/app/modules/complaints` | 10 | 4 | high |
+| `backend/alembic` | 12 | 1 | high |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | 0 | 12 | high |
-| `backend/alembic` | 11 | 1 | high |
 | `backend/app/modules` | 0 | 12 | high |
 | `backend/app/modules/findings` | 6 | 4 | high |
 | `backend/app/modules/overlaps` | 6 | 4 | high |
@@ -166,4 +166,4 @@ _No specific architecture pattern detected._
 
 ---
 
-*Generated at 2026-11-20T09:50:45Z in 7.8686514s. 2359 facts, 162 insights.*
+*Generated at 2026-11-20T10:43:53Z in 8.168615s. 2363 facts, 162 insights.*
