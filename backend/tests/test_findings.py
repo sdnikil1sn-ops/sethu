@@ -195,9 +195,10 @@ def test_dismiss_reopen_and_resolve_are_audited_and_limited(detected):
 def test_trend_indicator_and_dashboard_count(detected):
     with session_for(detected["rao"], detected["engine"]) as s:
         trend = service.trend(s)
-    top = trend["items"][0]
-    assert trend["days"] == 30 and top["institution"] == "Greenfield Institute of Technology"
-    assert (top["recent"], top["previous"], top["bureaus"]) == (3, 0, ["PGRC", "RB"])
+    first, second = trend["items"][:2]  # a tie at 3 new, 0 before, broken by name
+    assert trend["days"] == 30 and second["institution"] == "Greenfield Institute of Technology"
+    assert (second["recent"], second["previous"], second["bureaus"]) == (3, 0, ["PGRC", "RB"])
+    assert (first["recent"], first["previous"], first["bureaus"]) == (3, 0, ["NRB", "PGRC", "RB"])
     assert all(r["recent"] > r["previous"] and len(r["bureaus"]) >= 2 for r in trend["items"])
 
     client = TestClient(app)

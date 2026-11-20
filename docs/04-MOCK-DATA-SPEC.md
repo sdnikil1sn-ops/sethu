@@ -3,10 +3,10 @@
 Rule: every record is synthetic. Do not paste real complaints, names, emails or phone numbers anywhere in the repo.
 
 ## Volume
-- 40 institutions across 6 states (fictional names, plausible cities)
-- 300 complaints over the last 180 days
-- 2 bureaus (PGRC, RB), with 3 desks inside RB
-- 12 officers, 3 bureau heads, 1 oversight, 1 admin, 1 auditor
+- 43 institutions across 6 states (fictional names, plausible cities)
+- 310 complaints over the last 180 days
+- 4 bureaus (PGRC, RB, NRB, AB), with 3 desks inside RB; bureaus are data (`seed/bureaus.csv`)
+- 16 officers, 5 bureau heads, 1 oversight, 1 admin, 1 auditor
 
 ## Fixed demo records (do not randomise)
 Greenfield Institute of Technology, Pune, Maharashtra. Aliases: "Greenfield Inst. of Tech., Pune", "GIT Pune", "Greenfield Institute of Tech".
@@ -15,8 +15,8 @@ Cases C-101, C-102, C-103 exactly as in `03-DEMO-STORY.md`.
 ## Deliberate patterns to seed
 | Pattern | Count | Purpose |
 |---|---|---|
-| Same institution, two bureaus, same category (Tier 2 overlap) | 6 pairs (one is the demo pair) | Overlap detection |
-| Same institution, two bureaus, different category (Tier 1 only) | 10 pairs | Shows Tier 1 without a false Tier 2 |
+| Same institution, two bureaus, same category (Tier 2 overlap) | 7 pairs (one is the demo pair, one is RB and NRB) | Overlap detection |
+| Same institution, two or three bureaus, different category (Tier 1 only) | 12 pairs (one institution has three bureaus) | Shows Tier 1 without a false Tier 2 |
 | Exact duplicate text | 5 pairs | Duplicate detection |
 | Institution name variants (abbreviations, typos, missing city) | 40 | Resolution cascade |
 | Transfer loop (PGRC to RB to PGRC, no acknowledgement) | 1 (C-090) | Deadlock |
@@ -31,6 +31,7 @@ Cases C-101, C-102, C-103 exactly as in `03-DEMO-STORY.md`.
 - Same category at different institutions
 
 ## Files to generate
+- `seed/bureaus.csv`
 - `seed/institutions.csv`
 - `seed/complaints.csv`
 - `seed/actions.csv` (assignments, transfers, replies)
@@ -38,7 +39,7 @@ Cases C-101, C-102, C-103 exactly as in `03-DEMO-STORY.md`.
 - `seed/README.md` describing each seeded pattern and the expected detection result
 
 ## Expected detections (used by tests)
-- Overlap alerts: 6 Tier 2 pairs
+- Overlap alerts: 7 Tier 2 pairs
 - Duplicates: 5
 - Deadlock: 1 (C-090)
 - Silent cases: 8

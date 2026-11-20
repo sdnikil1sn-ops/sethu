@@ -55,13 +55,13 @@ def test_institution_search_by_city_state_initials_typo_and_permanent_id(get, wo
 
 def test_institution_list_filters(get):
     everything = get("rao", "/institutions", limit=200)
-    assert len(everything) == 40
+    assert len(everything) == 43
     gujarat = get("rao", "/institutions", state="Gujarat", limit=200)
     assert 0 < len(gujarat) < 40 and {i["state"] for i in gujarat} == {"Gujarat"}
     # search and state together: Tamil Nadu institutions only, then none of them in Gujarat
     assert get("rao", "/institutions", q="Tamil Nadu", state="Gujarat") == []
     for blank in ("", "   "):  # a blank search or state is no filter
-        assert len(get("rao", "/institutions", q=blank, state=blank, limit=200)) == 40
+        assert len(get("rao", "/institutions", q=blank, state=blank, limit=200)) == 43
 
 
 # --- Cases ----------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ def test_two_case_filters_together(get):
     rb, overdue = total(bureau="RB"), total(overdue="true")
     both = total(bureau="RB", overdue="true")
     assert both <= min(rb, overdue) and both == total(bureau="RB", overdue="true", q="")
-    assert total(bureau="RB") + total(bureau="PGRC") == total()
+    assert sum(total(bureau=b) for b in ("PGRC", "RB", "NRB", "AB")) == total()
     assert total(state="Uttar Pradesh", category="Fee refund") < total(state="Uttar Pradesh")
     ranged = total(filed_from="2000-01-01", filed_to="2999-12-31")
     assert ranged == total() and total(filed_from="2999-01-01", filed_to="2999-12-31") == 0
@@ -108,16 +108,19 @@ def test_overlap_filters(get, world):
     with session_for(SYSTEM, world["engine"]) as s:
         overlaps.detect(s, SYSTEM)
     everything = get("menon", "/overlaps")
-    assert len(everything) == 6
+    assert len(everything) == 7
     assert get("menon", "/overlaps", status="approved") == []
-    assert len(get("menon", "/overlaps", status="proposed")) == 6
-    assert len(get("menon", "/overlaps", tier=2)) == 6 and get("menon", "/overlaps", tier=1) == []
-    # The seed has two bureaus, so every link is PGRC and RB: bureau can only be shown to narrow to none.
+    assert len(get("menon", "/overlaps", status="proposed")) == 7
+    assert len(get("menon", "/overlaps", tier=2)) == 7 and get("menon", "/overlaps", tier=1) == []
+    # Six links are PGRC and RB, one is RB and NRB: the bureau filter narrows both ways.
     assert len(get("menon", "/overlaps", bureau="pgrc")) == 6 and get("menon", "/overlaps", bureau="NOPE") == []
+    nrb = get("menon", "/overlaps", bureau="NRB")
+    assert len(nrb) == 1 and {c["bureau"] for c in nrb[0]["cases"]} == {"RB", "NRB"}
+    assert get("menon", "/overlaps", bureau="AB") == []
     assert get("menon", "/overlaps", bureau="RB", status="rejected") == []
-    assert len(get("menon", "/overlaps", bureau="RB", status="proposed", tier=2)) == 6
+    assert len(get("menon", "/overlaps", bureau="RB", status="proposed", tier=2)) == 7
     for blank in ("", " "):
-        assert len(get("menon", "/overlaps", status=blank, bureau=blank, tier=blank)) == 6
+        assert len(get("menon", "/overlaps", status=blank, bureau=blank, tier=blank)) == 7
 
 
 def test_alert_status_filter(get, world):

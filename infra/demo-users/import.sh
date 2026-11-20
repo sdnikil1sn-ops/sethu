@@ -4,6 +4,12 @@
 # Safe to run again: existing demo users are overwritten, other users are untouched.
 set -euo pipefail
 
+# Demo logins share one password: they must never exist in production.
+if [ "${SETHU_ENVIRONMENT:-dev}" = "prod" ]; then
+  echo "refusing: SETHU_ENVIRONMENT is prod; demo users are for dev and demo stacks only" >&2
+  exit 1
+fi
+
 : "${DEMO_USER_PASSWORD:?add DEMO_USER_PASSWORD to .env (see .env.example)}"
 : "${KEYCLOAK_ADMIN_USER:?}" "${KEYCLOAK_ADMIN_PASSWORD:?}"
 

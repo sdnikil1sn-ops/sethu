@@ -46,11 +46,11 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [x] Export is logged in the audit log
 
 ## Cross-cutting
-- [x] Login with roles: Officer, Bureau Head, Admin, Auditor (read-only)
+- [x] Login with roles: Officer, Bureau Head, Admin, Auditor (read-only) (dev demo logins for all five roles, checked in a browser; production realm has no users, see `docs/PRODUCTION-READINESS.md`)
 - [x] Audit log with hash chain; a "Verify chain" button returns OK
 - [x] Tamper test: change one row directly in the database, "Verify chain" fails and names the row
 - [x] One command starts everything: `docker compose up` (`--profile dev` adds Mailpit and the demo logins)
-- [ ] Runs with Wi-Fi off
+- [ ] Runs with Wi-Fi off (evidence only: app and data networks are internal, the browser made no outside request, and code changes rebuild without downloads; a run with Wi-Fi actually off is still to do)
 
 ## Flagship features (Tier B)
 - [ ] Graph: institution view shows bureaus and complaints as nodes, overlaps as highlighted edges
