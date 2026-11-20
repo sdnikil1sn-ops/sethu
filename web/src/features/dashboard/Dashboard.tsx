@@ -148,7 +148,7 @@ export function Dashboard() {
           <a href="#/findings">
             {a.findings_open} open finding{a.findings_open === 1 ? "" : "s"}
           </a>{" "}
-          <small>(transfer loops, stalled transfers, bottlenecks)</small>
+          <small>(transfer loops, stalled transfers, bottlenecks, early warnings)</small>
         </li>
         <li>
           <a href={cases("overdue", "true")}>{a.overdue_total} overdue case{a.overdue_total === 1 ? "" : "s"}</a>

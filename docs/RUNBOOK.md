@@ -73,7 +73,7 @@ The production start (section 7) does not use the `dev` profile, so these users 
 
 Keycloak imports `infra/keycloak/sethu-realm.json` only when the `sethu` realm does not exist yet, so editing the file changes nothing on a stack that has already started.
 
-Demo users only (new password in `.env`, or a user was changed or deleted). Safe to repeat; other users and all SETHU data are untouched:
+Demo users only (new password in `.env`, or a user was changed or deleted). It also sets the web client's sign-out return address (`post.logout.redirect.uris` = `+`, the same addresses as sign-in), which an existing realm may lack. Safe to repeat; other users and all SETHU data are untouched:
 
 ```powershell
 docker compose --profile dev run --rm demo-users
@@ -104,14 +104,14 @@ Exports hold counts and reference data only. Officers and bureau heads get their
 
 ### Findings (deadlocks and bottlenecks)
 
-The worker checks transfers and queues every 5 minutes; an admin can also press **Check now** on the Findings screen. On the seeded data C-090 shows as "Bottleneck detected: transfer loop", with an alert waiting on the Alerts screen for a bureau head or oversight. Thresholds are environment variables read by the backend and worker: `SETHU_STALLED_TRANSFER_DAYS` (7), `SETHU_BOTTLENECK_MIN_OPEN` (3), `SETHU_BOTTLENECK_SHARE` (0.6). On freshly loaded seed data there are 4 bottleneck findings; the count grows as the seeded cases age, so reseed before a rehearsal. Changing one does not rewrite existing findings; the next run resolves those that no longer hold and adds new ones.
+The worker checks transfers and queues every 5 minutes; an admin can also press **Check now** on the Findings screen. On the seeded data there is also one "Early warning: category spike" (Uttar Pradesh, Fee refund: 10 complaints in 30 days against a baseline of 2.67), which makes no alert. C-090 shows as "Bottleneck detected: transfer loop", with an alert waiting on the Alerts screen for a bureau head or oversight. Thresholds are environment variables read by the backend and worker: `SETHU_STALLED_TRANSFER_DAYS` (7), `SETHU_BOTTLENECK_MIN_OPEN` (3), `SETHU_BOTTLENECK_SHARE` (0.6), `SETHU_SPIKE_MIN_COUNT` (5), `SETHU_SPIKE_RATIO` (3.0). On freshly loaded seed data there are 4 bottleneck findings; the count grows as the seeded cases age, so reseed before a rehearsal. Changing one does not rewrite existing findings; the next run resolves those that no longer hold and adds new ones.
 
 ### Manual check of the screens (no browser tests)
 
 The backend tests cover what each filter sends and returns. Before a demo, sign in as `rao` (PGRC officer) and check by eye:
 
-1. Institutions: search `madurai`, `GIT`, `Greenfeild`, `Tamil Nadu`; each finds the same institutions as the top-bar search, with Cases, Open and Matched on. Clear the box: all 40 return.
-2. Cases: set each filter in turn (unit, category, status, institution, state, dates, overdue, overlaps, text); the count drops and the address changes. Copy the address into a new tab: the same view opens. Press **Clear filters**, or follow the Cases link: the full list returns.
+1. Institutions: search `madurai`, `GIT`, `Greenfeild`, `Tamil Nadu`; each finds the same institutions as the top-bar search, with Cases, Open and Matched on. Clear the box: all 43 return.
+2. Cases: set each filter in turn (unit, category, status, institution, state, dates, overdue, overlaps, text); the count drops and the address changes. Copy the address into a new tab: the same view opens. Press **Clear filters**, or follow the Cases link: the full list (310) returns.
 3. Overlaps: Show and Bureau change the list; the Same institution table follows the bureau.
 4. Alerts: each status shows only that status; All restores.
 5. Audit log (sign in as `das`): action, actor, target type, target id, from, to, then **Clear**.
@@ -196,12 +196,73 @@ docker compose exec postgres psql -U sethu_owner -d sethu -c "ALTER TABLE sethu.
 
 Each `psql -c` runs its three statements in one transaction, so the trigger is never left off. Removing the key restores the payload exactly, so entry 5 matches its hash again; the two `audit.verify` entries the demonstration added stay in the log. If you changed anything else, reseed instead (section 5, then section 3). `backend/tests/test_audit_view.py` runs these exact statements.
 
-## 7. Production differences
+## 7. Production
+
+Production is the base file plus `docker-compose.prod.yml`. Never add `--profile dev` (it would change nothing: Mailpit and the demo-user import are switched off there, and both refuse production anyway). What is still missing before real complaints is in `docs/PRODUCTION-READINESS.md`.
+
+### Start
+
+1. Certificates from the AICTE/NIC CA in `infra/certs/server.crt` and `infra/certs/server.key` (git-ignored).
+2. `python scripts/init_env.py`, then in `.env`: `SETHU_ENVIRONMENT=prod`, `PUBLIC_BASE_URL=https://<host>`, `SMTP_HOST`, `SMTP_PORT`, `ALERT_FROM`, and delete `DEMO_USER_PASSWORD`.
+3. Start:
 
 ```powershell
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.prod.yml ps   # every service healthy; migrate exited 0
 ```
 
-Before giving a production user a `bureau_id`, set Realm settings > General > Unmanaged attributes to "Only administrators can write" in the Keycloak console; otherwise Keycloak discards the attribute and the user cannot log in. (The demo import does this for dev.)
+If `backend` or `worker` keeps restarting, read why: `docker compose -f docker-compose.yml -f docker-compose.prod.yml logs backend`. In production they refuse to start, naming each variable (never its value), when:
 
-Needs certificates in `infra/certs/`, `PUBLIC_BASE_URL=https://...`, a real SMTP relay, secrets from Docker secrets or Vault, images pinned by digest, and backups scheduled. The production override has not been exercised.
+- `SETHU_DEBUG` is on;
+- the password in the database or Redis URL is missing, shorter than 16 characters, or contains a placeholder or dev word (`CHANGE_ME`, `seedtest`, `password`, `postgres`, `secret`, `admin`, `sethu`, `demo`);
+- the Keycloak issuer (`PUBLIC_BASE_URL`) is not `https`;
+- `SMTP_HOST` is Mailpit, localhost or empty;
+- `ALERT_FROM` is a `.test` address.
+
+Compose itself stops before starting anything if `PUBLIC_BASE_URL`, `SMTP_HOST`, `SMTP_PORT` or `ALERT_FROM` is unset. The seed loader (`seed/load.py`) and the demo-user import refuse to run when `SETHU_ENVIRONMENT=prod`.
+
+### Published ports
+
+| Port | Bound to | What |
+|---|---|---|
+| 443 | all interfaces | the web app, `/api`, and the sign-in pages of the `sethu` realm |
+| 9443 | 127.0.0.1 on the host | Keycloak administration (admin console and `master` realm) |
+
+Nothing else is published: PostgreSQL, Redis, Keycloak, the backend and the worker are on internal networks. The public port refuses `/auth/admin/` and `/auth/realms/master/`.
+
+### Keycloak administration (SSH tunnel)
+
+From an administrator's machine:
+
+```powershell
+ssh -L 9443:127.0.0.1:9443 <admin-user>@<host>
+```
+
+then open https://localhost:9443/auth/admin/ and sign in with `KEYCLOAK_ADMIN_USER` / `KEYCLOAK_ADMIN_PASSWORD`. The browser warns that the certificate is for the public host name; that is expected on the tunnel. Create a named administrator account for each person and disable the bootstrap one (PRODUCTION-READINESS row 20).
+
+### The production realm
+
+Keycloak imports `infra/keycloak-prod/sethu-realm.json` (not the dev realm) the first time it starts. It has no users. It sets: exact redirect and post-logout URIs from `PUBLIC_BASE_URL`; the `bureau_id` attribute (administrators may edit it, users may not) and its token mapper; brute-force detection (5 failures, waits up to 15 minutes); a password policy (12+ characters with upper, lower, digit and special character, not the username or e-mail, not one of the last 5); TLS for every request; access tokens of 5 minutes, sessions idle out after 30 minutes and end after 10 hours, single-use refresh tokens.
+
+To add a person: in the admin console, realm `sethu` > Users > Add user (username, e-mail, first and last name), set a temporary password under Credentials, assign one realm role (`officer`, `bureau_head`, `oversight`, `admin` or `auditor`), and for `officer` and `bureau_head` add the attribute `bureau_id` = the bureau's id (`SELECT id, code FROM sethu.bureaus`). SETHU registers the person in `sethu.app_users` on their first action (audited as `user.registered`), without an e-mail address: until PRODUCTION-READINESS row 47 is fixed, set `email` on a bureau head's row by hand, or that bureau's alerts have no recipient. Bureaus themselves can only be created with SQL today (row 46).
+
+Like the dev realm, the file is read only when the realm does not exist yet; a change to it reaches a running system only through the console or a full re-import (section 3).
+
+### Configuration reference
+
+| Variable | Used by | Dev | Production |
+|---|---|---|---|
+| `SETHU_ENVIRONMENT` | backend, worker, demo-user import, seed loader | `dev` | `prod` |
+| `PUBLIC_BASE_URL` | Keycloak hostname and realm URIs, the backend's token issuer | `http://localhost:8080` | `https://<host>`, required |
+| `POSTGRES_SUPERUSER_PASSWORD` | PostgreSQL bootstrap | random | random |
+| `SETHU_OWNER_PASSWORD` | migrations (`sethu_owner`) | random | random |
+| `SETHU_APP_PASSWORD` | backend and worker (`sethu_app`) | random | random, 16+, checked |
+| `SETHU_AUDITOR_PASSWORD` | direct read access for auditors | random | random |
+| `KEYCLOAK_DB_PASSWORD` | Keycloak's database | random | random |
+| `REDIS_PASSWORD` | Redis, backend and worker | random | random, 16+, checked |
+| `KEYCLOAK_ADMIN_USER`, `KEYCLOAK_ADMIN_PASSWORD` | Keycloak bootstrap administrator | `sethu-admin`, random | change the name; disable after creating named admins |
+| `DEMO_USER_PASSWORD` | demo-user import | set | not set (the import refuses production) |
+| `SMTP_HOST`, `SMTP_PORT` | alert delivery | `mailpit`, `1025` | the relay, required; Mailpit refused |
+| `ALERT_FROM` | sender of alert mail | not used (default `sethu-alerts@sethu.test`) | required; not a `.test` address |
+| `SETHU_DEBUG` | FastAPI debug pages | `false` | must be `false` |
+| `SETHU_STALLED_TRANSFER_DAYS`, `SETHU_BOTTLENECK_MIN_OPEN`, `SETHU_BOTTLENECK_SHARE`, `SETHU_SPIKE_MIN_COUNT`, `SETHU_SPIKE_RATIO` | findings detector | 7, 3, 0.6, 5, 3.0 | same unless tuned |

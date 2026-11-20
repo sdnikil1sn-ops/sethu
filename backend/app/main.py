@@ -27,6 +27,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SETHU API",
         version="0.1.0",
+        debug=settings.debug,  # dev only: Settings refuses SETHU_DEBUG in production
         docs_url="/api/docs" if interactive_docs else None,
         redoc_url=None,
         openapi_url="/api/openapi.json" if interactive_docs else None,

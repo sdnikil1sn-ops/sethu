@@ -80,8 +80,8 @@ def test_overlap_outcomes(world):
     with session_for(world["rao"], world["engine"]) as s:
         overlaps.decide(s, world["rao"], link, approve=True)
     every = report(world, "menon", "overlaps")["rows"]
-    assert sum(r["suggested"] for r in every) == 6 and sum(r["approved"] for r in every) == 1
-    assert sum(r["pending"] for r in every) == 5 and sum(r["alerts_sent"] for r in every) == 0
+    assert sum(r["suggested"] for r in every) == 7 and sum(r["approved"] for r in every) == 1
+    assert sum(r["pending"] for r in every) == 6 and sum(r["alerts_sent"] for r in every) == 0
     assert all("PGRC" in r["bureaus"] for r in report(world, "rao", "overlaps")["rows"])
 
 

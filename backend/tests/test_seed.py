@@ -22,7 +22,7 @@ from app.audit.service import verify  # noqa: E402
 from app.db.session import SYSTEM, session_for  # noqa: E402
 from tests.conftest import requires_db  # noqa: E402
 
-INSTITUTIONS, USERS, COMPLAINTS, ACTIONS = (load.rows(name) for name in generate.FILES)
+BUREAUS, INSTITUTIONS, USERS, COMPLAINTS, ACTIONS = (load.rows(name) for name in generate.FILES)
 STATE = {i["permanent_id"]: i["state"] for i in INSTITUTIONS}
 NAME = {i["permanent_id"]: i["name"] for i in INSTITUTIONS}
 HISTORY = defaultdict(list)
@@ -40,7 +40,8 @@ def tagged_pairs(prefix: str) -> set[frozenset]:
         for t in c["seed_tags"].split(";"):
             if t.startswith(prefix):
                 groups[t].add(c["ref"])
-    return {frozenset(g) for g in groups.values()}
+    # A group of three (one institution, three bureaus) is three pairs.
+    return {frozenset(p) for g in groups.values() for p in combinations(sorted(g), 2)}
 
 
 def cross_bureau_pairs(same_category: bool) -> set[frozenset]:
@@ -97,12 +98,13 @@ def test_files_are_what_the_generator_produces():
 
 
 def test_volume():
-    assert len(INSTITUTIONS) == 40 and len(set(STATE.values())) == 6
-    assert len(COMPLAINTS) == 300 == len({c["ref"] for c in COMPLAINTS})
+    assert len(INSTITUTIONS) == 43 and len(set(STATE.values())) == 6
+    assert len(COMPLAINTS) == 310 == len({c["ref"] for c in COMPLAINTS})
     assert all(1 <= int(c["filed_days_ago"]) <= 180 for c in COMPLAINTS)
-    assert {c["bureau"] for c in COMPLAINTS} == {"PGRC", "RB"}
+    assert {c["bureau"] for c in COMPLAINTS} == {b["code"] for b in BUREAUS} == {"PGRC", "RB", "NRB", "AB"}
     assert Counter(u["role"] for u in USERS) == {
-        "officer": 12, "bureau_head": 3, "oversight": 1, "admin": 1, "auditor": 1}
+        "officer": 16, "bureau_head": 5, "oversight": 1, "admin": 1, "auditor": 1}
+    assert all(any(u["role"] == "bureau_head" and u["bureau"] == b["code"] for u in USERS) for b in BUREAUS)
     assert len({u["desk"] for u in USERS if u["desk"]}) == 3
     assert all(u["email"].endswith("@sethu.test") for u in USERS)
     assert all(HISTORY[c["ref"]][0]["action"] == "filed" for c in COMPLAINTS)
@@ -139,7 +141,7 @@ def test_demo_records():
 
 def test_expected_detections():
     tier2 = cross_bureau_pairs(same_category=True)
-    assert len(tier2) == 6 and tier2 == tagged_pairs("tier2:")
+    assert len(tier2) == 7 and tier2 == tagged_pairs("tier2:")  # tier2:7 is RB and NRB
     assert frozenset(("C-101", "C-102")) in tier2
 
     duplicates = duplicate_pairs()
@@ -152,7 +154,7 @@ def test_expected_detections():
 
 def test_other_seeded_patterns():
     tier1_only = cross_bureau_pairs(same_category=False)
-    assert len(tier1_only) == 10 and tier1_only == tagged_pairs("tier1:")
+    assert len(tier1_only) == 12 and tier1_only == tagged_pairs("tier1:")  # tier1:1 spans PGRC, RB and NRB
     assert len(not_closed(21)) == 25 and not_closed(21) == tagged("overdue")
     variants = {c["ref"] for c in COMPLAINTS if c["institution_name_raw"] != NAME[c["institution_pid"]]}
     assert len(variants) == 40 and variants == tagged("variant")
@@ -162,7 +164,7 @@ def test_other_seeded_patterns():
 
 def test_negative_cases_raise_nothing():
     negatives = tagged("neg-") | tagged("transfer-ack")
-    assert len(tagged("neg-")) == 6 and len(tagged("transfer-ack")) == 7
+    assert len(tagged("neg-")) == 6 and len(tagged("transfer-ack")) == 8  # + the NRB to AB handover
     flagged = set().union(*cross_bureau_pairs(True), *cross_bureau_pairs(False), *duplicate_pairs(),
                           deadlocks(), silent())
     assert not negatives & flagged
@@ -181,14 +183,14 @@ def test_negative_cases_raise_nothing():
 @requires_db
 def test_loader_writes_actions_and_audit(app_engine):
     counts = load.load(app_engine)
-    assert counts["complaints"] == 300 and counts["case_actions"] == len(ACTIONS)
+    assert counts["complaints"] == 310 and counts["case_actions"] == len(ACTIONS) and counts["bureaus"] == 4
 
     with session_for(SYSTEM, app_engine) as s:
         def scalar(sql):
             return s.execute(text(sql)).scalar_one()
 
         assert scalar("SELECT count(*) FROM sethu.case_actions") == len(ACTIONS)
-        assert scalar("SELECT count(*) FROM sethu.audit_log WHERE action = 'complaint.created'") == 300
+        assert scalar("SELECT count(*) FROM sethu.audit_log WHERE action = 'complaint.created'") == 310
         assert scalar("SELECT count(*) FROM sethu.audit_log WHERE action LIKE 'case.%'") == len(ACTIONS)
         assert scalar("SELECT count(*) FROM sethu.audit_log WHERE payload::text LIKE '%sanctioned%'") == 0
         chain = verify(s)
@@ -199,7 +201,7 @@ def test_loader_writes_actions_and_audit(app_engine):
                       " HAVING count(*) > 1) d") == 5
         assert scalar("SELECT count(*) FROM sethu.complaints a JOIN sethu.complaints b"
                       " ON a.institution_id = b.institution_id AND a.category = b.category"
-                      " AND a.bureau_id <> b.bureau_id AND a.id < b.id") == 6
+                      " AND a.bureau_id <> b.bureau_id AND a.id < b.id") == 7
         assert scalar("SELECT count(*) FROM sethu.complaints WHERE status <> 'closed' AND due_at < now()") == 25
         assert scalar("SELECT count(*) FROM sethu.complaints c WHERE status <> 'closed' AND NOT EXISTS"
                       " (SELECT 1 FROM sethu.case_actions a WHERE a.complaint_id = c.id"

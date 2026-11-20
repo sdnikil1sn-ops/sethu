@@ -9,13 +9,14 @@ from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
 from app.core.auth import get_principal
+from app.core.config import get_settings
 from app.db.session import SYSTEM, session_for
 from app.main import app
 from app.modules.alerts import service as alerts
 from app.modules.complaints import service as complaints
 from app.modules.findings import service
 from tests.conftest import requires_db
-from tests.test_seed import COMPLAINTS
+from tests.test_seed import COMPLAINTS, INSTITUTIONS
 
 NOW = datetime(2026, 11, 1, tzinfo=UTC)
 A, B, C = uuid4(), uuid4(), uuid4()
@@ -71,7 +72,7 @@ def test_seed_gives_few_bottlenecks_listed_after_transfer_findings(detected):
     by_institution = [f for f in bottlenecks if f["evidence"]["scope"] == "institution"]
     assert by_institution and all(f["evidence"]["measure"] == "overdue_share" for f in by_institution)
     assert all(f["evidence"]["share"] > 0.6 for f in bottlenecks)
-    order = ["transfer_loop", "stalled_transfer", "bottleneck"]
+    order = ["transfer_loop", "stalled_transfer", "bottleneck", "category_spike"]
     assert [order.index(f["kind"]) for f in found] == sorted(order.index(f["kind"]) for f in found)
     shares = [(f["evidence"]["share"], f["evidence"]["open"]) for f in bottlenecks]
     assert shares == sorted(shares, reverse=True)  # worst first
@@ -194,9 +195,10 @@ def test_dismiss_reopen_and_resolve_are_audited_and_limited(detected):
 def test_trend_indicator_and_dashboard_count(detected):
     with session_for(detected["rao"], detected["engine"]) as s:
         trend = service.trend(s)
-    top = trend["items"][0]
-    assert trend["days"] == 30 and top["institution"] == "Greenfield Institute of Technology"
-    assert (top["recent"], top["previous"], top["bureaus"]) == (3, 0, ["PGRC", "RB"])
+    first, second = trend["items"][:2]  # a tie at 3 new, 0 before, broken by name
+    assert trend["days"] == 30 and second["institution"] == "Greenfield Institute of Technology"
+    assert (second["recent"], second["previous"], second["bureaus"]) == (3, 0, ["PGRC", "RB"])
+    assert (first["recent"], first["previous"], first["bureaus"]) == (3, 0, ["NRB", "PGRC", "RB"])
     assert all(r["recent"] > r["previous"] and len(r["bureaus"]) >= 2 for r in trend["items"])
 
     client = TestClient(app)
@@ -207,3 +209,106 @@ def test_trend_indicator_and_dashboard_count(detected):
             assert shown == len(findings_as(detected, who, status="open")) > 0
     finally:
         app.dependency_overrides.clear()
+
+
+# --- Early warning: regional category spike ------------------------------------------------------
+
+DAY = "2026-11-01"
+
+
+def cell(recent, previous, state="Kerala", category="Fee refund"):
+    return {"state": state, "category": category, "recent": recent, "previous": previous, "bureau_ids": [A]}
+
+
+def test_spike_rule_minimum_ratio_and_its_numbers():
+    found = service.spike_findings([cell(10, 8)], 5, 3.0, DAY)  # baseline 8 * 30/90 = 2.67; 10 is 3.75 times it
+    assert [f["key"] for f in found] == ["category_spike:Kerala:Fee refund"]
+    assert found[0]["evidence"] == {"state": "Kerala", "category": "Fee refund", "recent": 10, "previous": 8,
+                                    "baseline": 2.67, "ratio": 3.75, "recent_days": 30, "baseline_days": 90,
+                                    "min_count": 5, "ratio_threshold": 3.0, "as_of": DAY}
+    assert service.spike_findings([cell(4, 1)], 5, 3.0, DAY) == []   # 12 times its past, but only 4: below the minimum
+    assert service.spike_findings([cell(8, 9)], 5, 3.0, DAY) == []   # 8 against a baseline of 3: 2.67 times, not 3
+    new = service.spike_findings([cell(5, 0)], 5, 3.0, DAY)          # nothing before: the minimum alone decides
+    assert new[0]["evidence"]["ratio"] is None and new[0]["evidence"]["baseline"] == 0
+
+
+@requires_db
+def test_seeded_spike_is_found_once_with_its_counts_and_no_alert(detected):
+    spikes = findings_as(detected, "menon", kind="category_spike")
+    assert [(f["evidence"]["state"], f["evidence"]["category"]) for f in spikes] == [("Uttar Pradesh", "Fee refund")]
+    e = spikes[0]["evidence"]
+    assert (e["recent"], e["previous"], e["baseline"], e["ratio"]) == (10, 8, 2.67, 3.75)
+    assert spikes[0]["alert_id"] is None and spikes[0]["complaint_id"] is None and spikes[0]["institution_id"] is None
+    # Maharashtra / Infrastructure: 4 in 30 days against 1 before, 12 times its past, but under the minimum of 5.
+    assert all(f["evidence"]["state"] != "Maharashtra" for f in spikes)
+
+    with session_for(SYSTEM, detected["engine"]) as s:
+        assert service.detect(s, SYSTEM)["created"] == 0
+        rows = s.execute(text("SELECT count(*) FROM sethu.findings WHERE kind = 'category_spike'")).scalar_one()
+        created = s.execute(text("SELECT payload FROM sethu.audit_log WHERE action = 'finding.created'"
+                                 " AND payload->>'kind' = 'category_spike'")).scalars().all()
+        alerts = s.execute(text(
+            "SELECT c.ref FROM sethu.alerts a JOIN sethu.complaints c ON c.id = a.complaint_id"
+            " UNION ALL SELECT 'no case' FROM sethu.alerts WHERE complaint_id IS NULL")).scalars().all()
+    assert rows == 1 and len(created) == 1 and created[0]["evidence"] == e
+    assert alerts == ["C-090"]  # the loop's alert; the spike made none
+    spike_bodies = [c["body"] for c in COMPLAINTS if "spike" in c["seed_tags"].split(";")]
+    assert not any(b[:30] in json.dumps([spikes[0], created[0]], default=str) for b in spike_bodies)
+
+
+@requires_db
+def test_spike_is_scoped_to_the_bureaus_that_received_it(detected):
+    spike = findings_as(detected, "menon", kind="category_spike")[0]
+    state = {i["permanent_id"]: i["state"] for i in INSTITUTIONS}
+    received = {c["bureau"] for c in COMPLAINTS if float(c["filed_days_ago"]) <= 30 and c["category"] == "Fee refund"
+                and state[c["institution_pid"]] == "Uttar Pradesh"}  # every complaint in the cell's last 30 days
+    assert set(spike["bureaus"]) == received
+    for who, bureau in (("rao", "PGRC"), ("fernandes", "PGRC"), ("iyer", "RB")):
+        seen = [f["id"] for f in findings_as(detected, who, kind="category_spike")]
+        assert seen == ([spike["id"]] if bureau in received else []), who
+    assert [f["id"] for f in findings_as(detected, "das", kind="category_spike")] == [spike["id"]]
+    # The seed's spike reached both bureaus, so prove the other half with a spike only RB received.
+    goa_rb = cell(6, 0, state="Goa") | {"bureau_ids": [detected["bureau"]["RB"]]}
+    rb_only = service.spike_findings([goa_rb], 5, 3.0, DAY)[0]
+    with session_for(SYSTEM, detected["engine"]) as s:
+        service.repo.insert(s, rb_only, None)
+    goa = {who: [f["evidence"]["state"] for f in findings_as(detected, who, kind="category_spike")]
+           for who in ("rao", "fernandes", "iyer", "menon")}
+    assert "Goa" not in goa["rao"] and "Goa" not in goa["fernandes"]
+    assert "Goa" in goa["iyer"] and "Goa" in goa["menon"]
+
+
+@requires_db
+def test_a_spike_that_comes_back_is_reopened_with_its_new_counts(detected, monkeypatch):
+    engine, settings = detected["engine"], get_settings()
+    first = findings_as(detected, "menon", kind="category_spike")[0]
+    assert first["evidence"]["recent"] == 10
+
+    monkeypatch.setattr(settings, "spike_min_count", 50)  # it no longer holds: the detector resolves it
+    with session_for(SYSTEM, engine) as s:
+        assert service.detect(s, SYSTEM)["resolved"] >= 1
+    assert findings_as(detected, "menon", kind="category_spike")[0]["status"] == "resolved"
+
+    with session_for(SYSTEM, engine) as s:  # three more fee-refund complaints in Uttar Pradesh today
+        where = s.execute(text(
+            "SELECT s.institution_id, s.bureau_id FROM sethu.complaint_summaries s"
+            " JOIN sethu.institutions i ON i.id = s.institution_id"
+            " WHERE i.state = 'Uttar Pradesh' AND s.category = 'Fee refund' LIMIT 1")).one()
+        for n in range(3):
+            s.execute(text(
+                "INSERT INTO sethu.complaints (ref, source, bureau_id, institution_id, institution_name_raw,"
+                " category, body, body_sha256, filed_at)"
+                " VALUES (:ref, 'mock', :b, :i, 'test', 'Fee refund', 'synthetic test text', :h, now())"),
+                {"ref": f"T-90{n}", "b": where.bureau_id, "i": where.institution_id, "h": f"t{n}"})
+    monkeypatch.setattr(settings, "spike_min_count", 5)
+    with session_for(SYSTEM, engine) as s:
+        assert service.detect(s, SYSTEM)["reopened"] == 1
+        reopened = s.execute(text("SELECT payload FROM sethu.audit_log WHERE action = 'finding.reopened'"
+                                  " AND entity_id = :i"), {"i": str(first["id"])}).scalar_one()
+
+    again = findings_as(detected, "menon", kind="category_spike")
+    assert [f["id"] for f in again] == [first["id"]] and again[0]["status"] == "open"  # the same finding, reopened
+    e = again[0]["evidence"]
+    assert (e["recent"], e["previous"], e["baseline"], e["ratio"]) == (13, 8, 2.67, 4.88)
+    assert e["as_of"] == datetime.now(UTC).date().isoformat()
+    assert reopened["evidence"] == e and reopened["status"] == "open"

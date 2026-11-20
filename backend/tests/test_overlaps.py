@@ -1,5 +1,4 @@
 """Overlap detection on the seeded data: what is suggested, who decides, and what an approval writes."""
-from collections import defaultdict
 from uuid import uuid4
 
 import pytest
@@ -14,21 +13,11 @@ from app.modules.institutions import service as institutions
 from app.modules.overlaps import service
 from app.modules.overlaps.service import OverlapError
 from tests.conftest import requires_db
-from tests.test_seed import COMPLAINTS
+from tests.test_seed import COMPLAINTS, tagged_pairs  # the answer key, as pairs
 
 pytestmark = requires_db
 
 DEMO_PAIR = frozenset(("C-101", "C-102"))
-
-
-def tagged_pairs(prefix: str) -> set[frozenset]:
-    """The answer key: pairs of case references that share a seed tag such as tier2:3."""
-    groups = defaultdict(set)
-    for c in COMPLAINTS:
-        for tag in c["seed_tags"].split(";"):
-            if tag.startswith(prefix):
-                groups[tag].add(c["ref"])
-    return {frozenset(g) for g in groups.values()}
 
 
 NEGATIVES = {c["ref"] for c in COMPLAINTS if "neg-" in c["seed_tags"] or "transfer-ack" in c["seed_tags"]}
@@ -49,7 +38,7 @@ def scalar(session, sql, **params):
 @pytest.fixture
 def detected(world):
     with session_for(SYSTEM, world["engine"]) as s:
-        assert service.detect(s, SYSTEM) == {"suggested": 6}
+        assert service.detect(s, SYSTEM) == {"suggested": 7}
         world["link"] = {frozenset(c["ref"] for c in link["cases"]): link["id"] for link in service.links(s, SYSTEM)}
     return world
 
@@ -57,28 +46,35 @@ def detected(world):
 def test_detector_suggests_exactly_the_six_tier2_pairs(detected):
     with session_for(SYSTEM, detected["engine"]) as s:
         pairs = suggested_pairs(s)
-        assert len(pairs) == 6 and pairs == tagged_pairs("tier2:") and DEMO_PAIR in pairs
+        assert len(pairs) == 7 and pairs == tagged_pairs("tier2:") and DEMO_PAIR in pairs
         links = service.links(s, SYSTEM)
         assert all(link["status"] == "proposed" and link["tier"] == 2 and link["alert_status"] is None
                    for link in links)  # a suggestion only: nothing approved, nothing queued
         assert all(float(link["score"]) >= service.SIMILARITY_THRESHOLD for link in links)
         demo = next(link for link in links if frozenset(c["ref"] for c in link["cases"]) == DEMO_PAIR)
         assert demo["reasons"][:3] == ["same institution", "same category: Faculty shortage", "filed 6 days apart"]
-        assert scalar(s, "SELECT count(*) FROM sethu.audit_log WHERE action = 'overlap.suggested'") == 6
+        assert scalar(s, "SELECT count(*) FROM sethu.audit_log WHERE action = 'overlap.suggested'") == 7
         assert service.detect(s, SYSTEM) == {"suggested": 0}  # repeatable
 
 
 def test_ten_pairs_are_tier1_only(detected):
     with session_for(detected["menon"], detected["engine"]) as s:  # metadata only: oversight can see it all
         only = tier1_only_pairs(s)
-        assert len(only) == 10 and only == tagged_pairs("tier1:") and frozenset(("C-102", "C-103")) in only
+        # tier1:1 spans three bureaus, so it is three pairs
+        assert len(only) == 12 and only == tagged_pairs("tier1:") and frozenset(("C-102", "C-103")) in only
         shown = service.tier1(s)
-        assert len(shown) == 15 and sum(i["pairs"] for i in shown) == 16 and sum(i["tier2_pairs"] for i in shown) == 6
+        # + Rosemere (RB and NRB, 1 pair) and NRB at the tier1:1 institution (2 more pairs there)
+        assert len(shown) == 16 and sum(i["pairs"] for i in shown) == 19
+        assert sum(i["tier2_pairs"] for i in shown) == 7
         greenfield = next(i for i in shown if i["institution"] == "Greenfield Institute of Technology")
         assert (greenfield["bureaus"], [c["ref"] for c in greenfield["cases"]], greenfield["pairs"]) == (
             ["PGRC", "RB"], ["C-101", "C-102", "C-103"], 2)
         assert service.tier1(s, greenfield["institution_id"]) == [greenfield]
-    with session_for(detected["rao"], detected["engine"]) as s:  # an officer sees the same Tier 1 picture
+    # An officer sees the same cases and pairs, but a Tier 2 link only where the own bureau is a party
+    # (Row-Level Security on overlap_links): to PGRC, the RB and NRB pair is just "same institution".
+    with session_for(detected["rao"], detected["engine"]) as s:
+        assert tier1_only_pairs(s) == only | {frozenset(("C-301", "C-302"))}
+    with session_for(detected["iyer"], detected["engine"]) as s:  # RB is a party to every link
         assert tier1_only_pairs(s) == only
 
 
@@ -90,7 +86,7 @@ def test_negative_cases_are_never_flagged(world):
         assert pairs == tagged_pairs("tier2:")  # still exactly the six
         assert tier1_only_pairs(s) == tagged_pairs("tier1:")
         flagged = set().union(*pairs, *tier1_only_pairs(s))
-        assert len(NEGATIVES) == 13 and not NEGATIVES & flagged
+        assert len(NEGATIVES) == 14 and not NEGATIVES & flagged  # + the NRB to AB handover
 
 
 def test_closed_or_far_apart_cases_are_not_tier2(world):
@@ -99,7 +95,7 @@ def test_closed_or_far_apart_cases_are_not_tier2(world):
         s.execute(text("UPDATE sethu.complaints SET status = 'closed' WHERE ref = 'C-101'"))
         s.execute(text("UPDATE sethu.complaints SET filed_at = filed_at - interval '40 days' WHERE ref = :r"),
                   {"r": min(older)})
-        assert service.detect(s, SYSTEM) == {"suggested": 4}
+        assert service.detect(s, SYSTEM) == {"suggested": 5}
         assert not {DEMO_PAIR, older} & suggested_pairs(s)
 
 
@@ -167,7 +163,7 @@ def test_only_staff_of_a_party_bureau_can_see_and_decide(detected):
     for reader in (detected["menon"], detected["das"], admin):  # they read everything and decide nothing
         with session_for(reader, engine) as s:
             links = service.links(s, reader)
-            assert len(links) == 6 and not any(link["can_decide"] for link in links)
+            assert len(links) == 7 and not any(link["can_decide"] for link in links)
             assert scalar(s, "SELECT count(*) FROM sethu.alerts") == 1
             with pytest.raises(OverlapError) as refused:
                 service.decide(s, reader, pending, approve=True)
@@ -176,7 +172,7 @@ def test_only_staff_of_a_party_bureau_can_see_and_decide(detected):
                              ).rowcount == 0
 
     with session_for(detected["iyer"], engine) as s:  # a party: sees its links and the alert
-        assert len(service.links(s, detected["iyer"])) == 6 and len(service.links(s, detected["iyer"], "proposed")) == 5
+        assert len(service.links(s, detected["iyer"])) == 7 and len(service.links(s, detected["iyer"], "proposed")) == 6
         assert scalar(s, "SELECT count(*) FROM sethu.alerts") == 1
 
 
@@ -193,15 +189,15 @@ def test_api_decisions_detection_and_the_overlapping_filter(world):
         as_(world["rao"])
         assert client.post("/api/v1/overlaps/detect").status_code == 403  # an officer cannot read both texts
         as_(Principal("u-admin", "admin", "admin", None))
-        assert client.post("/api/v1/overlaps/detect").json() == {"suggested": 6}
+        assert client.post("/api/v1/overlaps/detect").json() == {"suggested": 7}
 
         as_(world["menon"])
         page = client.get("/api/v1/cases", params={"overlapping": "true", "limit": 200}).json()
-        assert page["total"] == 12 and {"C-101", "C-102"} <= {c["ref"] for c in page["items"]}
-        assert client.get("/api/v1/cases", params={"overlapping": "true", "bureau": "RB"}).json()["total"] == 6
+        assert page["total"] == 14 and {"C-101", "C-102"}  # 7 links, 2 cases each <= {c["ref"] for c in page["items"]}
+        assert client.get("/api/v1/cases", params={"overlapping": "true", "bureau": "RB"}).json()["total"] == 7
         links = client.get("/api/v1/overlaps", params={"status": "proposed"}).json()
         demo = next(link["id"] for link in links if {c["ref"] for c in link["cases"]} == set(DEMO_PAIR))
-        assert len(client.get("/api/v1/overlaps/tier1").json()) == 15
+        assert len(client.get("/api/v1/overlaps/tier1").json()) == 16  # + Rosemere (RB and NRB)
         for reader in (world["menon"], world["das"]):
             as_(reader)
             assert client.post(f"/api/v1/overlaps/{demo}/decision", json={"decision": "approve"}).status_code == 403

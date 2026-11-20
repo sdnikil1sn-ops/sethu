@@ -20,7 +20,10 @@ from app.core.config import get_settings
 from app.db.session import SYSTEM, session_for
 
 HERE = Path(__file__).parent
-BUREAUS = {"PGRC": "Public Grievance Redressal Cell", "RB": "Regional Bureau (Western Region)"}
+
+
+class ProductionRefused(RuntimeError):
+    """Mock data never goes into a production database."""
 
 
 def user_id(username: str) -> UUID:
@@ -48,6 +51,8 @@ def insert(s: Session, table: str, audit_action: str, payload: dict, **values) -
 
 
 def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str, int]:
+    if get_settings().environment == "prod":
+        raise ProductionRefused("SETHU_ENVIRONMENT is prod: the seed loader only loads mock data into dev or test")
     now = now or datetime.now(UTC)
 
     def ago(days: str) -> datetime | None:
@@ -60,7 +65,8 @@ def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str,
 
         # Bureau ids are derived from the code, so the bureau_id set on Keycloak users survives a reseed.
         bureaus_created = 0
-        for code, name in BUREAUS.items():
+        for b in rows("bureaus"):
+            code, name = b["code"], b["name"]
             if not s.execute(text("SELECT 1 FROM sethu.bureaus WHERE code = :c"), {"c": code}).first():
                 bureaus_created += 1
                 insert(s, "bureaus", "bureau.created", {"code": code},

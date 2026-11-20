@@ -14,7 +14,17 @@ from pathlib import Path
 
 SEED = 26264
 HERE = Path(__file__).parent
-FILES = ("institutions", "users", "complaints", "actions")
+FILES = ("bureaus", "institutions", "users", "complaints", "actions")
+
+# Bureaus are data: the loader reads bureaus.csv and the application never names a code.
+# `source` is the intake channel written into a seeded complaint.
+BUREAUS = [
+    {"code": "PGRC", "name": "Public Grievance Redressal Cell", "source": "pgrc-portal"},
+    {"code": "RB", "name": "Regional Bureau (Western Region)", "source": "rb-register"},
+    {"code": "NRB", "name": "Regional Bureau (Northern Region)", "source": "nrb-register"},
+    {"code": "AB", "name": "Approval Bureau", "source": "ab-register"},
+]
+SOURCE = {b["code"]: b["source"] for b in BUREAUS}
 
 STATES = {
     "Maharashtra": ["Pune", "Nagpur", "Nashik", "Aurangabad"],
@@ -129,6 +139,9 @@ USERS = [
     ("greddy", "Gauri Reddy", "officer", "RB", "RB-D3"), ("dgupta", "Dev Gupta", "officer", "RB", "RB-D3"),
     ("fernandes", "Maria Fernandes", "bureau_head", "PGRC", ""), ("iyer", "Suresh Iyer", "bureau_head", "RB", ""),
     ("mkulkarni", "Manoj Kulkarni", "bureau_head", "RB", ""),
+    ("rbhat", "Ravi Bhat", "bureau_head", "NRB", ""), ("squreshi", "Sana Qureshi", "bureau_head", "AB", ""),
+    ("tsingh", "Tara Singh", "officer", "NRB", ""), ("mkapoor", "Mohan Kapoor", "officer", "NRB", ""),
+    ("lmenezes", "Lina Menezes", "officer", "AB", ""), ("vsharma", "Vivek Sharma", "officer", "AB", ""),
     ("menon", "Kavita Menon", "oversight", "", ""), ("admin", "Asha Chopra", "admin", "", ""),
     ("das", "Arun Das", "auditor", "", ""),
 ]
@@ -169,8 +182,9 @@ def build() -> dict[str, list[dict]]:
 
     users = [{"username": u, "display_name": n, "email": f"{u}@sethu.test", "role": r, "bureau": b, "desk": d}
              for u, n, r, b, d in USERS]
-    officers = {b: [u for u in users if u["role"] == "officer" and u["bureau"] == b] for b in ("PGRC", "RB")}
-    head = {"PGRC": "fernandes", "RB": "iyer"}
+    codes = [b["code"] for b in BUREAUS]
+    officers = {b: [u for u in users if u["role"] == "officer" and u["bureau"] == b] for b in codes}
+    head = {b: next(u["username"] for u in users if u["role"] == "bureau_head" and u["bureau"] == b) for b in codes}
 
     complaints: list[dict] = []
     actions: list[dict] = []
@@ -201,11 +215,11 @@ def build() -> dict[str, list[dict]]:
         return rng.choice([c for c in CATEGORIES if c not in banned])
 
     def add(inst, category, days, status, tags, *, bureau=None, raw=None, body=None, lang="en", ref=None,
-            flow="normal") -> dict:
+            flow="normal", sent_from="PGRC") -> dict:
         bureau = bureau or inst["home"]
         c = {
             "ref": ref or f"C-{numbers.pop():03d}",
-            "source": "pgrc-portal" if (bureau == "PGRC" or flow == "misrouted") else "rb-register",
+            "source": SOURCE[sent_from if flow == "misrouted" else bureau],
             "bureau": bureau,
             "institution_pid": inst["permanent_id"],
             "institution_name_raw": raw or inst["name"],
@@ -243,9 +257,9 @@ def build() -> dict[str, list[dict]]:
             c["closed_days_ago"] = closed_at
 
         act("filed", days, note=f"Received via {c['source']}")
-        if flow == "misrouted":  # filed at PGRC, handed to RB, accepted
-            transfer(days - 1, "PGRC", "RB", True)
-            assign(days - 2.2, "RB")
+        if flow == "misrouted":  # filed at the wrong bureau (PGRC unless said), handed over, accepted
+            transfer(days - 1, sent_from, bureau, True)
+            assign(days - 2.2, bureau)
             close(days - 6, days - 9)
         elif flow == "roundtrip":  # there and back, every hop acknowledged: not a deadlock
             assign(days - 0.2, "PGRC")
@@ -358,12 +372,58 @@ def build() -> dict[str, list[dict]]:
         else:
             add(inst, category_for(inst), days, status, "hindi" if n < 53 else "", lang="hi" if n < 53 else "en")
 
+    # Two more bureaus, NRB and AB, so cross-bureau behaviour is not only ever PGRC and RB. Added
+    # last, with references from C-301, so every record above stays exactly as it was. Each case is
+    # placed on purpose: no state and category reaches 5 in 30 days (no new spike), nothing is
+    # overdue, no new bureau holds 3 open cases (no new bottleneck), and every cross-bureau pair is tagged.
+    extra_refs = (f"C-{n}" for n in range(301, 400))
+    state_of = {i["permanent_id"]: i["state"] for i in institutions}
+
+    def quiet(inst: dict, exclude: tuple = ()) -> str:
+        """A category this state saw fewer than 3 times in the last 30 days."""
+        busy = Counter(c["category"] for c in complaints
+                       if state_of[c["institution_pid"]] == inst["state"] and int(c["filed_days_ago"]) <= 30)
+        return rng.choice([c for c in CATEGORIES if busy[c] < 3 and c not in exclude
+                           and (inst["state"], c) != (SPIKE_STATE, SPIKE_CATEGORY)])
+
+    new_insts = []
+    for prefix, home in (("Rosemere", "RB"), ("Sandalvale", "NRB"), ("Tealcrest", "AB")):
+        i = len(institutions)
+        state = list(STATES)[i % 6]
+        new_insts.append({
+            "permanent_id": f"1-9{i + 1:07d}", "name": f"{prefix} {rng.choice(KINDS)}", "state": state,
+            "district": STATES[state][(i // 6) % 4], "pin": f"{(i % 6 + 1) * 110000 + i:06d}", "aliases": "",
+            "home": home,
+        })
+        institutions.append(new_insts[-1])
+        state_of[new_insts[-1]["permanent_id"]] = state
+    shared, nrb_home, ab_home = new_insts
+
+    # A Tier 2 pair between RB and NRB at an institution that holds nothing else.
+    category, first = quiet(shared), rng.randint(8, 14)
+    for bureau, days, body in zip(("RB", "NRB"), (first, first - rng.randint(2, 5)), two_wordings(category),
+                                  strict=True):
+        add(shared, category, days, "open", "tier2:7", bureau=bureau, body=body, ref=next(extra_refs))
+    # A third bureau at a Tier 1 institution (PGRC and RB already there), in a different category.
+    t1 = tier1_insts[0]
+    taken = tuple({c["category"] for c in complaints if c["institution_pid"] == t1["permanent_id"]})
+    add(t1, quiet(t1, exclude=taken), rng.randint(3, 6), "open", "tier1:1", bureau="NRB", ref=next(extra_refs))
+    # Closed history, so both new bureaus have a disposal time.
+    for inst, bureau in ((nrb_home, "NRB"), (nrb_home, "NRB"), (nrb_home, "NRB"), (ab_home, "AB"), (ab_home, "AB")):
+        add(inst, category_for(inst), rng.randint(40, 150), "closed", "", bureau=bureau, ref=next(extra_refs))
+    # A handover between the two new bureaus, acknowledged: must not be flagged.
+    add(ab_home, category_for(ab_home), rng.randint(40, 120), "closed", "transfer-ack", bureau="AB",
+        flow="misrouted", sent_from="NRB", ref=next(extra_refs))
+    add(ab_home, quiet(ab_home), rng.randint(1, 4), "open", "", bureau="AB", ref=next(extra_refs))
+
     for i in institutions:
         del i["home"]
     complaints.sort(key=lambda c: c["ref"])
     order = {c["ref"]: n for n, c in enumerate(complaints)}
     actions.sort(key=lambda a: (order[a["complaint_ref"]], -a["days_ago"]))
-    return {"institutions": institutions, "users": users, "complaints": complaints, "actions": actions}
+    bureaus = [{"code": b["code"], "name": b["name"]} for b in BUREAUS]
+    return {"bureaus": bureaus, "institutions": institutions, "users": users, "complaints": complaints,
+            "actions": actions}
 
 
 def render(rows: list[dict]) -> str:
