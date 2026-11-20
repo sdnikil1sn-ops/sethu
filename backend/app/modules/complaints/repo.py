@@ -7,8 +7,6 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app.core.auth import Principal
-
 SUMMARY = """
     SELECT s.id, s.ref, b.code AS bureau, b.name AS bureau_name, s.category, s.status,
            s.institution_id, i.name AS institution, i.state, s.filed_at, s.due_at, s.closed_at,
@@ -39,7 +37,7 @@ REASONS = """array_remove(ARRAY[
     CASE WHEN s.ref ILIKE :q THEN 'reference' END,
     CASE WHEN s.category ILIKE :q THEN 'category' END,
     CASE WHEN replace(s.status, '_', ' ') ILIKE :q THEN 'status' END,
-    CASE WHEN b.code ILIKE :q OR b.name ILIKE :q THEN 'bureau' END,
+    CASE WHEN upper(b.code) = upper(:code) OR b.name ILIKE :q THEN 'bureau' END,
     CASE WHEN i.name ILIKE :q THEN 'institution' END,
     CASE WHEN c.institution_name_raw ILIKE :q THEN 'institution name as typed' END,
     CASE WHEN c.body ILIKE :q THEN 'complaint text' END], NULL)"""
@@ -65,14 +63,14 @@ def _one(session: Session, sql: str, **params: Any) -> dict | None:
     return rows[0] if rows else None
 
 
-def lookup(session: Session, q: str, limit: int) -> list[dict]:
+def lookup(session: Session, q: str, code: str, limit: int) -> list[dict]:
     """Cases matching q, each with the reasons it matched; reference matches first."""
     return _all(session, f"""
         SELECT * , count(*) OVER () AS total FROM (
             {SUMMARY.format(extra=f", {REASONS} AS why")}) m
          WHERE cardinality(m.why) > 0
          ORDER BY 'reference' = ANY(m.why) DESC, m.filed_at DESC, m.ref LIMIT :limit""",  # noqa: S608
-                q=q, limit=limit)
+                q=q, code=code, limit=limit)
 
 
 def search(session: Session, filters: dict[str, Any], limit: int, offset: int) -> list[dict]:
@@ -84,8 +82,24 @@ def search(session: Session, filters: dict[str, Any], limit: int, offset: int) -
 
 def find(session: Session, complaint_id: UUID) -> dict | None:
     return _one(session, SUMMARY.format(
-        extra=", c.body, c.institution_name_raw, c.language, c.source, c.resolution_state") + " WHERE s.id = :id",
+        extra=", c.body, c.institution_name_raw, c.language, c.source, c.resolution_state, c.complainant_enc")
+        + " WHERE s.id = :id",
         id=complaint_id)
+
+
+def not_on_key(session: Session, active: str, limit: int) -> list[dict]:
+    """Encrypted complainant details whose key id is not the active one (the id is stored in the value:
+    byte 3 holds its length, the id follows)."""
+    return _all(session, """
+        SELECT id, complainant_enc FROM sethu.complaints
+         WHERE complainant_enc IS NOT NULL
+           AND convert_from(substring(complainant_enc FROM 4 FOR get_byte(complainant_enc, 2)), 'UTF8') <> :active
+         ORDER BY id LIMIT :limit""", active=active, limit=limit)
+
+
+def set_complainant(session: Session, complaint_id: UUID, value: bytes) -> None:
+    session.execute(text("UPDATE sethu.complaints SET complainant_enc = :v WHERE id = :id"),
+                    {"id": complaint_id, "v": value})
 
 
 def history(session: Session, complaint_id: UUID) -> list[dict]:
@@ -137,7 +151,7 @@ def update_case(session: Session, complaint_id: UUID, status: str, bureau_id: UU
 
 
 def bureaus(session: Session) -> list[dict]:
-    return _all(session, "SELECT id, code, name FROM sethu.bureaus ORDER BY code")
+    return _all(session, "SELECT id, code, name, active FROM sethu.bureaus ORDER BY code")
 
 
 def staff(session: Session, bureau_id: UUID) -> list[dict]:
@@ -156,11 +170,4 @@ def options(session: Session) -> dict:
     return {"categories": row.get("categories") or [], "states": row.get("states") or []}
 
 
-def ensure_user(session: Session, principal: Principal) -> tuple[UUID, bool]:
-    """The app_users row for a logged-in person, created from the token on first use."""
-    found = _one(session, "SELECT id FROM sethu.app_users WHERE subject = :s", s=principal.subject)
-    if found:
-        return found["id"], False
-    return session.execute(text(
-        "INSERT INTO sethu.app_users (subject, display_name, role, bureau_id) VALUES (:s, :n, :r, :b) RETURNING id"),
-        {"s": principal.subject, "n": principal.name, "r": principal.role, "b": principal.bureau_id}).scalar_one(), True
+

@@ -14,6 +14,7 @@ router = APIRouter(prefix="/api/v1/alerts", tags=["alerts"])
 
 READ = require_roles("officer", "bureau_head", "oversight", "admin", "auditor")
 DECIDE = require_roles("bureau_head", "oversight")  # and the database checks the bureau is concerned
+RETRY = require_roles("admin", "bureau_head")       # and the database checks the bureau is concerned
 
 
 @router.get("", response_model=schemas.AlertPage)
@@ -36,5 +37,14 @@ def decide(
 ) -> dict:
     try:
         return service.decide(session, principal, alert_id, body.decision == "approve")
+    except service.AlertError as e:
+        raise HTTPException(e.status, str(e)) from e
+
+
+@router.post("/{alert_id}/retry", response_model=schemas.Alert)
+def retry(alert_id: UUID, principal: Principal = Depends(RETRY), session: Session = Depends(get_session)) -> dict:
+    """Put a failed alert back in the queue. Audited."""
+    try:
+        return service.retry(session, principal, alert_id)
     except service.AlertError as e:
         raise HTTPException(e.status, str(e)) from e

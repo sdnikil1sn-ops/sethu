@@ -26,7 +26,12 @@ x-backend-env: &backend-env
   SETHU_OIDC_AUDIENCE: sethu-api
   SETHU_SMTP_HOST: ${SMTP_HOST:-mailpit}
   SETHU_SMTP_PORT: ${SMTP_PORT:-1025}
+  SETHU_SMTP_SECURITY: ${SMTP_SECURITY:-none}       # Mailpit is plain; production requires starttls or tls
+  SETHU_SMTP_USERNAME: ${SMTP_USERNAME:-}
+  SETHU_SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+  SETHU_SMTP_CA_FILE: ${SMTP_CA_FILE:-}
   SETHU_DEBUG: ${SETHU_DEBUG:-false}
+  SETHU_COMPLAINANT_KEYS_FILE: /run/secrets/complainant_keys
   # Findings thresholds (docs/RUNBOOK.md). The defaults repeat backend/app/core/config.py: keep them equal.
   SETHU_STALLED_TRANSFER_DAYS: ${SETHU_STALLED_TRANSFER_DAYS:-7}
   SETHU_BOTTLENECK_MIN_OPEN: ${SETHU_BOTTLENECK_MIN_OPEN:-3}
@@ -148,6 +153,7 @@ services:
     read_only: true
     tmpfs: ["/tmp"]
     environment: *backend-env
+    secrets: [complainant_keys]
     depends_on:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }
@@ -157,7 +163,7 @@ services:
   worker:
     <<: *hardening
     build: ./backend
-    command: ["celery", "-A", "app.worker:celery", "worker", "--beat", "--loglevel", "INFO", "--concurrency", "2", "--schedule", "/tmp/celerybeat-schedule"]
+    command: ["celery", "-A", "app.worker:celery", "worker", "--loglevel", "INFO", "--concurrency", "2"]
     read_only: true
     tmpfs: ["/tmp"]
     healthcheck:                      # the worker answers a ping through Redis
@@ -167,11 +173,35 @@ services:
       retries: 3
       start_period: 30s
     environment: *backend-env
+    secrets: [complainant_keys]
     depends_on:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }
     networks: [app, data]
     deploy: { resources: { limits: { memory: 768m } } }
+
+  # Celery beat: puts the scheduled jobs on the queue; the worker runs them. Its own service so the
+  # worker can be scaled without firing every job once per worker. It holds a Redis lock while it
+  # runs (SingleScheduler in app/worker.py): a second copy refuses to start.
+  scheduler:
+    <<: *hardening
+    build: ./backend
+    command: ["celery", "-A", "app.worker:celery", "beat", "--scheduler", "app.worker:SingleScheduler",
+              "--schedule", "/tmp/celerybeat-schedule", "--loglevel", "INFO"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    healthcheck:   # beat saves its schedule file every few minutes while it runs
+      test: ["CMD-SHELL", "find /tmp -maxdepth 1 -name 'celerybeat-schedule*' -mmin -10 | grep -q ."]
+      interval: 60s
+      timeout: 10s
+      start_period: 60s
+    environment: *backend-env
+    secrets: [complainant_keys]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    networks: [data]
+    deploy: { resources: { limits: { memory: 256m } } }
 
   web:
     <<: *hardening
@@ -205,6 +235,12 @@ networks:
   edge: {}
   app: { internal: true }
   data: { internal: true }
+
+# Secret files, mounted read-only under /run/secrets. Never in the image or an environment value.
+# Created per machine: scripts/init_env.py (dev) or docs/RUNBOOK.md section 7 (production).
+secrets:
+  complainant_keys:
+    file: ${SETHU_SECRETS_DIR:-./secrets}/complainant_keys.json
 
 volumes:
   pgdata: {}

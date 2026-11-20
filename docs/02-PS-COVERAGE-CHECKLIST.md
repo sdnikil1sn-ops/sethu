@@ -38,6 +38,8 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [x] Alert is held until an officer approves it (human approval)
 - [x] A local mail catcher shows the delivered email during the demo
 - [x] Sent alerts are listed with time and recipient
+- [x] Alerts go to the e-mail stored for each bureau head; a bureau with no reachable head shows "No recipient for X"
+- [x] A failed send is retried with growing waits, then marked Failed with the reason; an admin or bureau head can Retry (audited)
 
 ## 8. Reports
 - [x] Institution report: the institution profile screen (profile, every bureau's cases, overlaps, timeline, relationship graph); its counts are in the exportable "Complaints by institution" report

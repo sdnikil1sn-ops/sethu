@@ -10,7 +10,18 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE, TARGET = ROOT / ".env.example", ROOT / ".env"
 
 
+def ensure_keyring() -> None:
+    """The dev keyring for complainant details (production: docs/RUNBOOK.md section 7)."""
+    keys = ROOT / "secrets" / "complainant_keys.json"
+    if not keys.exists():
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import complainant_key  # a sibling script
+
+        complainant_key.main(["new", str(keys)])
+
+
 def main() -> int:
+    ensure_keyring()  # also on a machine that already has a .env
     if TARGET.exists():
         print(".env already exists; delete it first if you really want new secrets.")
         return 1

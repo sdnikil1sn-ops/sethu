@@ -12,6 +12,10 @@ def _url() -> str:
     url = os.environ.get("MIGRATION_DATABASE_URL")
     if not url:
         raise RuntimeError("MIGRATION_DATABASE_URL is not set (owner credentials required)")
+    if path := os.environ.get("MIGRATION_DATABASE_PASSWORD_FILE"):  # production: the password is a secret file
+        from app.core.config import read_secret, with_password  # noqa: PLC0415 - only when needed
+
+        url = with_password(url, read_secret("MIGRATION_DATABASE_PASSWORD_FILE", path))
     return url
 
 

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "SETHU: AICTE cross-bureau complaint monitoring (SIH26264)"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.115,<1",
+    "fastapi>=0.165,<1",  # model query params (Annotated[Filters, Query()]) fail on 0.115.x
     "uvicorn[standard]>=0.30,<1",
     "pydantic-settings>=2.4,<3",
     "sqlalchemy>=2.0.30,<3",

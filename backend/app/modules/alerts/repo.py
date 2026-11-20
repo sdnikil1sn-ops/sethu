@@ -13,8 +13,9 @@ def _all(session: Session, sql: str, **params: Any) -> list[dict]:
 def listing(session: Session, *, status: str | None = None, alert_id: UUID | None = None) -> list[dict]:
     """Alerts the caller may see, newest first, with the references of the cases they concern."""
     return _all(session, """
-        SELECT al.id, al.kind, al.status, al.subject, al.body, al.recipients, al.created_at,
+        SELECT al.id, al.kind, al.status, al.subject, al.body, al.recipients, al.missing_recipients, al.created_at,
                al.approved_at, u.display_name AS approved_by, al.sent_at, al.attempts, al.last_error,
+               al.next_attempt_at,
                array_remove(ARRAY[ca.ref, cb.ref, cc.ref], NULL) AS cases
           FROM sethu.alerts al
           LEFT JOIN sethu.app_users u ON u.id = al.approved_by
@@ -36,10 +37,12 @@ def decide(session: Session, alert_id: UUID, status: str, actor_id: UUID) -> boo
 
 
 def claim_next(session: Session, skip: list[UUID]) -> dict | None:
-    """The oldest approved alert no other worker is holding, locked until this transaction ends."""
+    """The oldest approved alert that is due (its backoff has passed) and that no other worker is
+    holding, locked until this transaction ends."""
     rows = _all(session, """
-        SELECT id, recipients, subject, body FROM sethu.alerts
+        SELECT id, recipients, subject, body, attempts FROM sethu.alerts
          WHERE status = 'approved' AND NOT (id = ANY(:skip))
+           AND (next_attempt_at IS NULL OR next_attempt_at <= now())
          ORDER BY approved_at NULLS FIRST, created_at
          LIMIT 1 FOR UPDATE SKIP LOCKED""", skip=skip)
     return rows[0] if rows else None
@@ -57,9 +60,19 @@ def known_addresses(session: Session, addresses: list[str]) -> set[str]:
         session, "SELECT email FROM sethu.app_users WHERE active AND email = ANY(:a)", a=addresses)}
 
 
-def mark(session: Session, alert_id: UUID, status: str, error: str | None) -> None:
+def mark(session: Session, alert_id: UUID, status: str, error: str | None, retry_in_seconds: int | None = None) -> None:
     session.execute(text("""
         UPDATE sethu.alerts
            SET status = :status, attempts = attempts + 1, last_error = :error,
-               sent_at = CASE WHEN :status = 'sent' THEN now() END
-         WHERE id = :id"""), {"id": alert_id, "status": status, "error": error})
+               sent_at = CASE WHEN :status = 'sent' THEN now() END,
+               next_attempt_at = CASE WHEN CAST(:wait AS int) IS NULL THEN NULL
+                                      ELSE now() + make_interval(secs => :wait) END
+         WHERE id = :id"""), {"id": alert_id, "status": status, "error": error, "wait": retry_in_seconds})
+
+
+def retry(session: Session, alert_id: UUID) -> bool:
+    """Put a failed alert back in the queue, attempts from zero. False when the database does not let
+    this caller (admin, or a head of a bureau the alert concerns) or the alert is no longer failed."""
+    return session.execute(text("""
+        UPDATE sethu.alerts SET status = 'approved', attempts = 0, last_error = NULL, next_attempt_at = NULL
+         WHERE id = :id AND status = 'failed'"""), {"id": alert_id}).rowcount == 1

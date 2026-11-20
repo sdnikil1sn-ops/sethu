@@ -4,6 +4,15 @@
 # created later by Alembic running as sethu_owner.
 set -euo pipefail
 
+# Production passes each password as a secret file (NAME_FILE=/run/secrets/...), like the image's own
+# POSTGRES_PASSWORD_FILE; dev passes the value (NAME). Read the file when one is given.
+for var in SETHU_OWNER_PASSWORD SETHU_APP_PASSWORD SETHU_AUDITOR_PASSWORD KEYCLOAK_DB_PASSWORD; do
+  file_var="${var}_FILE"
+  if [ -n "${!file_var:-}" ]; then
+    export "$var"="$(tr -d '\r\n' < "${!file_var}")"
+  fi
+done
+
 : "${SETHU_OWNER_PASSWORD:?}" "${SETHU_APP_PASSWORD:?}" "${SETHU_AUDITOR_PASSWORD:?}" "${KEYCLOAK_DB_PASSWORD:?}"
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" \

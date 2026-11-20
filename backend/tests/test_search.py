@@ -46,7 +46,7 @@ def test_cases_by_reference_and_metadata_across_bureaus(world):
     assert {"C-101", "C-102"} <= set(by_category) and "category" in by_category["C-102"]["why"]
     by_bureau = find(world, "rao", "RB")["complaints"]
     assert by_bureau["total"] >= sum(c["bureau"] == "RB" for c in COMPLAINTS)  # plus names containing "rb"
-    assert all(c["bureau"] in ("RB", "NRB") for c in by_bureau["items"] if "bureau" in c["why"])  # "NRB" contains "RB"
+    assert all(c["bureau"] == "RB" for c in by_bureau["items"] if "bureau" in c["why"])  # exact: not NRB
 
 
 def test_bureau_a_never_sees_bureau_b_text_through_search(world):

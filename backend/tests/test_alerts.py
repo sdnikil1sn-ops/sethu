@@ -4,6 +4,7 @@ import email.policy
 import re
 import socket
 import socketserver
+import ssl
 import threading
 
 import pytest
@@ -13,13 +14,14 @@ from sqlalchemy.exc import DBAPIError
 
 from app.audit.service import verify
 from app.core.auth import Principal, get_principal
+from app.core.config import Settings, get_settings
 from app.db.session import SYSTEM, session_for
 from app.main import app
 from app.modules.alerts import service
 from app.modules.alerts.service import AlertError
 from app.modules.overlaps import service as overlaps
 from tests.conftest import requires_db
-from tests.test_seed import COMPLAINTS
+from tests.test_seed import COMPLAINTS, load
 
 pytestmark = requires_db
 
@@ -100,6 +102,13 @@ def alert_row(world):
         return s.execute(text("SELECT status, sent_at, attempts, last_error FROM sethu.alerts")).one()
 
 
+def make_due(world):
+    """Skip the backoff wait, as if its time had passed."""
+    with session_for(SYSTEM, world["engine"]) as s:
+        s.execute(text("UPDATE sethu.alerts SET next_attempt_at = now() - interval '1 second'"
+                       " WHERE next_attempt_at IS NOT NULL"))
+
+
 def audit_count(world, action):
     with session_for(SYSTEM, world["engine"]) as s:
         return s.execute(text("SELECT count(*) FROM sethu.audit_log WHERE action = :a"), {"a": action}).scalar_one()
@@ -147,6 +156,9 @@ def test_a_failed_send_stays_approved_and_is_retried_without_duplicates(approved
     row = alert_row(approved)
     assert (row.status, row.sent_at, row.attempts) == ("approved", None, 1)
     assert row.last_error.startswith("ConnectionRefusedError")
+    # Backoff: not tried again before its time (this test then moves that time into the past).
+    assert deliver(approved, relay) == {"sent": 0, "retry": 0, "failed": 0} and relay.messages == []
+    make_due(approved)
 
     # The relay refuses the second head: the first is reached, the alert still waits.
     relay.refuse = {HEADS[1]}
@@ -158,6 +170,7 @@ def test_a_failed_send_stays_approved_and_is_retried_without_duplicates(approved
 
     # Back to normal: only the two not yet reached get an email, and the alert is sent.
     relay.refuse = set()
+    make_due(approved)
     assert deliver(approved, relay) == {"sent": 1, "retry": 0, "failed": 0}
     assert sorted(m["To"] for m in relay.messages) == HEADS
     row = alert_row(approved)
@@ -264,3 +277,80 @@ def test_api_lists_and_decides_by_role(held):
         assert client.get("/api/v1/alerts", params={"status": "nonsense"}).status_code == 422
     finally:
         app.dependency_overrides.clear()
+
+
+# --- Backoff, giving up, Retry, TLS ---------------------------------------------------------------
+
+def test_backoff_doubles_and_is_capped():
+    assert [service.backoff(n, 60, 3600) for n in (1, 2, 3, 4, 5, 6, 7, 8)] == [
+        60, 120, 240, 480, 960, 1920, 3600, 3600]
+
+
+def test_after_the_last_attempt_the_alert_fails_with_the_reason(approved, monkeypatch):
+    monkeypatch.setattr(get_settings(), "alert_max_attempts", 3)
+    for expected in ({"sent": 0, "retry": 1, "failed": 0}, {"sent": 0, "retry": 1, "failed": 0},
+                     {"sent": 0, "retry": 0, "failed": 1}):
+        assert deliver(approved, port=closed_port()) == expected
+        make_due(approved)
+    row = alert_row(approved)
+    assert (row.status, row.attempts) == ("failed", 3)
+    assert row.last_error.startswith("gave up after 3 attempts; last error ConnectionRefusedError")
+    assert audit_count(approved, "alert.failed") == 1 and audit_count(approved, "alert.send_failed") == 2
+    assert deliver(approved, port=closed_port()) == {"sent": 0, "retry": 0, "failed": 0}  # failed is never retried
+
+
+def test_retry_by_a_concerned_head_puts_it_back_and_is_audited(approved, relay, monkeypatch):
+    monkeypatch.setattr(get_settings(), "alert_max_attempts", 1)
+    deliver(approved, port=closed_port())
+    alert = approved["alert"]
+    client = TestClient(app)
+    try:
+        app.dependency_overrides[get_principal] = lambda: approved["rao"]  # an officer: not allowed
+        assert client.post(f"/api/v1/alerts/{alert}/retry").status_code == 403
+        rbhat = Principal(str(load.user_id("rbhat")), "rbhat", "bureau_head", approved["bureau"]["NRB"])
+        app.dependency_overrides[get_principal] = lambda: rbhat  # a head, but NRB is not concerned
+        assert client.post(f"/api/v1/alerts/{alert}/retry").status_code == 404
+        app.dependency_overrides[get_principal] = lambda: approved["iyer"]
+        listed = client.get("/api/v1/alerts", params={"status": "failed"}).json()["items"]
+        assert [a["id"] for a in listed] == [str(alert)] and listed[0]["can_retry"]
+        again = client.post(f"/api/v1/alerts/{alert}/retry")
+        assert again.status_code == 200 and (again.json()["status"], again.json()["attempts"]) == ("approved", 0)
+        assert client.post(f"/api/v1/alerts/{alert}/retry").status_code == 409  # no longer failed
+    finally:
+        app.dependency_overrides.clear()
+    assert audit_count(approved, "alert.retry") == 1
+    monkeypatch.setattr(get_settings(), "alert_max_attempts", 6)
+    assert deliver(approved, relay)["sent"] == 1 and len(relay.messages) == 3
+
+
+def test_a_retry_cannot_rewrite_the_alert(approved, monkeypatch):
+    monkeypatch.setattr(get_settings(), "alert_max_attempts", 1)
+    deliver(approved, port=closed_port())
+    with session_for(approved["iyer"], approved["engine"]) as s, pytest.raises(DBAPIError, match="a retry only"):
+        s.execute(text("UPDATE sethu.alerts SET status = 'approved', attempts = 0, last_error = NULL,"
+                       " body = 'rewritten' WHERE id = :id"), {"id": approved["alert"]})
+
+
+@pytest.mark.parametrize("security", ["tls", "starttls"])
+def test_tls_modes_verify_the_relay_certificate(security, monkeypatch):
+    seen = {}
+
+    class FakeSMTP:
+        def __init__(self, host, port, timeout=None, context=None):
+            seen.update(host=host, port=port, ssl_context=context)
+
+        def starttls(self, context=None):
+            seen["starttls_context"] = context
+
+        def login(self, user, password):
+            seen["login"] = user
+
+    monkeypatch.setattr(service.smtplib, "SMTP", FakeSMTP)
+    monkeypatch.setattr(service.smtplib, "SMTP_SSL", FakeSMTP)
+    settings = Settings(_env_file=None, database_url="postgresql://x:y@h/d", oidc_issuer="http://i",
+                        oidc_jwks_url="http://j", smtp_security=security, smtp_username="relay-user",
+                        smtp_password="relay-test-password")  # noqa: S106 - test value for a fake relay
+    service._connect(settings, "relay.aicte.example", 587)
+    context = seen["ssl_context"] if security == "tls" else seen["starttls_context"]
+    assert context.verify_mode == ssl.CERT_REQUIRED and context.check_hostname
+    assert seen["login"] == "relay-user"

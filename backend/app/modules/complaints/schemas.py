@@ -44,6 +44,13 @@ class Action(BaseModel):
     acknowledged_at: datetime | None
 
 
+class Complainant(BaseModel):
+    """Decrypted for the holding bureau's officers and heads only (complaints.service.complainant_visible)."""
+    name: str
+    email: str | None
+    phone: str | None
+
+
 class Case(CaseRow):
     """Detail. The fields below stay empty unless the caller may read the complaint."""
     body: str | None
@@ -51,6 +58,8 @@ class Case(CaseRow):
     language: str | None
     source: str | None
     resolution_state: str | None
+    complainant: Complainant | None
+    complainant_withheld: bool  # details exist but this caller may not see them
     history: list[Action]
     can_act: bool
     awaiting_acknowledgement: bool
@@ -65,6 +74,7 @@ class Bureau(BaseModel):
     id: UUID
     code: str
     name: str
+    active: bool  # a deactivated bureau stays in filters (its old cases) but takes no transfers
 
 
 class Options(BaseModel):

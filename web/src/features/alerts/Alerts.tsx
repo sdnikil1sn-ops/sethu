@@ -9,6 +9,7 @@ type Alert = {
   subject: string;
   body: string;
   recipients: string[];
+  missing_recipients: string[];
   cases: string[];
   created_at: string;
   approved_at: string | null;
@@ -16,7 +17,9 @@ type Alert = {
   sent_at: string | null;
   attempts: number;
   last_error: string | null;
+  next_attempt_at: string | null;
   can_decide: boolean;
+  can_retry: boolean;
 };
 type AlertPage = { items: Alert[]; mail_inbox_url: string | null };
 
@@ -25,7 +28,7 @@ const STATUS: Record<Alert["status"], string> = {
   approved: "Approved, queued to send",
   sent: "Sent",
   rejected: "Rejected",
-  failed: "Not sent",
+  failed: "Failed",
 };
 const moment = (iso: string) => new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
 
@@ -33,11 +36,13 @@ function AlertCard({ alert, onChanged }: { alert: Alert; onChanged: () => void }
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function decide(decision: "approve" | "reject") {
+  async function decide(decision: "approve" | "reject" | "retry") {
     setBusy(true);
     setError(null);
     try {
-      await api(`/alerts/${alert.id}/decision`, { decision });
+      await (decision === "retry"
+        ? api(`/alerts/${alert.id}/retry`, {})
+        : api(`/alerts/${alert.id}/decision`, { decision }));
       onChanged();
     } catch (e) {
       setError(e instanceof Error ? e.message : "The request failed.");
@@ -61,6 +66,12 @@ function AlertCard({ alert, onChanged }: { alert: Alert; onChanged: () => void }
         </p>
       )}
       {alert.status !== "sent" && <p>To: {alert.recipients.join(", ") || "nobody"}</p>}
+      {alert.missing_recipients.length > 0 && (
+        <p className="flag" role="status">
+          No recipient for {alert.missing_recipients.join(" and ")}: no bureau head there has an e-mail address in
+          SETHU. An admin can see who is missing one on the Admin screen.
+        </p>
+      )}
       {alert.approved_by && alert.approved_at && (
         <p className="note">
           {alert.status === "rejected" ? "Rejected" : "Approved"} by {alert.approved_by} on {moment(alert.approved_at)}.
@@ -68,8 +79,20 @@ function AlertCard({ alert, onChanged }: { alert: Alert; onChanged: () => void }
       )}
       {alert.last_error && alert.status !== "sent" && (
         <p className="flag">
-          {alert.status === "failed" ? "Will not be sent" : `Not delivered yet after ${alert.attempts} attempt${alert.attempts === 1 ? "" : "s"}; retrying`}
+          {alert.status === "failed"
+            ? "Not sent"
+            : `Not delivered yet after ${alert.attempts} attempt${alert.attempts === 1 ? "" : "s"}; next try ${
+                alert.next_attempt_at ? moment(alert.next_attempt_at) : "soon"
+              }`}
           : {alert.last_error}
+        </p>
+      )}
+      {alert.can_retry && (
+        <p>
+          <button type="button" disabled={busy} onClick={() => decide("retry")} aria-label={`Retry: ${alert.subject}`}>
+            Retry
+          </button>{" "}
+          <small>Puts it back in the queue with a fresh set of attempts. Recorded in the audit log.</small>
         </p>
       )}
       {alert.can_decide && (

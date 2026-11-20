@@ -1,13 +1,16 @@
 """Background jobs (Celery). Workers act as the `system` principal."""
 import logging
 
+import redis
 from celery import Celery
+from celery.beat import PersistentScheduler
 from celery.schedules import crontab
 
 from app.audit import service as audit
 from app.core.config import get_settings
 from app.db.session import SYSTEM, session_for
 from app.modules.alerts import service as alerts
+from app.modules.complaints import service as complaints
 from app.modules.findings import service as findings
 from app.modules.institutions import service as institutions
 from app.modules.overlaps import service as overlaps
@@ -31,6 +34,38 @@ celery.conf.update(
         "deliver-alerts": {"task": "sethu.alerts.deliver", "schedule": 15.0},
     },
 )
+
+BEAT_LOCK = "sethu:beat:lock"
+BEAT_LOCK_SECONDS = 60
+
+
+class SingleScheduler(PersistentScheduler):
+    """Celery beat that runs only while it holds a Redis lock, so a second scheduler (a scaled
+    service, a stray `celery beat`) cannot fire every job twice. It refuses to start while another
+    holds the lock, renews the lock on every tick, and stops if it ever loses it. A scheduler that
+    dies without releasing it is replaced after BEAT_LOCK_SECONDS."""
+
+    def setup_schedule(self):
+        self.lock = redis.Redis.from_url(settings.redis_url).lock(
+            BEAT_LOCK, timeout=BEAT_LOCK_SECONDS, thread_local=False)
+        if not self.lock.acquire(blocking=False):
+            raise SystemExit(f"another scheduler holds {BEAT_LOCK}: not starting a second one")
+        log.info("scheduler lock %s acquired", BEAT_LOCK)
+        super().setup_schedule()
+
+    def tick(self, *args, **kwargs):
+        try:
+            self.lock.reacquire()  # atomic: renews only if the lock is still ours
+        except redis.exceptions.LockError:
+            raise SystemExit(f"scheduler lost {BEAT_LOCK}: stopping") from None
+        return min(super().tick(*args, **kwargs), BEAT_LOCK_SECONDS / 3)
+
+    def close(self):
+        super().close()
+        try:
+            self.lock.release()
+        except redis.exceptions.LockError:  # expired or taken over: nothing to release
+            pass
 
 
 @celery.task(name="sethu.audit.verify_chain")
@@ -62,6 +97,18 @@ def detect_findings() -> dict:
     """Transfer loops, stalled transfers and queue bottlenecks. Repeatable: known findings are left alone."""
     with session_for(SYSTEM) as session:
         return findings.detect(session, SYSTEM)
+
+
+@celery.task(name="sethu.complainant.rotate_keys")
+def rotate_complainant_keys() -> dict:
+    """After a new key is made active: re-encrypt every complainant detail onto it, batch by batch."""
+    total = 0
+    while True:
+        with session_for(SYSTEM) as session:
+            done = complaints.rotate_complainant_keys(session, SYSTEM)
+        total += done["rekeyed"]
+        if not done["left"]:
+            return {"rekeyed": total}
 
 
 @celery.task(name="sethu.alerts.deliver")

@@ -2,9 +2,11 @@
 (the audit screen and "Verify chain" are in app/modules/audit_view)."""
 from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from app.core.auth import Principal, get_principal
-from app.db.session import SYSTEM, session_for
+from app.db.session import SYSTEM, get_session, session_for
+from app.modules.users import service as users
 
 health = APIRouter(prefix="/health", tags=["health"])
 api = APIRouter(prefix="/api/v1", tags=["platform"])
@@ -27,7 +29,9 @@ def ready(response: Response) -> dict[str, str]:
 
 
 @api.get("/me")
-def me(principal: Principal = Depends(get_principal)) -> dict[str, str | None]:
+def me(principal: Principal = Depends(get_principal), session: Session = Depends(get_session)) -> dict[str, str | None]:
+    """Called by the web app on every sign-in: brings the person's record in step with the token."""
+    users.sync(session, principal)
     return {
         "subject": principal.subject,
         "name": principal.name,

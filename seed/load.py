@@ -10,7 +10,7 @@ import csv
 import hashlib
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from uuid import NAMESPACE_URL, UUID, uuid5
+from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 from sqlalchemy import Engine, text
 from sqlalchemy.orm import Session
@@ -18,6 +18,7 @@ from sqlalchemy.orm import Session
 from app.audit.service import record
 from app.core.config import get_settings
 from app.db.session import SYSTEM, session_for
+from app.modules.complaints import service as complaints_service
 
 HERE = Path(__file__).parent
 
@@ -93,16 +94,19 @@ def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str,
                        institution_id=iid, alias=alias, source="seed")
                 known_name[alias] = iid
 
+        keys = complaints_service.keyring()  # complainant details are stored only encrypted
         complaint = {}
         for c in rows("complaints"):
             filed = ago(c["filed_days_ago"])
             # Only exact names are linked here. Typos and abbreviations stay unresolved
             # for the resolution cascade; institution_pid in the CSV is the answer key.
             iid = known_name.get(c["institution_name_raw"])
+            cid = uuid4()  # chosen here: the encryption binds the details to this complaint's id
+            details = {"name": c["complainant_name"], "email": c["complainant_email"], "phone": c["complainant_phone"]}
             complaint[c["ref"]] = insert(
                 s, "complaints", "complaint.created",
                 {"ref": c["ref"], "bureau": c["bureau"], "source": c["source"], "resolved": iid is not None},
-                ref=c["ref"], source=c["source"], bureau_id=bureau[c["bureau"]], institution_id=iid,
+                id=cid, complainant_enc=keys.encrypt(details, str(cid)), ref=c["ref"], source=c["source"], bureau_id=bureau[c["bureau"]], institution_id=iid,
                 institution_name_raw=c["institution_name_raw"],
                 resolution_state="auto" if iid else "unresolved", category=c["category"], status=c["status"],
                 language=c["language"], body=c["body"],

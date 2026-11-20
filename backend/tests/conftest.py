@@ -7,9 +7,12 @@ Required environment:
   SETHU_TEST_DB_WIPE_OK   must be "1": these tests EMPTY EVERY TABLE, including
                           the audit log. Point them at a throwaway database only.
 """
+import base64
+import json
 import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -19,6 +22,11 @@ os.environ.setdefault("SETHU_ENVIRONMENT", "test")
 os.environ.setdefault("SETHU_OIDC_ISSUER", "http://issuer.test/realms/sethu")
 os.environ.setdefault("SETHU_OIDC_JWKS_URL", "http://issuer.test/certs")
 os.environ.setdefault("SETHU_DATABASE_URL", "postgresql+psycopg://unset/unset")
+
+# A throwaway keyring for complainant details, made fresh for each test run.
+TEST_KEYRING = Path(tempfile.mkdtemp(prefix="sethu-test-keys-")) / "complainant_keys.json"
+TEST_KEYRING.write_text(json.dumps({"active": "test-1", "keys": {"test-1": base64.b64encode(os.urandom(32)).decode()}}))
+os.environ.setdefault("SETHU_COMPLAINANT_KEYS_FILE", str(TEST_KEYRING))
 
 BACKEND = Path(__file__).resolve().parents[1]
 OWNER_URL = os.environ.get("MIGRATION_DATABASE_URL")
