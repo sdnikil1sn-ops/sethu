@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     stalled_transfer_days: int = 7     # a transfer nobody acknowledged for this long is a finding
     bottleneck_min_open: int = 3       # queues smaller than this are never a bottleneck
     bottleneck_share: float = 0.6      # more than this share overdue (or, for a bureau, older than its median)
+    spike_min_count: int = 5           # a state and category with fewer complaints in 30 days is never a spike
+    spike_ratio: float = 3.0           # ...and it must be at least this many times its 90-day baseline (per 30 days)
 
 
 @lru_cache

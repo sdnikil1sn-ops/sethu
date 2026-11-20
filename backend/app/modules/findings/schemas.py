@@ -8,7 +8,7 @@ from pydantic import BaseModel
 class Finding(BaseModel):
     """Identifiers, bureaus and the numbers used. Never complaint text."""
     id: UUID
-    kind: Literal["transfer_loop", "stalled_transfer", "bottleneck"]
+    kind: Literal["transfer_loop", "stalled_transfer", "bottleneck", "category_spike"]
     status: Literal["open", "resolved", "dismissed"]
     first_seen: datetime
     decided_at: datetime | None

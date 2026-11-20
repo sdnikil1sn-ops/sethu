@@ -23,6 +23,11 @@ login                                      # once more, loudly: shows the real e
 # administrators (only) set them; users still cannot change their own bureau.
 kcadm update users/profile -r sethu -s unmanagedAttributePolicy=ADMIN_EDIT
 
+# Sign-out sends people back to the app: allow the same addresses as sign-in ("+"). The realm
+# file sets this too, but Keycloak reads that file only when it first creates the realm.
+client=$(kcadm get clients -r sethu -q clientId=sethu-web --fields id --format csv --noquotes)
+kcadm update "clients/$client" -r sethu -s 'attributes."post.logout.redirect.uris"=+'
+
 # The password lives only in .env; the file in the repository holds a placeholder.
 users=$(</demo/users.json)
 printf '%s' "${users//__DEMO_USER_PASSWORD__/$DEMO_USER_PASSWORD}" > /tmp/users.json

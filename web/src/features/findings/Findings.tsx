@@ -5,7 +5,7 @@ import type { Options } from "../cases/types";
 // Mirrors backend/app/modules/findings/schemas.py
 export type Finding = {
   id: string;
-  kind: "transfer_loop" | "stalled_transfer" | "bottleneck";
+  kind: "transfer_loop" | "stalled_transfer" | "bottleneck" | "category_spike";
   status: "open" | "resolved" | "dismissed";
   first_seen: string;
   decided_at: string | null;
@@ -28,9 +28,16 @@ const KIND = {
   transfer_loop: "Bottleneck detected: transfer loop",
   stalled_transfer: "Stalled transfer",
   bottleneck: "Bottleneck",
+  category_spike: "Early warning: category spike",
 };
 const day = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { dateStyle: "medium" });
 const pct = (n: unknown) => `${Math.round(Number(n) * 100)}%`;
+/** The day a spike's counts were taken (as_of), so the text and the link describe the same 30 days. */
+const spikeWindow = (f: Finding) => {
+  const end = String(f.evidence.as_of ?? f.first_seen.slice(0, 10));
+  const start = new Date(new Date(end).getTime() - Number(f.evidence.recent_days) * 86_400_000);
+  return { start: start.toISOString().slice(0, 10), end };
+};
 
 /** The numbers the detector used, in words. */
 function numbers(f: Finding): string {
@@ -38,6 +45,17 @@ function numbers(f: Finding): string {
   if (f.kind === "transfer_loop")
     return `${e.transfers} transfers in a row between ${f.bureaus.join(" and ")}, none acknowledged; last one ${e.days_unacknowledged} days ago`;
   if (f.kind === "stalled_transfer") return `transferred ${e.days_unacknowledged} days ago, not acknowledged`;
+  if (f.kind === "category_spike") {
+    const past =
+      e.ratio === null
+        ? `none in the ${e.baseline_days} days before`
+        : `${e.ratio} times the baseline of ${e.baseline} per ${e.recent_days} days (${e.previous} in the ${e.baseline_days} days before)`;
+    return (
+      `${e.recent} complaints in the ${e.recent_days} days to ${day(spikeWindow(f).end)}, ${past}. ` +
+      `Flagged at ${e.min_count} or more and ${e.ratio_threshold} times the baseline. ` +
+      "A comparison with past counts, not a forecast."
+    );
+  }
   const of = `of ${e.open} open cases`;
   if (e.measure === "overdue_share") return `${e.overdue} ${of} overdue (${pct(e.share)}, more than ${pct(e.threshold)})`;
   const median = e.median_days_to_close ? ` (${e.median_days_to_close} days)` : "";
@@ -47,11 +65,20 @@ function numbers(f: Finding): string {
 function Target({ f }: { f: Finding }) {
   if (f.complaint_id) return <a href={`#/cases/${f.complaint_id}`}>{f.ref}</a>;
   if (f.institution_id) return <a href={`#/institutions/${f.institution_id}`}>{f.institution}</a>;
+  if (f.kind === "category_spike") {
+    const { state, category } = f.evidence as { state: string; category: string };
+    const { start, end } = spikeWindow(f);
+    return (
+      <a href={`#/cases?${new URLSearchParams({ state, category, filed_from: start, filed_to: end })}`}>
+        {state}: {category}
+      </a>
+    );
+  }
   const bureau = f.bureaus[0];
   return <a href={`#/cases?${new URLSearchParams({ bureau, overdue: "true" })}`}>{bureau} queue</a>;
 }
 
-/** Findings by kind with filters, and the early-warning trend indicator. */
+/** Findings by kind with filters (early warnings among them), and the institution trend indicator. */
 export function FindingsPage({ canDecide, canDetect }: { canDecide: boolean; canDetect: boolean }) {
   const [filters, setFilters] = useState({ kind: "", status: "open", bureau: "" });
   const [message, setMessage] = useState<string | null>(null);
@@ -75,8 +102,9 @@ export function FindingsPage({ canDecide, canDetect }: { canDecide: boolean; can
     <section>
       <h1>Findings</h1>
       <p>
-        Cases that bounce between bureaus without anyone acknowledging them, and queues where too many cases are old
-        or overdue. Open findings come first: transfer loops, then stalled transfers, then bottlenecks, worst first.
+        Cases that bounce between bureaus without anyone acknowledging them, queues where too many cases are old or
+        overdue, and early warnings: a category in one state well above its own recent past. Open findings come first:
+        transfer loops, then stalled transfers, then bottlenecks (worst first), then early warnings.
         Checked every 5 minutes. A transfer loop or stalled transfer also puts an alert in the Alerts
         screen, where a bureau head or oversight decides whether it is sent.
       </p>

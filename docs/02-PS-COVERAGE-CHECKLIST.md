@@ -56,4 +56,4 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [ ] Graph: institution view shows bureaus and complaints as nodes, overlaps as highlighted edges
 - [x] Deadlock: seeded transfer loop is detected and shown as "Bottleneck detected"
 - [x] Profile DNA: 6 measures visible on the institution page
-- [ ] Early warning: one regional spike flagged, with the baseline shown
+- [x] Early warning: one regional spike flagged, with the baseline shown

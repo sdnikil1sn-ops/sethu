@@ -1,4 +1,4 @@
-"""Deadlock and bottleneck detection, and the early-warning trend. Fully deterministic: rules on
+"""Deadlock, bottleneck and early-warning detection, and the trend indicator. Fully deterministic: rules on
 case actions and summary counts, no AI model and no complaint text.
 
 Deadlock (one case):
@@ -10,10 +10,15 @@ Bottleneck (a bureau's or an institution's open cases), with at least `bottlenec
   overdue_share     more than `bottleneck_share` of them are past their 21-day deadline.
   older_than_median (bureaus only) more than `bottleneck_share` of them are older than the bureau's median
                     days to close. Not for institutions: a handful of cases makes it fire too easily.
+Early warning (one state and category):
+  category_spike    complaints in the last 30 days reach `spike_min_count` and are at least `spike_ratio`
+                    times the baseline: the same cell's previous 90 days, scaled to 30. A comparison with
+                    past counts, not a forecast. No alert: the finding is shown on screen only.
 
 A finding's key names it, so a second run adds nothing. A finding that no longer holds is marked
-resolved; if it comes back it is reopened. Deadlock findings also put an alert in the outbox in
-pending_approval: nothing is sent until a bureau head or oversight approves it.
+resolved; if it comes back it is reopened with the numbers and bureaus of that day. Deadlock
+findings also put an alert in the outbox in pending_approval: nothing is sent until a bureau head
+or oversight approves it.
 """
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
@@ -27,6 +32,7 @@ from app.modules.complaints import service as complaints
 from app.modules.findings import repo
 
 TREND_DAYS = 30
+SPIKE_RECENT_DAYS, SPIKE_BASELINE_DAYS = 30, 90
 
 
 class FindingError(Exception):
@@ -80,6 +86,25 @@ def queue_findings(scope: str, rows: list[dict], min_open: int, share: float) ->
     return found
 
 
+def spike_findings(rows: list[dict], min_count: int, ratio: float, as_of: str) -> list[dict]:
+    """Regional category spikes, with the counts, baseline and thresholds used."""
+    found = []
+    for r in rows:
+        baseline = r["previous"] * SPIKE_RECENT_DAYS / SPIKE_BASELINE_DAYS
+        if r["recent"] < min_count or (baseline and r["recent"] < ratio * baseline):
+            continue  # too few to mean anything, or not far enough above its own past
+        found.append({
+            "kind": "category_spike", "key": f"category_spike:{r['state']}:{r['category']}",
+            "institution_id": None, "bureau_ids": r["bureau_ids"],
+            "evidence": {"state": r["state"], "category": r["category"], "recent": r["recent"],
+                         "previous": r["previous"], "baseline": round(baseline, 2),
+                         "ratio": round(r["recent"] / baseline, 2) if baseline else None,  # None: nothing before
+                         "recent_days": SPIKE_RECENT_DAYS, "baseline_days": SPIKE_BASELINE_DAYS,
+                         "min_count": min_count, "ratio_threshold": ratio, "as_of": as_of},
+        })
+    return found
+
+
 def _alert(session: Session, f: dict, codes: dict[UUID, str]) -> UUID:
     bureaus = " to ".join(codes[b] for b in f["path"])  # the route taken: PGRC to RB to PGRC
     what = "transfer loop" if f["kind"] == "transfer_loop" else "transfer not acknowledged"
@@ -102,13 +127,16 @@ def detect(session: Session, principal: Principal) -> dict[str, int]:
     current = [f for h in by_case.values() if (f := transfer_finding(h, now, settings.stalled_transfer_days))]
     for scope, rows in (("bureau", repo.bureau_queues(session)), ("institution", repo.institution_queues(session))):
         current += queue_findings(scope, rows, settings.bottleneck_min_open, settings.bottleneck_share)
+    current += spike_findings(repo.category_cells(session, SPIKE_RECENT_DAYS, SPIKE_BASELINE_DAYS),
+                              settings.spike_min_count, settings.spike_ratio, now.date().isoformat())
 
     known = {r["key"]: r for r in repo.existing(session)}
     codes = repo.bureau_codes(session)
     counts = {"created": 0, "reopened": 0, "resolved": 0}
     for f in current:
         if f["key"] not in known:
-            alert_id = _alert(session, f, codes) if f["kind"] != "bottleneck" else None
+            # Only a stuck case gets an alert; bottlenecks and spikes are shown on screen only.
+            alert_id = _alert(session, f, codes) if f["kind"] in ("transfer_loop", "stalled_transfer") else None
             finding_id = repo.insert(session, f, alert_id)
             audit.record(session, principal, "finding.created", entity_type="findings", entity_id=str(finding_id),
                          payload={"kind": f["kind"], "complaint_id": f.get("complaint_id") and str(f["complaint_id"]),
@@ -117,7 +145,12 @@ def detect(session: Session, principal: Principal) -> dict[str, int]:
                                   "alert_id": alert_id and str(alert_id)})
             counts["created"] += 1
         elif known[f["key"]]["status"] == "resolved":
-            _set(session, principal, known[f["key"]]["id"], "open", "finding.reopened", None)
+            # It holds again, maybe with other numbers (a spike months later): show those, not the old ones.
+            finding_id = known[f["key"]]["id"]
+            repo.reopen(session, finding_id, f["evidence"], f["bureau_ids"])
+            audit.record(session, principal, "finding.reopened", entity_type="findings", entity_id=str(finding_id),
+                         payload={"status": "open", "bureaus": sorted(codes[b] for b in f["bureau_ids"]),
+                                  "evidence": f["evidence"]})
             counts["reopened"] += 1
     still = {f["key"] for f in current}
     for key, row in known.items():
@@ -159,5 +192,5 @@ def open_count(session: Session) -> int:
 
 
 def trend(session: Session) -> dict:
-    """Early-warning trend indicator: counts only, no prediction."""
+    """Trend indicator (not the early warning): counts only, no prediction."""
     return {"days": TREND_DAYS, "items": repo.trend(session, TREND_DAYS)}

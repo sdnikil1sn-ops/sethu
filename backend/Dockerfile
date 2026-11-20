@@ -1,9 +1,18 @@
 # syntax=docker/dockerfile:1
 FROM python:3.12-slim AS build
 WORKDIR /src
+ENV PIP_DEFAULT_TIMEOUT=60 PIP_RETRIES=10
 COPY pyproject.toml ./
+# Dependencies first, against an empty package: this layer is rebuilt only when pyproject.toml
+# changes, so a code change needs no network (and the demo machine can rebuild offline).
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install "setuptools>=69" \
+ && mkdir app && touch app/__init__.py \
+ && pip install --prefix=/install . \
+ && rm -rf app build *.egg-info
 COPY app ./app
-RUN pip install --no-cache-dir --prefix=/install .
+# The real code, over the placeholder. No downloads: dependencies and setuptools are already here.
+RUN pip install --no-cache-dir --prefix=/install --no-deps --no-build-isolation --force-reinstall .
 
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1

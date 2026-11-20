@@ -73,7 +73,7 @@ The production start (section 7) does not use the `dev` profile, so these users 
 
 Keycloak imports `infra/keycloak/sethu-realm.json` only when the `sethu` realm does not exist yet, so editing the file changes nothing on a stack that has already started.
 
-Demo users only (new password in `.env`, or a user was changed or deleted). Safe to repeat; other users and all SETHU data are untouched:
+Demo users only (new password in `.env`, or a user was changed or deleted). It also sets the web client's sign-out return address (`post.logout.redirect.uris` = `+`, the same addresses as sign-in), which an existing realm may lack. Safe to repeat; other users and all SETHU data are untouched:
 
 ```powershell
 docker compose --profile dev run --rm demo-users
@@ -104,7 +104,7 @@ Exports hold counts and reference data only. Officers and bureau heads get their
 
 ### Findings (deadlocks and bottlenecks)
 
-The worker checks transfers and queues every 5 minutes; an admin can also press **Check now** on the Findings screen. On the seeded data C-090 shows as "Bottleneck detected: transfer loop", with an alert waiting on the Alerts screen for a bureau head or oversight. Thresholds are environment variables read by the backend and worker: `SETHU_STALLED_TRANSFER_DAYS` (7), `SETHU_BOTTLENECK_MIN_OPEN` (3), `SETHU_BOTTLENECK_SHARE` (0.6). On freshly loaded seed data there are 4 bottleneck findings; the count grows as the seeded cases age, so reseed before a rehearsal. Changing one does not rewrite existing findings; the next run resolves those that no longer hold and adds new ones.
+The worker checks transfers and queues every 5 minutes; an admin can also press **Check now** on the Findings screen. On the seeded data there is also one "Early warning: category spike" (Uttar Pradesh, Fee refund: 10 complaints in 30 days against a baseline of 2.67), which makes no alert. C-090 shows as "Bottleneck detected: transfer loop", with an alert waiting on the Alerts screen for a bureau head or oversight. Thresholds are environment variables read by the backend and worker: `SETHU_STALLED_TRANSFER_DAYS` (7), `SETHU_BOTTLENECK_MIN_OPEN` (3), `SETHU_BOTTLENECK_SHARE` (0.6), `SETHU_SPIKE_MIN_COUNT` (5), `SETHU_SPIKE_RATIO` (3.0). On freshly loaded seed data there are 4 bottleneck findings; the count grows as the seeded cases age, so reseed before a rehearsal. Changing one does not rewrite existing findings; the next run resolves those that no longer hold and adds new ones.
 
 ### Manual check of the screens (no browser tests)
 

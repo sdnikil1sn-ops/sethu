@@ -54,6 +54,21 @@ def institution_queues(session: Session) -> list[dict]:
           FROM queue WHERE institution_id IS NOT NULL GROUP BY institution_id""")  # noqa: S608
 
 
+def category_cells(session: Session, recent_days: int, baseline_days: int) -> list[dict]:
+    """Complaints per state and category: the last `recent_days`, and the `baseline_days` before.
+    Summary fields only. Cases whose institution is not matched yet have no state and are left out."""
+    return _all(session, """
+        SELECT i.state, s.category,
+               count(*) FILTER (WHERE s.filed_at >= now() - make_interval(days => :r)) AS recent,
+               count(*) FILTER (WHERE s.filed_at < now() - make_interval(days => :r)) AS previous,
+               coalesce(array_agg(DISTINCT s.bureau_id)
+                        FILTER (WHERE s.filed_at >= now() - make_interval(days => :r)), '{}') AS bureau_ids
+          FROM sethu.complaint_summaries s JOIN sethu.institutions i ON i.id = s.institution_id
+         WHERE s.filed_at >= now() - make_interval(days => :r + :b)
+           AND i.state IS NOT NULL AND s.category IS NOT NULL
+         GROUP BY i.state, s.category""", r=recent_days, b=baseline_days)
+
+
 def bureau_codes(session: Session) -> dict[UUID, str]:
     return {r["id"]: r["code"] for r in _all(session, "SELECT id, code FROM sethu.bureaus")}
 
@@ -75,6 +90,14 @@ def set_status(session: Session, finding_id: UUID, status: str, actor_id: UUID |
     return session.execute(text("""
         UPDATE sethu.findings SET status = :status, decided_by = :actor, decided_at = now()
          WHERE id = :id"""), {"id": finding_id, "status": status, "actor": actor_id}).rowcount == 1
+
+
+def reopen(session: Session, finding_id: UUID, evidence: dict, bureau_ids: list[UUID]) -> bool:
+    """The detector reopens a finding that holds again, with today's numbers and bureaus."""
+    return session.execute(text("""
+        UPDATE sethu.findings SET status = 'open', evidence = CAST(:e AS jsonb), bureau_ids = :b,
+               decided_by = NULL, decided_at = now()
+         WHERE id = :id"""), {"id": finding_id, "e": json.dumps(evidence), "b": bureau_ids}).rowcount == 1
 
 
 def head_emails(session: Session, bureau_ids: list[UUID]) -> list[str]:
@@ -119,7 +142,7 @@ def listing(session: Session, filters: dict[str, Any]) -> list[dict]:
     where = " AND ".join(FILTERS[k] for k in filters) or "true"
     return _all(session, f"""{FINDING} WHERE {where}
          ORDER BY (f.status = 'open') DESC,
-                  array_position(ARRAY['transfer_loop', 'stalled_transfer', 'bottleneck'], f.kind),
+                  array_position(ARRAY['transfer_loop', 'stalled_transfer', 'bottleneck', 'category_spike'], f.kind),
                   (f.evidence->>'share')::numeric DESC NULLS LAST, (f.evidence->>'open')::int DESC NULLS LAST,
                   f.first_seen DESC, f.id""", **filters)  # noqa: S608 - constants only
 
