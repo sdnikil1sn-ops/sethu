@@ -1,10 +1,10 @@
 {
-  "snapshot_id": "sha256:d493b81f7822f5594ce3c96b3406a9c7861faf34636e162d25b43dd6f1123935",
+  "snapshot_id": "sha256:5e00149fa546573161cbddb1a3704ec916b3849bcbdad3188fce30608569f996",
   "format_version": 1,
   "enola_version": "0.4.21",
   "extractor_version": "v270",
-  "generated_at": "2026-11-20T10:00:20Z",
-  "duration": "6.2817974s",
+  "generated_at": "2026-11-20T10:43:53Z",
+  "duration": "8.168615s",
   "repo_path": "E:\\App\\Project\\SETHU",
   "git": {
     "ref": "main",
@@ -48,15 +48,15 @@
   "config_hash": "sha256:73d78ea79f51e19979d4c7d00bd9463ae684ebcb909116abad86675323c32c05",
   "ignore_glob_hash": "sha256:7523cc6397a498e151125a682d28fbf6df20c6f51f6dfaf18fd8f5239a20d2d8",
   "output_hashes": {
-    "facts.jsonl": "sha256:a13b38ca9517e68fc0b1e223ac7a83a60854fe96e0a763691230f5abe6c6d99c",
-    "insights.json": "sha256:ae0df80a4015d9ee742f4a7ce5767007f9b5d000ffdbbdcc51b9e1b6012ebf15",
-    "llm_context.md": "sha256:de43f2f7beb98fceca5bc6b596428c5d5dd07332567258df64ffc8b93041019b"
+    "facts.jsonl": "sha256:045a79a665c4079e2b303508c72a9186615b215ed5ee54c5310ffaecda26b44f",
+    "insights.json": "sha256:a7089e149938b71f4b7a2704ea30d56d96978771c29f1ffe5b4b17f44ad5d14c",
+    "llm_context.md": "sha256:13918ddf28778b4ce9cebb2829714d792d0717150a53526c3f6a5008edfb0094"
   },
-  "fact_count": 2359,
+  "fact_count": 2363,
   "insight_count": 162,
   "quality": {
-    "files_seen": 663,
-    "files_parsed": 200,
+    "files_seen": 676,
+    "files_parsed": 201,
     "files_skipped": 33,
     "dirs_skipped": 5,
     "skipped_sample": [
@@ -88,13 +88,13 @@
       "coverage_gaps": 0,
       "unresolved_edges": 0,
       "extractors_reporting": 1,
-      "extraction_unresolved": 128
+      "extraction_unresolved": 126
     },
     "census": {
-      "files_walked": 696,
-      "parsed": 200,
+      "files_walked": 709,
+      "parsed": 201,
       "excluded_by_ignore": 33,
-      "excluded_by_kind": 425,
+      "excluded_by_kind": 437,
       "excluded_kinds": {
         "(no extension)": 9,
         ".conf": 4,
@@ -108,7 +108,7 @@
         ".graphify_root": 2,
         ".graphify_version": 2,
         ".ini": 2,
-        ".json": 368,
+        ".json": 380,
         ".nudges": 1,
         ".sh": 4,
         ".sig": 2,

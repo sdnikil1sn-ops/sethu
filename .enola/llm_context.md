@@ -9,27 +9,27 @@
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app` | python | 6 | 6 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/api` | python | 3 | 3 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/audit` | python | 3 | 3 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/core` | python | 13 | 12 |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/core` | python | 16 | 13 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/db` | python | 4 | 4 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | python | 0 | 0 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts` | python | 19 | 15 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view` | python | 10 | 10 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` | python | 48 | 41 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard` | python | 14 | 13 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` | python | 35 | 31 |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` | python | 36 | 32 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions` | python | 46 | 43 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` | python | 30 | 24 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports` | python | 13 | 9 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search` | python | 6 | 6 |
 | `.claude/worktrees/jolly-feynman-1a9f96/scripts` | python | 1 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/seed` | python | 8 | 8 |
+| `.claude/worktrees/jolly-feynman-1a9f96/seed` | python | 9 | 9 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web` | typescript | 1 | 1 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src` | typescript | 22 | 7 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/alerts` | typescript | 6 | 1 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/audit` | typescript | 9 | 1 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases` | typescript | 21 | 15 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/dashboard` | typescript | 9 | 1 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/findings` | typescript | 8 | 2 |
+| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/findings` | typescript | 9 | 2 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions` | typescript | 26 | 15 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps` | typescript | 10 | 4 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/reports` | typescript | 5 | 1 |
@@ -67,7 +67,7 @@
 
 ## Extraction Quality
 
-- Files parsed: **201** / 676 seen (33 file(s) + 5 directory tree(s) skipped by ignore globs)
+- Files parsed: **202** / 710 seen (34 file(s) + 5 directory tree(s) skipped by ignore globs)
 - Parse errors: 0
 
 ## Architecture Pattern
@@ -166,4 +166,4 @@ _No specific architecture pattern detected._
 
 ---
 
-*Generated at 2026-11-20T10:43:53Z in 8.168615s. 2363 facts, 162 insights.*
+*Generated at 2026-11-20T12:49:49Z in 2.783411s. 2375 facts, 162 insights.*

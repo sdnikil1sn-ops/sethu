@@ -492,7 +492,7 @@
     "title": "High fan-in symbol: .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/repo._all (9 dependents)",
     "source": "god-class",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/repo._all\" is depended upon by 9 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.8596331296037475,
+    "confidence": 0.8615895903490949,
     "evidence": [
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/repo.py",
@@ -552,7 +552,7 @@
     "title": "High fan-in symbol: .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo._all (9 dependents)",
     "source": "god-class",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo._all\" is depended upon by 9 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.8596331296037475,
+    "confidence": 0.8615895903490949,
     "evidence": [
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo.py",
@@ -612,7 +612,7 @@
     "title": "High fan-in symbol: backend/app/modules/institutions/repo._all (9 dependents)",
     "source": "god-class",
     "description": "\"backend/app/modules/institutions/repo._all\" is depended upon by 9 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.8596331296037475,
+    "confidence": 0.8615895903490949,
     "evidence": [
       {
         "file": "backend/app/modules/institutions/repo.py",
@@ -672,7 +672,7 @@
     "title": "High fan-in symbol: backend/app/modules/findings/repo._all (8 dependents)",
     "source": "god-class",
     "description": "\"backend/app/modules/findings/repo._all\" is depended upon by 8 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.7641183374255534,
+    "confidence": 0.7658574136436399,
     "evidence": [
       {
         "file": "backend/app/modules/findings/repo.py",
@@ -1123,6 +1123,65 @@
     ]
   },
   {
+    "title": "Call-graph hotspot: .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md (fan-in 3, fan-out 23)",
+    "source": "hotspots",
+    "description": "\".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md\" is a pinch point: 3 symbols call into it and it calls out to 23 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "detail": "fan-in 3 × fan-out 23 = score 69",
+        "line": 1,
+        "fact_id": "879e645f2a5ac0daaed30c186a4bb243"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md#commands",
+        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "7dbda8f3f28243ec8b646e92392d07a4"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md#read-first",
+        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "315a0e7580aa8ac4ccac16caaa7f521b"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/README.md#quick-start-windows-powershell",
+        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "a96d13de323ac11b6eff536878b23c4d"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#1-first-start",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "8fda8358a5cd87f26debb02e9bb65fed"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#2-daily-use",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "0944eb871e91017aa8f185ee573dab6b"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#3-database",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "de07a7660681f6acf93c24f71780ec5e"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#4-backup-and-restore",
+        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
+        "fact_id": "3cccfe673db3915d4dc5390578ce4d2f"
+      }
+    ],
+    "suggested_actions": [
+      "Add focused tests around this chokepoint before refactoring",
+      "Consider decomposing it so call paths don't all funnel through one symbol",
+      "Verify it isn't doing orchestration that belongs in callers"
+    ]
+  },
+  {
     "title": "Call-graph hotspot: backend/app/db/session.session_for (fan-in 15, fan-out 4)",
     "source": "hotspots",
     "description": "\"backend/app/db/session.session_for\" is a pinch point: 15 symbols call into it and it calls out to 4 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
@@ -1242,65 +1301,6 @@
         "symbol": "backend/app/modules/findings/repo.bureau_codes",
         "detail": "called by backend/app/modules/findings/service.detect",
         "fact_id": "16eb2507564c9310054f9dc8dd01f003"
-      }
-    ],
-    "suggested_actions": [
-      "Add focused tests around this chokepoint before refactoring",
-      "Consider decomposing it so call paths don't all funnel through one symbol",
-      "Verify it isn't doing orchestration that belongs in callers"
-    ]
-  },
-  {
-    "title": "Call-graph hotspot: .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md (fan-in 3, fan-out 18)",
-    "source": "hotspots",
-    "description": "\".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md\" is a pinch point: 3 symbols call into it and it calls out to 18 others, so a large share of call chains pass through it (degree-centrality proxy for betweenness). Such chokepoints are high-risk to change and high-value to test.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "detail": "fan-in 3 × fan-out 18 = score 54",
-        "line": 1,
-        "fact_id": "879e645f2a5ac0daaed30c186a4bb243"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md#commands",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "7dbda8f3f28243ec8b646e92392d07a4"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/CLAUDE.md#read-first",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "315a0e7580aa8ac4ccac16caaa7f521b"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/README.md#quick-start-windows-powershell",
-        "detail": "calls into .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "a96d13de323ac11b6eff536878b23c4d"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#1-first-start",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "8fda8358a5cd87f26debb02e9bb65fed"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#2-daily-use",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "0944eb871e91017aa8f185ee573dab6b"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#3-database",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "de07a7660681f6acf93c24f71780ec5e"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md#4-backup-and-restore",
-        "detail": "called by .claude/worktrees/jolly-feynman-1a9f96/docs/RUNBOOK.md",
-        "fact_id": "3cccfe673db3915d4dc5390578ce4d2f"
       }
     ],
     "suggested_actions": [
@@ -2129,9 +2129,9 @@
     ]
   },
   {
-    "title": "Large public surface:  exports 241 of 272 symbols (89%)",
+    "title": "Large public surface:  exports 244 of 277 symbols (88%)",
     "source": "exported-surface",
-    "description": "Module \"\" exports 241 of its 272 symbols (89%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
+    "description": "Module \"\" exports 244 of its 277 symbols (88%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
     "confidence": 0.6,
     "evidence": [
       {
@@ -2288,6 +2288,26 @@
     ]
   },
   {
+    "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/seed/generate.build (38)",
+    "source": "complexity-outliers",
+    "description": "\".claude/worktrees/jolly-feynman-1a9f96/seed/generate.build\" has a cyclomatic complexity of 38 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.build",
+        "detail": "cyclomatic complexity 38 at line 163",
+        "line": 163,
+        "fact_id": "c4f70cb60230ec305ca530a8a992b87d"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
     "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src.App (33)",
     "source": "complexity-outliers",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src.App\" has a cyclomatic complexity of 33 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
@@ -2336,8 +2356,8 @@
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/findings/Findings.tsx",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/findings.FindingsPage",
-        "detail": "cyclomatic complexity 31 at line 76",
-        "line": 76,
+        "detail": "cyclomatic complexity 31 at line 82",
+        "line": 82,
         "fact_id": "d3851bf5f020453c36b2ba838d990fab"
       }
     ],
@@ -2439,26 +2459,6 @@
         "detail": "cyclomatic complexity 28 at line 21",
         "line": 21,
         "fact_id": "5ea458d29e8d4d9113295e349dec8e99"
-      }
-    ],
-    "suggested_actions": [
-      "Extract guard clauses and nested branches into helper functions",
-      "Replace deep conditionals with table/strategy dispatch where possible",
-      "Add tests covering the distinct branches before refactoring"
-    ]
-  },
-  {
-    "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/seed/generate.build (27)",
-    "source": "complexity-outliers",
-    "description": "\".claude/worktrees/jolly-feynman-1a9f96/seed/generate.build\" has a cyclomatic complexity of 27 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.py",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.build",
-        "detail": "cyclomatic complexity 27 at line 150",
-        "line": 150,
-        "fact_id": "c4f70cb60230ec305ca530a8a992b87d"
       }
     ],
     "suggested_actions": [
@@ -3770,9 +3770,9 @@
     ]
   },
   {
-    "title": "Additional dead-code candidates: 625 more (see find_orphans)",
+    "title": "Additional dead-code candidates: 628 more (see find_orphans)",
     "source": "dead-code",
-    "description": "40 further high/medium-confidence orphan(s) were omitted from individual insights and 585 low-confidence orphan(s) (methods/types/consts/vars — usage not edge-tracked) were not surfaced individually. Use the find_orphans tool (output_mode=full) for the complete list.",
+    "description": "40 further high/medium-confidence orphan(s) were omitted from individual insights and 588 low-confidence orphan(s) (methods/types/consts/vars — usage not edge-tracked) were not surfaced individually. Use the find_orphans tool (output_mode=full) for the complete list.",
     "confidence": 0.4,
     "evidence": null,
     "suggested_actions": [
@@ -3811,24 +3811,24 @@
   {
     "title": "Performance risk (call-in-loop, O(n³)): .claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
     "source": "performance",
-    "description": "Calls .claude/worktrees/jolly-feynman-1a9f96/seed/load.insert, .claude/worktrees/jolly-feynman-1a9f96/seed/load.rows inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "description": "Calls .claude/worktrees/jolly-feynman-1a9f96/seed/load.rows, .claude/worktrees/jolly-feynman-1a9f96/seed/load.insert inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
     "confidence": 0.9,
     "evidence": [
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
-        "detail": "Calls .claude/worktrees/jolly-feynman-1a9f96/seed/load.insert, .claude/worktrees/jolly-feynman-1a9f96/seed/load.rows inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 50,
-        "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
-        "detail": "call_in_loop=.claude/worktrees/jolly-feynman-1a9f96/seed/load.insert",
+        "detail": "Calls .claude/worktrees/jolly-feynman-1a9f96/seed/load.rows, .claude/worktrees/jolly-feynman-1a9f96/seed/load.insert inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
+        "line": 53,
         "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
         "detail": "call_in_loop=.claude/worktrees/jolly-feynman-1a9f96/seed/load.rows",
+        "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
+        "detail": "call_in_loop=.claude/worktrees/jolly-feynman-1a9f96/seed/load.insert",
         "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
       }
     ],
@@ -3898,14 +3898,14 @@
   {
     "title": "Performance risk (call-in-loop, O(n³+)): .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.detect",
     "source": "performance",
-    "description": "Calls app.modules.findings.repo.transfer_histories, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service._alert, app.modules.findings.repo.insert, app.audit.service.record, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service._set inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
+    "description": "Calls app.modules.findings.repo.transfer_histories, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service._alert, app.modules.findings.repo.insert, app.audit.service.record, app.modules.findings.repo.reopen, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service._set inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop. Big-O is a deterministic estimate of structural worst case from parser facts, not a proof — treat as a lead to verify.",
     "confidence": 0.5,
     "evidence": [
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.detect",
-        "detail": "Calls app.modules.findings.repo.transfer_histories, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service._alert, app.modules.findings.repo.insert, app.audit.service.record, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service._set inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 118,
+        "detail": "Calls app.modules.findings.repo.transfer_histories, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service._alert, app.modules.findings.repo.insert, app.audit.service.record, app.modules.findings.repo.reopen, .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service._set inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
+        "line": 119,
         "fact_id": "6d528a76cd1b2d1eaf5f2c174313f5d7"
       },
       {
@@ -3926,6 +3926,11 @@
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.detect",
         "detail": "call_in_loop=app.audit.service.record",
+        "fact_id": "6d528a76cd1b2d1eaf5f2c174313f5d7"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.detect",
+        "detail": "call_in_loop=app.modules.findings.repo.reopen",
         "fact_id": "6d528a76cd1b2d1eaf5f2c174313f5d7"
       },
       {
@@ -4249,7 +4254,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.build",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n³).",
-        "line": 150,
+        "line": 163,
         "fact_id": "c4f70cb60230ec305ca530a8a992b87d"
       },
       {
@@ -4273,7 +4278,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n³).",
-        "line": 50,
+        "line": 53,
         "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
       },
       {
@@ -4533,7 +4538,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.detect",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to O(n³+) — a deep structural estimate, verify before acting.",
-        "line": 118,
+        "line": 119,
         "fact_id": "6d528a76cd1b2d1eaf5f2c174313f5d7"
       },
       {
@@ -4745,12 +4750,12 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.detect",
         "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
-        "line": 118,
+        "line": 119,
         "fact_id": "6d528a76cd1b2d1eaf5f2c174313f5d7"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.detect",
-        "detail": "loop_depth=2, loop_count=8, cyclomatic=17",
+        "detail": "loop_depth=2, loop_count=9, cyclomatic=18",
         "fact_id": "6d528a76cd1b2d1eaf5f2c174313f5d7"
       }
     ],
@@ -4769,7 +4774,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/service.queue_findings",
         "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
-        "line": 68,
+        "line": 69,
         "fact_id": "7063add7cd0f03a6d80f146ed98ef265"
       },
       {
@@ -4865,12 +4870,12 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.build",
         "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
-        "line": 150,
+        "line": 163,
         "fact_id": "c4f70cb60230ec305ca530a8a992b87d"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/generate.build",
-        "detail": "loop_depth=2, loop_count=19, cyclomatic=27",
+        "detail": "loop_depth=2, loop_count=29, cyclomatic=38",
         "fact_id": "c4f70cb60230ec305ca530a8a992b87d"
       }
     ],
@@ -4889,12 +4894,12 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
         "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
-        "line": 50,
+        "line": 53,
         "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/seed/load.load",
-        "detail": "loop_depth=2, loop_count=7, cyclomatic=13",
+        "detail": "loop_depth=2, loop_count=7, cyclomatic=14",
         "fact_id": "50e8c57cd6bae6a2c6566a413ad1ff9f"
       }
     ],
