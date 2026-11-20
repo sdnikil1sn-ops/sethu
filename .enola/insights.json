@@ -492,7 +492,7 @@
     "title": "High fan-in symbol: .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo._all (9 dependents)",
     "source": "god-class",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo._all\" is depended upon by 9 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.8476929326543741,
+    "confidence": 0.8596377906080673,
     "evidence": [
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/repo.py",
@@ -552,7 +552,7 @@
     "title": "High fan-in symbol: backend/app/modules/institutions/repo._all (9 dependents)",
     "source": "god-class",
     "description": "\"backend/app/modules/institutions/repo._all\" is depended upon by 9 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.8476929326543741,
+    "confidence": 0.8596377906080673,
     "evidence": [
       {
         "file": "backend/app/modules/institutions/repo.py",
@@ -612,7 +612,7 @@
     "title": "High fan-in symbol: .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/repo._all (8 dependents)",
     "source": "god-class",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/repo._all\" is depended upon by 8 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.7535048290261103,
+    "confidence": 0.7641224805405044,
     "evidence": [
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings/repo.py",
@@ -672,7 +672,7 @@
     "title": "High fan-in symbol: backend/app/modules/findings/repo._all (8 dependents)",
     "source": "god-class",
     "description": "\"backend/app/modules/findings/repo._all\" is depended upon by 8 other symbols — well above the repo average. High fan-in concentrates change risk: edits here ripple across many call sites, and it often indicates a missing or overly broad abstraction.",
-    "confidence": 0.7535048290261103,
+    "confidence": 0.7641224805405044,
     "evidence": [
       {
         "file": "backend/app/modules/findings/repo.py",
@@ -2129,9 +2129,9 @@
     ]
   },
   {
-    "title": "Large public surface:  exports 229 of 260 symbols (88%)",
+    "title": "Large public surface:  exports 237 of 268 symbols (88%)",
     "source": "exported-surface",
-    "description": "Module \"\" exports 229 of its 260 symbols (88%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
+    "description": "Module \"\" exports 237 of its 268 symbols (88%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
     "confidence": 0.6,
     "evidence": [
       {
@@ -2173,6 +2173,59 @@
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions/0004_alert_approval.downgrade",
         "detail": "exported",
         "fact_id": "1d151575a14d47b4530df5fba6ee1fee"
+      }
+    ],
+    "suggested_actions": [
+      "Unexport symbols that are only used within the module",
+      "Define a small, intentional public API and hide the rest",
+      "Split the module if it has several independent public responsibilities"
+    ]
+  },
+  {
+    "title": "Large public surface: backend/app/modules/institutions/schemas exports 17 of 17 symbols (100%)",
+    "source": "exported-surface",
+    "description": "Module \"backend/app/modules/institutions/schemas\" exports 17 of its 17 symbols (100%). A large, near-fully-exported module hides little of its implementation, so consumers can couple to internals and it is hard to change without breaking them. Worth a visibility review — though a deliberate library API may legitimately export most of its surface.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Alias",
+        "detail": "exported",
+        "fact_id": "e9ab0427807bcb61b728a758391c2a54"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.BureauCount",
+        "detail": "exported",
+        "fact_id": "372a670e05fce7b9125a4aa6a3d55869"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Candidate",
+        "detail": "exported",
+        "fact_id": "9c3d5c324eb86b892a9d8273703252a3"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.CaseSummary",
+        "detail": "exported",
+        "fact_id": "3ca880695765e9c071136e83d95199cb"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.CategoryShare",
+        "detail": "exported",
+        "fact_id": "aacf423956120f1a18dcf943b11c68ca"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Disposal",
+        "detail": "exported",
+        "fact_id": "71432a5c7da8d1210a637d62a365b7ae"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Dna",
+        "detail": "exported",
+        "fact_id": "354fe7fe227d7c5cf48bcca05d37c210"
+      },
+      {
+        "symbol": "backend/app/modules/institutions/schemas.Institution",
+        "detail": "exported",
+        "fact_id": "8ac0ff6cf07eb52fc4a0807ee8b6d507"
       }
     ],
     "suggested_actions": [
@@ -2315,6 +2368,46 @@
     ]
   },
   {
+    "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.RelationshipGraph (29)",
+    "source": "complexity-outliers",
+    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.RelationshipGraph\" has a cyclomatic complexity of 29 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/Graph.tsx",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.RelationshipGraph",
+        "detail": "cyclomatic complexity 29 at line 42",
+        "line": 42,
+        "fact_id": "f4589e8d7321a5694eab234a5663c6fa"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
+    "title": "High cyclomatic complexity: web/src/features/institutions.RelationshipGraph (29)",
+    "source": "complexity-outliers",
+    "description": "\"web/src/features/institutions.RelationshipGraph\" has a cyclomatic complexity of 29 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
+    "confidence": 0.7,
+    "evidence": [
+      {
+        "file": "web/src/features/institutions/Graph.tsx",
+        "symbol": "web/src/features/institutions.RelationshipGraph",
+        "detail": "cyclomatic complexity 29 at line 42",
+        "line": 42,
+        "fact_id": "b2cec62ab56ccf87b9bb6483f78c5049"
+      }
+    ],
+    "suggested_actions": [
+      "Extract guard clauses and nested branches into helper functions",
+      "Replace deep conditionals with table/strategy dispatch where possible",
+      "Add tests covering the distinct branches before refactoring"
+    ]
+  },
+  {
     "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.CaseList (28)",
     "source": "complexity-outliers",
     "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases.CaseList\" has a cyclomatic complexity of 28 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
@@ -2386,46 +2479,6 @@
         "detail": "cyclomatic complexity 27 at line 150",
         "line": 150,
         "fact_id": "1b373b84f958728f73c2acb29352d218"
-      }
-    ],
-    "suggested_actions": [
-      "Extract guard clauses and nested branches into helper functions",
-      "Replace deep conditionals with table/strategy dispatch where possible",
-      "Add tests covering the distinct branches before refactoring"
-    ]
-  },
-  {
-    "title": "High cyclomatic complexity: .claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.RelationshipGraph (25)",
-    "source": "complexity-outliers",
-    "description": "\".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.RelationshipGraph\" has a cyclomatic complexity of 25 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/Graph.tsx",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.RelationshipGraph",
-        "detail": "cyclomatic complexity 25 at line 36",
-        "line": 36,
-        "fact_id": "f4589e8d7321a5694eab234a5663c6fa"
-      }
-    ],
-    "suggested_actions": [
-      "Extract guard clauses and nested branches into helper functions",
-      "Replace deep conditionals with table/strategy dispatch where possible",
-      "Add tests covering the distinct branches before refactoring"
-    ]
-  },
-  {
-    "title": "High cyclomatic complexity: web/src/features/institutions.RelationshipGraph (25)",
-    "source": "complexity-outliers",
-    "description": "\"web/src/features/institutions.RelationshipGraph\" has a cyclomatic complexity of 25 — well above the repo average. Highly branched functions are hard to test fully and are frequent defect sites.",
-    "confidence": 0.7,
-    "evidence": [
-      {
-        "file": "web/src/features/institutions/Graph.tsx",
-        "symbol": "web/src/features/institutions.RelationshipGraph",
-        "detail": "cyclomatic complexity 25 at line 36",
-        "line": 36,
-        "fact_id": "b2cec62ab56ccf87b9bb6483f78c5049"
       }
     ],
     "suggested_actions": [
@@ -3518,14 +3571,37 @@
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Alias",
-        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:39",
-        "line": 39,
+        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:40",
+        "line": 40,
         "fact_id": "b19bd217324be57d821eb08ce15b50db"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Alias",
         "detail": "exported — may be used outside this snapshot; verify before removal",
         "fact_id": "b19bd217324be57d821eb08ce15b50db"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.BureauCount",
+    "source": "dead-code",
+    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.BureauCount\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.BureauCount",
+        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:51",
+        "line": 51,
+        "fact_id": "87a20f4f114125073bd10cdca049936f"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.BureauCount",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "87a20f4f114125073bd10cdca049936f"
       }
     ],
     "suggested_actions": [
@@ -3541,14 +3617,83 @@
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.CaseSummary",
-        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:28",
-        "line": 28,
+        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:29",
+        "line": 29,
         "fact_id": "a6bca4d1ef406b68ea277e3dc24817f0"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.CaseSummary",
         "detail": "exported — may be used outside this snapshot; verify before removal",
         "fact_id": "a6bca4d1ef406b68ea277e3dc24817f0"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.CategoryShare",
+    "source": "dead-code",
+    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.CategoryShare\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.CategoryShare",
+        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:45",
+        "line": 45,
+        "fact_id": "9c4dd0a889b946394e8096ea0c48e7e3"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.CategoryShare",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "9c4dd0a889b946394e8096ea0c48e7e3"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Disposal",
+    "source": "dead-code",
+    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Disposal\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Disposal",
+        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:69",
+        "line": 69,
+        "fact_id": "37a913c68e6fc06ac78dd2b7c8c5b5e0"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Disposal",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "37a913c68e6fc06ac78dd2b7c8c5b5e0"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Recurrence",
+    "source": "dead-code",
+    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Recurrence\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Recurrence",
+        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:62",
+        "line": 62,
+        "fact_id": "79ee64d54c8f726882a743664dbe14d7"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Recurrence",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "79ee64d54c8f726882a743664dbe14d7"
       }
     ],
     "suggested_actions": [
@@ -3564,14 +3709,37 @@
       {
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.ResolveIn",
-        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:62",
-        "line": 62,
+        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:110",
+        "line": 110,
         "fact_id": "7bf43e57043e53a3c94e8bb9130c3f4f"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.ResolveIn",
         "detail": "exported — may be used outside this snapshot; verify before removal",
         "fact_id": "7bf43e57043e53a3c94e8bb9130c3f4f"
+      }
+    ],
+    "suggested_actions": [
+      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
+    ]
+  },
+  {
+    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Volume",
+    "source": "dead-code",
+    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Volume\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
+    "confidence": 0.6,
+    "evidence": [
+      {
+        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py",
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Volume",
+        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.py:56",
+        "line": 56,
+        "fact_id": "98dc4fa10d1501b4a4c98367db11c0c9"
+      },
+      {
+        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/schemas.Volume",
+        "detail": "exported — may be used outside this snapshot; verify before removal",
+        "fact_id": "98dc4fa10d1501b4a4c98367db11c0c9"
       }
     ],
     "suggested_actions": [
@@ -3602,124 +3770,9 @@
     ]
   },
   {
-    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.LinkedCase",
+    "title": "Additional dead-code candidates: 624 more (see find_orphans)",
     "source": "dead-code",
-    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.LinkedCase\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
-    "confidence": 0.6,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.py",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.LinkedCase",
-        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.py:8",
-        "line": 8,
-        "fact_id": "9df2cb3489ca718e1f923bfd559ebe0c"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.LinkedCase",
-        "detail": "exported — may be used outside this snapshot; verify before removal",
-        "fact_id": "9df2cb3489ca718e1f923bfd559ebe0c"
-      }
-    ],
-    "suggested_actions": [
-      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
-    ]
-  },
-  {
-    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.Tier1Case",
-    "source": "dead-code",
-    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.Tier1Case\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
-    "confidence": 0.6,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.py",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.Tier1Case",
-        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.py:35",
-        "line": 35,
-        "fact_id": "2ffec3d6d336030b10d91980c91c7949"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.Tier1Case",
-        "detail": "exported — may be used outside this snapshot; verify before removal",
-        "fact_id": "2ffec3d6d336030b10d91980c91c7949"
-      }
-    ],
-    "suggested_actions": [
-      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
-    ]
-  },
-  {
-    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.Tier1Institution",
-    "source": "dead-code",
-    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.Tier1Institution\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
-    "confidence": 0.6,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.py",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.Tier1Institution",
-        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.py:42",
-        "line": 42,
-        "fact_id": "82fe0cd1a915d800649109c4fa5739a5"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps/schemas.Tier1Institution",
-        "detail": "exported — may be used outside this snapshot; verify before removal",
-        "fact_id": "82fe0cd1a915d800649109c4fa5739a5"
-      }
-    ],
-    "suggested_actions": [
-      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
-    ]
-  },
-  {
-    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/schemas.Column",
-    "source": "dead-code",
-    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/schemas.Column\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
-    "confidence": 0.6,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/schemas.py",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/schemas.Column",
-        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/schemas.py:7",
-        "line": 7,
-        "fact_id": "6ae52277cda908ad9a88841b6ea01a08"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports/schemas.Column",
-        "detail": "exported — may be used outside this snapshot; verify before removal",
-        "fact_id": "6ae52277cda908ad9a88841b6ea01a08"
-      }
-    ],
-    "suggested_actions": [
-      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
-    ]
-  },
-  {
-    "title": "Dead code candidate: class .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/schemas.ComplaintHit",
-    "source": "dead-code",
-    "description": "class \".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/schemas.ComplaintHit\" is unreferenced — nothing in the snapshot graph references it (medium confidence). References are matched by short name and biased conservative, so verify against dynamic/reflective dispatch and consumers outside the snapshot before removing.",
-    "confidence": 0.6,
-    "evidence": [
-      {
-        "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/schemas.py",
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/schemas.ComplaintHit",
-        "detail": "class · unreferenced · .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/schemas.py:17",
-        "line": 17,
-        "fact_id": "2829c0be9391363d80e01c8cef0d1f88"
-      },
-      {
-        "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search/schemas.ComplaintHit",
-        "detail": "exported — may be used outside this snapshot; verify before removal",
-        "fact_id": "2829c0be9391363d80e01c8cef0d1f88"
-      }
-    ],
-    "suggested_actions": [
-      "Confirm no dynamic/reflective or out-of-snapshot callers, then remove the symbol"
-    ]
-  },
-  {
-    "title": "Additional dead-code candidates: 600 more (see find_orphans)",
-    "source": "dead-code",
-    "description": "28 further high/medium-confidence orphan(s) were omitted from individual insights and 572 low-confidence orphan(s) (methods/types/consts/vars — usage not edge-tracked) were not surfaced individually. Use the find_orphans tool (output_mode=full) for the complete list.",
+    "description": "38 further high/medium-confidence orphan(s) were omitted from individual insights and 586 low-confidence orphan(s) (methods/types/consts/vars — usage not edge-tracked) were not surfaced individually. Use the find_orphans tool (output_mode=full) for the complete list.",
     "confidence": 0.4,
     "evidence": null,
     "suggested_actions": [
@@ -3736,7 +3789,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
         "detail": "Calls app.modules.institutions.repo.candidates, app.modules.institutions.repo.by_acronym inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 44,
+        "line": 47,
         "fact_id": "0d60fc15c5682efa3a3c0fb3a1771c04"
       },
       {
@@ -3794,7 +3847,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.rank",
         "detail": "Calls app.modules.institutions.repo.candidates, app.modules.institutions.repo.by_acronym inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 44,
+        "line": 47,
         "fact_id": "a998f4bb12a702c5a833fd08f2f6d488"
       },
       {
@@ -3896,7 +3949,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.queue",
         "detail": "Calls .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 104,
+        "line": 107,
         "fact_id": "cc7bd1c989dc657ce470041d47592c45"
       },
       {
@@ -3920,7 +3973,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.resolve_pending",
         "detail": "Calls .claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank, app.modules.institutions.repo.set_resolution, app.audit.service.record inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 89,
+        "line": 92,
         "fact_id": "8a1ba8b67cdcd77169cc4806a29e50e1"
       },
       {
@@ -3998,7 +4051,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.queue",
         "detail": "Calls backend/app/modules/institutions/service.rank inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 104,
+        "line": 107,
         "fact_id": "f6f97c50a9c3c16b456996e4beb87f87"
       },
       {
@@ -4022,7 +4075,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.resolve_pending",
         "detail": "Calls backend/app/modules/institutions/service.rank, app.modules.institutions.repo.set_resolution, app.audit.service.record inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 89,
+        "line": 92,
         "fact_id": "54faa7f6323ddc1a897d40bc8c23be5c"
       },
       {
@@ -4172,7 +4225,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n³).",
-        "line": 44,
+        "line": 47,
         "fact_id": "0d60fc15c5682efa3a3c0fb3a1771c04"
       },
       {
@@ -4244,7 +4297,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.rank",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to about O(n³).",
-        "line": 44,
+        "line": 47,
         "fact_id": "a998f4bb12a702c5a833fd08f2f6d488"
       },
       {
@@ -4340,7 +4393,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.lookup",
         "detail": "Calls app.modules.institutions.repo.candidates, app.modules.institutions.repo.in_place, app.modules.institutions.repo.by_acronym inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 138,
+        "line": 141,
         "fact_id": "5713906231046f786557eeddea3a6dd2"
       },
       {
@@ -4422,7 +4475,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.lookup",
         "detail": "Calls app.modules.institutions.repo.candidates, app.modules.institutions.repo.in_place, app.modules.institutions.repo.by_acronym inside a loop — a likely N+1 / per-iteration I/O pattern; batch or hoist out of the loop.",
-        "line": 138,
+        "line": 141,
         "fact_id": "750264ef894caada215dfb5e8806d665"
       },
       {
@@ -4514,7 +4567,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.queue",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to O(n³+) — a deep structural estimate, verify before acting.",
-        "line": 104,
+        "line": 107,
         "fact_id": "cc7bd1c989dc657ce470041d47592c45"
       },
       {
@@ -4538,7 +4591,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.resolve_pending",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to O(n³+) — a deep structural estimate, verify before acting.",
-        "line": 89,
+        "line": 92,
         "fact_id": "8a1ba8b67cdcd77169cc4806a29e50e1"
       },
       {
@@ -4596,7 +4649,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.queue",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to O(n³+) — a deep structural estimate, verify before acting.",
-        "line": 104,
+        "line": 107,
         "fact_id": "f6f97c50a9c3c16b456996e4beb87f87"
       },
       {
@@ -4620,7 +4673,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.resolve_pending",
         "detail": "Loops here call other looping functions; worst-case nesting compounds across the call graph to O(n³+) — a deep structural estimate, verify before acting.",
-        "line": 89,
+        "line": 92,
         "fact_id": "54faa7f6323ddc1a897d40bc8c23be5c"
       },
       {
@@ -4740,7 +4793,7 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.py",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions/service.rank",
         "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
-        "line": 44,
+        "line": 47,
         "fact_id": "0d60fc15c5682efa3a3c0fb3a1771c04"
       },
       {
@@ -4860,12 +4913,12 @@
         "file": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions/Graph.tsx",
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.RelationshipGraph",
         "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
-        "line": 36,
+        "line": 42,
         "fact_id": "f4589e8d7321a5694eab234a5663c6fa"
       },
       {
         "symbol": ".claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions.RelationshipGraph",
-        "detail": "loop_depth=2, loop_count=10, cyclomatic=25",
+        "detail": "loop_depth=2, loop_count=11, cyclomatic=29",
         "fact_id": "f4589e8d7321a5694eab234a5663c6fa"
       }
     ],
@@ -5052,7 +5105,7 @@
         "file": "backend/app/modules/institutions/service.py",
         "symbol": "backend/app/modules/institutions/service.rank",
         "detail": "Loops nest 2 deep, so the body runs about O(n²) in the loop bounds.",
-        "line": 44,
+        "line": 47,
         "fact_id": "a998f4bb12a702c5a833fd08f2f6d488"
       },
       {

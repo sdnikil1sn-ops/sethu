@@ -17,7 +17,7 @@
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` | python | 48 | 41 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard` | python | 14 | 13 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` | python | 33 | 29 |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions` | python | 38 | 35 |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions` | python | 46 | 43 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` | python | 30 | 24 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports` | python | 13 | 9 |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search` | python | 6 | 6 |
@@ -30,7 +30,7 @@
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases` | typescript | 21 | 15 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/dashboard` | typescript | 9 | 1 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/findings` | typescript | 8 | 2 |
-| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions` | typescript | 21 | 13 |
+| `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/institutions` | typescript | 26 | 15 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/overlaps` | typescript | 10 | 4 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/reports` | typescript | 5 | 1 |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/search` | typescript | 5 | 2 |
@@ -47,7 +47,7 @@
 | `backend/app/modules/complaints` | python | 48 | 41 |
 | `backend/app/modules/dashboard` | python | 14 | 13 |
 | `backend/app/modules/findings` | python | 33 | 29 |
-| `backend/app/modules/institutions` | python | 38 | 35 |
+| `backend/app/modules/institutions` | python | 46 | 43 |
 | `backend/app/modules/overlaps` | python | 30 | 24 |
 | `backend/app/modules/reports` | python | 13 | 9 |
 | `backend/app/modules/search` | python | 6 | 6 |
@@ -60,14 +60,14 @@
 | `web/src/features/cases` | typescript | 21 | 15 |
 | `web/src/features/dashboard` | typescript | 9 | 1 |
 | `web/src/features/findings` | typescript | 8 | 2 |
-| `web/src/features/institutions` | typescript | 21 | 13 |
+| `web/src/features/institutions` | typescript | 26 | 15 |
 | `web/src/features/overlaps` | typescript | 10 | 4 |
 | `web/src/features/reports` | typescript | 5 | 1 |
 | `web/src/features/search` | typescript | 5 | 2 |
 
 ## Extraction Quality
 
-- Files parsed: **198** / 629 seen (33 file(s) + 5 directory tree(s) skipped by ignore globs)
+- Files parsed: **200** / 663 seen (33 file(s) + 5 directory tree(s) skipped by ignore globs)
 - Parse errors: 0
 
 ## Architecture Pattern
@@ -166,4 +166,4 @@ _No specific architecture pattern detected._
 
 ---
 
-*Generated at 2026-11-17T20:03:05Z in 2.3048654s. 2305 facts, 161 insights.*
+*Generated at 2026-11-20T09:50:45Z in 7.8686514s. 2359 facts, 162 insights.*
