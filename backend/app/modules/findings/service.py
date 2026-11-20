@@ -54,7 +54,7 @@ def transfer_finding(history: list[dict], now: datetime, stall_days: int) -> dic
     return {
         "kind": kind, "key": f"{kind}:{last['complaint_id']}:{last['id']}", "complaint_id": last["complaint_id"],
         "institution_id": last["institution_id"], "ref": last["ref"],
-        "bureau_ids": list(dict.fromkeys(b for b in visited if b)),
+        "bureau_ids": list(dict.fromkeys(b for b in visited if b)), "path": [b for b in visited if b],
         "evidence": {"action_ids": [str(a["id"]) for a in run], "transfers": len(run),
                      "days_unacknowledged": (now - last["created_at"]).days},
     }
@@ -81,7 +81,7 @@ def queue_findings(scope: str, rows: list[dict], min_open: int, share: float) ->
 
 
 def _alert(session: Session, f: dict, codes: dict[UUID, str]) -> UUID:
-    bureaus = " to ".join(codes[b] for b in f["bureau_ids"])
+    bureaus = " to ".join(codes[b] for b in f["path"])  # the route taken: PGRC to RB to PGRC
     what = "transfer loop" if f["kind"] == "transfer_loop" else "transfer not acknowledged"
     subject = f"Bottleneck detected: {what} on case {f['ref']}"
     # References and counts only. Complaint text never goes into an alert.

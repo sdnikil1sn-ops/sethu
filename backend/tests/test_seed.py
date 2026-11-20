@@ -112,7 +112,7 @@ def test_keycloak_demo_logins_match_the_seed():
     """A demo user's token must point at the seeded person: same id, role and bureau."""
     demo = json.loads((generate.HERE.parent / "infra/demo-users/users.json").read_text(encoding="utf-8"))["users"]
     seeded = {u["username"]: u for u in USERS}
-    assert [u["username"] for u in demo] == ["rao", "iyer", "fernandes", "menon", "das"]
+    assert [u["username"] for u in demo] == ["rao", "iyer", "fernandes", "menon", "admin", "das"]
     for u in demo:
         row = seeded[u["username"]]
         assert u["id"] == str(load.user_id(u["username"]))

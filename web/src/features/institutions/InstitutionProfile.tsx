@@ -1,6 +1,7 @@
 import { useLoad } from "../../api";
 import { InstitutionTimeline } from "../cases/History";
 import { Links, SameInstitution } from "../overlaps/Overlaps";
+import { DnaPanel } from "./Dna";
 import { RelationshipGraph } from "./Graph";
 import { type Profile, day, daysSince, place } from "./types";
 
@@ -40,6 +41,8 @@ export function InstitutionProfile({ id }: { id: string }) {
           <dd>{p.oldest_open ? `${p.oldest_open.ref}, ${daysSince(p.oldest_open.filed_at)} days` : "None"}</dd>
         </div>
       </dl>
+
+      <DnaPanel dna={p.dna} />
 
       <RelationshipGraph profile={p} />
 

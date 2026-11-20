@@ -46,14 +46,14 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [x] Export is logged in the audit log
 
 ## Cross-cutting
-- [ ] Login with roles: Officer, Bureau Head, Admin, Auditor (read-only)
+- [x] Login with roles: Officer, Bureau Head, Admin, Auditor (read-only)
 - [x] Audit log with hash chain; a "Verify chain" button returns OK
 - [x] Tamper test: change one row directly in the database, "Verify chain" fails and names the row
-- [ ] One command starts everything: `docker compose up`
+- [x] One command starts everything: `docker compose up` (`--profile dev` adds Mailpit and the demo logins)
 - [ ] Runs with Wi-Fi off
 
 ## Flagship features (Tier B)
 - [ ] Graph: institution view shows bureaus and complaints as nodes, overlaps as highlighted edges
 - [x] Deadlock: seeded transfer loop is detected and shown as "Bottleneck detected"
-- [ ] Profile DNA: 6 measures visible on the institution page
+- [x] Profile DNA: 6 measures visible on the institution page
 - [ ] Early warning: one regional spike flagged, with the baseline shown

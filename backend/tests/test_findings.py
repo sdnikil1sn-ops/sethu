@@ -106,6 +106,7 @@ def test_loop_detection_finds_c090_and_queues_an_alert_for_approval(detected):
     assert alert["complaint_id"] == detected["case"]["C-090"] and alert["approved_by"] is None
     assert len(alert["recipients"]) >= 2 and all(r.endswith("@sethu.test") for r in alert["recipients"])
     assert alert["subject"] == "Bottleneck detected: transfer loop on case C-090"
+    assert "Case C-090 has moved PGRC to RB to PGRC with no acknowledgement" in alert["body"]
     assert created["alert_id"] == str(alert["id"]) and created["kind"] == "transfer_loop"
     c090 = next(c for c in COMPLAINTS if c["ref"] == "C-090")
     stored = json.dumps([dict(alert), loop, created], default=str)

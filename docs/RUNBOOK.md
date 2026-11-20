@@ -54,7 +54,7 @@ docker compose up --build migrate
 
 ### Demo logins (dev and demo only)
 
-`docker compose --profile dev up` runs a one-shot `demo-users` service that creates five Keycloak users. They are the same people as in `seed/users.csv`, with the same ids, so what they do in the app is tied to their seeded history.
+`docker compose --profile dev up` runs a one-shot `demo-users` service that creates six Keycloak users. They are the same people as in `seed/users.csv`, with the same ids, so what they do in the app is tied to their seeded history.
 
 | Username | Person | Role | Bureau |
 |---|---|---|---|
@@ -62,9 +62,10 @@ docker compose up --build migrate
 | `iyer` | Mr. Suresh Iyer | bureau_head | RB |
 | `fernandes` | Ms. Maria Fernandes | bureau_head | PGRC |
 | `menon` | Dr. Kavita Menon | oversight | none |
+| `admin` | Ms. Asha Chopra | admin | none |
 | `das` | Mr. Arun Das | auditor | none |
 
-All five share the password in `DEMO_USER_PASSWORD` in `.env`. The repository holds only a placeholder (`infra/demo-users/users.json`). A `.env` created before this variable existed needs the line added by hand: 12 or more characters with upper case, lower case and a digit.
+All six share the password in `DEMO_USER_PASSWORD` in `.env`. The repository holds only a placeholder (`infra/demo-users/users.json`). A `.env` created before this variable existed needs the line added by hand: 12 or more characters with upper case, lower case and a digit.
 
 The production start (section 7) does not use the `dev` profile, so these users are never created there. Do not add users to `infra/keycloak/sethu-realm.json`: that file is shared with production.
 

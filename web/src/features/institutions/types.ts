@@ -27,6 +27,16 @@ export type CaseSummary = {
   closed_at: string | null;
 };
 
+// Mirrors Dna in backend/app/modules/institutions/schemas.py
+export type Dna = {
+  category_mix: { category: string; cases: number; share: number }[];
+  volume: { total: number; last_12_months: number; per_month: number };
+  recurrence: { repeat_cases: number; share: number; categories: string[]; window_days: number };
+  disposal: { closed: number; median_days: number | null };
+  bureaus: { bureau: string; cases: number }[];
+  trend: { recent: number; previous: number; window_days: number; direction: "up" | "down" | "flat" };
+};
+
 export type Profile = Institution & {
   aliases: { alias: string; source: string }[];
   bureaus: string[];
@@ -34,6 +44,7 @@ export type Profile = Institution & {
   closed: number;
   oldest_open: CaseSummary | null;
   complaints: CaseSummary[];
+  dna: Dna;
 };
 
 export type QueueItem = {

@@ -66,11 +66,16 @@ header form[role="search"] input { width: 16rem; max-width: 60vw; }
 .hits li { margin: 0.3rem 0; }
 .graph { margin: 1rem 0; }
 .graph svg { width: 100%; height: auto; max-height: 20rem; display: block; background: var(--soft); border-radius: 0.5rem; }
-.graph text { font-size: 13px; fill: currentColor; }
+.graph text { font-size: 13px; fill: currentColor; paint-order: stroke; stroke: Canvas; stroke-width: 4px; stroke-linejoin: round; }
 .graph .edge { stroke: currentColor; stroke-opacity: 0.45; stroke-width: 1.5; }
 .graph .overlap-proposed { stroke-dasharray: 6 4; stroke-opacity: 0.8; }
 .graph .overlap-approved { stroke-opacity: 0.9; stroke-width: 2.5; }
-.graph .node { fill: var(--soft); stroke: currentColor; stroke-width: 1.5; }
+.graph .node { fill: Canvas; stroke: currentColor; stroke-width: 1.5; }
 .graph .institution { stroke-width: 2.5; }
 .graph a:hover .node, .graph a:focus .node { stroke-width: 3; }
 .graph figcaption { font-size: 0.85rem; opacity: 0.75; margin-top: 0.25rem; }
+.dna .tiles dd { font-size: 1.1rem; }
+.dna .tiles dd small { font-size: 0.8rem; font-weight: 400; }
+.bars { list-style: none; margin: 0.25rem 0 0; padding: 0; display: grid; gap: 0.2rem; font-size: 0.85rem; font-weight: 400; }
+.bars li { display: grid; grid-template-columns: 1fr; }
+.bars .bar { display: block; height: 0.35rem; border-radius: 0.2rem; background: currentColor; opacity: 0.5; }

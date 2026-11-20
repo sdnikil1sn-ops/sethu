@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -41,6 +42,52 @@ class Alias(BaseModel):
     source: str
 
 
+class CategoryShare(BaseModel):
+    category: str
+    cases: int
+    share: float
+
+
+class BureauCount(BaseModel):
+    bureau: str
+    cases: int
+
+
+class Volume(BaseModel):
+    total: int
+    last_12_months: int
+    per_month: float
+
+
+class Recurrence(BaseModel):
+    repeat_cases: int
+    share: float
+    categories: list[str]
+    window_days: int
+
+
+class Disposal(BaseModel):
+    closed: int
+    median_days: float | None
+
+
+class Trend(BaseModel):
+    recent: int
+    previous: int
+    window_days: int
+    direction: Literal["up", "down", "flat"]
+
+
+class Dna(BaseModel):
+    """Profile DNA: six measures from case summaries (no complaint text)."""
+    category_mix: list[CategoryShare]
+    volume: Volume
+    recurrence: Recurrence
+    disposal: Disposal
+    bureaus: list[BureauCount]
+    trend: Trend
+
+
 class Profile(Institution):
     aliases: list[Alias]
     bureaus: list[str]
@@ -48,6 +95,7 @@ class Profile(Institution):
     closed: int
     oldest_open: CaseSummary | None
     complaints: list[CaseSummary]
+    dna: Dna
 
 
 class QueueItem(BaseModel):
