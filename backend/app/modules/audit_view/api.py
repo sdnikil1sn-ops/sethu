@@ -1,11 +1,12 @@
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.auth import Principal, require_roles
 from app.core.params import Day, Text100
 from app.db.session import get_session
 from app.modules.audit_view import schemas, service
+from app.modules.audit_view import signins as signin_events
 
 router = APIRouter(prefix="/api/v1/audit", tags=["audit"])
 
@@ -34,3 +35,12 @@ def list_entries(
 @router.get("/verify", response_model=schemas.ChainReport)
 def verify(principal: Principal = Depends(READ), session: Session = Depends(get_session)) -> dict:
     return service.verify(session, principal)
+
+
+@router.get("/signins", response_model=list[schemas.SignIn], dependencies=[Depends(READ)])
+def signins(failed: bool = True, limit: int = Query(100, ge=1, le=500)) -> list[dict]:
+    """Keycloak's sign-in events (read-only): failed ones by default."""
+    try:
+        return signin_events.fetch(failed, limit)
+    except signin_events.Unavailable as e:
+        raise HTTPException(503, str(e)) from e

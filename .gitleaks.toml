@@ -1,0 +1,17 @@
+# Secret scan (CI: .github/workflows/ci.yml). The default rules, plus the few places that hold obvious test or
+# placeholder values by design. Never allowlist a real secret: remove it and rotate it (docs/RUNBOOK.md, Secrets).
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Placeholders and throwaway test values"
+regexes = [
+  '''CHANGE_ME''',
+  '''\$\{[A-Z_]+\}''',                 # realm-file placeholders filled from the environment at import
+]
+paths = [
+  '''backend/tests/''',                # fixed test values (STRONG, fake keys), never used outside tests
+  '''backend/requirements(-dev|-build)?\.lock''',   # package hashes
+  '''backend/models\.lock\.json''',    # model file hashes
+  '''graphify-out/''',
+]

@@ -5,9 +5,12 @@ import redis
 from celery import Celery
 from celery.beat import PersistentScheduler
 from celery.schedules import crontab
+from celery.signals import setup_logging, task_postrun, task_prerun
 
 from app.audit import service as audit
+from app.core import metrics
 from app.core.config import get_settings
+from app.core.logging import configure_logging, request_id
 from app.db.session import SYSTEM, session_for
 from app.modules.alerts import service as alerts
 from app.modules.complaints import service as complaints
@@ -18,6 +21,35 @@ from app.modules.overlaps import service as overlaps
 
 log = logging.getLogger("sethu.worker")
 settings = get_settings()
+
+
+@setup_logging.connect
+def _json_logs(**_kwargs) -> None:
+    """Celery's own log setup is replaced: the same JSON lines as the API, each with the task id."""
+    configure_logging()
+
+
+_task_ids: dict[str, object] = {}
+
+
+@task_prerun.connect
+def _task_started(task_id: str | None = None, **_kwargs) -> None:
+    if task_id:
+        _task_ids[task_id] = request_id.set(task_id)
+
+
+@task_postrun.connect
+def _task_finished(task_id: str | None = None, task=None, state: str | None = None, **_kwargs) -> None:
+    """Record the run (sethu.job_runs) for /metrics: when each job last ran and last succeeded."""
+    try:
+        with session_for(SYSTEM) as session:
+            metrics.record_run(session, task.name.removeprefix("sethu."), state == "SUCCESS")
+    except Exception:  # noqa: BLE001 - a metrics write never fails the job
+        log.warning("could not record the job run", extra={"job": getattr(task, "name", "?")})
+    finally:
+        token = _task_ids.pop(task_id or "", None)
+        if token is not None:
+            request_id.reset(token)
 
 celery = Celery("sethu", broker=settings.redis_url, backend=settings.redis_url)
 celery.conf.update(
@@ -90,9 +122,12 @@ def resolve_pending() -> dict:
 
 @celery.task(name="sethu.overlaps.detect")
 def detect_overlaps() -> dict:
-    """Suggest new Tier 2 overlap links. A person approves or rejects each one."""
+    """Embed new complaints (if the semantic signal is on), then suggest new Tier 2 overlap links. A person
+    approves or rejects each one."""
     with session_for(SYSTEM) as session:
-        return overlaps.detect(session, SYSTEM)
+        embedded = overlaps.embed_pending(session)
+    with session_for(SYSTEM) as session:
+        return overlaps.detect(session, SYSTEM) | {"embedded": embedded}
 
 
 @celery.task(name="sethu.findings.detect")

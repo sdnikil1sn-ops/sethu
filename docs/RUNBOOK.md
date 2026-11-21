@@ -123,12 +123,29 @@ python scripts/complainant_key.py show secrets/complainant_keys.json       # key
 
 The task re-encrypts every value onto the active key and writes a `complainant.rekeyed` audit entry per batch (counts and key ids only). When it has finished (`docker compose ... logs worker` shows `rekeyed`), and only then, drop the old key with `python scripts/complainant_key.py remove secrets/complainant_keys.json <old id>` and restart backend and worker. Keep a copy of the keyring apart from the database backups: a backup without its keyring cannot show who complained, and a backup with it is the data.
 
+### Semantic overlap
+
+Overlap suggestions (Tier 2) are gated by the rules: same institution, same category, different bureaus, both open, filed within 30 days. Inside that gate a pair is suggested when **either** signal fires: trigram text similarity (pg_trgm) of at least 0.30, or meaning similarity (cosine of two embeddings) of at least `SETHU_SEMANTIC_THRESHOLD` (0.75). Every suggestion shows both values and which fired ("text similarity 0.18; meaning similarity 0.76 (fired)"); `overlap_links.signals` keeps them.
+
+- **Model**: `BAAI/bge-small-en-v1.5` (ONNX, quantized, 384 dimensions) run by fastembed 0.9.1 in the worker. `backend/models.lock.json` pins the Hugging Face repository `Qdrant/bge-small-en-v1.5-onnx-Q` at revision `aa8f8b06…` and the SHA-256 of each of its five files (the weights: `51f1bd0a…`, 66 MB). `backend/fetch_model.py` downloads them at image build time with retries and a resumable cache mount, refuses any file whose hash differs, and lays them out for offline use; the image sets `HF_HUB_OFFLINE=1`. Run time never downloads anything (verified: the worker, on internal networks only, embedded all 312 seed complaints).
+- **Off switch**: `SETHU_SEMANTIC_OVERLAP=false` (or no model directory) gives exactly the trigram rule; nothing else changes. Embeddings are computed only for English complaints' comparisons (a Hindi pair uses trigram only).
+- **Where they live**: `complaint_embeddings`, readable exactly where the complaint text is (Row-Level Security), written only by the worker; no API returns them and no log prints them.
+- **Measure** on any data: `docker compose exec worker python -m app.modules.overlaps.measure [threshold]` prints, for every pair the rules allow, both values and which signal suggests it (references and numbers, never text).
+
+**Measured on the seed (2026-11-21).** The rules allow 7 pairs, all 7 already suggested by trigram (0.34 to 0.62); their meaning similarity is 0.77 to 0.91. So on the seed the semantic signal changes **no** suggestion (and adds no false one). A paraphrased pair filed through intake (two complaints about a withheld caution deposit in different words, PGRC and RB, same institution and category) scores trigram 0.18 and meaning 0.76: trigram misses it, the semantic signal suggests it. The threshold 0.75 is just above the 99th percentile (0.749) of meaning similarity for unrelated English complaints of different categories.
+
+**Limits.** This small English model rates complaints of the *same category* as close even when they are about different matters (median 0.80, 95th percentile 0.94 across institutions on the seed, whose texts come from templates), so meaning similarity is only usable inside the rules' gate, and within it two different matters at one institution in one category may be suggested; an officer decides every suggestion. Hindi text is not compared by meaning. The values depend on the model: change the model and re-measure before trusting the threshold.
+
+### Graph
+
+**Graph** (every role) draws the whole network with Cytoscape.js, bundled into the web app (its own file, loaded when a graph is shown; nothing comes from a CDN). By default it is aggregated: one node per bureau and per institution, an edge per bureau and institution weighted by the cases it holds, and transfer edges between bureaus; so it stays small with thousands of complaints. Clicking an institution and **Show its complaints** adds its complaints as nodes, with overlap edges (dashed: suggested, solid: approved). A ring marks an institution with cases in several bureaus; a red halo an open finding. Filters: state, category, filed dates, bureau, finding kind. The side panel shows metadata; for a complaint it shows the text only if your bureau holds the case. The institution profile shows the same component for one institution, already expanded. Data: `GET /api/v1/graph` (summary view plus overlap links, transfers and findings under Row-Level Security: each role sees its share).
+
 ### Case workflow
 
 - **Assign and reassign**: on a case's page, an officer or head of the bureau holding it chooses an active officer or head of that bureau. The case shows who has it; every assignment is in the history and the audit log (with the previous assignee). A transfer clears the assignee: the receiving bureau assigns its own people.
 - **My cases** (officers and heads): open cases assigned to you, soonest deadline first. **Workload** (heads see their bureau; oversight and admin see all): open and overdue cases per person, and the unassigned ones.
 - **Deadlines** (Admin > Deadlines by category): days to close a case, per category; a category without a setting uses `SETHU_SLA_DAYS` (21). They apply to cases filed or reopened afterwards; an open case keeps the deadline it was given.
-- **Escalation**: the findings detector (every 5 minutes) makes a `deadline_escalation` finding for each open case past its deadline and an alert to the holding bureau's head, held for approval (Alerts). Run again, it adds nothing; closing the case resolves the finding; a reopened case that misses its new deadline is a new finding. On the demo data the first run finds about two dozen late cases, so the Alerts screen fills up: reject or approve them before a demo, or reseed.
+- **Escalation**: the findings detector (every 5 minutes) makes a `deadline_escalation` finding for each open case past its deadline. The alert is a **digest**: one per bureau per run, to that bureau's heads, listing the cases that became late since the last digest and how many of its open cases are late in all (references and counts, never text), held for approval (Alerts). A run with no newly late case sends nothing. Closing the case resolves its finding; a reopened case that misses its new deadline is a new finding. On the demo data the first run makes one digest for PGRC and one for RB.
 - **Notes** are read only by the officers and heads of the bureau holding the case (Row-Level Security); oversight, admin, auditors and a bureau that transferred the case away do not see them. The other history entries are unchanged.
 - **Close** requires a reason (resolved, no action needed, duplicate, withdrawn, outside AICTE's jurisdiction). **Reopen** requires a reason, gives the case a fresh deadline from today, and keeps its assignee.
 
@@ -160,7 +177,7 @@ Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/v1/intake/submissi
 # -> id, status "queued", path "primary"
 ```
 
-401: unknown key, or a timestamp too old or in the future. 409: nonce reused, or the same complaint (or `external_ref`) already received from this source. 422: a field failed validation (the reply names the field, never repeats the value). The request never leaves the deployment: no step of intake makes an outbound call.
+Each api source may make `SETHU_INTAKE_RATE_PER_MINUTE` (60) requests a minute, or its own number set on the Intake screen; beyond that the API answers 429 with `Retry-After: 60` and queues nothing. 401: unknown key, or a timestamp too old or in the future. 409: nonce reused, or the same complaint (or `external_ref`) already received from this source. 422: a field failed validation (the reply names the field, never repeats the value). The request never leaves the deployment: no step of intake makes an outbound call.
 
 ### Reports and exports
 
@@ -232,6 +249,95 @@ $env:SETHU_TEST_REDIS_URL = "redis://127.0.0.1:6390/0"
 ```
 
 FastAPI must be 0.165 or newer (`pyproject.toml`); an older one already installed fails the case-list tests with 422 "filters field required". `pip install -e ".[dev]"` upgrades it.
+
+### Observability
+
+**Logs.** Every service logs to stdout; Docker keeps them (`docker compose logs -f backend worker web`). The backend and worker write one JSON object per line: `ts`, `level`, `logger`, `msg`, `request_id`, and for requests `status` and `duration_ms`; the message names the route template (`GET /api/v1/cases/{complaint_id}`), never an id, a query value, complaint text, complainant details, a token or a password. The edge (nginx) writes JSON too, with the path but not its query string. One id ties a request together: nginx makes `$request_id`, passes it as `X-Request-ID`, the backend logs it and returns it; in the worker the id is the task id. Database errors never print statement values (`hide_parameters`). Central collection and retention are not set up (PRODUCTION-READINESS row 32): ship the Docker log files to the AICTE log store.
+
+**Metrics.** `GET /metrics` on the backend's own port (`http://backend:8000/metrics`, internal network only; nginx answers 404, and the backend refuses any request that came through a proxy). Prometheus text format:
+
+| Metric | Means |
+|---|---|
+| `sethu_http_requests_total{method,route,status}`, `sethu_http_request_duration_seconds` | requests and latency per route template (this backend process) |
+| `sethu_intake_pending`, `sethu_intake_dead`, `sethu_intake_failures_in_a_row`, `sethu_intake_sources_down` | the intake queue, dead letters, consecutive failures, sources marked down |
+| `sethu_alerts_pending_approval`, `sethu_alerts_queued`, `sethu_alerts_failed` | the alert outbox |
+| `sethu_findings_open` | open findings |
+| `sethu_job_last_run_timestamp_seconds{job}`, `sethu_job_last_success_timestamp_seconds{job}`, `sethu_job_failures_total{job}` | each scheduled job (`findings.detect`, `overlaps.detect`, `intake.process`, `alerts.deliver`, `audit.verify_chain`, ...) and `backup` (written by the backup service) |
+
+A Prometheus server must run on the `app` network to scrape it (not part of this repository). To look by hand: `docker compose exec backend python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8000/metrics').read().decode())"`.
+
+**Alert thresholds to set** (in Prometheus or whatever watches the metrics):
+
+| Condition | Threshold | Why |
+|---|---|---|
+| backend `/health/ready` not 200 | 2 minutes | database unreachable |
+| `time() - sethu_job_last_success_timestamp_seconds{job="alerts.deliver"}` | > 5 minutes | the worker or scheduler is down: no mail goes out |
+| same for `findings.detect`, `overlaps.detect`, `intake.process` | > 20 minutes | detectors and intake stopped |
+| same for `audit.verify_chain` | > 26 hours | the nightly chain check did not run |
+| same for `backup` | > 26 hours | no backup in a day (the backup service also turns unhealthy) |
+| `sethu_intake_dead` | > 0 | a complaint needs an admin's Retry |
+| `sethu_intake_pending` | > 50 for 30 minutes | intake is stuck or a source is down |
+| `sethu_intake_sources_down` | > 0 for 1 hour | a primary source has been down for an hour |
+| `sethu_alerts_failed` | > 0 | an alert gave up: check the SMTP relay |
+| `sethu_alerts_pending_approval` | > 20 | approvals are not keeping up |
+| 5xx share of `sethu_http_requests_total` | > 2% over 10 minutes | errors |
+| p95 of `sethu_http_request_duration_seconds` | > 2 s over 10 minutes | slow |
+| failed sign-ins (below) | > 20 for one username or address in 10 minutes | password guessing (Keycloak also locks the account) |
+
+**Sign-in events.** Both realms record login events (successes and failures, logouts, password changes; 90 days) and admin events (who changed what in Keycloak; without representations). Read them:
+
+- **Audit log screen** (auditor, oversight, admin): *Failed sign-ins (from Keycloak)*, read-only. The backend asks Keycloak with the confidential client `sethu-events`, whose service account holds only `view-events`; its secret is `KEYCLOAK_EVENTS_SECRET` (dev `.env`, made by `python scripts/init_env.py`) or the secret file `keycloak_events_secret` (production). These are Keycloak's records, not entries of the hash-chained audit log.
+- **Keycloak admin console**: realm *sethu* > *Events* (user events and admin events); in production through the SSH tunnel (section 7).
+- **Keycloak's log**: the `jboss-logging` listener writes each event to the Keycloak container's log (`docker compose logs keycloak`).
+
+A realm that already exists is not re-imported, so a stack created before Phase 4 needs the realm re-imported (Re-importing the realm, above) to get the events settings and the `sethu-events` client.
+
+### Pinned dependencies
+
+Everything that goes into an image is pinned, so a rebuild gives the same bits:
+
+| What | Pinned in | Checked by |
+|---|---|---|
+| Python packages | `backend/requirements.lock` (runtime), `requirements-dev.lock` (tests, lint), `requirements-build.lock` (setuptools): exact versions with the SHA-256 of every published file | `pip install --require-hashes` in the Dockerfile and in CI |
+| npm packages | `web/package-lock.json` (exact versions and integrity hashes) | `npm ci` |
+| Base images | digests in `backend/Dockerfile`, `web/Dockerfile`, `docker-compose.yml`, `docker-compose.prod.yml` (`image: name:tag@sha256:...`) | Docker refuses a different image |
+| Embedding model | `backend/models.lock.json` (revision and file hashes) | `backend/fetch_model.py` at build time |
+
+Each image also applies its OS's security updates at build time (`apt-get upgrade`, `apk upgrade`, retried), because fixes are often released before the next base image; so two builds on different days can differ in OS patches only.
+
+`pyproject.toml` keeps the allowed ranges and a few deliberate pins with the reason beside them (fastembed; Pillow at least 13, because older versions have known vulnerabilities; onnxruntime 1.19.2, because later builds bundle a telemetry client).
+
+**Updating.**
+
+- *A Python package*: change `backend/pyproject.toml`; resolve in a clean container and read back the versions, then write the locks from PyPI's published hashes (only small requests, retried):
+  ```powershell
+  docker run --rm -v "${PWD}/backend:/src:ro" python:3.12-slim sh -c "cp -r /src /b && cd /b && pip install -q . && pip freeze" > freeze.txt
+  python scripts/lock_python.py freeze.txt dev-versions.txt    # dev-versions.txt: pytest, httpx, ruff and their deps, name==version
+  ```
+  Review the diff of the lock files, rebuild, run the tests and `pip-audit -r backend/requirements.lock`.
+- *An npm package*: `cd web; npm install <name>@<version>`, commit `package.json` and `package-lock.json`, run `npm audit --audit-level=high` and `npm run build`.
+- *A base image*: `docker pull <name>:<tag>`, then `docker image inspect --format "{{index .RepoDigests 0}}" <name>:<tag>`, and replace the digest everywhere it appears (search for the old one). Rebuild and scan (CI's Trivy step).
+- *The model*: see Semantic overlap (new revision, new hashes in `models.lock.json`, re-measure).
+
+### Continuous integration
+
+`.github/workflows/ci.yml` runs on every push to `main` and every pull request: `ruff`; the backend tests against a throwaway PostgreSQL 16 with pgvector (made with the repo's own init script, passwords generated in the job) and Redis; the web build; a secret scan of the whole history (gitleaks, `.gitleaks.toml`); `pip-audit` on the runtime lock and `npm audit --audit-level=high`; the two images built and scanned with Trivy (fails on fixable HIGH or CRITICAL); and the Playwright journeys against a full dev stack with the demo data. No step uses a repository secret. Actions are referenced by major version tag (`actions/checkout@v4`); pin them to commit SHAs if your policy requires it.
+
+Checked locally on 2026-11-21: ruff clean; backend suite green; web build; gitleaks "no leaks found"; pip-audit "No known vulnerabilities found" (after moving to fastembed 0.9.1 and Pillow 13); npm audit 0 vulnerabilities (after moving to Vite 8); Trivy 0 HIGH and 0 CRITICAL fixable findings in both images (after nginx-unprivileged 1.29 and the build-time OS updates; before: 1 in the backend, 68 in the web image). The workflow itself has not run on GitHub yet.
+
+### Browser tests
+
+Playwright tests of the main journeys (`web/e2e/journeys.spec.ts`): every role signs in and sees its own menu; search by alias; approving an overlap queues an alert; a complaint sent to the intake API becomes a case (the admin issues the key on the Intake screen); a bureau head assigns and closes a case; a report runs and exports as CSV; Verify chain reports the chain intact. They change data, so run them against a freshly seeded dev stack:
+
+```powershell
+cd web
+npm ci
+npx playwright install chromium
+$env:DEMO_USER_PASSWORD = "<DEMO_USER_PASSWORD from .env>"; $env:SETHU_URL = "http://localhost:8080"
+npx playwright test
+```
+
+Run on 2026-11-21 against a freshly seeded dev stack: 7 passed.
 
 ## 4. Backup and restore
 

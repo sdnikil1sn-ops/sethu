@@ -15,6 +15,7 @@ type Source = {
   last_success_at: string | null;
   last_failure_at: string | null;
   failures: number;
+  rate_per_minute: number | null;
   pending: number;
   dead: number;
 };
@@ -157,6 +158,20 @@ function SourceLine({ s, isAdmin, onChanged }: { s: Source; isAdmin: boolean; on
       <td className="num">{s.failures > 0 ? <strong className="flag">{s.failures}</strong> : 0}</td>
       <td className="num">{s.pending}</td>
       <td className="num">{s.dead > 0 ? <strong className="flag">{s.dead}</strong> : 0}</td>
+      <td className="num">
+        {s.channel !== "api" ? "–" : isAdmin ? (
+          <input
+            type="number"
+            min={1}
+            max={10000}
+            aria-label={`Requests per minute for ${s.name} (empty: default)`}
+            defaultValue={s.rate_per_minute ?? ""}
+            onBlur={(e) => e.target.value && Number(e.target.value) !== s.rate_per_minute && change({ rate_per_minute: Number(e.target.value) })}
+          />
+        ) : (
+          (s.rate_per_minute ?? "default")
+        )}
+      </td>
       {isAdmin && (
         <td>
           <button type="button" aria-label={`${s.marked_down ? "Mark up" : "Mark down"} ${s.name}`} onClick={() => change({ marked_down: !s.marked_down })}>
@@ -269,6 +284,7 @@ function SourcesSection({ isAdmin, onChanged }: { isAdmin: boolean; onChanged: (
             <th scope="col" className="num">Priority</th><th scope="col">Fallback</th><th scope="col">State</th>
             <th scope="col">Last success</th><th scope="col" className="num">Failures in a row</th>
             <th scope="col" className="num">Queued</th><th scope="col" className="num">Dead letters</th>
+            <th scope="col" className="num">API requests / min</th>
             {isAdmin && <th scope="col">Change</th>}
           </tr>
         </thead>

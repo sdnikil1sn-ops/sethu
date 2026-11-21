@@ -198,6 +198,46 @@ export function AuditLog() {
           Older entries
         </button>
       )}
+      <SignIns />
     </section>
+  );
+}
+
+type SignIn = { time: string; type: string | null; username: string | null; client: string | null; ip: string | null; error: string | null };
+
+/** Failed sign-ins, as Keycloak recorded them: read-only, kept by Keycloak for 90 days, not part of the chain. */
+function SignIns() {
+  const { data, error } = useLoad<SignIn[]>("/audit/signins");
+  return (
+    <>
+      <h2>Failed sign-ins (from Keycloak)</h2>
+      <p className="note">
+        Read-only. These are Keycloak's own events, not entries of the hash-chained audit log; many failures for one
+        name or from one address may be an attack.
+      </p>
+      {error && <p role="alert">{error}</p>}
+      {data && data.length === 0 && <p>No failed sign-ins recorded.</p>}
+      {data && data.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Time</th><th scope="col">Event</th><th scope="col">Username</th>
+              <th scope="col">Address</th><th scope="col">Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((e) => (
+              <tr key={`${e.time}${e.username}${e.ip}`}>
+                <td>{new Date(e.time).toLocaleString()}</td>
+                <td>{e.type}</td>
+                <td>{e.username ?? "–"}</td>
+                <td>{e.ip ?? "–"}</td>
+                <td>{e.error ?? "–"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
   );
 }

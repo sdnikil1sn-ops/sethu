@@ -16,7 +16,9 @@ def listing(session: Session, *, status: str | None = None, alert_id: UUID | Non
         SELECT al.id, al.kind, al.status, al.subject, al.body, al.recipients, al.missing_recipients, al.created_at,
                al.approved_at, u.display_name AS approved_by, al.sent_at, al.attempts, al.last_error,
                al.next_attempt_at,
-               array_remove(ARRAY[ca.ref, cb.ref, cc.ref], NULL) AS cases
+               array_remove(ARRAY[ca.ref, cb.ref, cc.ref], NULL)
+               || ARRAY(SELECT s.ref FROM sethu.findings f JOIN sethu.complaint_summaries s ON s.id = f.complaint_id
+                         WHERE f.alert_id = al.id AND al.bureau_id IS NOT NULL ORDER BY s.ref) AS cases
           FROM sethu.alerts al
           LEFT JOIN sethu.app_users u ON u.id = al.approved_by
           LEFT JOIN sethu.overlap_links l ON l.id = al.overlap_link_id

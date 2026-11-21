@@ -92,6 +92,7 @@ class SourcePatch(BaseModel):
     clear_fallback: bool = False
     active: bool | None = None
     marked_down: bool | None = None
+    rate_per_minute: int | None = Field(default=None, ge=1, le=10000)
 
 
 class Source(BaseModel):
@@ -107,6 +108,7 @@ class Source(BaseModel):
     last_success_at: datetime | None
     last_failure_at: datetime | None
     failures: int
+    rate_per_minute: int | None   # None: the default (SETHU_INTAKE_RATE_PER_MINUTE)
     pending: int
     dead: int
 

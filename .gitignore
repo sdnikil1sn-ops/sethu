@@ -17,3 +17,5 @@ data/
 .claude/worktrees/
 backups/
 spool/
+web/test-results/
+web/playwright-report/

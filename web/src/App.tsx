@@ -9,6 +9,7 @@ import { CaseList } from "./features/cases/CaseList";
 import { MyCases, Workload } from "./features/cases/Queues";
 import { Dashboard } from "./features/dashboard/Dashboard";
 import { FindingsPage } from "./features/findings/Findings";
+import { GraphPage } from "./features/graph/GraphPage";
 import { InstitutionList } from "./features/institutions/InstitutionList";
 import { IntakePage } from "./features/intake/Intake";
 import { InstitutionProfile } from "./features/institutions/InstitutionProfile";
@@ -70,6 +71,9 @@ export function App() {
               Workload
             </a>
           )}
+          <a href="#/graph" aria-current={route === "/graph" ? "page" : undefined}>
+            Graph
+          </a>
           <a href="#/overlaps" aria-current={route === "/overlaps" ? "page" : undefined}>
             Overlaps
           </a>
@@ -130,6 +134,8 @@ export function App() {
           <ReportsPage />
         ) : route === "/admin" ? (
           <AdminPage />
+        ) : route === "/graph" ? (
+          <GraphPage />
         ) : route === "/mine" ? (
           <MyCases />
         ) : route === "/workload" ? (

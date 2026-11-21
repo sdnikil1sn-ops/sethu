@@ -232,3 +232,15 @@ def test_who_sees_and_does_what_on_the_intake_screens(intake):
     with session_for(service.GATEWAY, intake["engine"]) as s:  # the API gateway reads no complaints
         assert s.execute(text("SELECT count(*) FROM sethu.complaints")).scalar() == 0
         assert s.execute(text("SELECT count(*) FROM sethu.intake_items WHERE channel <> 'api'")).scalar() == 0
+
+
+def test_the_intake_api_has_a_per_source_quota(intake, monkeypatch):
+    monkeypatch.setattr(get_settings(), "intake_rate_per_minute", 2)
+    bodies = [{**COMPLAINT, "body": f"{BODY} Case number {n}."} for n in range(4)]
+    assert [intake["post"](b).status_code for b in bodies[:2]] == [202, 202]
+    refused = intake["post"](bodies[2])
+    assert refused.status_code == 429 and refused.headers["Retry-After"] == "60"
+    assert intake["scalar"]("SELECT count(*) FROM sethu.intake_items") == 2     # the refused one was not queued
+    admin = intake["as_"]("admin")
+    assert admin.patch(f"/api/v1/intake/sources/{intake['portal']}", json={"rate_per_minute": 5}).status_code == 200
+    assert intake["post"](bodies[3]).status_code == 202                        # a source's own quota wins

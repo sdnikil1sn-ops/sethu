@@ -25,6 +25,7 @@ RANDOM = (  # name -> what uses it
     ("keycloak_admin_password", "Keycloak bootstrap administrator"),
     ("redis_password", "Redis, backend and worker"),
     ("backup_key", "encrypts the database backups (keep a copy OFF this host)"),
+    ("keycloak_events_secret", "the backend's read-only Keycloak client for sign-in events"),
 )
 
 

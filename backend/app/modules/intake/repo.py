@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 SOURCES = """
     SELECT s.id, s.name, s.channel, b.code AS bureau, s.bureau_id, s.priority, f.name AS fallback,
            s.fallback_source_id, s.active, s.marked_down, s.key_sha256 IS NOT NULL AS has_key,
-           s.last_success_at, s.last_failure_at, s.failures,
+           s.last_success_at, s.last_failure_at, s.failures, s.rate_per_minute,
            (SELECT count(*) FROM sethu.intake_items i WHERE i.source_id = s.id AND i.status = 'pending') AS pending,
            (SELECT count(*) FROM sethu.intake_items i WHERE i.source_id = s.id AND i.status = 'dead') AS dead,
            EXISTS (SELECT 1 FROM sethu.intake_sources p
@@ -72,6 +72,14 @@ def use_nonce(session: Session, source_id: UUID, nonce: str) -> bool:
     return session.execute(text("""
         INSERT INTO sethu.intake_nonces (source_id, nonce) VALUES (:s, :n)
         ON CONFLICT DO NOTHING RETURNING 1"""), {"s": source_id, "n": nonce}).first() is not None
+
+
+def recent_requests(session: Session, source_id: UUID, seconds: int) -> int:
+    """Accepted API requests from this source in the last `seconds` (each used one nonce)."""
+    return session.execute(text(
+        "SELECT count(*) FROM sethu.intake_nonces"
+        " WHERE source_id = :s AND seen_at > now() - make_interval(secs => :t)"),
+        {"s": source_id, "t": seconds}).scalar_one()
 
 
 def forget_nonces(session: Session, older_than_seconds: int) -> int:

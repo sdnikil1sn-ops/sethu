@@ -13,6 +13,9 @@ dependencies = [
     "pyjwt[crypto]>=2.9,<3",
     "celery[redis]>=5.4,<6",
     "openpyxl>=3.1,<4",  # reading XLSX intake files; no network use
+    "fastembed==0.9.1",  # semantic overlap signal; runs a local ONNX model baked into the image
+    "pillow>=13.0",      # via fastembed; older Pillow has known vulnerabilities (pip-audit)
+    "onnxruntime==1.19.2",  # via fastembed; later builds bundle a telemetry client (it could not send: no route out)
 ]
 
 [project.optional-dependencies]

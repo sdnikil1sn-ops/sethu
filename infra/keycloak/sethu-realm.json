@@ -12,11 +12,26 @@
   "otpPolicyType": "totp",
   "roles": {
     "realm": [
-      { "name": "officer", "description": "Bureau officer: works cases of the own bureau" },
-      { "name": "bureau_head", "description": "Bureau head: approves links and alerts for the own bureau" },
-      { "name": "oversight", "description": "Cross-bureau oversight: reads all bureaus" },
-      { "name": "admin", "description": "Platform administrator" },
-      { "name": "auditor", "description": "Read-only access to the audit ledger and reports" }
+      {
+        "name": "officer",
+        "description": "Bureau officer: works cases of the own bureau"
+      },
+      {
+        "name": "bureau_head",
+        "description": "Bureau head: approves links and alerts for the own bureau"
+      },
+      {
+        "name": "oversight",
+        "description": "Cross-bureau oversight: reads all bureaus"
+      },
+      {
+        "name": "admin",
+        "description": "Platform administrator"
+      },
+      {
+        "name": "auditor",
+        "description": "Read-only access to the audit ledger and reports"
+      }
     ]
   },
   "clients": [
@@ -28,9 +43,16 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "implicitFlowEnabled": false,
-      "redirectUris": ["http://localhost:8080/*"],
-      "webOrigins": ["+"],
-      "attributes": { "pkce.code.challenge.method": "S256", "post.logout.redirect.uris": "+" },
+      "redirectUris": [
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "+"
+      },
       "protocolMappers": [
         {
           "name": "audience-sethu-api",
@@ -79,6 +101,55 @@
           }
         }
       ]
+    },
+    {
+      "clientId": "sethu-events",
+      "name": "SETHU backend: reads sign-in events (read-only)",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${KEYCLOAK_EVENTS_SECRET}",
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": true
+    }
+  ],
+  "eventsEnabled": true,
+  "eventsExpiration": 7776000,
+  "eventsListeners": [
+    "jboss-logging"
+  ],
+  "enabledEventTypes": [
+    "LOGIN",
+    "LOGIN_ERROR",
+    "LOGOUT",
+    "LOGOUT_ERROR",
+    "CODE_TO_TOKEN",
+    "CODE_TO_TOKEN_ERROR",
+    "REFRESH_TOKEN_ERROR",
+    "UPDATE_PASSWORD",
+    "UPDATE_PASSWORD_ERROR",
+    "RESET_PASSWORD",
+    "RESET_PASSWORD_ERROR",
+    "UPDATE_TOTP",
+    "REMOVE_TOTP",
+    "CLIENT_LOGIN_ERROR"
+  ],
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": false,
+  "users": [
+    {
+      "username": "service-account-sethu-events",
+      "enabled": true,
+      "serviceAccountClientId": "sethu-events",
+      "clientRoles": {
+        "realm-management": [
+          "view-events"
+        ]
+      }
     }
   ]
 }

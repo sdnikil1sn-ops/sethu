@@ -11,7 +11,7 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [x] Each case shows status, owner bureau, filed date, due date, days remaining
 - [x] Overdue cases are visibly marked
 - [x] Status change is possible for the owner bureau only (role check)
-- [x] A case is assigned to a person in the holding bureau (reassignable, with history); deadlines by category; a missed deadline is escalated to the bureau head (finding and alert held for approval); notes for the holding bureau only; closing with a reason and reopening with a reason
+- [x] A case is assigned to a person in the holding bureau (reassignable, with history); deadlines by category; a missed deadline is escalated to the bureau head (a finding per case, one digest alert per bureau and run, held for approval); notes for the holding bureau only; closing with a reason and reopening with a reason
 - [x] Complaints arrive through designated sources (portal API, file upload, manual form, spool folder), each with a primary and a fallback path; nothing is dropped when a source or the pipeline fails (queue, retry, dead letters with Retry)
 
 ## 3. Overlap detection
@@ -57,7 +57,8 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [ ] Runs with Wi-Fi off (evidence only: app and data networks are internal, the browser made no outside request, and code changes rebuild without downloads; a run with Wi-Fi actually off is still to do)
 
 ## Flagship features (Tier B)
-- [ ] Graph: institution view shows bureaus and complaints as nodes, overlaps as highlighted edges
+- [x] Graph: institution view shows bureaus and complaints as nodes, overlaps as highlighted edges (the institution profile shows its corner of the network Graph screen, same component and data)
+- [x] Network graph: bureaus, institutions and complaints as nodes; holding, transfer and overlap edges; filters (state, category, dates, bureau, finding kind); institutions with cases in several bureaus and open findings marked; aggregated to institutions, complaints on request
 - [x] Deadlock: seeded transfer loop is detected and shown as "Bottleneck detected"
 - [x] Profile DNA: 6 measures visible on the institution page
 - [x] Early warning: one regional spike flagged, with the baseline shown

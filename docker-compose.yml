@@ -33,6 +33,7 @@ x-backend-env: &backend-env
   SETHU_DEBUG: ${SETHU_DEBUG:-false}
   SETHU_COMPLAINANT_KEYS_FILE: /run/secrets/complainant_keys
   SETHU_INTAKE_SPOOL_DIR: /spool   # mounted into the worker only (the fallback intake channel)
+  SETHU_KEYCLOAK_EVENTS_SECRET: ${KEYCLOAK_EVENTS_SECRET:-}   # sign-in events on the Audit log screen
   # Findings thresholds (docs/RUNBOOK.md). The defaults repeat backend/app/core/config.py: keep them equal.
   SETHU_STALLED_TRANSFER_DAYS: ${SETHU_STALLED_TRANSFER_DAYS:-7}
   SETHU_BOTTLENECK_MIN_OPEN: ${SETHU_BOTTLENECK_MIN_OPEN:-3}
@@ -42,7 +43,7 @@ x-backend-env: &backend-env
 
 services:
   postgres:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg16@sha256:484e838076e04939d27d3e176e91c86eea96236126023be8d3059761122e579f
     restart: unless-stopped
     security_opt: ["no-new-privileges:true"]
     cap_drop: ["ALL"]
@@ -69,7 +70,7 @@ services:
 
   redis:
     <<: *hardening
-    image: redis:7-alpine
+    image: redis:7-alpine@sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
     cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]            # needed by the image entrypoint
     read_only: true
@@ -98,7 +99,7 @@ services:
     deploy: { resources: { limits: { memory: 256m } } }
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.0
+    image: quay.io/keycloak/keycloak:26.0@sha256:09a381c715ab0b111835b70f2905955274843a219c6f27efb348e4d9f4086858
     restart: unless-stopped
     security_opt: ["no-new-privileges:true"]
     cap_drop: ["ALL"]
@@ -115,6 +116,7 @@ services:
       KC_HEALTH_ENABLED: "true"
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USER:-sethu-admin}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_EVENTS_SECRET: ${KEYCLOAK_EVENTS_SECRET:?run python scripts/init_env.py (adds KEYCLOAK_EVENTS_SECRET)}   # read by the realm file
     volumes:
       - ./infra/keycloak:/opt/keycloak/data/import:ro
     healthcheck:                      # the image has no curl: ask the management port with bash
@@ -130,7 +132,7 @@ services:
 
   demo-users:                         # dev and demo only: creates the demo logins, then exits
     <<: *hardening
-    image: quay.io/keycloak/keycloak:26.0
+    image: quay.io/keycloak/keycloak:26.0@sha256:09a381c715ab0b111835b70f2905955274843a219c6f27efb348e4d9f4086858
     profiles: ["dev"]
     restart: "no"
     entrypoint: ["/bin/bash", "/demo/import.sh"]
@@ -228,7 +230,7 @@ services:
 
   mailpit:                            # local mail catcher for the demo; not in production
     <<: *hardening
-    image: axllent/mailpit:v1.33.1
+    image: axllent/mailpit:v1.33.1@sha256:aef2aacc11f075ec0fb6874275ee4a421e688e11a96ebb296134d1735c7761ce
     profiles: ["dev"]
     ports:
       - "127.0.0.1:8025:8025"

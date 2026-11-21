@@ -120,14 +120,19 @@ def deadline_findings(rows: list[dict], now: datetime) -> list[dict]:
     } for r in rows]
 
 
+def _digest(session: Session, bureau_id: UUID, new: list[dict], code: str) -> UUID:
+    """One alert for a bureau's heads: the cases that passed their deadline since the last digest, and how many
+    of its open cases are late in all. References and counts only."""
+    refs = sorted(f["ref"] for f in new)
+    late = repo.overdue_count(session, bureau_id)
+    subject = f"{len(refs)} case(s) in {code} passed their deadline"
+    body = (f"{subject}: {', '.join(refs)}.\n\n{late} open case(s) in {code} are past their deadline in all.\n\n"
+            "Open SETHU (Findings, kind: Deadline passed) to see who holds each case and decide what happens next.")
+    recipients, missing = users.recipients(session, [bureau_id])
+    return repo.insert_alert(session, None, recipients, missing, subject, body, kind="sla", bureau_id=bureau_id)
+
+
 def _alert(session: Session, f: dict, codes: dict[UUID, str]) -> UUID:
-    if f["kind"] == "deadline_escalation":
-        subject = f"Deadline passed on case {f['ref']}"
-        body = (f"{subject}\n\nCase {f['ref']} ({codes[f['bureau_ids'][0]]}) was due on {f['evidence']['due_at'][:10]} "
-                f"and is still open ({f['evidence']['days_overdue_when_found']} day(s) late when found).\n\n"
-                "Open SETHU to see who holds it and decide what happens next.")
-        recipients, missing = users.recipients(session, f["bureau_ids"])  # the holding bureau's heads
-        return repo.insert_alert(session, f["complaint_id"], recipients, missing, subject, body, kind="sla")
     bureaus = " to ".join(codes[b] for b in f["path"])  # the route taken: PGRC to RB to PGRC
     what = "transfer loop" if f["kind"] == "transfer_loop" else "transfer not acknowledged"
     subject = f"Bottleneck detected: {what} on case {f['ref']}"
@@ -156,12 +161,25 @@ def detect(session: Session, principal: Principal) -> dict[str, int]:
 
     known = {r["key"]: r for r in repo.existing(session)}
     codes = repo.bureau_codes(session)
-    counts = {"created": 0, "reopened": 0, "resolved": 0}
+    counts = {"created": 0, "reopened": 0, "resolved": 0, "digests": 0}
+    # Missed deadlines: one digest per bureau for this run's new ones, not one alert per case.
+    late: dict[UUID, list[dict]] = {}
+    for f in current:
+        if f["kind"] == "deadline_escalation" and f["key"] not in known:
+            late.setdefault(f["bureau_ids"][0], []).append(f)
+    digest = {b: _digest(session, b, fs, codes[b]) for b, fs in late.items()}
+    for b, alert_id in digest.items():
+        audit.record(session, principal, "alert.digest_created", entity_type="alerts", entity_id=str(alert_id),
+                     payload={"bureau": codes[b], "cases": sorted(f["ref"] for f in late[b])})
+    counts["digests"] = len(digest)
     for f in current:
         if f["key"] not in known:
-            # A stuck or late case gets an alert (held for approval); bottlenecks and spikes are on screen only.
-            alerted = ("transfer_loop", "stalled_transfer", "deadline_escalation")
-            alert_id = _alert(session, f, codes) if f["kind"] in alerted else None
+            # A stuck case gets its own alert, a late one a place in its bureau's digest (both held for approval);
+            # bottlenecks and spikes are shown on screen only.
+            if f["kind"] == "deadline_escalation":
+                alert_id = digest[f["bureau_ids"][0]]
+            else:
+                alert_id = _alert(session, f, codes) if f["kind"] in ("transfer_loop", "stalled_transfer") else None
             finding_id = repo.insert(session, f, alert_id)
             audit.record(session, principal, "finding.created", entity_type="findings", entity_id=str(finding_id),
                          payload={"kind": f["kind"], "complaint_id": f.get("complaint_id") and str(f["complaint_id"]),

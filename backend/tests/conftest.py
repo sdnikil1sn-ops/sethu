@@ -40,7 +40,7 @@ SKIP_REASON = "set MIGRATION_DATABASE_URL, SETHU_DATABASE_URL and SETHU_TEST_DB_
 requires_db = pytest.mark.skipif(not HAVE_DB, reason=SKIP_REASON)
 
 TABLES = (
-    "intake_nonces, intake_items, intake_sources, "
+    "job_runs, complaint_embeddings, intake_nonces, intake_items, intake_sources, "
     "findings, alerts, overlap_links, case_actions, complaints, institution_aliases, "
     "institutions, app_users, bureaus, audit_log"
 )

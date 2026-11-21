@@ -42,6 +42,16 @@ backup_once() {
     log "wrote $(basename "$out") ($(stat -c %s "$out") bytes)"
   done
   touch "$DIR/last-success"
+  record_run true
+}
+
+# For /metrics (sethu.job_runs): this service connects as the database superuser, so it may write the row.
+record_run() {
+  psql -d sethu -q -v ok="$1" -c "INSERT INTO sethu.job_runs (name, last_run_at, last_ok_at, last_ok, failures)
+      VALUES ('backup', now(), CASE WHEN :'ok' THEN now() END, :'ok', CASE WHEN :'ok' THEN 0 ELSE 1 END)
+      ON CONFLICT (name) DO UPDATE SET last_run_at = now(), last_ok = :'ok', runs = sethu.job_runs.runs + 1,
+        last_ok_at = CASE WHEN :'ok' THEN now() ELSE sethu.job_runs.last_ok_at END,
+        failures = sethu.job_runs.failures + CASE WHEN :'ok' THEN 0 ELSE 1 END"     || log "could not record the run for /metrics"
 }
 
 prune() {
@@ -84,7 +94,7 @@ case "${1:-loop}" in
     hours=${BACKUP_INTERVAL_HOURS:-24}
     until pg_isready -q; do sleep 5; done
     while true; do
-      backup_once || log "FAILED (see above); next try in $hours h"
+      backup_once || { log "FAILED (see above); next try in $hours h"; record_run false; }
       prune
       sleep $((hours * 3600))
     done ;;

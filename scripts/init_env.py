@@ -20,9 +20,23 @@ def ensure_keyring() -> None:
         complainant_key.main(["new", str(keys)])
 
 
+ADDED_LATER = ("KEYCLOAK_EVENTS_SECRET",)  # added to .env.example after first installs
+
+
+def ensure_added_keys() -> None:
+    """Append a generated value for any secret added since this .env was made; never replace one."""
+    present = {line.split("=", 1)[0] for line in TARGET.read_text(encoding="utf-8").splitlines() if "=" in line}
+    missing = [k for k in ADDED_LATER if k not in present]
+    if missing:
+        with open(TARGET, "a", encoding="utf-8", newline="\n") as f:
+            f.writelines(f"{k}={secrets.token_urlsafe(32)}\n" for k in missing)
+        print(f"Added to {TARGET}: {', '.join(missing)}")
+
+
 def main() -> int:
     ensure_keyring()  # also on a machine that already has a .env
     if TARGET.exists():
+        ensure_added_keys()
         print(".env already exists; delete it first if you really want new secrets.")
         return 1
     lines = []

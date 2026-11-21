@@ -30,3 +30,13 @@ class ChainReport(BaseModel):
     broken_seq: int | None
     reason: str | None
     row: Entry | None  # the first row that fails, as stored now
+
+
+class SignIn(BaseModel):
+    """A Keycloak event, as Keycloak recorded it. No token, password or session id."""
+    time: datetime
+    type: str | None
+    username: str | None
+    client: str | None
+    ip: str | None
+    error: str | None
