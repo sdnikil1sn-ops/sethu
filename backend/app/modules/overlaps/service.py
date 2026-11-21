@@ -7,14 +7,22 @@ category, filed within 30 days of each other, whose texts are similar. Stored as
 `proposed` link (the suggestion) until an officer or head of either bureau
 approves or rejects it. Approving queues an alert to both bureau heads.
 
-Deterministic throughout: rules plus pg_trgm similarity, no AI model.
+Signals, inside the rules: pg_trgm text similarity always; with SETHU_SEMANTIC_OVERLAP on and the model present,
+also the cosine similarity of the two complaints' embeddings (English only), which catches paraphrases trigram
+misses. Either signal can raise a suggestion; each suggestion records both values and which fired. The
+embeddings come from a local ONNX model baked into the image (no download at run time), are computed by the
+worker only, stay in the database under the same Row-Level Security as the text, and are never returned by an
+API or logged. With the setting off or the model missing, detection is exactly the trigram rule.
 """
+import logging
+from functools import lru_cache
 from uuid import UUID
 
 from sqlalchemy.orm import Session
 
 from app.audit import service as audit
 from app.core.auth import Principal
+from app.core.config import get_settings
 from app.modules.complaints import service as complaints
 from app.modules.overlaps import repo
 from app.modules.users import service as users
@@ -24,6 +32,58 @@ from app.modules.users import service as users
 SIMILARITY_THRESHOLD = 0.30
 WINDOW_DAYS = 30
 BANNER = "Potential Overlapping Cases – Coordination Required"
+
+
+log = logging.getLogger("sethu.overlaps")
+EMBED_BATCH = 64
+
+
+@lru_cache
+def _embedder():
+    """The local model, or None (setting off, no model directory, or the library missing): trigram only."""
+    s = get_settings()
+    if not (s.semantic_overlap and s.embedding_cache_dir):
+        return None
+    try:
+        import onnxruntime
+        from fastembed import TextEmbedding  # only the worker image needs it at run time
+
+        onnxruntime.disable_telemetry_events()     # no telemetry, ever (the worker has no route out anyway)
+        onnxruntime.set_default_logger_severity(3)  # errors only: its native lines bypass the JSON logs
+        from loguru import logger as loguru  # fastembed's logger: send it through the JSON logs, not stderr
+
+        loguru.remove()
+        loguru.add(lambda m: logging.getLogger("fastembed").log(m.record["level"].no, m.record["message"]),
+                   level="INFO")
+
+        return TextEmbedding(s.embedding_model, cache_dir=s.embedding_cache_dir)
+    except Exception as e:  # noqa: BLE001 - any failure means: carry on with trigram
+        log.warning("semantic overlap signal unavailable, using trigram only", extra={"reason": type(e).__name__})
+        return None
+
+
+def semantic_on() -> bool:
+    return _embedder() is not None
+
+
+def embed_pending(session: Session, limit: int = 500) -> int:
+    """Embed complaints that have no vector for the current model. Worker only (needs every bureau's text).
+    Logs counts, never text or vectors."""
+    model = _embedder()
+    if model is None:
+        return 0
+    name, done = get_settings().embedding_model, 0
+    while done < limit:
+        rows = repo.unembedded(session, name, min(EMBED_BATCH, limit - done))
+        if not rows:
+            break
+        vectors = model.embed([r["body"] for r in rows])
+        repo.store_embeddings(session, name, [(r["id"], [float(x) for x in v]) for r, v in zip(rows, vectors,
+                                                                                                strict=True)])
+        done += len(rows)
+    if done:
+        log.info("complaints embedded", extra={"count": done, "model": name})
+    return done
 
 
 class OverlapError(Exception):
@@ -36,12 +96,14 @@ class OverlapError(Exception):
 
 def detect(session: Session, principal: Principal) -> dict[str, int]:
     """Find new Tier 2 pairs and store them as suggestions. Safe to repeat."""
-    created = repo.suggest_tier2(session, SIMILARITY_THRESHOLD, WINDOW_DAYS)
+    s = get_settings()
+    created = repo.suggest_tier2(session, SIMILARITY_THRESHOLD, WINDOW_DAYS,
+                                 s.semantic_threshold if semantic_on() else None, s.embedding_model)
     ref = repo.refs(session, [c for row in created for c in (row["complaint_a"], row["complaint_b"])])
     for row in created:
         audit.record(session, principal, "overlap.suggested", entity_type="overlap_links", entity_id=str(row["id"]),
                      payload={"cases": sorted([ref[row["complaint_a"]], ref[row["complaint_b"]]]), "tier": 2,
-                              "score": float(row["score"])})
+                              "score": float(row["score"]), "signals": row["signals"]})
     return {"suggested": len(created)}
 
 

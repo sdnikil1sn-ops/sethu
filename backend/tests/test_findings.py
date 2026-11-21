@@ -125,7 +125,8 @@ def test_a_second_run_adds_nothing(detected):
         counted = "SELECT (SELECT count(*) FROM sethu.findings), (SELECT count(*) FROM sethu.alerts)," \
                   " (SELECT count(*) FROM sethu.audit_log WHERE action LIKE 'finding.%')"
         before = s.execute(text(counted)).one()
-        assert service.detect(s, SYSTEM) == {"created": 0, "reopened": 0, "resolved": 0}
+        # Phase 4 added the digest count to the result.
+        assert service.detect(s, SYSTEM) == {"created": 0, "reopened": 0, "resolved": 0, "digests": 0}
         assert s.execute(text(counted)).one() == before
 
 
@@ -250,7 +251,8 @@ def test_seeded_spike_is_found_once_with_its_counts_and_no_alert(detected):
         alerts = s.execute(text(
             # Phase 3: missed deadlines now add 'sla' alerts by design; this test is about the spike.
             "SELECT c.ref FROM sethu.alerts a JOIN sethu.complaints c ON c.id = a.complaint_id WHERE a.kind <> 'sla'"
-            " UNION ALL SELECT 'no case' FROM sethu.alerts WHERE complaint_id IS NULL")).scalars().all()
+            " UNION ALL SELECT 'no case' FROM sethu.alerts"
+            " WHERE complaint_id IS NULL AND kind <> 'sla'")).scalars().all()
     assert rows == 1 and len(created) == 1 and created[0]["evidence"] == e
     assert alerts == ["C-090"]  # the loop's alert; the spike made none
     spike_bodies = [c["body"] for c in COMPLAINTS if "spike" in c["seed_tags"].split(";")]

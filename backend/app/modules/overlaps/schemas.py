@@ -19,6 +19,7 @@ class Link(BaseModel):
     tier: int
     score: float | None
     reasons: list[str]
+    signals: dict = {}   # e.g. {"trigram": 0.42, "semantic": 0.88, "fired": ["semantic"], "model": ...}
     status: Literal["proposed", "approved", "rejected"]
     created_at: datetime
     decided_at: datetime | None

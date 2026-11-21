@@ -20,7 +20,7 @@ def _run(work):
     try:
         return work()
     except service.IntakeError as e:
-        raise HTTPException(e.status, str(e)) from e
+        raise HTTPException(e.status, str(e), headers=e.headers) from e
 
 
 @router.post("/submissions", status_code=status.HTTP_202_ACCEPTED, response_model=schemas.Accepted)

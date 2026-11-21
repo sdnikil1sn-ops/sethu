@@ -8,7 +8,6 @@
   "loginWithEmailAllowed": false,
   "duplicateEmailsAllowed": false,
   "editUsernameAllowed": false,
-
   "bruteForceProtected": true,
   "permanentLockout": false,
   "failureFactor": 5,
@@ -17,10 +16,8 @@
   "minimumQuickLoginWaitSeconds": 60,
   "quickLoginCheckMilliSeconds": 1000,
   "maxDeltaTimeSeconds": 43200,
-
   "passwordPolicy": "length(12) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1) and notUsername and notEmail and passwordHistory(5)",
   "otpPolicyType": "totp",
-
   "accessTokenLifespan": 300,
   "accessCodeLifespan": 60,
   "ssoSessionIdleTimeout": 1800,
@@ -28,14 +25,28 @@
   "revokeRefreshToken": true,
   "refreshTokenMaxReuse": 0,
   "actionTokenGeneratedByUserLifespan": 300,
-
   "roles": {
     "realm": [
-      { "name": "officer", "description": "Bureau officer: works cases of the own bureau" },
-      { "name": "bureau_head", "description": "Bureau head: approves links and alerts for the own bureau" },
-      { "name": "oversight", "description": "Cross-bureau oversight: reads all bureaus" },
-      { "name": "admin", "description": "Platform administrator" },
-      { "name": "auditor", "description": "Read-only access to the audit ledger and reports" }
+      {
+        "name": "officer",
+        "description": "Bureau officer: works cases of the own bureau"
+      },
+      {
+        "name": "bureau_head",
+        "description": "Bureau head: approves links and alerts for the own bureau"
+      },
+      {
+        "name": "oversight",
+        "description": "Cross-bureau oversight: reads all bureaus"
+      },
+      {
+        "name": "admin",
+        "description": "Platform administrator"
+      },
+      {
+        "name": "auditor",
+        "description": "Read-only access to the audit ledger and reports"
+      }
     ]
   },
   "clients": [
@@ -49,8 +60,12 @@
       "implicitFlowEnabled": false,
       "serviceAccountsEnabled": false,
       "rootUrl": "${SETHU_PUBLIC_BASE_URL}",
-      "redirectUris": ["${SETHU_PUBLIC_BASE_URL}/"],
-      "webOrigins": ["${SETHU_PUBLIC_BASE_URL}"],
+      "redirectUris": [
+        "${SETHU_PUBLIC_BASE_URL}/"
+      ],
+      "webOrigins": [
+        "${SETHU_PUBLIC_BASE_URL}"
+      ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "${SETHU_PUBLIC_BASE_URL}/"
@@ -103,6 +118,20 @@
           }
         }
       ]
+    },
+    {
+      "clientId": "sethu-events",
+      "name": "SETHU backend: reads sign-in events (read-only)",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${KEYCLOAK_EVENTS_SECRET}",
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": true
     }
   ],
   "components": {
@@ -117,5 +146,40 @@
         }
       }
     ]
-  }
+  },
+  "eventsEnabled": true,
+  "eventsExpiration": 7776000,
+  "eventsListeners": [
+    "jboss-logging"
+  ],
+  "enabledEventTypes": [
+    "LOGIN",
+    "LOGIN_ERROR",
+    "LOGOUT",
+    "LOGOUT_ERROR",
+    "CODE_TO_TOKEN",
+    "CODE_TO_TOKEN_ERROR",
+    "REFRESH_TOKEN_ERROR",
+    "UPDATE_PASSWORD",
+    "UPDATE_PASSWORD_ERROR",
+    "RESET_PASSWORD",
+    "RESET_PASSWORD_ERROR",
+    "UPDATE_TOTP",
+    "REMOVE_TOTP",
+    "CLIENT_LOGIN_ERROR"
+  ],
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": false,
+  "users": [
+    {
+      "username": "service-account-sethu-events",
+      "enabled": true,
+      "serviceAccountClientId": "sethu-events",
+      "clientRoles": {
+        "realm-management": [
+          "view-events"
+        ]
+      }
+    }
+  ]
 }

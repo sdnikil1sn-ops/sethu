@@ -57,9 +57,10 @@ COLUMNS = ("institution_name", "category", "body", "language", "filed_at", "exte
 
 
 class IntakeError(Exception):
-    def __init__(self, status: int, message: str):
+    def __init__(self, status: int, message: str, headers: dict[str, str] | None = None):
         super().__init__(message)
         self.status = status
+        self.headers = headers
 
 
 class Held(Exception):
@@ -132,6 +133,12 @@ def submit_api(session: Session, api_key: str, timestamp: str, nonce: str, body:
         raise IntakeError(401, "request timestamp is too old or in the future")
     if not 16 <= len(nonce) <= 128 or not nonce.isascii():
         raise IntakeError(401, "X-Sethu-Nonce must be 16 to 128 characters")
+    limit = source["rate_per_minute"] or get_settings().intake_rate_per_minute
+    # shortcut: counted, not locked; two requests at the very same moment can pass one over the limit.
+    if repo.recent_requests(session, source["id"], 60) >= limit:
+        log.warning("intake quota reached", extra={"source": source["name"]})
+        raise IntakeError(429, f"more than {limit} requests in a minute from this source; try again shortly",
+                          headers={"Retry-After": "60"})
     if not repo.use_nonce(session, source["id"], nonce):
         # Logged, not audited: the refusal rolls the request's transaction back.
         log.warning("intake replay refused", extra={"source": source["name"]})
@@ -366,7 +373,8 @@ def create_source(session: Session, principal: Principal, name: str, channel: st
 def update_source(session: Session, principal: Principal, source_id: UUID, changes: dict) -> dict:
     if not repo.sources(session, id=source_id):
         raise IntakeError(404, "source not found")
-    values = {k: changes[k] for k in ("priority", "active", "marked_down") if changes.get(k) is not None}
+    values = {k: changes[k] for k in ("priority", "active", "marked_down", "rate_per_minute")
+              if changes.get(k) is not None}
     if changes.get("clear_fallback"):
         values["fallback_source_id"] = None
     elif changes.get("fallback"):

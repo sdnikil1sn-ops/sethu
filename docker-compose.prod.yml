@@ -27,8 +27,11 @@ x-prod-backend-env: &prod-backend-env
   SETHU_SMTP_PASSWORD_FILE: /run/secrets/smtp_password
   SETHU_ALERT_FROM: ${ALERT_FROM:?set ALERT_FROM to the sender address}
   SETHU_INTAKE_SPOOL_DIR: /spool
+  SETHU_KEYCLOAK_EVENTS_SECRET: ""
+  SETHU_KEYCLOAK_EVENTS_SECRET_FILE: /run/secrets/keycloak_events_secret
 
-x-prod-backend-secrets: &prod-backend-secrets [sethu_app_password, redis_password, smtp_password, complainant_keys]
+x-prod-backend-secrets: &prod-backend-secrets [sethu_app_password, redis_password, smtp_password, complainant_keys,
+                                               keycloak_events_secret]
 
 services:
   postgres:
@@ -70,6 +73,7 @@ services:
       - >-
         export KC_DB_PASSWORD="$$(cat /run/secrets/keycloak_db_password)"
         KC_BOOTSTRAP_ADMIN_PASSWORD="$$(cat /run/secrets/keycloak_admin_password)"
+        KEYCLOAK_EVENTS_SECRET="$$(cat /run/secrets/keycloak_events_secret)"
         && exec /opt/keycloak/bin/kc.sh start --import-realm
     environment:
       KC_DB_PASSWORD: ""
@@ -79,7 +83,7 @@ services:
       SETHU_PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:?set PUBLIC_BASE_URL}   # read by the realm file
     volumes: !override
       - ./infra/keycloak-prod:/opt/keycloak/data/import:ro
-    secrets: [keycloak_db_password, keycloak_admin_password]
+    secrets: [keycloak_db_password, keycloak_admin_password, keycloak_events_secret]
 
   backend:
     environment: *prod-backend-env
@@ -107,7 +111,7 @@ services:
   # Encrypted backups of both databases (docs/RUNBOOK.md section 5). Same image as the server, so
   # pg_dump matches it. The host folder must be writable by uid 999: install -d -o 999 -g 999 -m 700 backups
   backup:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg16@sha256:484e838076e04939d27d3e176e91c86eea96236126023be8d3059761122e579f
     restart: unless-stopped
     user: postgres
     security_opt: ["no-new-privileges:true"]
@@ -152,3 +156,4 @@ secrets:
   redis_conf: { file: "${SETHU_SECRETS_DIR:-./secrets}/redis_conf" }
   smtp_password: { file: "${SETHU_SECRETS_DIR:-./secrets}/smtp_password" }
   backup_key: { file: "${SETHU_SECRETS_DIR:-./secrets}/backup_key" }
+  keycloak_events_secret: { file: "${SETHU_SECRETS_DIR:-./secrets}/keycloak_events_secret" }

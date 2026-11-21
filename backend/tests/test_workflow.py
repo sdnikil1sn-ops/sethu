@@ -80,20 +80,40 @@ def test_deadlines_by_category_are_set_by_admin_and_used_for_new_and_reopened_ca
     assert actions == ["case.reopened", "case.closed", "deadline.set"]
 
 
-def test_a_missed_deadline_is_escalated_once_to_the_holding_bureau_head_and_resolved_on_closing(flow):
-    with session_for(flow["admin"], flow["engine"]) as s:  # move the clock: the deadline passed yesterday
+def test_missed_deadlines_make_one_digest_per_bureau_per_run_and_only_for_new_ones(flow):
+    """Phase 4: the escalation alert is one digest per bureau and run (references and counts), not one per case."""
+    with session_for(SYSTEM, flow["engine"]) as s:
+        first = findings.detect(s, SYSTEM)
+    digests = flow["sql"]("""SELECT b.code, a.kind, a.status, a.complaint_id, a.recipients, a.subject, a.body,
+                                    (SELECT count(*) FROM sethu.findings f WHERE f.alert_id = a.id) AS cases
+                               FROM sethu.alerts a JOIN sethu.bureaus b ON b.id = a.bureau_id ORDER BY b.code""")
+    late = flow["sql"]("""SELECT b.code, count(*) AS n FROM sethu.findings f JOIN sethu.bureaus b
+                            ON b.id = f.bureau_ids[1] WHERE f.kind = 'deadline_escalation' GROUP BY b.code""")
+    assert first["digests"] == len(digests) == len(late) >= 2           # the demo data: one per bureau with late cases
+    assert {d["code"]: d["cases"] for d in digests} == {r["code"]: r["n"] for r in late}
+    pgrc = next(d for d in digests if d["code"] == "PGRC")
+    assert pgrc["kind"] == "sla" and pgrc["status"] == "pending_approval" and pgrc["complaint_id"] is None
+    assert pgrc["recipients"] == ["fernandes@sethu.test"] and "C-" in pgrc["body"]
+    bodies = flow["sql"]("SELECT body FROM sethu.complaints WHERE status <> 'closed' AND due_at < now()")
+    assert not any(b["body"][:30] in d["body"] for b in bodies for d in digests)   # references only, never text
+
+    with session_for(SYSTEM, flow["engine"]) as s:
+        assert findings.detect(s, SYSTEM)["digests"] == 0                # nothing new since the last digest
+    with session_for(flow["admin"], flow["engine"]) as s:                # move the clock: one more case is late
         s.execute(text("UPDATE sethu.complaints SET due_at = now() - interval '1 day' WHERE id = :i"),
                   {"i": flow["case_id"]})
     with session_for(SYSTEM, flow["engine"]) as s:
-        findings.detect(s, SYSTEM)
-    with session_for(SYSTEM, flow["engine"]) as s:
-        assert findings.detect(s, SYSTEM)["created"] == 0          # a second run adds nothing
-    mine = flow["sql"]("""SELECT f.status, f.bureau_ids, a.kind, a.status AS alert, a.recipients
-                            FROM sethu.findings f JOIN sethu.alerts a ON a.id = f.alert_id
-                           WHERE f.kind = 'deadline_escalation' AND f.complaint_id = :i""", i=flow["case_id"])
-    assert len(mine) == 1 and mine[0]["kind"] == "sla" and mine[0]["alert"] == "pending_approval"
-    assert mine[0]["recipients"] == ["fernandes@sethu.test"] and mine[0]["bureau_ids"] == [flow["bureau"]["PGRC"]]
-    assert flow["ref"] not in str(flow["as_"]("iyer").get("/api/v1/findings").json())  # RB does not see it
+        assert findings.detect(s, SYSTEM)["digests"] == 1
+    newest = flow["sql"]("SELECT body FROM sethu.alerts WHERE bureau_id IS NOT NULL ORDER BY created_at DESC LIMIT 1")
+    assert newest[0]["body"].startswith(f"1 case(s) in PGRC passed their deadline: {flow['ref']}.")
+
+    heads = flow["as_"]("fernandes").get("/api/v1/alerts").json()["items"]
+    mine = [a for a in heads if a["kind"] == "sla"]
+    assert mine and all(a["can_decide"] for a in mine) and flow["ref"] in mine[0]["cases"]
+    assert not [a for a in flow["as_"]("iyer").get("/api/v1/alerts").json()["items"] if flow["ref"] in a["cases"]]
+    decided = flow["as_"]("fernandes").post(f"/api/v1/alerts/{mine[0]['id']}/decision", json={"decision": "approve"})
+    assert decided.status_code == 200 and decided.json()["status"] == "approved"
+
     flow["act"]("rao", action="close", reason="resolved")
     with session_for(SYSTEM, flow["engine"]) as s:
         findings.detect(s, SYSTEM)

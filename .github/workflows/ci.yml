@@ -1,0 +1,147 @@
+# Continuous integration. No step uses a repository secret: test passwords are generated in the job and thrown
+# away with it. Every job fails on a problem; the scans fail on HIGH or CRITICAL findings.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Install the locked dev tools
+        run: pip install --require-hashes -r backend/requirements-dev.lock
+      - name: ruff
+        run: ruff check backend
+
+  backend-tests:
+    runs-on: ubuntu-24.04
+    services:
+      redis:
+        image: redis:7-alpine@sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe
+        ports: ["6390:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Throwaway database (PostgreSQL 16 with pgvector, roles from the repo's init script)
+        run: |
+          gen() { python -c "import secrets; print('ci-' + secrets.token_hex(16))"; }
+          for v in POSTGRES_PASSWORD SETHU_OWNER_PASSWORD SETHU_APP_PASSWORD SETHU_AUDITOR_PASSWORD KEYCLOAK_DB_PASSWORD; do
+            echo "$v=$(gen)" >> ci.env
+          done
+          echo "POSTGRES_DB=sethu" >> ci.env
+          docker run -d --name ci-db --env-file ci.env -p 127.0.0.1:5432:5432 \
+            -v "$PWD/infra/postgres/init:/docker-entrypoint-initdb.d:ro" \
+            pgvector/pgvector:pg16@sha256:484e838076e04939d27d3e176e91c86eea96236126023be8d3059761122e579f
+          for i in $(seq 60); do
+            docker exec ci-db psql -U postgres -d sethu -tAc "select 1 from pg_roles where rolname='sethu_app'" 2>/dev/null | grep -q 1 && break
+            sleep 2
+          done
+          . ./ci.env
+          echo "MIGRATION_DATABASE_URL=postgresql+psycopg://sethu_owner:$SETHU_OWNER_PASSWORD@127.0.0.1:5432/sethu" >> "$GITHUB_ENV"
+          echo "SETHU_DATABASE_URL=postgresql+psycopg://sethu_app:$SETHU_APP_PASSWORD@127.0.0.1:5432/sethu" >> "$GITHUB_ENV"
+          rm ci.env
+      - name: Install the locked dependencies and the backend
+        working-directory: backend
+        run: |
+          pip install --require-hashes -r requirements-build.lock
+          pip install --require-hashes -r requirements-dev.lock
+          pip install --no-deps --no-build-isolation -e .
+      - name: pytest (empties the throwaway database)
+        working-directory: backend
+        env:
+          SETHU_TEST_DB_WIPE_OK: "1"
+          SETHU_TEST_REDIS_URL: redis://127.0.0.1:6390/0
+        run: pytest -v
+
+  web:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm, cache-dependency-path: web/package-lock.json }
+      - working-directory: web
+        run: npm ci && npm run build
+
+  secret-scan:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: gitleaks (whole history)
+        run: |
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.21.2 \
+            detect --source /repo --config /repo/.gitleaks.toml --redact --no-banner --exit-code 1
+
+  dependency-audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: pip-audit (fails on any known vulnerability in the locked runtime dependencies)
+        run: |
+          pip install pip-audit==2.7.3
+          pip-audit --no-deps --disable-pip -r backend/requirements.lock
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: npm audit (fails on high or critical)
+        working-directory: web
+        run: npm audit --audit-level=high
+
+  images:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the images
+        run: |
+          docker build -t sethu-backend:ci backend
+          docker build -t sethu-web:ci web
+      - name: Trivy (fails on fixable HIGH or CRITICAL)
+        run: |
+          for image in sethu-backend:ci sethu-web:ci; do
+            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.57.1 \
+              image --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --no-progress "$image"
+          done
+
+  browser-tests:
+    # The main journeys in a real browser against the full dev stack (Playwright). Slow; runs after the others.
+    needs: [backend-tests, web]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Start the dev stack and load the demo data
+        run: |
+          python scripts/init_env.py
+          docker compose --profile dev up -d --build --wait
+          docker compose run --rm --no-deps -v "$PWD/seed:/seed:ro" backend python /seed/load.py
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Playwright
+        working-directory: web
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          SETHU_URL=http://localhost:8080 DEMO_USER_PASSWORD="$(grep '^DEMO_USER_PASSWORD=' ../.env | cut -d= -f2-)" \
+            npx playwright test
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with: { name: playwright-report, path: web/playwright-report, retention-days: 7 }
+      - if: always()
+        run: docker compose --profile dev down -v

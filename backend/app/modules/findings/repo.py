@@ -100,14 +100,21 @@ def reopen(session: Session, finding_id: UUID, evidence: dict, bureau_ids: list[
          WHERE id = :id"""), {"id": finding_id, "e": json.dumps(evidence), "b": bureau_ids}).rowcount == 1
 
 
-def insert_alert(session: Session, complaint_id: UUID, recipients: list[str], missing: list[str], subject: str,
-                 body: str, kind: str = "bottleneck") -> UUID:
+def insert_alert(session: Session, complaint_id: UUID | None, recipients: list[str], missing: list[str], subject: str,
+                 body: str, kind: str = "bottleneck", bureau_id: UUID | None = None) -> UUID:
     """Into the existing outbox, held for a person's approval. Nothing is sent before that."""
     return session.execute(text("""
-        INSERT INTO sethu.alerts (kind, complaint_id, status, recipients, missing_recipients, subject, body)
-        VALUES (:kind, :c, 'pending_approval', CAST(:r AS jsonb), :missing, :subject, :body)
-        RETURNING id"""), {"c": complaint_id, "r": json.dumps(recipients), "missing": missing, "subject": subject,
-                           "body": body, "kind": kind}).scalar_one()
+        INSERT INTO sethu.alerts (kind, complaint_id, bureau_id, status, recipients, missing_recipients, subject, body)
+        VALUES (:kind, :c, :b, 'pending_approval', CAST(:r AS jsonb), :missing, :subject, :body)
+        RETURNING id"""), {"c": complaint_id, "b": bureau_id, "r": json.dumps(recipients), "missing": missing,
+                           "subject": subject, "body": body, "kind": kind}).scalar_one()
+
+
+def overdue_count(session: Session, bureau_id: UUID) -> int:
+    return session.execute(text("""
+        SELECT count(*) FROM sethu.complaints
+         WHERE bureau_id = :b AND status NOT IN ('closed', 'transferred') AND due_at < now()"""),
+        {"b": bureau_id}).scalar_one()
 
 
 def overdue_cases(session: Session) -> list[dict]:

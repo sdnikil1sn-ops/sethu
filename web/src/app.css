@@ -79,3 +79,10 @@ header form[role="search"] input { width: 16rem; max-width: 60vw; }
 .bars { list-style: none; margin: 0.25rem 0 0; padding: 0; display: grid; gap: 0.2rem; font-size: 0.85rem; font-weight: 400; }
 .bars li { display: grid; grid-template-columns: 1fr; }
 .bars .bar { display: block; height: 0.35rem; border-radius: 0.2rem; background: currentColor; opacity: 0.5; }
+
+/* Network graph (Cytoscape draws on a canvas inside .cy) */
+.cy { width: 100%; background: var(--soft); border: 1px solid var(--line); border-radius: 0.5rem; }
+.graph-layout { display: flex; gap: 1rem; align-items: flex-start; }
+.graph-layout .cy { flex: 1; min-width: 0; }
+.panel { width: 18rem; border: 1px solid var(--line); border-radius: 0.5rem; padding: 0 0.75rem 0.75rem; }
+@media (max-width: 48rem) { .graph-layout { flex-direction: column; } .panel { width: auto; } }

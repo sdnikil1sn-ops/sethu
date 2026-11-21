@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     oidc_audience: str = "sethu-api"
     oidc_jwks_url: str
 
+    # Sign-in events: the confidential realm client `sethu-events` (view-events only), read on the internal network.
+    keycloak_events_secret: str | None = None
+    keycloak_events_secret_file: str | None = None
+
     smtp_host: str = "mailpit"
     smtp_port: int = 1025
     # none: plain (Mailpit in dev only); starttls: upgrade on 587; tls: implicit TLS on 465.
@@ -57,12 +61,20 @@ class Settings(BaseSettings):
 
     sla_days: int = 21
 
+    # Semantic overlap signal (app/modules/overlaps): a local ONNX model baked into the image, never downloaded at
+    # run time. Off, or with no model directory, overlap detection is trigram only, as before.
+    semantic_overlap: bool = True
+    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    embedding_cache_dir: str | None = None     # set in the image: /opt/sethu/models
+    semantic_threshold: float = 0.75           # cosine similarity, inside the rules; calibrated on the seed (RUNBOOK)
+
     # Complaint intake (app/modules/intake). No setting here makes a network call.
     intake_spool_dir: str | None = None       # fallback channel: a mounted folder, one subfolder per spool source
     intake_max_attempts: int = 6              # then the item is dead-lettered, with the reason
     intake_retry_base_seconds: int = 60
     intake_retry_max_seconds: int = 3600
     intake_clock_skew_seconds: int = 300      # an API request's timestamp must be this close to now
+    intake_rate_per_minute: int = 60          # API requests per source per minute (a source may set its own)
     intake_max_upload_bytes: int = 2_000_000
     intake_max_rows: int = 5000
 
@@ -90,6 +102,11 @@ class Settings(BaseSettings):
                                                                        self.redis_password_file))
         if self.smtp_password_file:
             self.smtp_password = read_secret("SETHU_SMTP_PASSWORD_FILE", self.smtp_password_file) or None
+        if self.keycloak_events_secret:
+            self._inline_passwords.add("SETHU_KEYCLOAK_EVENTS_SECRET")
+        if self.keycloak_events_secret_file:
+            self.keycloak_events_secret = read_secret("SETHU_KEYCLOAK_EVENTS_SECRET_FILE",
+                                                      self.keycloak_events_secret_file) or None
         if self.environment == "prod" and (problems := production_problems(self)):
             raise ValueError("refusing to start in production: " + "; ".join(problems))
         return self

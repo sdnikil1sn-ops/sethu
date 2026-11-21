@@ -17,7 +17,8 @@ SYSTEM = Principal(subject="system", name="system", role="system", bureau_id=Non
 
 @lru_cache
 def get_engine() -> Engine:
-    return create_engine(get_settings().database_url, pool_pre_ping=True, pool_size=10)
+    # hide_parameters: a database error must never print statement values (complaint text) into a log.
+    return create_engine(get_settings().database_url, pool_pre_ping=True, pool_size=10, hide_parameters=True)
 
 
 def apply_context(session: Session, principal: Principal) -> None:

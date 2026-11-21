@@ -16,3 +16,5 @@ data/
 *.dump
 backups/
 spool/
+web/test-results/
+web/playwright-report/
