@@ -50,7 +50,7 @@ Dates are stored as days before the load (`filed_days_ago`, `days_ago`), so "C-1
 
 Institutions with a cross-bureau pair hold nothing else, and every other institution's complaints all sit with one bureau. That is why the pair counts are exact.
 
-The NRB and AB records (C-301 to C-310, and the institutions Rosemere, Sandalvale and Tealcrest) are appended after everything else, so every older record is unchanged. They are placed so that no state and category reaches 5 complaints in 30 days (no new spike), nothing is overdue, and neither new bureau holds 3 open cases (no new bottleneck). On a fresh load the detector finds the same findings as before: the C-090 loop, 4 bottlenecks (the PGRC and RB queues, Banyanmere and Jadehollow) and the Uttar Pradesh fee-refund spike.
+The NRB and AB records (C-301 to C-310, and the institutions Rosemere, Sandalvale and Tealcrest) are appended after everything else, so every older record is unchanged. They are placed so that no state and category reaches 5 complaints in 30 days (no new spike), nothing is overdue, and neither new bureau holds 3 open cases (no new bottleneck). On a fresh load the detector finds the same findings as before: the C-090 loop, 4 bottlenecks (the PGRC and RB queues, Banyanmere and Jadehollow) and the Uttar Pradesh fee-refund spike. Since Phase 3 it also escalates every open case already past its deadline (about two dozen on a fresh load, each with an alert held for approval); that number grows as a loaded database ages.
 
 ## Negative cases: no alert expected
 
@@ -60,3 +60,5 @@ The NRB and AB records (C-301 to C-310, and the institutions Rosemere, Sandalval
 | Same institution, same category, same bureau | `neg-same-bureau` | Not cross-bureau |
 | Same category, two bureaus, different institutions | `neg-same-category` | Different institution |
 | Transfers that were acknowledged, including two round trips and one NRB to AB handover | `transfer-ack` (8) | Not a deadlock |
+
+`sources.csv` adds the intake sources (no API keys: an admin issues them on the Intake screen): an api source with a spool fallback for PGRC and RB, and an upload and a manual source for every bureau.

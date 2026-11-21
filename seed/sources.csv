@@ -1,0 +1,13 @@
+name,channel,bureau,priority,fallback
+pgrc-spool,spool,PGRC,2,
+pgrc-portal,api,PGRC,1,pgrc-spool
+pgrc-upload,upload,PGRC,1,
+pgrc-manual,manual,PGRC,1,
+rb-spool,spool,RB,2,
+rb-register,api,RB,1,rb-spool
+rb-upload,upload,RB,1,
+rb-manual,manual,RB,1,
+nrb-upload,upload,NRB,1,
+nrb-manual,manual,NRB,1,
+ab-upload,upload,AB,1,
+ab-manual,manual,AB,1,

@@ -5,7 +5,7 @@ import type { Options } from "../cases/types";
 // Mirrors backend/app/modules/findings/schemas.py
 export type Finding = {
   id: string;
-  kind: "transfer_loop" | "stalled_transfer" | "bottleneck" | "category_spike";
+  kind: "transfer_loop" | "stalled_transfer" | "bottleneck" | "category_spike" | "deadline_escalation";
   status: "open" | "resolved" | "dismissed";
   first_seen: string;
   decided_at: string | null;
@@ -29,6 +29,7 @@ const KIND = {
   stalled_transfer: "Stalled transfer",
   bottleneck: "Bottleneck",
   category_spike: "Early warning: category spike",
+  deadline_escalation: "Deadline passed",
 };
 const day = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { dateStyle: "medium" });
 const pct = (n: unknown) => `${Math.round(Number(n) * 100)}%`;
@@ -45,6 +46,8 @@ function numbers(f: Finding): string {
   if (f.kind === "transfer_loop")
     return `${e.transfers} transfers in a row between ${f.bureaus.join(" and ")}, none acknowledged; last one ${e.days_unacknowledged} days ago`;
   if (f.kind === "stalled_transfer") return `transferred ${e.days_unacknowledged} days ago, not acknowledged`;
+  if (f.kind === "deadline_escalation")
+    return `${e.category ?? "No category"}: due ${day(String(e.due_at))}, still open (${e.days_overdue_when_found} day(s) late when found)`;
   if (f.kind === "category_spike") {
     const past =
       e.ratio === null

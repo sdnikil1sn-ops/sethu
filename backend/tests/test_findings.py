@@ -72,7 +72,7 @@ def test_seed_gives_few_bottlenecks_listed_after_transfer_findings(detected):
     by_institution = [f for f in bottlenecks if f["evidence"]["scope"] == "institution"]
     assert by_institution and all(f["evidence"]["measure"] == "overdue_share" for f in by_institution)
     assert all(f["evidence"]["share"] > 0.6 for f in bottlenecks)
-    order = ["transfer_loop", "stalled_transfer", "bottleneck", "category_spike"]
+    order = ["transfer_loop", "stalled_transfer", "deadline_escalation", "bottleneck", "category_spike"]
     assert [order.index(f["kind"]) for f in found] == sorted(order.index(f["kind"]) for f in found)
     shares = [(f["evidence"]["share"], f["evidence"]["open"]) for f in bottlenecks]
     assert shares == sorted(shares, reverse=True)  # worst first
@@ -248,7 +248,8 @@ def test_seeded_spike_is_found_once_with_its_counts_and_no_alert(detected):
         created = s.execute(text("SELECT payload FROM sethu.audit_log WHERE action = 'finding.created'"
                                  " AND payload->>'kind' = 'category_spike'")).scalars().all()
         alerts = s.execute(text(
-            "SELECT c.ref FROM sethu.alerts a JOIN sethu.complaints c ON c.id = a.complaint_id"
+            # Phase 3: missed deadlines now add 'sla' alerts by design; this test is about the spike.
+            "SELECT c.ref FROM sethu.alerts a JOIN sethu.complaints c ON c.id = a.complaint_id WHERE a.kind <> 'sla'"
             " UNION ALL SELECT 'no case' FROM sethu.alerts WHERE complaint_id IS NULL")).scalars().all()
     assert rows == 1 and len(created) == 1 and created[0]["evidence"] == e
     assert alerts == ["C-090"]  # the loop's alert; the spike made none

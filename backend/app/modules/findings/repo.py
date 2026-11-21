@@ -101,13 +101,23 @@ def reopen(session: Session, finding_id: UUID, evidence: dict, bureau_ids: list[
 
 
 def insert_alert(session: Session, complaint_id: UUID, recipients: list[str], missing: list[str], subject: str,
-                 body: str) -> UUID:
+                 body: str, kind: str = "bottleneck") -> UUID:
     """Into the existing outbox, held for a person's approval. Nothing is sent before that."""
     return session.execute(text("""
         INSERT INTO sethu.alerts (kind, complaint_id, status, recipients, missing_recipients, subject, body)
-        VALUES ('bottleneck', :c, 'pending_approval', CAST(:r AS jsonb), :missing, :subject, :body)
+        VALUES (:kind, :c, 'pending_approval', CAST(:r AS jsonb), :missing, :subject, :body)
         RETURNING id"""), {"c": complaint_id, "r": json.dumps(recipients), "missing": missing, "subject": subject,
-                           "body": body}).scalar_one()
+                           "body": body, "kind": kind}).scalar_one()
+
+
+def overdue_cases(session: Session) -> list[dict]:
+    """Open cases past their deadline (a case awaiting acknowledgement of a transfer is the stalled-transfer
+    detector's business, not this one's)."""
+    return _all(session, """
+        SELECT c.id, c.ref, c.bureau_id, c.institution_id, c.category, c.due_at
+          FROM sethu.complaints c
+         WHERE c.status NOT IN ('closed', 'transferred') AND c.due_at < now()
+         ORDER BY c.due_at""")
 
 
 FINDING = """
@@ -136,7 +146,8 @@ def listing(session: Session, filters: dict[str, Any]) -> list[dict]:
     where = " AND ".join(FILTERS[k] for k in filters) or "true"
     return _all(session, f"""{FINDING} WHERE {where}
          ORDER BY (f.status = 'open') DESC,
-                  array_position(ARRAY['transfer_loop', 'stalled_transfer', 'bottleneck', 'category_spike'], f.kind),
+                  array_position(ARRAY['transfer_loop', 'stalled_transfer', 'deadline_escalation', 'bottleneck',
+                                        'category_spike'], f.kind),
                   (f.evidence->>'share')::numeric DESC NULLS LAST, (f.evidence->>'open')::int DESC NULLS LAST,
                   f.first_seen DESC, f.id""", **filters)  # noqa: S608 - constants only
 

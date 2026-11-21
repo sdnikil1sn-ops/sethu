@@ -44,7 +44,7 @@ REASONS = """array_remove(ARRAY[
 
 HISTORY = """
     SELECT a.id, c.ref, a.action, fb.code AS from_bureau, tb.code AS to_bureau, u.display_name AS actor,
-           au.display_name AS assignee, a.note, a.created_at, a.acknowledged_at
+           au.display_name AS assignee, a.note, a.reason, a.created_at, a.acknowledged_at
       FROM sethu.case_actions a
       JOIN sethu.complaints c ON c.id = a.complaint_id
       LEFT JOIN sethu.bureaus fb ON fb.id = a.from_bureau_id
@@ -81,8 +81,11 @@ def search(session: Session, filters: dict[str, Any], limit: int, offset: int) -
 
 
 def find(session: Session, complaint_id: UUID) -> dict | None:
-    return _one(session, SUMMARY.format(
-        extra=", c.body, c.institution_name_raw, c.language, c.source, c.resolution_state, c.complainant_enc")
+    return _one(session, SUMMARY.format(  # noqa: S608 - fixed text
+        extra=", c.body, c.institution_name_raw, c.language, c.source, c.resolution_state, c.complainant_enc,"
+              " c.assignee_id, (SELECT display_name FROM sethu.app_users u WHERE u.id = c.assignee_id) AS assignee,"
+              " (SELECT a.reason FROM sethu.case_actions a WHERE a.complaint_id = s.id AND a.action = 'closed'"
+              "   ORDER BY a.created_at DESC LIMIT 1) AS close_reason")
         + " WHERE s.id = :id",
         id=complaint_id)
 
@@ -121,7 +124,8 @@ def case_counts(session: Session, institution_id: UUID) -> dict:
 def lock(session: Session, complaint_id: UUID) -> dict | None:
     """The case as the caller may read it, locked until the transaction ends."""
     return _one(session, """
-        SELECT c.id, c.ref, c.status, c.bureau_id, c.transferred_from_bureau_id, b.code AS bureau
+        SELECT c.id, c.ref, c.status, c.category, c.bureau_id, c.transferred_from_bureau_id, c.assignee_id,
+               b.code AS bureau
           FROM sethu.complaints c JOIN sethu.bureaus b ON b.id = c.bureau_id
          WHERE c.id = :id FOR UPDATE OF c""", id=complaint_id)
 
@@ -142,12 +146,17 @@ def insert_action(session: Session, **values: Any) -> None:
         f" VALUES ({', '.join(':' + k for k in values)})"), values)
 
 
-def update_case(session: Session, complaint_id: UUID, status: str, bureau_id: UUID, sender_id: UUID | None) -> None:
+def update_case(session: Session, complaint_id: UUID, status: str, bureau_id: UUID, sender_id: UUID | None,
+                assignee_id: UUID | None, due_at: Any = None) -> None:
+    """Status, holder, sender and assignee as given; closed_at set on closing and cleared on reopening;
+    due_at replaced only when given (a reopened case gets a new deadline)."""
     session.execute(text("""
         UPDATE sethu.complaints
-           SET status = :status, bureau_id = :bureau, transferred_from_bureau_id = :sender,
-               closed_at = CASE WHEN :status = 'closed' THEN now() ELSE closed_at END, updated_at = now()
-         WHERE id = :id"""), {"id": complaint_id, "status": status, "bureau": bureau_id, "sender": sender_id})
+           SET status = :status, bureau_id = :bureau, transferred_from_bureau_id = :sender, assignee_id = :assignee,
+               closed_at = CASE WHEN :status = 'closed' THEN now() WHEN status = 'closed' THEN NULL ELSE closed_at END,
+               due_at = coalesce(CAST(:due AS timestamptz), due_at), updated_at = now()
+         WHERE id = :id"""), {"id": complaint_id, "status": status, "bureau": bureau_id, "sender": sender_id,
+                              "assignee": assignee_id, "due": due_at})
 
 
 def bureaus(session: Session) -> list[dict]:
@@ -170,4 +179,75 @@ def options(session: Session) -> dict:
     return {"categories": row.get("categories") or [], "states": row.get("states") or []}
 
 
+
+
+
+def insert_complaint(session: Session, **values: Any) -> str:
+    """A new complaint with the next IN- reference. Returns the reference."""
+    return session.execute(text(f"""
+        INSERT INTO sethu.complaints ({', '.join(values)}, ref)
+        VALUES ({', '.join(':' + k for k in values)},
+                'IN-' || lpad(nextval('sethu.complaint_ref_seq')::text, 6, '0'))
+        RETURNING ref"""), values).scalar_one()  # noqa: S608 - column names from service code
+
+
+def same_text(session: Session, bureau_id: UUID, body_sha256: str, name: str) -> dict | None:
+    """A complaint in this bureau with exactly this text about the same typed institution."""
+    return _one(session, """
+        SELECT id, ref FROM sethu.complaints
+         WHERE bureau_id = :b AND body_sha256 = :h
+           AND lower(regexp_replace(institution_name_raw, '[[:space:]]+', ' ', 'g')) = :name
+         LIMIT 1""", b=bureau_id, h=body_sha256, name=name)
+
+
+def similar_text(session: Session, bureau_id: UUID, institution_id: UUID | None, name: str, body: str,
+                 threshold: float, days: int) -> dict | None:
+    """The closest recent complaint in this bureau about the same institution whose text is similar."""
+    return _one(session, """
+        SELECT id, ref, similarity(body, :body) AS score FROM sethu.complaints
+         WHERE bureau_id = :b AND filed_at > now() - make_interval(days => :days)
+           AND (institution_id = :iid OR lower(regexp_replace(institution_name_raw, '[[:space:]]+', ' ', 'g')) = :name)
+           AND similarity(body, :body) >= :t
+         ORDER BY score DESC LIMIT 1""", b=bureau_id, iid=institution_id, name=name, body=body, t=threshold, days=days)
+
+
+def deadline_days(session: Session, category: str | None) -> int | None:
+    row = _one(session, "SELECT days FROM sethu.category_deadlines WHERE category = :c", c=category)
+    return row["days"] if row else None
+
+
+def deadlines(session: Session) -> list[dict]:
+    """Every category in use or configured, with its days if an admin set them."""
+    return _all(session, """
+        SELECT k.category, d.days, d.updated_at
+          FROM (SELECT DISTINCT category FROM sethu.complaint_summaries WHERE category IS NOT NULL
+                UNION SELECT category FROM sethu.category_deadlines) k
+          LEFT JOIN sethu.category_deadlines d ON d.category = k.category ORDER BY k.category""")
+
+
+def set_deadline(session: Session, category: str, days: int, user_id: UUID | None) -> None:
+    session.execute(text("""
+        INSERT INTO sethu.category_deadlines (category, days, updated_by) VALUES (:c, :d, :u)
+        ON CONFLICT (category) DO UPDATE SET days = :d, updated_by = :u, updated_at = now()"""),
+        {"c": category, "d": days, "u": user_id})
+
+
+def assigned_to(session: Session, user_id: UUID) -> list[dict]:
+    """Open cases assigned to this person in the bureau holding them, soonest deadline first."""
+    return _all(session, SUMMARY.format(extra="") + """
+         WHERE c.assignee_id = :u AND s.status <> 'closed' AND c.bureau_id = sethu.ctx_bureau()
+         ORDER BY s.due_at NULLS LAST, s.ref""", u=user_id)
+
+
+def workload(session: Session) -> list[dict]:
+    """Open cases per bureau and assignee (NULL: unassigned), for the bureaus the caller can read."""
+    return _all(session, """
+        SELECT b.code AS bureau, u.id AS assignee_id, u.display_name AS assignee, u.role,
+               count(c.id) AS open, count(c.id) FILTER (WHERE c.due_at < now()) AS overdue
+          FROM sethu.complaints c
+          JOIN sethu.bureaus b ON b.id = c.bureau_id
+          LEFT JOIN sethu.app_users u ON u.id = c.assignee_id
+         WHERE c.status NOT IN ('closed', 'transferred')
+         GROUP BY b.code, u.id, u.display_name, u.role
+         ORDER BY b.code, u.display_name NULLS FIRST""")
 

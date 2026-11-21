@@ -57,6 +57,15 @@ class Settings(BaseSettings):
 
     sla_days: int = 21
 
+    # Complaint intake (app/modules/intake). No setting here makes a network call.
+    intake_spool_dir: str | None = None       # fallback channel: a mounted folder, one subfolder per spool source
+    intake_max_attempts: int = 6              # then the item is dead-lettered, with the reason
+    intake_retry_base_seconds: int = 60
+    intake_retry_max_seconds: int = 3600
+    intake_clock_skew_seconds: int = 300      # an API request's timestamp must be this close to now
+    intake_max_upload_bytes: int = 2_000_000
+    intake_max_rows: int = 5000
+
     # Keyring for complainant details (app/core/crypto.py): a JSON file mounted as a secret.
     complainant_keys_file: str | None = None
 

@@ -10,6 +10,9 @@ Bottleneck (a bureau's or an institution's open cases), with at least `bottlenec
   overdue_share     more than `bottleneck_share` of them are past their 21-day deadline.
   older_than_median (bureaus only) more than `bottleneck_share` of them are older than the bureau's median
                     days to close. Not for institutions: a handful of cases makes it fire too easily.
+Deadline (one case):
+  deadline_escalation  an open case past its deadline (the category's days, set by an admin); for the head of
+                    the bureau holding it. Resolved when the case is closed.
 Early warning (one state and category):
   category_spike    complaints in the last 30 days reach `spike_min_count` and are at least `spike_ratio`
                     times the baseline: the same cell's previous 90 days, scaled to 30. A comparison with
@@ -106,7 +109,25 @@ def spike_findings(rows: list[dict], min_count: int, ratio: float, as_of: str) -
     return found
 
 
+def deadline_findings(rows: list[dict], now: datetime) -> list[dict]:
+    """One escalation per open case past its deadline. The key names the deadline, so a reopened case with a
+    new deadline that passes again is a new finding; closing the case resolves it."""
+    return [{
+        "kind": "deadline_escalation", "key": f"deadline_escalation:{r['id']}:{r['due_at']:%Y-%m-%d}",
+        "complaint_id": r["id"], "institution_id": r["institution_id"], "ref": r["ref"], "bureau_ids": [r["bureau_id"]],
+        "evidence": {"ref": r["ref"], "category": r["category"], "due_at": r["due_at"].isoformat(),
+                     "days_overdue_when_found": (now - r["due_at"]).days},
+    } for r in rows]
+
+
 def _alert(session: Session, f: dict, codes: dict[UUID, str]) -> UUID:
+    if f["kind"] == "deadline_escalation":
+        subject = f"Deadline passed on case {f['ref']}"
+        body = (f"{subject}\n\nCase {f['ref']} ({codes[f['bureau_ids'][0]]}) was due on {f['evidence']['due_at'][:10]} "
+                f"and is still open ({f['evidence']['days_overdue_when_found']} day(s) late when found).\n\n"
+                "Open SETHU to see who holds it and decide what happens next.")
+        recipients, missing = users.recipients(session, f["bureau_ids"])  # the holding bureau's heads
+        return repo.insert_alert(session, f["complaint_id"], recipients, missing, subject, body, kind="sla")
     bureaus = " to ".join(codes[b] for b in f["path"])  # the route taken: PGRC to RB to PGRC
     what = "transfer loop" if f["kind"] == "transfer_loop" else "transfer not acknowledged"
     subject = f"Bottleneck detected: {what} on case {f['ref']}"
@@ -131,14 +152,16 @@ def detect(session: Session, principal: Principal) -> dict[str, int]:
         current += queue_findings(scope, rows, settings.bottleneck_min_open, settings.bottleneck_share)
     current += spike_findings(repo.category_cells(session, SPIKE_RECENT_DAYS, SPIKE_BASELINE_DAYS),
                               settings.spike_min_count, settings.spike_ratio, now.date().isoformat())
+    current += deadline_findings(repo.overdue_cases(session), now)
 
     known = {r["key"]: r for r in repo.existing(session)}
     codes = repo.bureau_codes(session)
     counts = {"created": 0, "reopened": 0, "resolved": 0}
     for f in current:
         if f["key"] not in known:
-            # Only a stuck case gets an alert; bottlenecks and spikes are shown on screen only.
-            alert_id = _alert(session, f, codes) if f["kind"] in ("transfer_loop", "stalled_transfer") else None
+            # A stuck or late case gets an alert (held for approval); bottlenecks and spikes are on screen only.
+            alerted = ("transfer_loop", "stalled_transfer", "deadline_escalation")
+            alert_id = _alert(session, f, codes) if f["kind"] in alerted else None
             finding_id = repo.insert(session, f, alert_id)
             audit.record(session, principal, "finding.created", entity_type="findings", entity_id=str(finding_id),
                          payload={"kind": f["kind"], "complaint_id": f.get("complaint_id") and str(f["complaint_id"]),

@@ -44,3 +44,7 @@ def update(session: Session, principal: Principal, bureau_id: UUID, name: str | 
     audit.record(session, principal, "bureau.updated", entity_type="bureaus", entity_id=str(bureau_id),
                  payload={"code": found["code"], "changed": changed} | {k: wanted[k] for k in changed})
     return repo.get(session, bureau_id)
+
+
+def by_code(session: Session, code: str) -> dict | None:
+    return repo.by_code(session, code.upper())

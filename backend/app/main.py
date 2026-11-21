@@ -10,10 +10,12 @@ from app.core.logging import configure_logging, request_id
 from app.modules.alerts.api import router as alerts
 from app.modules.audit_view.api import router as audit_view
 from app.modules.bureaus.api import router as bureaus
+from app.modules.complaints.api import deadlines_router
 from app.modules.complaints.api import router as cases
 from app.modules.dashboard.api import router as dashboard
 from app.modules.findings.api import router as findings
 from app.modules.institutions.api import router as institutions
+from app.modules.intake.api import router as intake
 from app.modules.overlaps.api import router as overlaps
 from app.modules.reports.api import router as reports
 from app.modules.search.api import router as search
@@ -62,6 +64,8 @@ def create_app() -> FastAPI:
     app.include_router(findings)
     app.include_router(bureaus)
     app.include_router(users)
+    app.include_router(intake)
+    app.include_router(deadlines_router)
     return app
 
 

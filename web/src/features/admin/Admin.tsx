@@ -63,6 +63,68 @@ function BureauLine({ b, onChanged }: { b: BureauRow; onChanged: (message: strin
   );
 }
 
+type Deadline = { category: string; days: number | null; effective_days: number; default_days: number };
+
+/** Days to close a case, per category. Used for new and reopened cases; open cases keep their deadline. */
+function Deadlines() {
+  const { data, error, reload } = useLoad<Deadline[]>("/admin/deadlines");
+  const [edits, setEdits] = useState<Record<string, string>>({});
+  const [message, setMessage] = useState<string | null>(null);
+
+  async function save(category: string) {
+    try {
+      await api(`/admin/deadlines/${encodeURIComponent(category)}`, { days: Number(edits[category]) }, "PUT");
+      setMessage(`${category}: ${edits[category]} days. Recorded in the audit log.`);
+      setEdits({ ...edits, [category]: "" });
+      reload();
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "The deadline was not saved.");
+    }
+  }
+
+  return (
+    <>
+      <h2>Deadlines by category</h2>
+      <p className="note">
+        A category without its own setting uses the default ({data?.[0]?.default_days ?? "–"} days). A missed deadline
+        becomes a finding and an alert, held for approval, to the head of the bureau holding the case.
+      </p>
+      {message && <p role="status">{message}</p>}
+      {error && <p role="alert">{error}</p>}
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col" className="num">Days</th>
+            <th scope="col">Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(data ?? []).map((d) => (
+            <tr key={d.category}>
+              <th scope="row">{d.category}</th>
+              <td className="num">{d.days ?? `${d.effective_days} (default)`}</td>
+              <td>
+                <input
+                  type="number"
+                  min={1}
+                  max={365}
+                  aria-label={`Days for ${d.category}`}
+                  value={edits[d.category] ?? ""}
+                  onChange={(e) => setEdits({ ...edits, [d.category]: e.target.value })}
+                />{" "}
+                <button type="button" disabled={!edits[d.category]} onClick={() => save(d.category)}>
+                  Save
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
 /** Admin: bureaus (create, rename, deactivate; every change audited) and the people SETHU knows. */
 export function AdminPage() {
   const bureaus = useLoad<BureauRow[]>("/admin/bureaus");
@@ -130,6 +192,8 @@ export function AdminPage() {
           Create bureau
         </button>
       </form>
+
+      <Deadlines />
 
       <h2>People</h2>
       <p className="note">
