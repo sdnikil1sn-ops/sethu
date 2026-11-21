@@ -18,7 +18,8 @@ DETECT = require_roles("admin")                    # reads every bureau's queue;
 
 @router.get("", response_model=list[schemas.Finding])
 def list_findings(
-    kind: Annotated[Literal["transfer_loop", "stalled_transfer", "bottleneck", "category_spike"] | None, Blank] = None,
+    kind: Annotated[Literal["transfer_loop", "stalled_transfer", "bottleneck", "category_spike",
+                          "deadline_escalation"] | None, Blank] = None,
     status: Annotated[Literal["open", "resolved", "dismissed"] | None, Blank] = None,
     bureau: Text20 = None,
     institution_id: Annotated[UUID | None, Blank] = None,

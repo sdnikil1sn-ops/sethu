@@ -83,6 +83,15 @@ def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str,
                 subject=str(user_id(u["username"])), display_name=u["display_name"], email=u["email"],
                 role=u["role"], bureau_id=bureau[u["bureau"]])
 
+        # Intake sources (no API keys: an admin issues those on the Intake screen). Fallbacks come first in the file.
+        source = {"": None}
+        for r in rows("sources"):
+            source[r["name"]] = insert(
+                s, "intake_sources", "intake.source_created",
+                {"name": r["name"], "channel": r["channel"], "bureau": r["bureau"], "fallback": r["fallback"] or None},
+                name=r["name"], channel=r["channel"], bureau_id=bureau[r["bureau"]], priority=int(r["priority"]),
+                fallback_source_id=source[r["fallback"]])
+
         known_name = {}  # exact canonical name or alias -> institution id
         for i in rows("institutions"):
             iid = insert(s, "institutions", "institution.created", {"permanent_id": i["permanent_id"]},
@@ -126,7 +135,7 @@ def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str,
                    acknowledged_at=ago(a["acknowledged_days_ago"]), created_at=ago(a["days_ago"]))
 
         counts = {"bureaus": bureaus_created, "users": len(user) - 1, "institutions": len(rows("institutions")),
-                  "complaints": len(complaint), "case_actions": len(actions)}
+                  "complaints": len(complaint), "case_actions": len(actions), "sources": len(source) - 1}
         record(s, SYSTEM, "seed.loaded", payload=counts)
     return counts
 

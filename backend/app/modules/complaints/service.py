@@ -8,9 +8,10 @@ admin and auditor roles. Everyone else gets the summary fields.
 Every action writes one case_actions row, updates the case and appends one audit
 entry in the caller's transaction, so they are saved together or not at all.
 """
-from datetime import UTC, datetime
+import hashlib
+from datetime import UTC, datetime, timedelta
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -30,7 +31,10 @@ ACTIONS: dict[str, tuple[str, set[str], str | None]] = {
     "transfer": ("transferred", {"open", "in_progress", "replied", "transferred"}, "transferred"),
     "acknowledge": ("acknowledged", {"transferred"}, "in_progress"),
     "close": ("closed", {"open", "in_progress", "replied"}, "closed"),
+    "reopen": ("reopened", {"closed"}, "open"),
 }
+# Why a case was closed (migration 0010 enforces the same list).
+CLOSE_REASONS = ("resolved", "no_action_needed", "duplicate", "withdrawn", "outside_jurisdiction")
 
 
 class CaseError(Exception):
@@ -103,7 +107,8 @@ def get(session: Session, principal: Principal, complaint_id: UUID) -> dict:
         "complainant": keyring().decrypt(sealed, str(case["id"])) if shown else None,
         "complainant_withheld": sealed is not None and not shown,
         "history": repo.history(session, complaint_id) if readable else [],
-        "can_act": readable and can_act(principal, case) and case["status"] != "closed",
+        "deadline_days": deadline_days(session, case["category"]),
+        "can_act": readable and can_act(principal, case),
         "awaiting_acknowledgement": case["status"] == "transferred",
     }
 
@@ -146,7 +151,7 @@ def actor_id(session: Session, principal: Principal) -> UUID:
 
 
 def act(session: Session, principal: Principal, complaint_id: UUID, action: str, *, note: str | None = None,
-        to_bureau: str | None = None, assignee_id: UUID | None = None) -> dict:
+        to_bureau: str | None = None, assignee_id: UUID | None = None, reason: str | None = None) -> dict:
     db_action, allowed_from, new_status = ACTIONS[action]
     case = repo.lock(session, complaint_id)
     if case is None:  # Row-Level Security hid it: another bureau's case, or no such case
@@ -158,7 +163,7 @@ def act(session: Session, principal: Principal, complaint_id: UUID, action: str,
         raise CaseError(409, f"a case that is {case['status'].replace('_', ' ')} cannot take the action '{action}'")
 
     note = (note or "").strip() or None
-    holder, sender = case["bureau_id"], case["transferred_from_bureau_id"]
+    holder, sender, assignee, new_due = case["bureau_id"], case["transferred_from_bureau_id"], case["assignee_id"], None
     row: dict[str, Any] = {"complaint_id": complaint_id, "action": db_action, "note": note}
     payload: dict[str, Any] = {"ref": case["ref"], "status": new_status or case["status"]}
     known = repo.bureaus(session)
@@ -168,18 +173,30 @@ def act(session: Session, principal: Principal, complaint_id: UUID, action: str,
 
     if action == "note" and not note:
         raise CaseError(422, "a note needs some text")
+    if action == "close":
+        if reason not in CLOSE_REASONS:
+            raise CaseError(422, f"choose why the case is closed: {', '.join(CLOSE_REASONS)}")
+        row["reason"] = payload["reason"] = reason
+    if action == "reopen":
+        if not note:
+            raise CaseError(422, "say why the case is reopened")
+        new_due = due_at(session, case["category"], datetime.now(UTC))  # a fresh deadline from today
+        payload["due_at"] = new_due.isoformat()
     if action == "assign":
         if assignee_id not in {s["id"] for s in repo.staff(session, holder)}:
-            raise CaseError(422, "the assignee must be an officer or head of the bureau holding the case")
+            raise CaseError(422, "the assignee must be an active officer or head of the bureau holding the case")
+        if assignee_id == assignee:
+            raise CaseError(409, "the case is already assigned to this person")
         row["assignee_id"] = assignee_id
-        payload["assignee_id"] = str(assignee_id)
+        payload |= {"assignee_id": str(assignee_id), "previous_assignee_id": assignee and str(assignee)}
+        assignee = assignee_id
     if action == "transfer":
         target = receiving.get(to_bureau or "")
         if target is None or target == holder:
             raise CaseError(422, "choose another bureau to transfer to")
         row |= {"from_bureau_id": holder, "to_bureau_id": target}
         payload |= {"from": case["bureau"], "to": to_bureau}
-        holder, sender = target, holder
+        holder, sender, assignee = target, holder, None  # the receiving bureau assigns its own people
     if action == "acknowledge":
         transfer = repo.last_transfer(session, complaint_id) or {"from_bureau_id": sender, "to_bureau_id": holder}
         row |= transfer | {"acknowledged_at": datetime.now(UTC)}
@@ -190,8 +207,73 @@ def act(session: Session, principal: Principal, complaint_id: UUID, action: str,
         row["actor_id"] = actor_id(session, principal)
     # History first: the insert policy checks the case is still held by the caller's bureau.
     repo.insert_action(session, **row)
-    repo.update_case(session, complaint_id, new_status or case["status"], holder, sender)
+    repo.update_case(session, complaint_id, new_status or case["status"], holder, sender, assignee, new_due)
     audit.record(session, principal, f"case.{db_action}", entity_type="complaints", entity_id=str(complaint_id),
                  payload=payload)
     session.execute(text("SELECT 1"))  # surface any policy error here, inside the caller's transaction
     return get(session, principal, complaint_id)
+
+
+def deadline_days(session: Session, category: str | None) -> int:
+    """Days to close a case of this category: the admin's setting, else the default (SETHU_SLA_DAYS)."""
+    return repo.deadline_days(session, category) or get_settings().sla_days
+
+
+def due_at(session: Session, category: str | None, start: datetime) -> datetime:
+    return start + timedelta(days=deadline_days(session, category))
+
+
+def deadlines(session: Session) -> list[dict]:
+    default = get_settings().sla_days
+    return [r | {"effective_days": r["days"] or default, "default_days": default} for r in repo.deadlines(session)]
+
+
+def set_deadline(session: Session, principal: Principal, category: str, days: int) -> list[dict]:
+    """For new cases and reopened ones; a case already open keeps the deadline it was given."""
+    repo.set_deadline(session, category, days, actor_id(session, principal))
+    audit.record(session, principal, "deadline.set", entity_type="category_deadlines", entity_id=category,
+                 payload={"category": category, "days": days})
+    return deadlines(session)
+
+
+def my_cases(session: Session, principal: Principal) -> list[dict]:
+    return [r | _sla(r) for r in repo.assigned_to(session, actor_id(session, principal))]
+
+
+def workload(session: Session) -> list[dict]:
+    return repo.workload(session)
+
+
+def create(session: Session, principal: Principal, *, bureau_id: UUID, source: str, institution_name_raw: str,
+           category: str, body: str, language: str, filed_at: datetime, complainant: dict | None,
+           institution_id: UUID | None, audit_extra: dict) -> dict:
+    """A new complaint, its 'filed' history row and its audit entry, in the caller's transaction.
+    `body` is expected normalised (single spaces); its hash is what duplicate checks compare."""
+    cid = uuid4()  # chosen here: the encryption binds the complainant details to this complaint's id
+    ref = repo.insert_complaint(
+        session, id=cid, source=source, bureau_id=bureau_id, institution_id=institution_id,
+        institution_name_raw=institution_name_raw, resolution_state="auto" if institution_id else "unresolved",
+        category=category, status="open", language=language, body=body,
+        body_sha256=hashlib.sha256(body.encode()).hexdigest(), filed_at=filed_at,
+        due_at=due_at(session, category, filed_at),
+        complainant_enc=keyring().encrypt(complainant, str(cid)) if complainant else None)
+    repo.insert_action(session, complaint_id=cid, action="filed", to_bureau_id=bureau_id,
+                       note=f"Received via {source}")
+    audit.record(session, principal, "complaint.created", entity_type="complaints", entity_id=str(cid),
+                 payload={"ref": ref, "source": source, "resolved": institution_id is not None} | audit_extra)
+    return {"id": cid, "ref": ref}
+
+
+def same_text(session: Session, bureau_id: UUID, name: str, body: str) -> dict | None:
+    """An existing complaint in this bureau with exactly this (normalised) text about the same typed name."""
+    return repo.same_text(session, bureau_id, hashlib.sha256(body.encode()).hexdigest(), name)
+
+
+def similar_text(session: Session, bureau_id: UUID, institution_id: UUID | None, name: str, body: str,
+                 threshold: float, days: int) -> dict | None:
+    return repo.similar_text(session, bureau_id, institution_id, name, body, threshold, days)
+
+
+def lock_text(session: Session, fingerprint: str) -> None:
+    """Serialise work on one fingerprint until the transaction ends (two workers, same complaint)."""
+    session.execute(text("SELECT pg_advisory_xact_lock(hashtext(:f))"), {"f": fingerprint})

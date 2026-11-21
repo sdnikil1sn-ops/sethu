@@ -26,6 +26,7 @@ x-prod-backend-env: &prod-backend-env
   SETHU_SMTP_PASSWORD: ""
   SETHU_SMTP_PASSWORD_FILE: /run/secrets/smtp_password
   SETHU_ALERT_FROM: ${ALERT_FROM:?set ALERT_FROM to the sender address}
+  SETHU_INTAKE_SPOOL_DIR: /spool
 
 x-prod-backend-secrets: &prod-backend-secrets [sethu_app_password, redis_password, smtp_password, complainant_keys]
 

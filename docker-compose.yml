@@ -32,6 +32,7 @@ x-backend-env: &backend-env
   SETHU_SMTP_CA_FILE: ${SMTP_CA_FILE:-}
   SETHU_DEBUG: ${SETHU_DEBUG:-false}
   SETHU_COMPLAINANT_KEYS_FILE: /run/secrets/complainant_keys
+  SETHU_INTAKE_SPOOL_DIR: /spool   # mounted into the worker only (the fallback intake channel)
   # Findings thresholds (docs/RUNBOOK.md). The defaults repeat backend/app/core/config.py: keep them equal.
   SETHU_STALLED_TRANSFER_DAYS: ${SETHU_STALLED_TRANSFER_DAYS:-7}
   SETHU_BOTTLENECK_MIN_OPEN: ${SETHU_BOTTLENECK_MIN_OPEN:-3}
@@ -166,6 +167,8 @@ services:
     command: ["celery", "-A", "app.worker:celery", "worker", "--loglevel", "INFO", "--concurrency", "2"]
     read_only: true
     tmpfs: ["/tmp"]
+    volumes:   # spool folder: <source name>/*.csv|*.xlsx; files are moved to processed/ or rejected/
+      - ${SETHU_INTAKE_SPOOL_DIR:-./spool}:/spool
     healthcheck:                      # the worker answers a ping through Redis
       test: ["CMD-SHELL", "celery -A app.worker:celery inspect ping -d celery@$$HOSTNAME --timeout 10 | grep -q pong"]
       interval: 60s

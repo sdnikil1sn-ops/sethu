@@ -123,6 +123,45 @@ python scripts/complainant_key.py show secrets/complainant_keys.json       # key
 
 The task re-encrypts every value onto the active key and writes a `complainant.rekeyed` audit entry per batch (counts and key ids only). When it has finished (`docker compose ... logs worker` shows `rekeyed`), and only then, drop the old key with `python scripts/complainant_key.py remove secrets/complainant_keys.json <old id>` and restart backend and worker. Keep a copy of the keyring apart from the database backups: a backup without its keyring cannot show who complained, and a backup with it is the data.
 
+### Case workflow
+
+- **Assign and reassign**: on a case's page, an officer or head of the bureau holding it chooses an active officer or head of that bureau. The case shows who has it; every assignment is in the history and the audit log (with the previous assignee). A transfer clears the assignee: the receiving bureau assigns its own people.
+- **My cases** (officers and heads): open cases assigned to you, soonest deadline first. **Workload** (heads see their bureau; oversight and admin see all): open and overdue cases per person, and the unassigned ones.
+- **Deadlines** (Admin > Deadlines by category): days to close a case, per category; a category without a setting uses `SETHU_SLA_DAYS` (21). They apply to cases filed or reopened afterwards; an open case keeps the deadline it was given.
+- **Escalation**: the findings detector (every 5 minutes) makes a `deadline_escalation` finding for each open case past its deadline and an alert to the holding bureau's head, held for approval (Alerts). Run again, it adds nothing; closing the case resolves the finding; a reopened case that misses its new deadline is a new finding. On the demo data the first run finds about two dozen late cases, so the Alerts screen fills up: reject or approve them before a demo, or reseed.
+- **Notes** are read only by the officers and heads of the bureau holding the case (Row-Level Security); oversight, admin, auditors and a bureau that transferred the case away do not see them. The other history entries are unchanged.
+- **Close** requires a reason (resolved, no action needed, duplicate, withdrawn, outside AICTE's jurisdiction). **Reopen** requires a reason, gives the case a fresh deadline from today, and keeps its assignee.
+
+### Complaint intake
+
+Complaints enter through **sources** (Intake screen, admin): each has a channel, the bureau it feeds, a priority and optionally a fallback source. The dev seed adds `pgrc-portal` (api, falls back to `pgrc-spool`), `rb-register` (api, falls back to `rb-spool`), and an `upload` and a `manual` source per bureau.
+
+| Channel | Who | How |
+|---|---|---|
+| `api` | a portal system | `POST /api/v1/intake/submissions` with the source's API key, a timestamp and a one-time nonce (below) |
+| `upload` | officer, bureau head | Intake screen > Upload a file: CSV or XLSX, up to 2 MB and 5,000 rows; bad rows are listed by row and field and can be downloaded as a CSV report |
+| `manual` | officer, bureau head | Intake screen > Enter a complaint |
+| `spool` | a portal, when its API is down | drop CSV or XLSX files into `SETHU_INTAKE_SPOOL_DIR/<source name>/` (default `./spool`, mounted into the worker at `/spool`); taken every 30 s, then moved to `processed/` (with `<file>.errors.csv` for refused rows) or `rejected/` (with `<file>.errors.txt`). Nothing is deleted |
+
+Every channel writes the complaint to the intake queue first, encrypted with the complainant keyring. The worker (every 10 s) validates, refuses an exact duplicate (same bureau, typed institution and text), matches the institution (unmatched names go to the Unmatched names queue), flags a near duplicate (similar text, same institution, last 180 days) for the bureau to review, encrypts the complainant details and files the case (`IN-000001`, ...), recording the source and whether it came by the `primary` or `fallback` path.
+
+**Failures are never dropped.** While a source is *marked down* (Intake screen, admin) its items wait; any failed attempt is retried after 1, 2, 4, 8, 16 minutes (`SETHU_INTAKE_RETRY_*`), and after `SETHU_INTAKE_MAX_ATTEMPTS` (6) the item becomes a dead letter with the reason. An admin presses **Retry** on the Intake screen's queue (Show: Dead letters). Each source's last success, failures in a row, queued and dead-lettered counts are on the Intake screen.
+
+A source that is the fallback of a primary marked down is the stand-in: what it delivers is recorded as path `fallback`. When the primary is back, anything it held that the fallback already filed is recognised as a duplicate, not filed twice.
+
+Sample file: `docs/samples/intake-sample.csv` (mock data). Columns: `institution_name`, `category`, `body` (required); `language` (`en` or `hi`), `filed_at` (date), `external_ref` (the portal's own id; a repeat from the same source is refused), `complainant_name`, `complainant_email`, `complainant_phone`.
+
+**Intake API.** An admin issues the key (Intake screen > Sources > Issue API key); it is shown once and stored only as a hash. Every request carries `X-Sethu-Key`, `X-Sethu-Timestamp` (Unix seconds, within 5 minutes of the server clock) and `X-Sethu-Nonce` (16 to 128 characters, never reused: a replay is refused with 409). Sample call (dev stack):
+
+```powershell
+$headers = @{ "X-Sethu-Key" = "<key from the Intake screen>"; "X-Sethu-Timestamp" = [string][DateTimeOffset]::UtcNow.ToUnixTimeSeconds(); "X-Sethu-Nonce" = [guid]::NewGuid().ToString("N") }
+$body = @{ institution_name = "Greenfield Institute of Technology"; category = "Fee refund"; body = "The caution deposit of Rs 10000 has not been refunded four months after withdrawal."; external_ref = "PORTAL-0042"; complainant = @{ name = "Kavya Samplename"; email = "kavya.samplename@sethu.test" } } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/v1/intake/submissions -Headers $headers -ContentType application/json -Body $body
+# -> id, status "queued", path "primary"
+```
+
+401: unknown key, or a timestamp too old or in the future. 409: nonce reused, or the same complaint (or `external_ref`) already received from this source. 422: a field failed validation (the reply names the field, never repeats the value). The request never leaves the deployment: no step of intake makes an outbound call.
+
 ### Reports and exports
 
 The Reports screen exports CSV. Each export is a `report.export` entry in the audit log (who, which report, date range, scope, row count): on the Audit log screen choose the action `report.*`, or run

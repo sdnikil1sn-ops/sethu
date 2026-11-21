@@ -118,7 +118,8 @@ def test_every_action_is_audited_and_the_chain_verifies(world):
         fernandes_id = scalar(s, "SELECT id FROM sethu.app_users WHERE subject = :s", s=world["fernandes"].subject)
 
     steps = [("assign", {"assignee_id": fernandes_id}, "in_progress"), ("note", {"note": "Called the registrar"},
-             "in_progress"), ("reply", {}, "replied"), ("close", {"note": "Refund paid"}, "closed")]
+             "in_progress"), ("reply", {}, "replied"),
+             ("close", {"note": "Refund paid", "reason": "resolved"}, "closed")]
     for action, extra, status in steps:
         with session_for(rao, engine) as s:  # one transaction per action, as one request would be
             assert service.act(s, rao, c103, action, **extra)["status"] == status
@@ -126,7 +127,8 @@ def test_every_action_is_audited_and_the_chain_verifies(world):
     with session_for(rao, engine) as s:
         case = service.get(s, rao, c103)
         assert [a["action"] for a in case["history"]] == ["filed", "assigned", "note", "replied", "closed"]
-        assert case["history"][1]["assignee"] == "Maria Fernandes" and case["closed_at"] and not case["can_act"]
+        # Changed in Phase 3: a closed case still offers one action, reopening (tests/test_workflow.py).
+        assert case["history"][1]["assignee"] == "Maria Fernandes" and case["closed_at"] and case["can_act"]
         for action, extra in (("note", {"note": "late"}), ("close", {}), ("transfer", {"to_bureau": "RB"})):
             with pytest.raises(CaseError) as closed:
                 service.act(s, rao, c103, action, **extra)

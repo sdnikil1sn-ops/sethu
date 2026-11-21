@@ -1,7 +1,7 @@
 import { type FormEvent, useState } from "react";
 import { api, useLoad } from "../../api";
 import { History } from "./History";
-import { type Case, type Options, day, sla, words } from "./types";
+import { CLOSE_REASONS, type Case, type Options, day, sla, words } from "./types";
 
 // Mirrors ACTIONS in backend/app/modules/complaints/service.py: what each status allows.
 const ACTIONS: { id: string; label: string; from: string[] }[] = [
@@ -11,6 +11,7 @@ const ACTIONS: { id: string; label: string; from: string[] }[] = [
   { id: "reply", label: "Reply received", from: ["open", "in_progress"] },
   { id: "transfer", label: "Transfer to another unit", from: ["open", "in_progress", "replied", "transferred"] },
   { id: "close", label: "Close", from: ["open", "in_progress", "replied"] },
+  { id: "reopen", label: "Reopen", from: ["closed"] },
 ];
 
 function ActionForm({ c, onDone }: { c: Case; onDone: (updated: Case) => void }) {
@@ -18,6 +19,7 @@ function ActionForm({ c, onDone }: { c: Case; onDone: (updated: Case) => void })
   const [action, setAction] = useState(allowed[0]?.id ?? "");
   const [note, setNote] = useState("");
   const [target, setTarget] = useState("");
+  const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { data: options } = useLoad<Options>("/cases/options");
@@ -33,6 +35,7 @@ function ActionForm({ c, onDone }: { c: Case; onDone: (updated: Case) => void })
         note: note || null,
         to_bureau: action === "transfer" ? target : null,
         assignee_id: action === "assign" ? target : null,
+        reason: action === "close" ? reason : null,
       };
       onDone(await api<Case>(`/cases/${c.id}/actions`, body));
     } catch (err) {
@@ -66,7 +69,7 @@ function ActionForm({ c, onDone }: { c: Case; onDone: (updated: Case) => void })
           Assign to
           <select value={target} onChange={(e) => setTarget(e.target.value)} required>
             <option value="">Choose a person</option>
-            {(staff ?? []).map((s) => (
+            {(staff ?? []).filter((s) => s.id !== c.assignee_id).map((s) => (
               <option key={s.id} value={s.id}>
                 {s.display_name} ({words(s.role)})
               </option>
@@ -87,10 +90,29 @@ function ActionForm({ c, onDone }: { c: Case; onDone: (updated: Case) => void })
           </select>
         </label>
       )}
+      {action === "close" && (
+        <label>
+          Reason for closing
+          <select value={reason} onChange={(e) => setReason(e.target.value)} required>
+            <option value="">Choose a reason</option>
+            {Object.entries(CLOSE_REASONS).map(([id, label]) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       <label>
-        Note{action === "note" ? "" : " (optional)"}
-        <textarea value={note} onChange={(e) => setNote(e.target.value)} required={action === "note"} maxLength={2000} />
+        {action === "reopen" ? "Why is the case reopened?" : `Note${action === "note" ? "" : " (optional)"}`}
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          required={action === "note" || action === "reopen"}
+          maxLength={2000}
+        />
       </label>
+      {action === "note" && <p className="note">Notes are read only by the unit holding the case.</p>}
       {error && <p role="alert">{error}</p>}
       <button type="submit" disabled={busy}>
         Record action
@@ -129,14 +151,25 @@ export function CaseDetail({ id }: { id: string }) {
           <dd>{day(c.filed_at)}</dd>
         </div>
         <div>
-          <dt>Due (21 days)</dt>
+          <dt>Due</dt>
           <dd>{c.due_at ? day(c.due_at) : "–"}</dd>
         </div>
         <div>
           <dt>Clock</dt>
           <dd className={c.overdue ? "flag" : undefined}>{sla(c)}</dd>
         </div>
+        {c.readable && (
+          <div>
+            <dt>Assigned to</dt>
+            <dd>{c.assignee ?? <span className="flag">nobody yet</span>}</dd>
+          </div>
+        )}
       </dl>
+      <p className="note">
+        Deadline for {c.category ?? "this category"}: {c.deadline_days} days (set by an admin; a case keeps the
+        deadline it was given when filed or reopened).
+        {c.close_reason && c.status === "closed" && <> Closed as: {CLOSE_REASONS[c.close_reason]}.</>}
+      </p>
       <p>
         Institution:{" "}
         {c.institution_id ? <a href={`#/institutions/${c.institution_id}`}>{c.institution}</a> : "not matched yet"}

@@ -13,6 +13,7 @@ from app.modules.alerts import service as alerts
 from app.modules.complaints import service as complaints
 from app.modules.findings import service as findings
 from app.modules.institutions import service as institutions
+from app.modules.intake import service as intake
 from app.modules.overlaps import service as overlaps
 
 log = logging.getLogger("sethu.worker")
@@ -32,6 +33,8 @@ celery.conf.update(
         "detect-overlaps": {"task": "sethu.overlaps.detect", "schedule": 300.0},
         "detect-findings": {"task": "sethu.findings.detect", "schedule": 300.0},
         "deliver-alerts": {"task": "sethu.alerts.deliver", "schedule": 15.0},
+        "intake-process": {"task": "sethu.intake.process", "schedule": 10.0},
+        "intake-spool": {"task": "sethu.intake.spool", "schedule": 30.0},
     },
 )
 
@@ -115,3 +118,15 @@ def rotate_complainant_keys() -> dict:
 def deliver_alerts() -> dict:
     """Email approved alerts through the SMTP relay; failures stay approved and are retried."""
     return alerts.deliver()
+
+
+@celery.task(name="sethu.intake.process")
+def process_intake() -> dict:
+    """Turn queued intake items into complaints; failures wait and are retried, then dead-lettered."""
+    return intake.process_due()
+
+
+@celery.task(name="sethu.intake.spool")
+def take_spool() -> dict:
+    """The fallback channel: queue the rows of files dropped into the spool folder."""
+    return intake.spool()

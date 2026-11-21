@@ -28,6 +28,7 @@ export type Action = {
   actor: string | null;
   assignee: string | null;
   note: string | null;
+  reason?: string | null;
   created_at: string;
   acknowledged_at: string | null;
 };
@@ -40,6 +41,10 @@ export type Case = CaseRow & {
   resolution_state: string | null;
   complainant: { name: string; email: string | null; phone: string | null } | null;
   complainant_withheld: boolean;
+  assignee_id: string | null;
+  assignee: string | null;
+  close_reason: string | null;
+  deadline_days: number;
   history: Action[];
   can_act: boolean;
   awaiting_acknowledgement: boolean;
@@ -81,8 +86,19 @@ export function describe(a: Action): string {
     case "replied":
       return "Reply received";
     case "closed":
-      return "Closed";
+      return a.reason ? `Closed: ${CLOSE_REASONS[a.reason] ?? words(a.reason)}` : "Closed";
+    case "reopened":
+      return "Reopened";
     default:
       return "Note";
   }
 }
+
+/** Why a case was closed. Mirrors CLOSE_REASONS in backend/app/modules/complaints/service.py. */
+export const CLOSE_REASONS: Record<string, string> = {
+  resolved: "Resolved",
+  no_action_needed: "No action needed",
+  duplicate: "Duplicate of another complaint",
+  withdrawn: "Withdrawn by the complainant",
+  outside_jurisdiction: "Outside AICTE's jurisdiction",
+};

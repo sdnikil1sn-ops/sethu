@@ -6,9 +6,11 @@ import { AlertsPage } from "./features/alerts/Alerts";
 import { AuditLog } from "./features/audit/AuditLog";
 import { CaseDetail } from "./features/cases/CaseDetail";
 import { CaseList } from "./features/cases/CaseList";
+import { MyCases, Workload } from "./features/cases/Queues";
 import { Dashboard } from "./features/dashboard/Dashboard";
 import { FindingsPage } from "./features/findings/Findings";
 import { InstitutionList } from "./features/institutions/InstitutionList";
+import { IntakePage } from "./features/intake/Intake";
 import { InstitutionProfile } from "./features/institutions/InstitutionProfile";
 import { OverlapsPage } from "./features/overlaps/Overlaps";
 import { ResolutionQueue } from "./features/institutions/ResolutionQueue";
@@ -19,6 +21,9 @@ type Me = { name: string; role: string };
 const CAN_RESOLVE = ["officer", "bureau_head", "admin"];
 const CAN_AUDIT = ["auditor", "oversight", "admin"];
 const CAN_DECIDE = ["bureau_head", "oversight"];
+const CAN_INTAKE = ["officer", "bureau_head", "admin", "oversight", "auditor"];
+const HAS_CASES = ["officer", "bureau_head"];
+const SEES_WORKLOAD = ["bureau_head", "oversight", "admin"];
 
 /** The route, and a count of hash changes. The case list rewrites its own address with replaceState
  * (no hashchange), so the stored route can be stale; `visit` changes whenever a link is followed. */
@@ -55,6 +60,16 @@ export function App() {
           <a href="#/cases" aria-current={caseId || caseList ? "page" : undefined}>
             Cases
           </a>
+          {me && HAS_CASES.includes(me.role) && (
+            <a href="#/mine" aria-current={route === "/mine" ? "page" : undefined}>
+              My cases
+            </a>
+          )}
+          {me && SEES_WORKLOAD.includes(me.role) && (
+            <a href="#/workload" aria-current={route === "/workload" ? "page" : undefined}>
+              Workload
+            </a>
+          )}
           <a href="#/overlaps" aria-current={route === "/overlaps" ? "page" : undefined}>
             Overlaps
           </a>
@@ -70,6 +85,11 @@ export function App() {
           <a href="#/reports" aria-current={route === "/reports" ? "page" : undefined}>
             Reports
           </a>
+          {me && CAN_INTAKE.includes(me.role) && (
+            <a href="#/intake" aria-current={route === "/intake" ? "page" : undefined}>
+              Intake
+            </a>
+          )}
           {me?.role === "admin" && (
             <a href="#/admin" aria-current={route === "/admin" ? "page" : undefined}>
               Admin
@@ -110,6 +130,12 @@ export function App() {
           <ReportsPage />
         ) : route === "/admin" ? (
           <AdminPage />
+        ) : route === "/mine" ? (
+          <MyCases />
+        ) : route === "/workload" ? (
+          <Workload />
+        ) : route === "/intake" && me ? (
+          <IntakePage role={me.role} />
         ) : route === "/audit" ? (
           <AuditLog />
         ) : route === "/institutions" ? (

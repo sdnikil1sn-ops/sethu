@@ -13,6 +13,11 @@ router = APIRouter(prefix="/api/v1/cases", tags=["cases"])
 
 READ = require_roles("officer", "bureau_head", "oversight", "admin", "auditor")
 WRITE = require_roles("officer", "bureau_head", "admin")  # the database also refuses the others
+MINE = require_roles("officer", "bureau_head")
+WORKLOAD = require_roles("bureau_head", "oversight", "admin")
+ADMIN = require_roles("admin")
+
+deadlines_router = APIRouter(prefix="/api/v1/admin/deadlines", tags=["admin"])
 
 
 def _run(work):
@@ -50,6 +55,18 @@ def institution_timeline(
     return service.institution_timeline(session, institution_id)
 
 
+@router.get("/mine", response_model=list[schemas.CaseRow])
+def my_cases(principal: Principal = Depends(MINE), session: Session = Depends(get_session)) -> list[dict]:
+    """Open cases assigned to the caller in their bureau, soonest deadline first."""
+    return service.my_cases(session, principal)
+
+
+@router.get("/workload", response_model=list[schemas.WorkloadRow])
+def workload(_: Principal = Depends(WORKLOAD), session: Session = Depends(get_session)) -> list[dict]:
+    """Open and overdue cases per person and unassigned; a bureau head sees their bureau (Row-Level Security)."""
+    return service.workload(session)
+
+
 @router.get("/{complaint_id}", response_model=schemas.Case)
 def case(
     complaint_id: UUID,
@@ -76,4 +93,17 @@ def act(
     session: Session = Depends(get_session),
 ) -> dict:
     return _run(lambda: service.act(session, principal, complaint_id, body.action, note=body.note,
-                                    to_bureau=body.to_bureau, assignee_id=body.assignee_id))
+                                    to_bureau=body.to_bureau, assignee_id=body.assignee_id, reason=body.reason))
+
+
+@deadlines_router.get("", response_model=list[schemas.Deadline])
+def deadlines(_: Principal = Depends(READ), session: Session = Depends(get_session)) -> list[dict]:
+    return service.deadlines(session)
+
+
+@deadlines_router.put("/{category}", response_model=list[schemas.Deadline])
+def set_deadline(category: str, body: schemas.DeadlineIn, principal: Principal = Depends(ADMIN),
+                 session: Session = Depends(get_session)) -> list[dict]:
+    if not 1 <= len(category) <= 100:
+        raise HTTPException(422, "category must be 1 to 100 characters")
+    return service.set_deadline(session, principal, category, body.days)

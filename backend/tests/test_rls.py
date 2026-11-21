@@ -181,3 +181,39 @@ def test_findings_are_read_by_the_bureaus_involved_and_written_by_the_detector(a
                       {"b": [world["pgrc"]]})
     with session_for(Principal("u2", "das", "auditor", None), app_engine) as s:
         assert s.execute(text("SELECT count(*) FROM sethu.findings")).scalar_one() == 1
+
+
+def test_intake_items_are_read_and_written_only_as_migration_0009_says(app_engine, world):
+    """Queue rows hold an encrypted complaint: bureau staff read their own bureau's, may only mark a near
+    duplicate reviewed, and never change the processing state; the API gateway adds only api items."""
+    officer = Principal("u1", "rao", "officer", world["pgrc"])
+    gateway = Principal("intake-gateway", "intake-gateway", "intake", None)
+    with session_for(SYSTEM, app_engine) as s:
+        src = {ch: s.execute(text("INSERT INTO sethu.intake_sources (name, channel, bureau_id) VALUES (:n, :c, :b)"
+                                  " RETURNING id"), {"n": f"pgrc-{ch}", "c": ch, "b": world["pgrc"]}).scalar_one()
+               for ch in ("api", "manual")}
+        item = s.execute(text(
+            "INSERT INTO sethu.intake_items"
+            " (source_id, bureau_id, channel, path, fingerprint, payload_enc, review_state)"
+            " VALUES (:s, :b, 'manual', 'primary', 'fp', decode('00', 'hex'), 'pending') RETURNING id"),
+            {"s": src["manual"], "b": world["pgrc"]}).scalar_one()
+    rb_officer = Principal("u3", "x", "officer", world["rb"])
+    with session_for(rb_officer, app_engine) as s:
+        assert s.execute(text("SELECT count(*) FROM sethu.intake_items")).scalar() == 0
+    with pytest.raises(DBAPIError, match="only the review"), session_for(officer, app_engine) as s:
+        s.execute(text("UPDATE sethu.intake_items SET status = 'dead', review_state = 'reviewed' WHERE id = :i"),
+                  {"i": item})
+    with session_for(officer, app_engine) as s:  # the review itself is allowed
+        assert s.execute(text("UPDATE sethu.intake_items SET review_state = 'reviewed' WHERE id = :i"),
+                         {"i": item}).rowcount == 1
+    with session_for(gateway, app_engine) as s:
+        assert s.execute(text("SELECT count(*) FROM sethu.complaints")).scalar() == 0
+        assert s.execute(text("SELECT count(*) FROM sethu.intake_items")).scalar() == 0  # not api items
+    with pytest.raises(DBAPIError, match="row-level security"), session_for(gateway, app_engine) as s:
+        s.execute(text(
+            "INSERT INTO sethu.intake_items (source_id, bureau_id, channel, path, fingerprint, payload_enc)"
+            " VALUES (:s, :b, 'manual', 'primary', 'fp2', decode('00', 'hex'))"),
+            {"s": src["manual"], "b": world["pgrc"]})
+    with pytest.raises(DBAPIError, match="row-level security"), session_for(officer, app_engine) as s:
+        s.execute(text("INSERT INTO sethu.intake_sources (name, channel, bureau_id) VALUES ('x-api', 'api', :b)"),
+                  {"b": world["pgrc"]})

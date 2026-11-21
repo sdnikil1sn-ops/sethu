@@ -40,6 +40,7 @@ class Action(BaseModel):
     actor: str | None
     assignee: str | None
     note: str | None
+    reason: str | None = None   # why a case was closed
     created_at: datetime
     acknowledged_at: datetime | None
 
@@ -60,6 +61,10 @@ class Case(CaseRow):
     resolution_state: str | None
     complainant: Complainant | None
     complainant_withheld: bool  # details exist but this caller may not see them
+    assignee_id: UUID | None
+    assignee: str | None
+    close_reason: str | None
+    deadline_days: int          # for this category now (a case keeps the deadline it was given)
     history: list[Action]
     can_act: bool
     awaiting_acknowledgement: bool
@@ -91,10 +96,32 @@ class Assignee(BaseModel):
 
 
 class ActionIn(BaseModel):
-    action: Literal["assign", "note", "reply", "transfer", "acknowledge", "close"]
+    action: Literal["assign", "note", "reply", "transfer", "acknowledge", "close", "reopen"]
     note: str | None = Field(None, max_length=2000)
     to_bureau: str | None = Field(None, max_length=20)
     assignee_id: UUID | None = None
+    reason: Literal["resolved", "no_action_needed", "duplicate", "withdrawn", "outside_jurisdiction"] | None = None
+
+
+class WorkloadRow(BaseModel):
+    bureau: str
+    assignee_id: UUID | None     # None: the bureau's unassigned open cases
+    assignee: str | None
+    role: str | None
+    open: int
+    overdue: int
+
+
+class Deadline(BaseModel):
+    category: str
+    days: int | None             # None: no setting, the default applies
+    effective_days: int
+    default_days: int
+    updated_at: datetime | None
+
+
+class DeadlineIn(BaseModel):
+    days: int = Field(ge=1, le=365)
 
 
 class Filters(BaseModel):

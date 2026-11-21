@@ -11,6 +11,8 @@ Each line has an acceptance test. Tick it only when the test passes on the seede
 - [x] Each case shows status, owner bureau, filed date, due date, days remaining
 - [x] Overdue cases are visibly marked
 - [x] Status change is possible for the owner bureau only (role check)
+- [x] A case is assigned to a person in the holding bureau (reassignable, with history); deadlines by category; a missed deadline is escalated to the bureau head (finding and alert held for approval); notes for the holding bureau only; closing with a reason and reopening with a reason
+- [x] Complaints arrive through designated sources (portal API, file upload, manual form, spool folder), each with a primary and a fallback path; nothing is dropped when a source or the pipeline fails (queue, retry, dead letters with Retry)
 
 ## 3. Overlap detection
 - [x] Tier 1: two cases on the same institution in different bureaus are linked as "same institution"

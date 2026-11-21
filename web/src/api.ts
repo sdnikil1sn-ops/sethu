@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { accessToken } from "./auth";
 
-export async function api<T>(path: string, body?: unknown, method?: "POST" | "PATCH"): Promise<T> {
+export async function api<T>(path: string, body?: unknown, method?: "POST" | "PATCH" | "PUT"): Promise<T> {
   const response = await fetch(`/api/v1${path}`, {
     method: body === undefined ? "GET" : (method ?? "POST"),
     headers: {
@@ -10,10 +10,32 @@ export async function api<T>(path: string, body?: unknown, method?: "POST" | "PA
     },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
+  return answer<T>(response);
+}
+
+/** Send a file's bytes as the request body (no multipart): the intake upload. */
+export async function upload<T>(path: string, file: File): Promise<T> {
+  const response = await fetch(`/api/v1${path}?filename=${encodeURIComponent(file.name)}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${await accessToken()}`, "Content-Type": "application/octet-stream" },
+    body: file,
+  });
+  return answer<T>(response);
+}
+
+async function answer<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    // The API explains refusals in `detail` ("only the bureau holding this case can act on it").
+    // The API explains refusals in `detail`: a sentence ("only the bureau holding this case can act on it"),
+    // or for a form that failed validation, one entry per field.
     const detail = await response.json().then(
-      (b: { detail?: unknown }) => (typeof b.detail === "string" ? b.detail : null),
+      (b: { detail?: unknown }) =>
+        typeof b.detail === "string"
+          ? b.detail
+          : Array.isArray(b.detail)
+            ? b.detail
+                .map((d: { loc?: unknown[]; msg?: string }) => `${(d.loc ?? []).slice(1).join(".")}: ${d.msg}`)
+                .join("; ")
+            : null,
       () => null,
     );
     throw new Error(detail ? `${detail[0].toUpperCase()}${detail.slice(1)}.` : `The request failed (${response.status}).`);
