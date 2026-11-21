@@ -43,7 +43,7 @@ def candidates(session: Session, window_days: int, model: str) -> list[dict]:
 
 
 def suggest_tier2(session: Session, threshold: float, window_days: int, semantic_threshold: float | None,
-                  model: str) -> list[dict]:
+                  model: str, limit: int) -> list[dict]:
     """Store every new Tier 2 pair as a proposed link and return the rows created.
 
     The rules gate; then a pair is suggested when its trigram similarity reaches `threshold` or, with the
@@ -73,10 +73,14 @@ def suggest_tier2(session: Session, threshold: float, window_days: int, semantic
                    'fired', to_jsonb(array_remove(ARRAY[CASE WHEN t_fired THEN 'trigram' END,
                                                         CASE WHEN s_fired THEN 'semantic' END], NULL)),
                    'model', CASE WHEN s_fired THEN CAST(:model AS text) END))
-          FROM s WHERE t_fired OR s_fired
+          FROM s WHERE (t_fired OR s_fired) AND NOT EXISTS (
+               SELECT 1 FROM sethu.overlap_links l
+                WHERE l.complaint_a = s.complaint_a AND l.complaint_b = s.complaint_b AND l.tier = 2)
+         ORDER BY greatest(trigram, CASE WHEN s_fired THEN semantic END) DESC LIMIT :limit
             ON CONFLICT (complaint_a, complaint_b, tier) DO NOTHING
      RETURNING id, complaint_a, complaint_b, score, signals""",  # noqa: S608 - fixed text
-                threshold=threshold, window=window_days, semantic_threshold=semantic_threshold, model=model)
+                threshold=threshold, window=window_days, semantic_threshold=semantic_threshold, model=model,
+                limit=limit)
 
 
 def unembedded(session: Session, model: str, limit: int) -> list[dict]:

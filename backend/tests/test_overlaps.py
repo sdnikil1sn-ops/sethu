@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import text
 
 from app.audit.service import verify
+from app.core import jobs
 from app.core.auth import Principal, get_principal
 from app.db.session import SYSTEM, session_for
 from app.main import app
@@ -176,7 +177,7 @@ def test_only_staff_of_a_party_bureau_can_see_and_decide(detected):
         assert scalar(s, "SELECT count(*) FROM sethu.alerts") == 1
 
 
-def test_api_decisions_detection_and_the_overlapping_filter(world):
+def test_api_decisions_detection_and_the_overlapping_filter(world, monkeypatch):
     client = TestClient(app)
 
     def as_(principal):
@@ -189,7 +190,17 @@ def test_api_decisions_detection_and_the_overlapping_filter(world):
         as_(world["rao"])
         assert client.post("/api/v1/overlaps/detect").status_code == 403  # an officer cannot read both texts
         as_(Principal("u-admin", "admin", "admin", None))
-        assert client.post("/api/v1/overlaps/detect").json() == {"suggested": 7}
+        # Phase 5: the button queues the worker's job (the model never runs in the API process). The test plays
+        # the worker: it records the queued name, then runs the job itself.
+        queued = []
+        monkeypatch.setattr(jobs, "queue", lambda name: queued.append(name) or "task-1")
+        answer = client.post("/api/v1/overlaps/detect")
+        assert answer.status_code == 202 and answer.json() == {"task_id": "task-1"}
+        assert queued == ["sethu.overlaps.detect"]
+        with session_for(SYSTEM, world["engine"]) as s:
+            assert service.detect(s, SYSTEM) == {"suggested": 7}
+            assert s.execute(text("SELECT count(*) FROM sethu.audit_log WHERE action = 'overlap.detect_requested'"
+                                  " AND entity_id = 'task-1'")).scalar() == 1
 
         as_(world["menon"])
         page = client.get("/api/v1/cases", params={"overlapping": "true", "limit": 200}).json()
@@ -212,3 +223,27 @@ def test_api_decisions_detection_and_the_overlapping_filter(world):
         assert len(client.get("/api/v1/overlaps", params={"institution_id": greenfield}).json()) == 1
     finally:
         app.dependency_overrides.clear()
+
+
+def test_suggestions_are_written_in_bounded_batches(world, monkeypatch):
+    """Load test (docs/LOAD-AND-DRILLS.md): a run stores at most `detect_batch` new links, strongest first, so the
+    audit chain's lock is held briefly; repeated runs reach the same seven as one run."""
+    from app.core.config import get_settings
+    monkeypatch.setattr(get_settings(), "detect_batch", 3)
+    runs = []
+    for _ in range(4):
+        with session_for(SYSTEM, world["engine"]) as s:
+            runs.append(service.detect(s, SYSTEM)["suggested"])
+    assert runs == [3, 3, 1, 0]
+    with session_for(SYSTEM, world["engine"]) as s:
+        assert len(suggested_pairs(s)) == 7
+
+
+def test_a_second_overlap_run_is_skipped_while_one_is_running(world):
+    """Two runs at once (the schedule and the admin's button) deadlocked on the same embeddings under load; the
+    second now skips."""
+    from app import worker
+    with session_for(SYSTEM, world["engine"]) as running:
+        running.execute(text("SELECT pg_advisory_xact_lock(hashtext('sethu.overlaps.detect'))"))
+        assert worker.detect_overlaps() == {"suggested": 0, "embedded": 0, "skipped": 1}
+    assert worker.detect_overlaps()["suggested"] == 7

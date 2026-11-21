@@ -30,14 +30,14 @@ log = logging.getLogger("sethu.http")
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging()
-    interactive_docs = settings.environment != "prod"
     app = FastAPI(
         title="SETHU API",
         version="0.1.0",
         debug=settings.debug,  # dev only: Settings refuses SETHU_DEBUG in production
-        docs_url="/api/docs" if interactive_docs else None,
+        # Internal network only: not under /api, so the edge never serves them (docs/API.md).
+        docs_url="/docs",
         redoc_url=None,
-        openapi_url="/api/openapi.json" if interactive_docs else None,
+        openapi_url="/openapi.json",
     )
 
     @app.middleware("http")

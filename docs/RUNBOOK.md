@@ -94,7 +94,7 @@ docker compose logs -f demo-users          # ends with "demo users imported"
 
 ### Alert mail (dev and demo)
 
-A send that fails is tried again after 1, 2, 4, 8 and 16 minutes (never more than an hour apart); after six attempts the alert is `failed` and shows why on the Alerts screen (filter "Failed"). An admin, or a head of a bureau the alert concerns, presses Retry to put it back in the queue with a fresh set of attempts; the retry is in the audit log. Settings: `SETHU_ALERT_MAX_ATTEMPTS`, `SETHU_ALERT_RETRY_BASE_SECONDS`, `SETHU_ALERT_RETRY_MAX_SECONDS`.
+A send that fails is tried again after 1, 2, 4, 8, 16, 32 minutes and then hourly (never more than an hour apart); after ten attempts (about 4 hours, so a relay that is down for an hour heals itself) the alert is `failed` and shows why on the Alerts screen (filter "Failed"). An admin, or a head of a bureau the alert concerns, presses Retry to put it back in the queue with a fresh set of attempts; the retry is in the audit log. Settings: `SETHU_ALERT_MAX_ATTEMPTS`, `SETHU_ALERT_RETRY_BASE_SECONDS`, `SETHU_ALERT_RETRY_MAX_SECONDS`.
 
 In production mail must be encrypted: `SMTP_SECURITY=starttls` (usually port 587) or `tls` (usually 465). The relay's certificate and host name are always verified; for a relay with a private CA, mount the CA certificate into the backend and worker and set `SMTP_CA_FILE` to its path inside the container. The backend refuses to start with `SMTP_SECURITY=none`, with a username but no password, or with an `SMTP_CA_FILE` that does not exist.
 
@@ -137,6 +137,8 @@ Overlap suggestions (Tier 2) are gated by the rules: same institution, same cate
 **Limits.** This small English model rates complaints of the *same category* as close even when they are about different matters (median 0.80, 95th percentile 0.94 across institutions on the seed, whose texts come from templates), so meaning similarity is only usable inside the rules' gate, and within it two different matters at one institution in one category may be suggested; an officer decides every suggestion. Hindi text is not compared by meaning. The values depend on the model: change the model and re-measure before trusting the threshold.
 
 ### Graph
+
+**Look for new overlaps now** (Overlaps, admin) queues the worker's job and the screen waits for its answer; the embedding model is never loaded by the API.
 
 **Graph** (every role) draws the whole network with Cytoscape.js, bundled into the web app (its own file, loaded when a graph is shown; nothing comes from a CDN). By default it is aggregated: one node per bureau and per institution, an edge per bureau and institution weighted by the cases it holds, and transfer edges between bureaus; so it stays small with thousands of complaints. Clicking an institution and **Show its complaints** adds its complaints as nodes, with overlap edges (dashed: suggested, solid: approved). A ring marks an institution with cases in several bureaus; a red halo an open finding. Filters: state, category, filed dates, bureau, finding kind. The side panel shows metadata; for a complaint it shows the text only if your bureau holds the case. The institution profile shows the same component for one institution, already expanded. Data: `GET /api/v1/graph` (summary view plus overlap links, transfers and findings under Row-Level Security: each role sees its share).
 
@@ -321,7 +323,7 @@ Each image also applies its OS's security updates at build time (`apt-get upgrad
 
 ### Continuous integration
 
-`.github/workflows/ci.yml` runs on every push to `main` and every pull request: `ruff`; the backend tests against a throwaway PostgreSQL 16 with pgvector (made with the repo's own init script, passwords generated in the job) and Redis; the web build; a secret scan of the whole history (gitleaks, `.gitleaks.toml`); `pip-audit` on the runtime lock and `npm audit --audit-level=high`; the two images built and scanned with Trivy (fails on fixable HIGH or CRITICAL); and the Playwright journeys against a full dev stack with the demo data. No step uses a repository secret. Actions are referenced by major version tag (`actions/checkout@v4`); pin them to commit SHAs if your policy requires it.
+`.github/workflows/ci.yml` runs on every push to `main` and every pull request: `ruff`; the backend tests against a throwaway PostgreSQL 16 with pgvector (made with the repo's own init script, passwords generated in the job) and Redis; the web build; a secret scan of the whole history (gitleaks, `.gitleaks.toml`); `pip-audit` on the runtime lock and `npm audit --audit-level=high`; the two images built and scanned with Trivy (fails on fixable HIGH or CRITICAL); and the Playwright journeys against a full dev stack with the demo data. No step uses a repository secret. Actions are pinned to commit SHAs (the tag each was taken from is in the comment beside it), and the gitleaks and Trivy images by digest. To move an action: read the commit behind the tag (`https://api.github.com/repos/<owner>/<action>/git/ref/tags/<tag>`; for an annotated tag, follow `object.url` to the commit), replace the SHA and the comment, and let CI run.
 
 Checked locally on 2026-11-21: ruff clean; backend suite green; web build; gitleaks "no leaks found"; pip-audit "No known vulnerabilities found" (after moving to fastembed 0.9.1 and Pillow 13); npm audit 0 vulnerabilities (after moving to Vite 8); Trivy 0 HIGH and 0 CRITICAL fixable findings in both images (after nginx-unprivileged 1.29 and the build-time OS updates; before: 1 in the backend, 68 in the web image). The workflow itself has not run on GitHub yet.
 
@@ -338,6 +340,16 @@ npx playwright test
 ```
 
 Run on 2026-11-21 against a freshly seeded dev stack: 7 passed.
+
+### Audit-chain anchors
+
+Every hour (minute 7) the worker appends one line to `audit-anchor.jsonl` in `SETHU_AUDIT_ANCHOR_DIR` (default `./anchor`, mounted read-write into the worker and read-only into the backend): the time, the latest entry number, its hash and the number of entries. The worker only ever opens the file for appending. Make the place write-once yourself: a WORM share, or on a Linux host `sudo chattr +a anchor/audit-anchor.jsonl` once the first line exists (root can still remove the flag, so copy the file off the host as well).
+
+To prove the chain against it: the **Audit log** screen, *Exported anchors* (auditor, oversight, admin), or `docker compose exec backend python -m app.audit.anchor compare` (exit 1 on a mismatch). Every exported entry must still exist with the same hash; a rewritten entry, a truncated chain or a database restored from elsewhere is named. To export now: `docker compose exec worker python -m app.audit.anchor export`.
+
+### Edge and recreated containers
+
+nginx looks the backend and Keycloak up by name through Docker's DNS every 10 seconds (`resolver 127.0.0.11 valid=10s` and a variable upstream), so recreating them (an upgrade, `up -d --force-recreate`) needs no restart of `web`. Drill (2026-11-21, dev stack): the backend's address was occupied by a placeholder container so the recreated backend had to take a new one (172.25.0.6 to 172.25.0.5); the edge answered the next API request within 5 seconds with the web container never restarted.
 
 ## 4. Backup and restore
 

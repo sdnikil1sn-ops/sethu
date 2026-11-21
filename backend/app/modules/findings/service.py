@@ -146,7 +146,11 @@ def _alert(session: Session, f: dict, codes: dict[UUID, str]) -> UUID:
 
 def detect(session: Session, principal: Principal) -> dict[str, int]:
     """Run every detector. Safe to repeat: known findings are left alone. Needs a principal who
-    sees every bureau (the worker's system principal, or an admin)."""
+    sees every bureau (the worker's system principal, or an admin).
+
+    Creates at most `detect_batch` new findings per call: each audit entry holds the chain's lock until the
+    transaction ends, so one huge transaction (thousands of cases going overdue at once) would stall every other
+    write. `created == detect_batch` means call again in a new transaction (the worker does)."""
     settings = get_settings()
     now = datetime.now(UTC)
     by_case: dict[UUID, list[dict]] = {}
@@ -160,6 +164,9 @@ def detect(session: Session, principal: Principal) -> dict[str, int]:
     current += deadline_findings(repo.overdue_cases(session), now)
 
     known = {r["key"]: r for r in repo.existing(session)}
+    held = {f["key"] for f in current}   # everything that holds now, including new ones left for the next batch
+    fresh = [f for f in current if f["key"] not in known][:settings.detect_batch]
+    current = fresh + [f for f in current if f["key"] in known]
     codes = repo.bureau_codes(session)
     counts = {"created": 0, "reopened": 0, "resolved": 0, "digests": 0}
     # Missed deadlines: one digest per bureau for this run's new ones, not one alert per case.
@@ -195,9 +202,8 @@ def detect(session: Session, principal: Principal) -> dict[str, int]:
                          payload={"status": "open", "bureaus": sorted(codes[b] for b in f["bureau_ids"]),
                                   "evidence": f["evidence"]})
             counts["reopened"] += 1
-    still = {f["key"] for f in current}
     for key, row in known.items():
-        if row["status"] == "open" and key not in still:
+        if row["status"] == "open" and key not in held:
             _set(session, principal, row["id"], "resolved", "finding.resolved", None)
             counts["resolved"] += 1
     return counts

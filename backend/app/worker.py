@@ -6,7 +6,9 @@ from celery import Celery
 from celery.beat import PersistentScheduler
 from celery.schedules import crontab
 from celery.signals import setup_logging, task_postrun, task_prerun
+from sqlalchemy import text
 
+from app.audit import anchor
 from app.audit import service as audit
 from app.core import metrics
 from app.core.config import get_settings
@@ -61,6 +63,7 @@ celery.conf.update(
     timezone="Asia/Kolkata",
     beat_schedule={
         "audit-chain-nightly": {"task": "sethu.audit.verify_chain", "schedule": crontab(hour=2, minute=0)},
+        "audit-anchor-hourly": {"task": "sethu.audit.export_anchor", "schedule": crontab(minute=7)},
         "resolve-institutions": {"task": "sethu.institutions.resolve_pending", "schedule": 300.0},
         "detect-overlaps": {"task": "sethu.overlaps.detect", "schedule": 300.0},
         "detect-findings": {"task": "sethu.findings.detect", "schedule": 300.0},
@@ -125,16 +128,37 @@ def detect_overlaps() -> dict:
     """Embed new complaints (if the semantic signal is on), then suggest new Tier 2 overlap links. A person
     approves or rejects each one."""
     with session_for(SYSTEM) as session:
+        if not _only_run(session, "sethu.overlaps.detect"):
+            return {"suggested": 0, "embedded": 0, "skipped": 1}
         embedded = overlaps.embed_pending(session)
-    with session_for(SYSTEM) as session:
-        return overlaps.detect(session, SYSTEM) | {"embedded": embedded}
+    total = 0
+    while True:  # batch by batch, each its own transaction (the audit chain's lock is held until commit)
+        with session_for(SYSTEM) as session:
+            if not _only_run(session, "sethu.overlaps.detect"):
+                break
+            done = overlaps.detect(session, SYSTEM)["suggested"]
+        total += done
+        if done < settings.detect_batch:
+            break
+    return {"suggested": total, "embedded": embedded}
+
+
+def _only_run(session, job: str) -> bool:
+    """Held to the end of the transaction: a second run of the same job (the schedule and the admin's button)
+    skips instead of repeating the work and deadlocking on the same rows."""
+    return session.execute(text("SELECT pg_try_advisory_xact_lock(hashtext(:j))"), {"j": job}).scalar_one()
 
 
 @celery.task(name="sethu.findings.detect")
 def detect_findings() -> dict:
     """Transfer loops, stalled transfers and queue bottlenecks. Repeatable: known findings are left alone."""
-    with session_for(SYSTEM) as session:
-        return findings.detect(session, SYSTEM)
+    total: dict[str, int] = {}
+    while True:  # batch by batch, each its own transaction, so other writers wait seconds, not minutes
+        with session_for(SYSTEM) as session:
+            done = findings.detect(session, SYSTEM)
+        total = {k: total.get(k, 0) + v for k, v in done.items()}
+        if done["created"] < settings.detect_batch:
+            return total
 
 
 @celery.task(name="sethu.complainant.rotate_keys")
@@ -165,3 +189,13 @@ def process_intake() -> dict:
 def take_spool() -> dict:
     """The fallback channel: queue the rows of files dropped into the spool folder."""
     return intake.spool()
+
+
+@celery.task(name="sethu.audit.export_anchor")
+def export_anchor() -> dict:
+    """Append the chain head to the write-once anchor file (proof outside the database)."""
+    with session_for(SYSTEM) as session:
+        result = anchor.export(session)
+    if not result["exported"] and get_settings().audit_anchor_dir:
+        raise RuntimeError(result["reason"])  # recorded as a failed run in job_runs (and /metrics)
+    return {k: v for k, v in result.items() if k != "hash"}

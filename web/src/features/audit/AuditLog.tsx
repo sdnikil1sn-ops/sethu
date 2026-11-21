@@ -198,6 +198,7 @@ export function AuditLog() {
           Older entries
         </button>
       )}
+      <Anchors />
       <SignIns />
     </section>
   );
@@ -237,6 +238,49 @@ function SignIns() {
             ))}
           </tbody>
         </table>
+      )}
+    </>
+  );
+}
+
+type AnchorReport = {
+  configured: boolean;
+  ok: boolean | null;
+  anchors: number;
+  problems: string[];
+  live_entries: number | null;
+  latest: { seq: number; hash: string; exported_at: string | null } | null;
+};
+
+/** The chain's exported anchors (outside the database) compared with the live chain. */
+function Anchors() {
+  const { data, error } = useLoad<AnchorReport>("/audit/anchor");
+  return (
+    <>
+      <h2>Exported anchors</h2>
+      <p className="note">
+        Every hour the chain's latest entry and hash are appended to a write-once file outside the database. If the
+        database were replaced or an entry rewritten, the live chain would no longer match.
+      </p>
+      {error && <p role="alert">{error}</p>}
+      {data && !data.configured && <p>Not configured (SETHU_AUDIT_ANCHOR_DIR).</p>}
+      {data?.configured && data.ok === null && <p>{data.problems[0] ?? "Nothing exported yet."}</p>}
+      {data?.ok === true && data.latest && (
+        <p role="status">
+          All {data.anchors} exported anchors match the live chain. Latest: entry #{data.latest.seq}, exported{" "}
+          {data.latest.exported_at ? new Date(data.latest.exported_at).toLocaleString() : "–"}; the chain now has{" "}
+          {data.live_entries} entries.
+        </p>
+      )}
+      {data?.ok === false && (
+        <div role="alert" className="overlap banner">
+          <p>The live chain does not match what was exported:</p>
+          <ul>
+            {data.problems.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+        </div>
       )}
     </>
   );

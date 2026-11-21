@@ -315,3 +315,20 @@ def test_a_spike_that_comes_back_is_reopened_with_its_new_counts(detected, monke
     assert (e["recent"], e["previous"], e["baseline"], e["ratio"]) == (13, 8, 2.67, 4.88)
     assert e["as_of"] == datetime.now(UTC).date().isoformat()
     assert reopened["evidence"] == e and reopened["status"] == "open"
+
+
+@requires_db
+def test_findings_are_written_in_bounded_batches(world, monkeypatch):
+    """Load test (docs/LOAD-AND-DRILLS.md): one run creating thousands of findings held the audit chain's lock for
+    minutes and stalled every other write. A run now creates at most `detect_batch`, leaves the rest (and does
+    not resolve anything) for the next transaction, and repeated runs reach the same set as one big run."""
+    monkeypatch.setattr(get_settings(), "detect_batch", 2)
+    runs = []
+    while not runs or runs[-1]["created"] == 2:
+        with session_for(SYSTEM, world["engine"]) as s:
+            runs.append(service.detect(s, SYSTEM))
+        assert len(runs) < 100
+    assert len(runs) > 2 and all(r["created"] <= 2 and r["resolved"] == 0 for r in runs)
+    monkeypatch.setattr(get_settings(), "detect_batch", 500)
+    with session_for(SYSTEM, world["engine"]) as s:
+        assert service.detect(s, SYSTEM) == {"created": 0, "reopened": 0, "resolved": 0, "digests": 0}

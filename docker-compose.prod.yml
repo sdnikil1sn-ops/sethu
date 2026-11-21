@@ -27,6 +27,7 @@ x-prod-backend-env: &prod-backend-env
   SETHU_SMTP_PASSWORD_FILE: /run/secrets/smtp_password
   SETHU_ALERT_FROM: ${ALERT_FROM:?set ALERT_FROM to the sender address}
   SETHU_INTAKE_SPOOL_DIR: /spool
+  SETHU_AUDIT_ANCHOR_DIR: /anchor
   SETHU_KEYCLOAK_EVENTS_SECRET: ""
   SETHU_KEYCLOAK_EVENTS_SECRET_FILE: /run/secrets/keycloak_events_secret
 

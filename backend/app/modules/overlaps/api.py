@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import Field
 from sqlalchemy.orm import Session
 
+from app.audit import service as audit
+from app.core import jobs
 from app.core.auth import Principal, require_roles
 from app.core.params import Blank, Text20
 from app.db.session import get_session
@@ -38,9 +40,18 @@ def tier1(
     return service.tier1(session, institution_id)
 
 
-@router.post("/detect", response_model=schemas.DetectOut)
+@router.post("/detect", response_model=schemas.DetectQueued, status_code=202)
 def detect(principal: Principal = Depends(DETECT), session: Session = Depends(get_session)) -> dict:
-    return service.detect(session, principal)
+    """Queue the worker's job (embed new complaints, then suggest): the model never runs in this process."""
+    task_id = jobs.queue("sethu.overlaps.detect")
+    audit.record(session, principal, "overlap.detect_requested", entity_type="jobs", entity_id=task_id,
+                 payload={"job": "overlaps.detect"})
+    return {"task_id": task_id}
+
+
+@router.get("/detect/{task_id}", response_model=schemas.DetectStatus)
+def detect_status(task_id: UUID, _: Principal = Depends(DETECT)) -> dict:
+    return jobs.status(str(task_id))
 
 
 @router.post("/{link_id}/decision", response_model=schemas.Link)

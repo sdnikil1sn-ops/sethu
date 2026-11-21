@@ -68,7 +68,7 @@ docker compose logs -f backend
 docker compose down                             # stop (keeps data)
 ```
 
-App: http://localhost:8080 . API docs (dev only): http://localhost:8080/api/docs . Mail: http://localhost:8025 .
+App: http://localhost:8080 . API docs: internal network only, `http://backend:8000/docs` (docs/API.md). Mail: http://localhost:8025 .
 
 Backend tests run against a real PostgreSQL and **empty every table**; use a throwaway stack. Full steps: `docs/RUNBOOK.md` section 3. Short form:
 
