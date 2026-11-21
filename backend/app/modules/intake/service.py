@@ -22,8 +22,12 @@ import csv
 import hashlib
 import io
 import logging
+import os
+import re
 import secrets
 import shutil
+import stat
+import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import UUID, uuid4
@@ -52,6 +56,7 @@ GATEWAY = Principal(subject="intake-gateway", name="intake-gateway", role="intak
 
 NEAR_DUPLICATE_SIMILARITY = 0.6   # pg_trgm similarity of the text, same bureau and institution
 NEAR_DUPLICATE_DAYS = 180
+COLUMN_LIKE = re.compile(r"^[a-z][a-z0-9_ ]{0,39}$")
 COLUMNS = ("institution_name", "category", "body", "language", "filed_at", "external_ref",
            "complainant_name", "complainant_email", "complainant_phone")
 
@@ -170,9 +175,23 @@ def parse_rows(data: bytes, filename: str) -> list[dict]:
     if data[:2] == b"PK" or filename.lower().endswith(".xlsx"):
         import openpyxl  # only for spreadsheets
 
+        # An XLSX is a zip: a small file can expand to gigabytes. Check what it would expand to before parsing.
+        try:
+            expanded = sum(i.file_size for i in zipfile.ZipFile(io.BytesIO(data)).infolist())
+        except zipfile.BadZipFile:
+            raise IntakeError(422, "not a readable XLSX file (BadZipFile)") from None
+        if expanded > settings.intake_max_xlsx_expanded_bytes:
+            raise IntakeError(413, f"the spreadsheet expands to more than {settings.intake_max_xlsx_expanded_bytes}"
+                                   " bytes")
         try:
             sheet = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True).worksheets[0]
-            table = [["" if v is None else str(v) for v in row] for row in sheet.iter_rows(values_only=True)]
+            table = []
+            for row in sheet.iter_rows(values_only=True):  # streamed, and stopped at the row limit
+                table.append(["" if v is None else str(v) for v in row])
+                if len(table) > settings.intake_max_rows + 1:
+                    raise IntakeError(413, f"more than {settings.intake_max_rows} rows")
+        except IntakeError:
+            raise
         except Exception as e:  # noqa: BLE001 - any parser failure means the file is unreadable
             raise IntakeError(422, f"not a readable XLSX file ({type(e).__name__})") from None
     else:
@@ -186,7 +205,12 @@ def parse_rows(data: bytes, filename: str) -> list[dict]:
     missing = [c for c in ("institution_name", "category", "body") if c not in header]
     unknown = [h for h in header if h and h not in COLUMNS]
     if missing or unknown:
-        raise IntakeError(422, f"header: missing {missing or 'nothing'}, unknown {unknown or 'nothing'}")
+        # Name an unknown column only if it looks like one: never echo what a file holds (a header line could be
+        # anything, and the message is written back next to a spooled file).
+        named = [h for h in unknown if COLUMN_LIKE.match(h)]
+        others = len(unknown) - len(named)
+        said = ", ".join(named + ([f"{others} more that are not column names"] if others else [])) or "nothing"
+        raise IntakeError(422, f"header: missing {missing or 'nothing'}, unknown {said}")
     rows = [dict(zip(header, r, strict=False)) for r in table[1:] if any(v.strip() for v in r)]
     if len(rows) > settings.intake_max_rows:
         raise IntakeError(413, f"more than {settings.intake_max_rows} rows")
@@ -226,6 +250,25 @@ def upload(session: Session, principal: Principal, data: bytes, filename: str) -
     return take_file(session, principal, source, data, filename, "upload", users.sync(session, principal))
 
 
+def read_plain_file(path: Path) -> bytes:
+    """The bytes of a regular file, refusing a symbolic link or anything else (a link in the spool folder could
+    point at a secret). The size is checked before reading."""
+    if path.is_symlink():
+        raise IntakeError(422, "not a regular file (a link): refused without reading it")
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0)
+    try:
+        fd = os.open(path, flags)
+    except OSError:
+        raise IntakeError(422, "the file cannot be opened as a regular file") from None
+    with os.fdopen(fd, "rb") as f:
+        info = os.fstat(f.fileno())
+        if not stat.S_ISREG(info.st_mode):
+            raise IntakeError(422, "not a regular file: refused without reading it")
+        if info.st_size > get_settings().intake_max_upload_bytes:
+            raise IntakeError(413, f"file is larger than {get_settings().intake_max_upload_bytes} bytes")
+        return f.read()
+
+
 def spool(engine=None, folder: str | None = None) -> dict:
     """Take files dropped into the spool folder: <folder>/<source name>/*.csv|*.xlsx, for active spool sources.
     A file is moved to processed/ once its rows are queued (with <file>.errors.csv beside it if some rows were
@@ -238,11 +281,12 @@ def spool(engine=None, folder: str | None = None) -> dict:
         sources = [s for s in repo.sources(session, channel="spool") if s["active"]]
     for source in sources:
         inbox = Path(root) / source["name"]
-        for f in sorted(p for p in inbox.glob("*") if p.is_file() and p.suffix.lower() in (".csv", ".xlsx")):
+        for f in sorted(p for p in inbox.glob("*") if p.suffix.lower() in (".csv", ".xlsx")):
             stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S")
             try:
+                data = read_plain_file(f)  # never follows a link: the folder's writer must not read other files
                 with session_for(SYSTEM, engine) as session:
-                    result = take_file(session, SYSTEM, source, f.read_bytes(), f.name, "spool", None)
+                    result = take_file(session, SYSTEM, source, data, f.name, "spool", None)
             except IntakeError as e:
                 done = inbox / "rejected"
                 done.mkdir(exist_ok=True)

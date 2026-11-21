@@ -40,3 +40,18 @@ class SignIn(BaseModel):
     client: str | None
     ip: str | None
     error: str | None
+
+
+class AnchorLatest(BaseModel):
+    seq: int
+    hash: str
+    exported_at: str | None
+
+
+class AnchorReport(BaseModel):
+    configured: bool
+    ok: bool | None            # None: not configured or nothing exported yet
+    anchors: int
+    problems: list[str]
+    live_entries: int | None = None
+    latest: AnchorLatest | None

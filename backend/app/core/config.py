@@ -55,11 +55,15 @@ class Settings(BaseSettings):
     smtp_password: str | None = None
     smtp_ca_file: str | None = None
     alert_from: str = "sethu-alerts@sethu.test"
-    alert_max_attempts: int = 6          # then the alert is `failed`, with the reason
+    alert_max_attempts: int = 10         # spans about 4 hours (an hour-long relay outage heals itself); then `failed`
     alert_retry_base_seconds: int = 60   # backoff: 1, 2, 4, 8, 16 minutes...
     alert_retry_max_seconds: int = 3600  # ...but never more than an hour between attempts
 
     sla_days: int = 21
+
+    # Audit-chain anchors (app/audit/anchor.py): a write-once directory outside the database. The worker
+    # appends; the backend reads it to compare. Empty: no export.
+    audit_anchor_dir: str | None = None
 
     # Semantic overlap signal (app/modules/overlaps): a local ONNX model baked into the image, never downloaded at
     # run time. Off, or with no model directory, overlap detection is trigram only, as before.
@@ -77,11 +81,13 @@ class Settings(BaseSettings):
     intake_rate_per_minute: int = 60          # API requests per source per minute (a source may set its own)
     intake_max_upload_bytes: int = 2_000_000
     intake_max_rows: int = 5000
+    intake_max_xlsx_expanded_bytes: int = 20_000_000   # what an XLSX may expand to
 
     # Keyring for complainant details (app/core/crypto.py): a JSON file mounted as a secret.
     complainant_keys_file: str | None = None
 
     # Deadlock and bottleneck detection (app/modules/findings/service.py).
+    detect_batch: int = 500           # new findings or overlap links per transaction (the audit lock is held to commit)
     stalled_transfer_days: int = 7     # a transfer nobody acknowledged for this long is a finding
     bottleneck_min_open: int = 3       # queues smaller than this are never a bottleneck
     bottleneck_share: float = 0.6      # more than this share overdue (or, for a bureau, older than its median)

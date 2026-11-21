@@ -143,10 +143,24 @@ export function OverlapsPage({ canDetect }: { canDetect: boolean }) {
   const shown = tier1?.filter((t) => !bureau || t.bureaus.includes(bureau));
 
   async function detect() {
+    // Queued to the worker (it runs the model); poll until it reports, for up to two minutes.
     try {
-      const r = await api<{ suggested: number }>("/overlaps/detect", {});
-      setMessage(`${r.suggested} new suggestion${r.suggested === 1 ? "" : "s"}.`);
-      setRound(round + 1);
+      const { task_id } = await api<{ task_id: string }>("/overlaps/detect", {});
+      setMessage("Queued: the worker is looking for new overlaps…");
+      for (let i = 0; i < 60; i++) {
+        await new Promise((r) => setTimeout(r, 2000));
+        const s = await api<{ state: string; suggested: number | null }>(`/overlaps/detect/${task_id}`);
+        if (s.state === "SUCCESS") {
+          setMessage(`${s.suggested ?? 0} new suggestion${s.suggested === 1 ? "" : "s"}.`);
+          setRound((r) => r + 1);
+          return;
+        }
+        if (s.state === "FAILURE") {
+          setMessage("The worker could not finish the search; it will run again on its schedule.");
+          return;
+        }
+      }
+      setMessage("Still running; new suggestions will appear here when the worker finishes.");
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "The request failed.");
     }

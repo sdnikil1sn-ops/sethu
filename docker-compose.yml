@@ -34,6 +34,7 @@ x-backend-env: &backend-env
   SETHU_COMPLAINANT_KEYS_FILE: /run/secrets/complainant_keys
   SETHU_INTAKE_SPOOL_DIR: /spool   # mounted into the worker only (the fallback intake channel)
   SETHU_KEYCLOAK_EVENTS_SECRET: ${KEYCLOAK_EVENTS_SECRET:-}   # sign-in events on the Audit log screen
+  SETHU_AUDIT_ANCHOR_DIR: /anchor   # write-once anchors: the worker appends, the backend reads
   # Findings thresholds (docs/RUNBOOK.md). The defaults repeat backend/app/core/config.py: keep them equal.
   SETHU_STALLED_TRANSFER_DAYS: ${SETHU_STALLED_TRANSFER_DAYS:-7}
   SETHU_BOTTLENECK_MIN_OPEN: ${SETHU_BOTTLENECK_MIN_OPEN:-3}
@@ -155,6 +156,8 @@ services:
     build: ./backend
     read_only: true
     tmpfs: ["/tmp"]
+    volumes:
+      - ${SETHU_AUDIT_ANCHOR_DIR:-./anchor}:/anchor:ro    # compared on the Audit log screen
     environment: *backend-env
     secrets: [complainant_keys]
     depends_on:
@@ -171,6 +174,7 @@ services:
     tmpfs: ["/tmp"]
     volumes:   # spool folder: <source name>/*.csv|*.xlsx; files are moved to processed/ or rejected/
       - ${SETHU_INTAKE_SPOOL_DIR:-./spool}:/spool
+      - ${SETHU_AUDIT_ANCHOR_DIR:-./anchor}:/anchor        # make it append-only on the host (docs/OPERATIONS.md)
     healthcheck:                      # the worker answers a ping through Redis
       test: ["CMD-SHELL", "celery -A app.worker:celery inspect ping -d celery@$$HOSTNAME --timeout 10 | grep -q pong"]
       interval: 60s

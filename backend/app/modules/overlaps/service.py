@@ -95,10 +95,11 @@ class OverlapError(Exception):
 
 
 def detect(session: Session, principal: Principal) -> dict[str, int]:
-    """Find new Tier 2 pairs and store them as suggestions. Safe to repeat."""
+    """Find new Tier 2 pairs and store them as suggestions. Safe to repeat. Stores at most `detect_batch`
+    (the strongest first); `suggested == detect_batch` means call again in a new transaction (the worker does)."""
     s = get_settings()
     created = repo.suggest_tier2(session, SIMILARITY_THRESHOLD, WINDOW_DAYS,
-                                 s.semantic_threshold if semantic_on() else None, s.embedding_model)
+                                 s.semantic_threshold if semantic_on() else None, s.embedding_model, s.detect_batch)
     ref = repo.refs(session, [c for row in created for c in (row["complaint_a"], row["complaint_b"])])
     for row in created:
         audit.record(session, principal, "overlap.suggested", entity_type="overlap_links", entity_id=str(row["id"]),

@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from app.audit import anchor
 from app.core.auth import Principal, require_roles
 from app.core.params import Day, Text100
 from app.db.session import get_session
@@ -35,6 +36,12 @@ def list_entries(
 @router.get("/verify", response_model=schemas.ChainReport)
 def verify(principal: Principal = Depends(READ), session: Session = Depends(get_session)) -> dict:
     return service.verify(session, principal)
+
+
+@router.get("/anchor", response_model=schemas.AnchorReport, dependencies=[Depends(READ)])
+def anchor_check(session: Session = Depends(get_session)) -> dict:
+    """The exported chain anchors compared with the live chain."""
+    return anchor.compare(session)
 
 
 @router.get("/signins", response_model=list[schemas.SignIn], dependencies=[Depends(READ)])

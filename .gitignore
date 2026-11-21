@@ -18,3 +18,4 @@ backups/
 spool/
 web/test-results/
 web/playwright-report/
+anchor/

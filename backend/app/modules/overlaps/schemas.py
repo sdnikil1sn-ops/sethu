@@ -56,3 +56,12 @@ class DecisionIn(BaseModel):
 
 class DetectOut(BaseModel):
     suggested: int
+
+
+class DetectQueued(BaseModel):
+    task_id: str
+
+
+class DetectStatus(BaseModel):
+    state: str                      # PENDING (queued or unknown), STARTED, SUCCESS, FAILURE
+    suggested: int | None = None    # when it has finished
