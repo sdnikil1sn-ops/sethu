@@ -4,6 +4,8 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
+from app.db.paging import PageMeta
+
 
 class Finding(BaseModel):
     """Identifiers, bureaus and the numbers used. Never complaint text."""
@@ -21,6 +23,10 @@ class Finding(BaseModel):
     bureaus: list[str]
     alert_id: UUID | None
     alert_status: str | None
+
+
+class FindingPage(PageMeta):
+    items: list[Finding]
 
 
 class DecisionIn(BaseModel):

@@ -5,6 +5,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field, model_validator
 
 from app.core.params import blank_to_none
+from app.db.paging import PageMeta
 
 
 class CaseRow(BaseModel):
@@ -26,8 +27,7 @@ class CaseRow(BaseModel):
     readable: bool
 
 
-class CasePage(BaseModel):
-    total: int
+class CasePage(PageMeta):
     items: list[CaseRow]
 
 

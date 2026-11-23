@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLoad } from "../../api";
+import { Pager, pageFrom } from "../../Pager";
 import { type CasePage, type Options, day, sla, words } from "./types";
 
-const PAGE = 50;
 const EMPTY = {
   q: "",
   bureau: "",
@@ -19,9 +19,13 @@ type Filters = typeof EMPTY;
 
 /** `initial` is the query part of the URL hash, e.g. "institution_id=…" from an institution page. */
 export function CaseList({ initial }: { initial: string }) {
-  const [filters, setFilters] = useState<Filters>({ ...EMPTY, ...Object.fromEntries(new URLSearchParams(initial)) });
+  const [filters, setFilters] = useState<Filters>(() => {
+    const given = Object.fromEntries(new URLSearchParams(initial));
+    return { ...EMPTY, ...Object.fromEntries(Object.entries(given).filter(([k]) => k in EMPTY)) };
+  });
   const [q, setQ] = useState(filters.q);
-  const [offset, setOffset] = useState(0);
+  const [{ limit, offset }, setPage] = useState(() => pageFrom(new URLSearchParams(initial)));
+  const setOffset = (o: number) => setPage((p) => ({ ...p, offset: o }));
   useEffect(() => {
     const timer = setTimeout(() => setQ(filters.q.trim()), 250); // do not query on every key press
     return () => clearTimeout(timer);
@@ -32,9 +36,11 @@ export function CaseList({ initial }: { initial: string }) {
     setOffset(0);
   };
 
-  const query = new URLSearchParams({ limit: String(PAGE), offset: String(offset) });
+  const query = new URLSearchParams({ limit: String(limit), offset: String(offset) });
   const shared = new URLSearchParams();
   for (const [name, value] of Object.entries({ ...filters, q })) if (value) (query.set(name, value), shared.set(name, value));
+  if (limit !== 50) shared.set("limit", String(limit));
+  if (offset) shared.set("offset", String(offset));
 
   // Keep the filters in the address so a filtered view can be bookmarked or shared. replaceState does not
   // fire hashchange, so the list is not rebuilt (and the search box keeps focus) while someone types.
@@ -104,31 +110,25 @@ export function CaseList({ initial }: { initial: string }) {
       </p>
 
       {error && <p role="alert">{error}</p>}
-      {data && (
-        <p role="status">
-          {data.total === 0
-            ? "No case matches these filters."
-            : `${data.total} case${data.total === 1 ? "" : "s"}. Showing ${offset + 1} to ${offset + data.items.length}.`}
-        </p>
-      )}
+      {data && <Pager page={data} noun="cases" onChange={(l, o) => setPage({ limit: l, offset: o })} />}
       {data && data.items.length > 0 && (
         <>
-          <table>
-            <thead>
-              <tr>
-                <th>Case</th>
-                <th>Unit</th>
-                <th>Institution</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Filed</th>
-                <th>21-day clock</th>
+          <table className="stack" role="table">
+            <thead role="rowgroup">
+              <tr role="row">
+                <th role="columnheader">Case</th>
+                <th role="columnheader">Unit</th>
+                <th role="columnheader">Institution</th>
+                <th role="columnheader">Category</th>
+                <th role="columnheader">Status</th>
+                <th role="columnheader">Filed</th>
+                <th role="columnheader">21-day clock</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody role="rowgroup">
               {data.items.map((c) => (
-                <tr key={c.id}>
-                  <td>
+                <tr role="row" key={c.id}>
+                  <td role="cell" data-label="Case">
                     <a href={`#/cases/${c.id}`}>{c.ref}</a>
                     {!c.readable && (
                       <>
@@ -137,8 +137,8 @@ export function CaseList({ initial }: { initial: string }) {
                       </>
                     )}
                   </td>
-                  <td>{c.bureau}</td>
-                  <td>
+                  <td role="cell" data-label="Unit">{c.bureau}</td>
+                  <td role="cell" data-label="Institution">
                     {c.institution ?? "Not matched yet"}
                     {c.state && (
                       <>
@@ -147,22 +147,14 @@ export function CaseList({ initial }: { initial: string }) {
                       </>
                     )}
                   </td>
-                  <td>{c.category ?? "–"}</td>
-                  <td>{words(c.status)}</td>
-                  <td>{day(c.filed_at)}</td>
-                  <td>{c.overdue ? <strong className="flag">{sla(c)}</strong> : sla(c)}</td>
+                  <td role="cell" data-label="Category">{c.category ?? "–"}</td>
+                  <td role="cell" data-label="Status">{words(c.status)}</td>
+                  <td role="cell" data-label="Filed">{day(c.filed_at)}</td>
+                  <td role="cell" data-label="21-day clock">{c.overdue ? <strong className="flag">{sla(c)}</strong> : sla(c)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <p>
-            <button type="button" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE))}>
-              Previous
-            </button>{" "}
-            <button type="button" disabled={offset + PAGE >= data.total} onClick={() => setOffset(offset + PAGE)}>
-              Next
-            </button>
-          </p>
         </>
       )}
     </section>

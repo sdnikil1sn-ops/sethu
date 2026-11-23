@@ -37,7 +37,7 @@ SELECT 'LT-' || lpad(g::text, 5, '0'),
        'Load Test ' || (ARRAY['Institute of Technology', 'College of Engineering', 'School of Management',
                               'Polytechnic', 'College of Pharmacy'])[1 + g % 5] || ' ' || g,
        (CAST(:states AS text[]))[1 + g % 10], 'District ' || (g % 97), lpad((400000 + g)::text, 6, '0')
-  FROM generate_series(1, :n) g
+  FROM generate_series(1, CAST(:n AS int)) g
 ON CONFLICT (permanent_id) DO NOTHING
 """
 ADD = """
@@ -50,7 +50,7 @@ WITH inst AS (SELECT id, name, row_number() OVER (ORDER BY coalesce(permanent_id
      picks AS (
        SELECT g, CASE WHEN g % 10 < 3 OR (SELECT c FROM cold) = 0 THEN g % (SELECT c FROM hot)
                       ELSE (SELECT c FROM hot) + (g * 7919) % (SELECT c FROM cold) END AS i
-         FROM generate_series(:start, :stop) g),
+         FROM generate_series(CAST(:start AS int), CAST(:stop AS int)) g),
      rows AS (
        SELECT g, inst.id AS institution_id, inst.name,
               (SELECT id FROM bur WHERE n = (g / 7) % (SELECT c FROM nb)) AS bureau_id,

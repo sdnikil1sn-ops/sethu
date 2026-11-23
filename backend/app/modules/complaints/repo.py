@@ -7,6 +7,8 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.db import paging
+
 SUMMARY = """
     SELECT s.id, s.ref, b.code AS bureau, b.name AS bureau_name, s.category, s.status,
            s.institution_id, i.name AS institution, i.state, s.filed_at, s.due_at, s.closed_at,
@@ -73,11 +75,12 @@ def lookup(session: Session, q: str, code: str, limit: int) -> list[dict]:
                 q=q, code=code, limit=limit)
 
 
-def search(session: Session, filters: dict[str, Any], limit: int, offset: int) -> list[dict]:
+def search(session: Session, filters: dict[str, Any], limit: int, offset: int) -> dict:
+    """One page of cases, newest first, with a total counted only up to app.db.paging.COUNT_CAP (a broad filter
+    over every case answers "1,000+" instead of counting them all)."""
     where = " AND ".join(FILTERS[name] for name in filters) or "true"
-    return _all(session, SUMMARY.format(extra=", count(*) OVER () AS total")
-                + f" WHERE {where} ORDER BY s.filed_at DESC, s.ref LIMIT :limit OFFSET :offset",  # noqa: S608
-                **filters, limit=limit, offset=offset)
+    return paging.page(session, SUMMARY.format(extra="") + f" WHERE {where}",  # noqa: S608 - constants only
+                       "s.filed_at DESC, s.ref", filters, limit, offset)
 
 
 def find(session: Session, complaint_id: UUID) -> dict | None:

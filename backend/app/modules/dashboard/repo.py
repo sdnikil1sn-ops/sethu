@@ -6,6 +6,8 @@ from typing import Any
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.db import paging
+
 OVERDUE = "s.status <> 'closed' AND s.due_at < now()"
 
 
@@ -38,26 +40,34 @@ def weekly(session: Session, weeks: int) -> list[dict]:
           FROM generate_series(date_trunc('week', now()) - make_interval(weeks => :weeks - 1),
                                date_trunc('week', now()), interval '1 week') AS w(week)
           LEFT JOIN sethu.complaint_summaries s ON date_trunc('week', s.filed_at) = w.week
+           AND s.filed_at >= date_trunc('week', now()) - make_interval(weeks => :weeks - 1)  -- only the weeks shown
          GROUP BY w.week ORDER BY w.week""", weeks=weeks)
 
 
-def overdue_cases(session: Session, limit: int) -> list[dict]:
-    """Overdue cases the caller's bureau holds (every bureau's for oversight, admin and auditor)."""
-    return _all(session, f"""
-        SELECT s.id, s.ref, b.code AS bureau, i.name AS institution, s.category, s.status, s.due_at,
-               count(*) OVER () AS total
+OVERDUE_MINE = f"""
+        SELECT s.id, s.ref, b.code AS bureau, i.name AS institution, s.category, s.status, s.due_at
           FROM sethu.complaint_summaries s
           JOIN sethu.bureaus b ON b.id = s.bureau_id
           LEFT JOIN sethu.institutions i ON i.id = s.institution_id
-         WHERE {OVERDUE} AND (sethu.ctx_sees_all() OR s.bureau_id = sethu.ctx_bureau())
-         ORDER BY s.due_at, s.ref LIMIT :limit""", limit=limit)  # noqa: S608
+         WHERE {OVERDUE} AND (sethu.ctx_sees_all() OR s.bureau_id = sethu.ctx_bureau())"""  # noqa: S608
+
+
+def overdue_cases(session: Session, limit: int) -> dict:
+    """The first overdue cases the caller's bureau holds (every bureau's for oversight, admin and auditor), with
+    a total counted up to app.db.paging.COUNT_CAP."""
+    return paging.page(session, OVERDUE_MINE, "s.due_at, s.ref", {}, limit, 0)
 
 
 def pending(session: Session) -> dict:
-    """Overlap suggestions and held alerts visible to the caller (Row-Level Security filters both)."""
+    """Overlap suggestions and held alerts visible to the caller (Row-Level Security filters both), each
+    counted up to COUNT_CAP + 1: the screen shows more than COUNT_CAP as "1,000+"."""
     return dict(session.execute(text("""
-        SELECT (SELECT count(*) FROM sethu.overlap_links WHERE status = 'proposed') AS overlaps_to_review,
-               (SELECT count(*) FROM sethu.overlap_links WHERE status = 'approved') AS overlaps_confirmed,
-               (SELECT count(*) FROM sethu.alerts WHERE status = 'pending_approval') AS alerts_to_approve,
-               (SELECT count(*) FROM sethu.alerts WHERE status IN ('approved', 'failed')) AS alerts_unsent
-    """)).mappings().one())
+        SELECT (SELECT count(*) FROM (SELECT 1 FROM sethu.overlap_links WHERE status = 'proposed' LIMIT :n) x)
+                   AS overlaps_to_review,
+               (SELECT count(*) FROM (SELECT 1 FROM sethu.overlap_links WHERE status = 'approved' LIMIT :n) x)
+                   AS overlaps_confirmed,
+               (SELECT count(*) FROM (SELECT 1 FROM sethu.alerts WHERE status = 'pending_approval' LIMIT :n) x)
+                   AS alerts_to_approve,
+               (SELECT count(*) FROM (SELECT 1 FROM sethu.alerts WHERE status IN ('approved', 'failed') LIMIT :n) x)
+                   AS alerts_unsent
+    """), {"n": paging.COUNT_CAP + 1}).mappings().one())

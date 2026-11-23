@@ -1,3 +1,4 @@
+import type { Page } from "../../Pager";
 // Mirrors backend/app/modules/complaints/schemas.py
 export type CaseRow = {
   id: string;
@@ -17,7 +18,7 @@ export type CaseRow = {
   readable: boolean;
 };
 
-export type CasePage = { total: number; items: CaseRow[] };
+export type CasePage = Page<CaseRow>;
 
 export type Action = {
   id: string;

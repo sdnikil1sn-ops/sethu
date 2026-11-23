@@ -7,6 +7,8 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.db import paging
+
 
 def _all(session: Session, sql: str, **params: Any) -> list[dict]:
     return [dict(row) for row in session.execute(text(sql), params).mappings()]
@@ -147,20 +149,33 @@ FILTERS = {
 }
 
 
+# Open first; then transfer loops, stalled transfers and bottlenecks, the worst bottleneck (largest share, then
+# most open cases) first.
+ORDER = """(f.status = 'open') DESC,
+           array_position(ARRAY['transfer_loop', 'stalled_transfer', 'deadline_escalation', 'bottleneck',
+                                 'category_spike'], f.kind),
+           (f.evidence->>'share')::numeric DESC NULLS LAST, (f.evidence->>'open')::int DESC NULLS LAST,
+           f.first_seen DESC, f.id"""
+
+
+def _where(filters: dict[str, Any]) -> str:
+    return f"{FINDING} WHERE {' AND '.join(FILTERS[k] for k in filters) or 'true'}"  # noqa: S608 - constants only
+
+
 def listing(session: Session, filters: dict[str, Any]) -> list[dict]:
-    """Findings the caller may see (Row-Level Security). Open first; then transfer loops, stalled
-    transfers and bottlenecks, the worst bottleneck (largest share, then most open cases) first."""
-    where = " AND ".join(FILTERS[k] for k in filters) or "true"
-    return _all(session, f"""{FINDING} WHERE {where}
-         ORDER BY (f.status = 'open') DESC,
-                  array_position(ARRAY['transfer_loop', 'stalled_transfer', 'deadline_escalation', 'bottleneck',
-                                        'category_spike'], f.kind),
-                  (f.evidence->>'share')::numeric DESC NULLS LAST, (f.evidence->>'open')::int DESC NULLS LAST,
-                  f.first_seen DESC, f.id""", **filters)  # noqa: S608 - constants only
+    """Findings the caller may see (Row-Level Security), unbounded: for one finding by id, and tests."""
+    return _all(session, f"{_where(filters)} ORDER BY {ORDER}", **filters)
+
+
+def page(session: Session, filters: dict[str, Any], limit: int, offset: int) -> dict:
+    """One page of the findings the caller may see, with a capped total (app.db.paging)."""
+    return paging.page(session, _where(filters), ORDER, filters, limit, offset)
 
 
 def open_count(session: Session) -> int:
-    return session.execute(text("SELECT count(*) FROM sethu.findings WHERE status = 'open'")).scalar_one()
+    """Counted up to COUNT_CAP + 1 (the dashboard shows more than COUNT_CAP as "1,000+")."""
+    return paging.capped_count(session, "SELECT 1 FROM sethu.findings WHERE status = 'open'", {},
+                               paging.COUNT_CAP + 1)[0]
 
 
 def trend(session: Session, days: int) -> list[dict]:

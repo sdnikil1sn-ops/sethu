@@ -7,7 +7,7 @@ Date: 2026-11-21. Scope: this repository (backend FastAPI and PostgreSQL Row-Lev
 1. **Static review**, following attacker-controlled data from each entry point to its sink: every HTTP route and its role dependency (48 routes; all but the intake API carry `require_roles`, which authenticates by API key instead), the Row-Level Security policies in the Alembic revisions, every SQL string built with an f-string, the intake channels (API, upload, manual form, spool folder), the web client's token handling, nginx, the realm files and the images.
 2. **Tests**: a regression test for each fixed finding (`backend/tests/test_security.py`), plus the existing suites (Row-Level Security, intake, observability log scan, anchors).
 3. **Live checks on a dev stack** (2026-11-21), noted with each item: the spool attack inside the worker container, CORS, rate limits, the edge's exposure of `/health` and the API description.
-4. **Earlier scans, same day** (Phase 4): `pip-audit` (no known vulnerabilities), `npm audit --audit-level=high` (0), Trivy on both images (0 fixable HIGH or CRITICAL), gitleaks (no leaks).
+4. **Scans**: Phase 4 (2026-11-21) `pip-audit` (no known vulnerabilities), Trivy on both images (0 fixable HIGH or CRITICAL), gitleaks (no leaks). `npm audit --audit-level=high` on 2026-11-22 reported the Playwright advisory below (OWASP-A03-001); after the fix, 0 vulnerabilities. The earlier "npm audit: 0" in this review is withdrawn: it does not hold against the current advisory database.
 
 Not done: a penetration test of the deployed system, a review of Keycloak's own code and forms (its CSRF and login flows), TLS cipher scanning of a real deployment, and cloud or host configuration (there is none in the repository).
 
@@ -17,7 +17,7 @@ Not done: a penetration test of the deployed system, a review of Keycloak's own 
 |---|---|---|---|
 | Critical | 0 | - | - |
 | High | 1 | 1 | 0 |
-| Medium | 1 | 1 | 0 |
+| Medium | 2 | 2 | 0 |
 | Low | 4 | 2 | 2 |
 | Informational | 5 | - | 5 (notes) |
 
@@ -39,6 +39,11 @@ Confidence is given per finding. Everything marked "fixed" has a regression test
 - **Where**: `parse_rows()` checked the compressed size only, then materialised every row before checking the row limit.
 - **Fix**: the zip's total uncompressed size must be at most `SETHU_INTAKE_MAX_XLSX_EXPANDED_BYTES` (20 MB) before openpyxl opens it; rows are streamed and reading stops at the row limit.
 - **Verified**: `test_a06_001_a_spreadsheet_that_expands_too_far_is_refused_before_parsing` (a 21 MB-expanding file under 2 MB is refused with 413), `test_a06_001_the_row_limit_is_enforced_while_reading`.
+
+### OWASP-A03-001 Playwright downloads browsers without verifying the TLS certificate (CWE-295, Improper Certificate Validation)
+
+- **Severity: Medium** (development machines and CI only; a network attacker could serve a tampered browser binary that then runs the tests with the demo password). **Confidence: High** (npm advisory GHSA-7mvr-c777-76hp against the locked `playwright` 1.49.1).
+- **Fix**: `@playwright/test` 1.56.1 (exact). **Verified**: `npm audit` 0 vulnerabilities (2026-11-22). All 10 browser tests passed on 1.56.1 (2026-11-22, with the installed Chrome; docs/RUNBOOK.md, "Browser tests").
 
 ### OWASP-A02-001 The API description was served through the edge in dev (CWE-200, Exposure of Sensitive Information to an Unauthorized Actor)
 
@@ -73,7 +78,7 @@ Confidence is given per finding. Everything marked "fixed" has a regression test
 |---|---|
 | A01 Broken access control | Every route's role dependency; Row-Level Security on complaints, history and notes, overlap links, alerts (including digests), findings, intake sources and items, embeddings, job runs; IDOR on case, note, graph, intake item, admin and report endpoints (the database refuses or hides rows; tested in `test_rls.py`, `test_workflow.py`, `test_graph.py`, `test_intake.py`, `test_semantic.py`); path traversal in upload names (only the extension is read) and spool source names (pattern-checked); no open redirect (exact URIs in production). |
 | A02 Misconfiguration | Debug refused in production; security headers in both nginx configs; containers read-only with dropped capabilities; secrets as files; `/metrics` internal only; no secrets in the images (checked: only system CA certificates). |
-| A03 Supply chain | Lock files with hashes, images by digest, actions by commit SHA; same-day pip-audit, npm audit and Trivy clean. |
+| A03 Supply chain | Lock files with hashes, images by digest, actions by commit SHA; pip-audit and Trivy clean (2026-11-21); npm audit clean after OWASP-A03-001 (2026-11-22). |
 | A04 Cryptography | AES-256-GCM for complainant details with the complaint id as associated data; API keys are 256-bit random values stored as SHA-256; TLS 1.3 at the production edge; JWT signature verified against the realm's keys. |
 | A05 Injection | SQL strings built with f-strings interpolate only names from code (filter dictionaries, column lists), every value is a bound parameter; LIKE patterns escaped; no `dangerouslySetInnerHTML` or `innerHTML`; CSV export neutralises formulas; no shell call with user input. |
 | A07 Authentication | Tokens verified for signature, issuer, audience, expiry, issued-at and subject, algorithms limited to RS256 and ES256; the web keeps tokens in memory only (PKCE verifier briefly in sessionStorage); 5-minute access tokens; brute-force protection. |

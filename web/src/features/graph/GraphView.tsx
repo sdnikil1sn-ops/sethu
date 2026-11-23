@@ -124,14 +124,19 @@ export function Legend() {
     <span aria-hidden style={{ display: "inline-block", width: 12, height: 12, borderRadius: round ? 6 : 2,
       background: colour, marginRight: 4, verticalAlign: "middle" }} />
   );
+  // Line samples are drawn, not typed: coloured text glyphs failed the contrast check, and the words carry the meaning.
+  const line = (colour: string, style: "dashed" | "solid", width = 2) => (
+    <span aria-hidden style={{ display: "inline-block", width: 22, borderTop: `${width}px ${style} ${colour}`,
+      marginRight: 4, verticalAlign: "middle" }} />
+  );
   return (
     <p className="note">
       {swatch(COLOURS.bureau, false)}bureau {swatch(COLOURS.institution)}institution (size: cases){" "}
-      <span style={{ color: COLOURS.multiBureau }}>■</span> ring: cases in several bureaus{" "}
-      <span style={{ color: COLOURS.finding }}>■</span> halo: open finding {swatch(COLOURS.complaint)}open complaint{" "}
-      {swatch(COLOURS.closed)}closed <span style={{ color: COLOURS.transfer }}>- - →</span> transfers{" "}
-      <span style={{ color: COLOURS.overlapSuggested }}>- - -</span> suggested overlap{" "}
-      <span style={{ color: COLOURS.overlapApproved }}>━</span> approved overlap
+      {swatch(COLOURS.multiBureau, false)}ring: cases in several bureaus{" "}
+      {swatch(COLOURS.finding, false)}halo: open finding {swatch(COLOURS.complaint)}open complaint{" "}
+      {swatch(COLOURS.closed)}closed {line(COLOURS.transfer, "dashed")}transfers{" "}
+      {line(COLOURS.overlapSuggested, "dashed")}suggested overlap{" "}
+      {line(COLOURS.overlapApproved, "solid", 3)}approved overlap
     </p>
   );
 }

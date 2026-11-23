@@ -149,6 +149,13 @@ def links(session: Session, principal: Principal, status: str | None = None,
     return [_shape(principal, row) for row in rows]
 
 
+def links_page(session: Session, principal: Principal, limit: int, offset: int, status: str | None = None,
+               institution_id: UUID | None = None, bureau: str | None = None, tier: int | None = None) -> dict:
+    found = repo.links_page(session, limit, offset, status=status, institution_id=institution_id, bureau=bureau,
+                            tier=tier)
+    return found | {"items": [_shape(principal, row) for row in found["items"]]}
+
+
 def linked_case_ids(session: Session) -> list[UUID]:
     """For the case list's "overlapping only" filter."""
     return repo.linked_case_ids(session)

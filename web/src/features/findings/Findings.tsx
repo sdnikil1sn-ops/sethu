@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api, useLoad } from "../../api";
+import { type Page, Pager } from "../../Pager";
 import type { Options } from "../cases/types";
 
 // Mirrors backend/app/modules/findings/schemas.py
@@ -84,13 +85,16 @@ function Target({ f }: { f: Finding }) {
 /** Findings by kind with filters (early warnings among them), and the institution trend indicator. */
 export function FindingsPage({ canDecide, canDetect }: { canDecide: boolean; canDetect: boolean }) {
   const [filters, setFilters] = useState({ kind: "", status: "open", bureau: "" });
+  const [page, setPage] = useState({ limit: 50, offset: 0 });
   const [message, setMessage] = useState<string | null>(null);
-  const query = new URLSearchParams(Object.entries(filters).filter(([, v]) => v));
-  const { data, error, reload } = useLoad<Finding[]>(`/findings?${query}`);
+  const query = new URLSearchParams(Object.entries({ ...filters, limit: String(page.limit), offset: String(page.offset) }).filter(([, v]) => v));
+  const { data, error, reload } = useLoad<Page<Finding>>(`/findings?${query}`);
   const { data: options } = useLoad<Options>("/cases/options");
   const { data: trend } = useLoad<Trend>("/findings/trend");
-  const set = (name: keyof typeof filters) => (e: { target: { value: string } }) =>
+  const set = (name: keyof typeof filters) => (e: { target: { value: string } }) => {
     setFilters({ ...filters, [name]: e.target.value });
+    setPage((p) => ({ ...p, offset: 0 }));
+  };
 
   async function act(path: string, body: unknown, done: (r: never) => string) {
     try {
@@ -158,28 +162,28 @@ export function FindingsPage({ canDecide, canDetect }: { canDecide: boolean; can
       </form>
       {message && <p role="status">{message}</p>}
       {error && <p role="alert">{error}</p>}
-      {data && data.length === 0 && <p>No findings match.</p>}
-      {data && data.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Kind</th>
-              <th scope="col">Where</th>
-              <th scope="col">Bureaus</th>
-              <th scope="col">What the numbers say</th>
-              <th scope="col">First seen</th>
-              <th scope="col">Status</th>
+      {data && <Pager page={data} noun="findings" onChange={(limit, offset) => setPage({ limit, offset })} />}
+      {data && data.items.length > 0 && (
+        <table className="stack" role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">Kind</th>
+              <th role="columnheader" scope="col">Where</th>
+              <th role="columnheader" scope="col">Bureaus</th>
+              <th role="columnheader" scope="col">What the numbers say</th>
+              <th role="columnheader" scope="col">First seen</th>
+              <th role="columnheader" scope="col">Status</th>
             </tr>
           </thead>
-          <tbody>
-            {data.map((f) => (
-              <tr key={f.id}>
-                <td>{f.kind === "bottleneck" ? `Bottleneck (${f.evidence.scope})` : KIND[f.kind]}</td>
-                <td>
+          <tbody role="rowgroup">
+            {data.items.map((f) => (
+              <tr role="row" key={f.id}>
+                <td role="cell" data-label="Kind">{f.kind === "bottleneck" ? `Bottleneck (${f.evidence.scope})` : KIND[f.kind]}</td>
+                <td role="cell" data-label="Where">
                   <Target f={f} />
                 </td>
-                <td>{f.bureaus.join(", ")}</td>
-                <td>
+                <td role="cell" data-label="Bureaus">{f.bureaus.join(", ")}</td>
+                <td role="cell" data-label="What the numbers say">
                   {numbers(f)}
                   {f.alert_status && (
                     <>
@@ -188,8 +192,8 @@ export function FindingsPage({ canDecide, canDetect }: { canDecide: boolean; can
                     </>
                   )}
                 </td>
-                <td>{day(f.first_seen)}</td>
-                <td>
+                <td role="cell" data-label="First seen">{day(f.first_seen)}</td>
+                <td role="cell" data-label="Status">
                   {f.status}
                   {f.decided_by && <small> by {f.decided_by}</small>}
                   {canDecide && f.status !== "resolved" && (
@@ -197,6 +201,7 @@ export function FindingsPage({ canDecide, canDetect }: { canDecide: boolean; can
                       <br />
                       <button
                         type="button"
+                        aria-label={`${f.status === "open" ? "Dismiss" : "Reopen"}: ${KIND[f.kind]}, ${f.ref ?? f.institution ?? f.bureaus.join(" and ")}`}
                         onClick={() =>
                           act(
                             `/findings/${f.id}/decision`,
