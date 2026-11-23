@@ -1,4 +1,4 @@
-# Architecture Decision Records
+    # Architecture Decision Records
 
 One short record per decision that would be expensive to reverse. Add a new numbered section when a decision changes; do not rewrite history.
 
