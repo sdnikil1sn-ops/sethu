@@ -217,7 +217,7 @@ services:
   # On the `ai` zone and `data` (for Redis and PostgreSQL) only: no route to the internet, no published port.
   ai-worker:
     <<: *hardening
-    build: ./backend
+    build: { context: ./backend, target: ai }     # the runtime plus the AI engines (backend/Dockerfile)
     command: ["celery", "-A", "app.ai.tasks:celery", "worker", "-Q", "ai", "--pool", "solo",
               "-n", "ai@%h", "--loglevel", "INFO"]
     read_only: true

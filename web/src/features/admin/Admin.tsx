@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api, useLoad } from "../../api";
+import { GlossaryAdmin } from "./Glossary";
 
 // Mirrors backend/app/modules/bureaus/schemas.py and users/schemas.py
 type BureauRow = {
@@ -194,6 +195,7 @@ export function AdminPage() {
       </form>
 
       <Deadlines />
+      <GlossaryAdmin />
 
       <h2>People</h2>
       <p className="note">

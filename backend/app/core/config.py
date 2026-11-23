@@ -102,7 +102,13 @@ class Settings(BaseSettings):
     ai_circuit_failures: int = 3                   # failures in a row that open a provider's circuit...
     ai_circuit_cooldown_seconds: int = 60          # ...for this long; then one trial call is let through
     ai_default_min_confidence: float = 0.5         # when app_settings has no ai.<task>.min_confidence
-    ai_routes: dict[str, list[str]] = {"stub.echo": ["stub-model", "stub-rules"]}   # task: providers in order
+    ai_routes: dict[str, list[str]] = {                                          # task: providers in order
+        "stub.echo": ["stub-model", "stub-rules"],
+        "language.detect": ["fasttext-lid", "script-lid"],
+        "ocr.read": ["rapidocr", "tesseract"],
+        "translate.to_en": ["indictrans2", "glossary"],
+        "glossary.tag": ["glossary-tags"],
+    }
     ai_endpoints: dict[str, str] = {}              # provider: URL of a model server inside the `ai` zone
     # The libraries' own offline switches; production refuses to start unless both are "1".
     hf_hub_offline: str | None = Field(None, validation_alias=AliasChoices("HF_HUB_OFFLINE", "hf_hub_offline"))

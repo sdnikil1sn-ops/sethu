@@ -37,16 +37,23 @@ class Keyring:
         self.active, self.keys = active, keys
 
     def encrypt(self, details: dict, aad: str) -> bytes:
-        key_id = self.active.encode()
-        nonce = os.urandom(NONCE_BYTES)
-        sealed = AESGCM(self.keys[self.active]).encrypt(nonce, json.dumps(details).encode(), aad.encode())
-        return MAGIC + bytes([len(key_id)]) + key_id + nonce + sealed
+        return self.encrypt_bytes(json.dumps(details).encode(), aad)
 
     def decrypt(self, value: bytes, aad: str) -> dict:
+        return json.loads(self.decrypt_bytes(value, aad))
+
+    def encrypt_bytes(self, data: bytes, aad: str) -> bytes:
+        """The same sealed format for any bytes (attachments: the attachment's id is the associated data)."""
+        key_id = self.active.encode()
+        nonce = os.urandom(NONCE_BYTES)
+        sealed = AESGCM(self.keys[self.active]).encrypt(nonce, data, aad.encode())
+        return MAGIC + bytes([len(key_id)]) + key_id + nonce + sealed
+
+    def decrypt_bytes(self, value: bytes, aad: str) -> bytes:
         key_id, nonce, sealed = _split(value)
         if key_id not in self.keys:
             raise KeyringError(f"no key {key_id!r} in the keyring: was it removed before re-encryption?")
-        return json.loads(AESGCM(self.keys[key_id]).decrypt(nonce, sealed, aad.encode()))
+        return AESGCM(self.keys[key_id]).decrypt(nonce, sealed, aad.encode())
 
 
 def _split(value: bytes) -> tuple[str, bytes, bytes]:

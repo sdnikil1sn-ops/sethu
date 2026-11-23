@@ -74,6 +74,15 @@ section 3), browser tests in `web/e2e/` (run against a freshly seeded dev stack)
 - [x] Every AI call is recorded (`sethu.ai_runs`, append-only, Row-Level Security) and in the hash-chained audit log, without the text. Evidence: `test_ai_router.py::test_primary_success_is_recorded_with_its_model_and_without_the_text`, `test_ai_runs_are_append_only_and_scoped`; a run through the ai-worker's queue on a dev stack wrote both.
 - [x] Model health for admin and oversight. Evidence: `test_ai_health.py` (3 tests); `docs/screens/ai-1366.png` (live data from the dev stack; axe passes at 1366 and 375 px).
 
-## Counts (2026-11-23)
+## AI layer, Phase A2 (enrichment)
+- [x] Every new complaint and attachment is enriched in the background through the router (language, OCR, translation, glossary tags); the original text never changes. Evidence: `test_enrichment.py::test_with_no_models_every_step_falls_back_and_the_text_is_untouched`, `test_each_task_takes_its_primary_when_it_answers`.
+- [x] Each step falls back, and low confidence or failure creates a review item a person resolves. Evidence: `test_enrichment.py` (language, OCR, translation fall-throughs, repeated failure, review scoping and resolution).
+- [x] One model at a time: stages run in order over a batch. Evidence: `test_enrichment.py::test_stages_run_in_order_so_only_one_model_is_needed_at_a_time`.
+- [x] Attachments: type and size checked, encrypted, scoped, audited, re-sealed on key rotation. Evidence: `test_enrichment.py::test_attachments_are_checked_encrypted_scoped_and_audited`, `test_key_rotation_reseals_attachments`.
+- [x] Glossary normalisation with versioned, audited upload. Evidence: `test_glossary.py` (6 tests).
+- [x] Language detection covers the 22 scheduled languages by script; fastText correct on the samples. Evidence: `test_ai_lid.py`; `test_ai_models.py` in the ai-worker image (docs/AI-PIPELINE.md).
+- [ ] Machine translation with IndicTrans2. Not proven: the model is gated and was not installed (docs/AI-PIPELINE.md).
 
-47 lines: 45 ticked with evidence, 2 not proven ("Updates within 5 seconds", "Runs with Wi-Fi off").
+## Counts (2026-11-24)
+
+54 lines: 51 ticked with evidence, 3 not proven ("Updates within 5 seconds", "Runs with Wi-Fi off", "Machine translation with IndicTrans2").

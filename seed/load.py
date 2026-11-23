@@ -19,6 +19,7 @@ from app.audit.service import record
 from app.core.config import get_settings
 from app.db.session import SYSTEM, session_for
 from app.modules.complaints import service as complaints_service
+from app.modules.glossary import service as glossary
 
 HERE = Path(__file__).parent
 
@@ -136,6 +137,10 @@ def load(engine: Engine | None = None, now: datetime | None = None) -> dict[str,
 
         counts = {"bureaus": bureaus_created, "users": len(user) - 1, "institutions": len(rows("institutions")),
                   "complaints": len(complaint), "case_actions": len(actions), "sources": len(source) - 1}
+        # The starter glossary (term normalisation, not translation), through the same checked, audited path as an
+        # admin's upload. Production loads it the same way: Admin > Glossary, seed/glossary.csv.
+        counts["glossary_terms"] = glossary.upload(s, SYSTEM, (HERE / "glossary.csv").read_bytes(),
+                                                   "glossary.csv")["terms"]
         record(s, SYSTEM, "seed.loaded", payload=counts)
     return counts
 

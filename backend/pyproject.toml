@@ -30,10 +30,12 @@ include = ["app*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["real_models: needs the real AI models and libraries (tests/test_ai_models.py); skipped otherwise"]
 
 [tool.ruff]
 line-length = 120
 target-version = "py312"
+extend-exclude = ["app/ai/vendor"]   # third-party code kept as upstream wrote it (see its README)
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "S", "UP"]

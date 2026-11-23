@@ -152,8 +152,169 @@ The path follows the API's existing `/api/v1` prefix.
 - **Tests**: `tests/test_ai_registry.py`, `test_ai_router.py`, `test_ai_health.py`, `test_egress_canary.py`, and the
   AI cases in `test_config.py`.
 
-## Not in A1
+## Not in A1 (some added in A2, below)
 
 No OCR, translation or matching provider, and no screen that triggers an AI run. There is also no human-review queue
 screen yet: human-review runs are recorded and counted on the health screen. Later phases add these on top of the
 router.
+
+## Phase A2: enrichment (language, OCR, translation, glossary)
+
+### What happens to a complaint
+
+A complaint can be worked on the moment it is filed. All intake paths go through `complaints.create`, which writes a
+pending row in `sethu.complaint_enrichment` in the same transaction (an outbox). Adding an attachment marks the
+complaint pending again. Every 10 seconds the scheduler queues `sethu.ai.enrich_pending` on the `ai` queue. The
+ai-worker then takes up to 10 pending complaints and runs four steps through the A1 router, so provenance, circuit
+breakers and confidence thresholds all apply:
+
+| Step | Task | Primary | Fallback | Last resort |
+|---|---|---|---|---|
+| Language | `language.detect` | fastText lid.176 (`lid-176`) | Unicode script (no model) | `unknown` and a review item |
+| Attachments | `ocr.read` | RapidOCR, PaddleOCR PP-OCRv5 models on ONNX Runtime (`rapidocr-<script>`) | Tesseract 5 (`tessdata-<lang>`) | `manual` ("needs manual entry") and a review item |
+| Translation | `translate.to_en` | IndicTrans2 distilled 200M, CTranslate2 int8 (`indictrans2-indic-en-dist-200m`) | Glossary terms only (no translation) | `untranslated` and a review item |
+| Tags | `glossary.tag` | Glossary normaliser | (none) | (none) |
+
+- **English needs no translation**: `translation_path` is `not_needed`.
+- **PDFs**: text a PDF carries is used as is (pypdf, `ocr_path` `embedded`). Only pages without trustworthy text are
+  rendered (pypdfium2, 144 dpi) and read by OCR.
+- **Limits**: `ai.ocr.max_pages` (10) and `ai.ocr.max_image_pixels` (25 million) in `sethu.app_settings`. Pillow's
+  decompression-bomb guard is set to the same pixel limit.
+- **Original text is never changed**: everything lands in `complaint_enrichment`, beside `complaints.body`
+  (`tests/test_enrichment.py` checks the text and its hash before and after).
+- **Repeated failure**: a complaint that fails 3 times goes to a person instead of looping.
+
+**One model at a time.** The steps run stage by stage over the whole batch: all languages, then all attachments,
+then all translations. So each model is loaded once per batch, and the memory manager's single slot never holds two
+(`test_stages_run_in_order_so_only_one_model_is_needed_at_a_time`). Tesseract runs as a separate short-lived process
+of about 44 MB.
+
+**Human review.** `sethu.review_items` records each case where a step was unsure or failed: language, OCR or
+translation, with the reason and the AI run. The **Review** screen lists them. Officers and heads of the holding
+bureau, or an admin, mark each one resolved or dismissed, and that decision is audited. Oversight can read them.
+
+### Settings (`sethu.app_settings`)
+
+| Key | Default |
+|---|---|
+| `ai.language.detect.min_confidence` | 0.5 |
+| `ai.ocr.read.min_confidence` | 0.6 |
+| `ai.translate.to_en.min_confidence` | 0.5 |
+| `ai.ocr.read.timeout_seconds` | 300 |
+| `ai.translate.to_en.timeout_seconds` | 180 |
+| `ai.ocr.max_pages` | 10 |
+| `ai.ocr.max_image_pixels` | 25,000,000 |
+
+The order of providers is `SETHU_AI_ROUTES`. For example, to make Tesseract the primary OCR engine (see the
+measurements below), set `SETHU_AI_ROUTES` to the default value with `"ocr.read": ["tesseract", "rapidocr"]`.
+
+### Language tiers (what is really supported)
+
+Measured on this project's mock samples (`backend/tests/data/multilingual/`: rendered text, not real scans), in the
+ai-worker image with no network:
+
+| Tier | Languages | Language detection | OCR | Translation |
+|---|---|---|---|---|
+| 1: measured end to end except translation | Hindi, Marathi, Tamil, Telugu, English | fastText: correct on all samples | RapidOCR and Tesseract both read them (numbers below) | IndicTrans2 covers them; **not measured** (model not installed) |
+| 2: OCR by Tesseract only | Kannada (Tesseract good), Bengali (**Tesseract poor**: character error rate 0.82), Gujarati, Malayalam, Punjabi, Odia, Assamese, Urdu, Nepali, Sanskrit | fastText has them (Kannada and Bengali measured correct) | no RapidOCR/PaddleOCR model exists for them; Tesseract language files exist (only Kannada and Bengali measured) | IndicTrans2 covers them; not measured |
+| 3: script detection only | Bodo, Dogri, Kashmiri, Maithili, Manipuri, Santali, Konkani, Sindhi | fastText lid.176 lacks Bodo, Dogri, Kashmiri, Maithili, Manipuri and Santali: the script fallback narrows to the script's languages (Devanagari alone covers nine) | no dedicated model; Devanagari languages fall back to Hindi or Marathi files | IndicTrans2 covers all 22 (codes in `app/ai/translate.py`); not measured |
+
+Romanised Hindi ("college ne fees refund nahi kiya") is recognised only as Latin script (English first). The
+glossary's `hi-latn` terms still tag it.
+
+### OCR engine: PaddlePaddle or ONNX Runtime (measured 2026-11-23)
+
+Both engines ran in throwaway `python:3.12-slim` containers. Each language ran in a fresh process; peak memory is
+VmHWM.
+
+| | PaddleOCR 3 on PaddlePaddle 3.0.0 | RapidOCR 3.10 (PaddleOCR PP-OCRv5 models) on ONNX Runtime |
+|---|---|---|
+| Install size (site-packages growth) | 1,314 MB (PaddlePaddle alone: 822 MB) | 401 MB on a bare image. 324 MB on SETHU's image, which already has numpy and ONNX Runtime; this includes CTranslate2, SentencePiece, pypdf and pypdfium2 |
+| Peak memory, one page | 704 to 820 MB (Hindi, Marathi, Tamil, Telugu) | 743 to 778 MB |
+| Languages that ran | Hindi, Marathi (Devanagari), Tamil, Telugu | English, Devanagari, Tamil, Telugu (PP-OCRv5); Kannada exists only in PP-OCRv4, whose download failed |
+| No model | Kannada, Bengali, Gujarati, Malayalam, Punjabi, Odia, Assamese | Bengali, Gujarati, Malayalam, Punjabi, Odia, Assamese, Kannada (v5) |
+| Other | English crashed inside PaddlePaddle ("Type of attribute: strides"); Urdu's model could not be downloaded | |
+
+**Chosen: RapidOCR on ONNX Runtime.** It installs about 1 GB less, uses the same memory, covers the same languages,
+and its English works.
+
+Then, in the ai-worker image, offline, on the rendered samples (character error rate, lower is better):
+
+| Sample | RapidOCR (PP-OCRv5 mobile) | Tesseract 5.5 (tessdata_fast 4.1.0) |
+|---|---|---|
+| Hindi 1, Hindi 2 | 0.168, 0.241 | 0.000, 0.000 |
+| Marathi | 0.155 | 0.000 |
+| Tamil | 0.010 | 0.052 |
+| Telugu | 0.307 | 0.000 |
+| Kannada | no model | 0.012 |
+| Bengali | no model | 0.818 |
+| English | 0.000 | 0.000 |
+| Time per image | 4 to 9 s | 0.3 to 0.6 s |
+| Peak memory | 778 MB | about 44 MB (its own process) |
+
+**What this means.** On clean printed text, Tesseract was more accurate, about ten times faster and far lighter.
+RapidOCR's confidence stayed between 0.93 and 0.98 even with 30% of characters wrong, so its confidence cannot be
+used to catch its errors. These samples are not real scans: photos and poor scans, where deep-learning OCR usually
+does better, were not tested. The configured order follows the brief (RapidOCR first). Making Tesseract primary is a
+one-line settings change and a decision for AICTE (docs/PRODUCTION-READINESS.md, row 63).
+
+**fastText lid.176** named all 8 non-romanised samples correctly (Hindi, Marathi, Tamil, Telugu, Bengali, Kannada,
+English). Each took about 1 ms after a 0.14 s load, at 80 MB peak.
+
+**Embedded PDF text can be wrong.** A Hindi PDF made by Chrome, read with pypdf, gave vowel signs in visual order
+("िमली" for "मिली") and NUL bytes for shaped glyphs. `app/ai/ocr.py` (`garbled()`) treats such a page as a scan and
+reads it with OCR instead.
+
+### Translation: IndicTrans2 (not installed here)
+
+The provider follows the reference CTranslate2 path of AI4Bharat/IndicTrans2 at a pinned commit. The helpers are
+vendored and reviewed (`backend/app/ai/vendor/indictrans2/README.md`), and no remote code runs. The model archive is
+gated on Hugging Face (`ai4bharat/BPCC`, `additional/indic-en-dist.tar.gz`, which needs an account that accepted
+AI4Bharat's terms). This machine got 401, so the model was **not installed, run or measured**. Until it is, every
+non-English complaint gets the glossary fallback or `untranslated` and a review item, which the tests check.
+
+To install it on a connected machine:
+
+1. Download and unpack the archive.
+2. Copy its CTranslate2 directory (with `model.bin`) and its `vocab/` folder into
+   `models/indictrans2-indic-en-dist-200m/1/`.
+3. Run `python scripts/fetch_models.py record indictrans2-indic-en-dist-200m 1 translate.to_en "MIT" 900`.
+4. Run `tests/test_ai_models.py` in the ai-worker image.
+
+### Glossary normalisation
+
+`sethu.glossary_terms` holds terms with English tags. It is versioned and append-only, and the newest version is
+used.
+
+- **Starter list**: `seed/glossary.csv` has 144 terms: 78 in Hindi (Devanagari), 18 Hindi in Latin script, 23
+  English variants, and 5 each in Tamil, Telugu, Kannada, Bengali and Marathi. Those 25 are marked "needs native
+  review".
+- **Matching**: Unicode NFC, case folded, zero-width joiners removed, longest match first, terms start at a word
+  start. In Latin script a term must also end at a word end; Indic terms may take a suffix.
+- **Output**: English tags and a coverage ratio.
+- **Upload**: Admin > Glossary, CSV or XLSX. All-or-nothing, with a row-by-row error report, versioned and audited.
+
+This is term normalisation, not translation, and the screens say so.
+
+### Getting the models (connected machine only)
+
+```powershell
+python scripts/fetch_models.py add lid-176 1 language.detect "CC-BY-SA-3.0 (fastText)" 5 https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz
+$ms = "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5"
+foreach ($g in "devanagari", "ta", "te", "en") { python scripts/fetch_models.py add "rapidocr-$g" PP-OCRv5 ocr.read "Apache-2.0 (PaddleOCR models)" 200 "$ms/det/ch_PP-OCRv5_det_mobile.onnx" "$ms/rec/${g}_PP-OCRv5_rec_mobile.onnx" }
+foreach ($l in "hin", "mar", "nep", "san", "tam", "tel", "kan", "mal", "ben", "asm", "guj", "pan", "ori", "urd", "eng") { python scripts/fetch_models.py add "tessdata-$l" 4.1.0-fast ocr.read "Apache-2.0 (tessdata_fast)" 60 "https://github.com/tesseract-ocr/tessdata_fast/raw/4.1.0/$l.traineddata" }
+python scripts/fetch_models.py check
+```
+
+- **Size**: on 2026-11-23 these files (without IndicTrans2) came to 66.5 MB, and every one passed its checksum.
+- **Placement**: copy `models/` to the host (`SETHU_MODELS_DIR`). The model files are git-ignored; the manifest is
+  committed.
+- **Publisher checksums**: give `--sha256` where a publisher lists one.
+
+### Not done in A2
+
+- IndicTrans2 not installed or measured: gated download.
+- The whole A2 pipeline was not run inside the Compose stack on this machine: the demo stack already used the
+  memory. The components were measured in the ai-worker image instead.
+- Scans and photos were not tested, and no native speaker has reviewed the glossary or the samples.
+- Matching, classification and graph work belong to later phases.

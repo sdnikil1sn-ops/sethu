@@ -29,7 +29,7 @@ COPY models.lock.json fetch_model.py ./
 RUN --mount=type=cache,target=/root/.cache/sethu-models \
     python fetch_model.py models.lock.json /root/.cache/sethu-models /models
 
-FROM ${PYTHON}
+FROM ${PYTHON} AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
     HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 SETHU_EMBEDDING_CACHE_DIR=/opt/sethu/models
 # Debian security fixes released after the base image was built (the base digest stays pinned).
@@ -47,3 +47,16 @@ EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=3s --retries=5 CMD \
   python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health/live', timeout=2).status==200 else 1)"
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]
+
+# The ai-worker image (docs/AI-PIPELINE.md): the runtime plus the AI engines, pinned with hashes
+# (requirements-ai.lock: RapidOCR on ONNX Runtime, CTranslate2, SentencePiece, pypdf, pypdfium2, fastText) and the
+# Tesseract program. No model is in the image: models come from the read-only, checksum-verified models folder.
+FROM runtime AS ai
+USER root
+COPY requirements-ai.lock ./
+RUN for try in 1 2 3 4 5; do       apt-get update && apt-get install -y --no-install-recommends tesseract-ocr && ok=1 && break; sleep $((try * 5));     done && [ "$ok" = 1 ] && rm -rf /var/lib/apt/lists/*  && for try in 1 2 3 4 5 6; do       pip install --no-cache-dir --require-hashes --no-deps -r requirements-ai.lock && ok2=1 && break; sleep $((try * 10));     done && [ "$ok2" = 1 ] && rm requirements-ai.lock
+USER 10001
+CMD ["celery", "-A", "app.ai.tasks:celery", "worker", "-Q", "ai", "--pool", "solo", "-n", "ai@%h", "--loglevel", "INFO"]
+
+# The default target stays the runtime (backend, worker, scheduler, migrate).
+FROM runtime

@@ -16,7 +16,9 @@ from app.modules.bureaus.api import router as bureaus
 from app.modules.complaints.api import deadlines_router
 from app.modules.complaints.api import router as cases
 from app.modules.dashboard.api import router as dashboard
+from app.modules.enrichment.api import router as enrichment
 from app.modules.findings.api import router as findings
+from app.modules.glossary.api import router as glossary
 from app.modules.graph.api import router as graph
 from app.modules.institutions.api import router as institutions
 from app.modules.intake.api import router as intake
@@ -81,6 +83,8 @@ def create_app() -> FastAPI:
     app.include_router(deadlines_router)
     app.include_router(graph)
     app.include_router(ai_health)
+    app.include_router(enrichment)
+    app.include_router(glossary)
     return app
 
 
