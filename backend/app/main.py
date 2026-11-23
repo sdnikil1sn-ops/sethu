@@ -9,6 +9,7 @@ from app.api.routes import api, health, internal
 from app.core import metrics
 from app.core.config import get_settings
 from app.core.logging import accept_request_id, configure_logging, request_id
+from app.modules.ai_health.api import router as ai_health
 from app.modules.alerts.api import router as alerts
 from app.modules.audit_view.api import router as audit_view
 from app.modules.bureaus.api import router as bureaus
@@ -79,6 +80,7 @@ def create_app() -> FastAPI:
     app.include_router(intake)
     app.include_router(deadlines_router)
     app.include_router(graph)
+    app.include_router(ai_health)
     return app
 
 

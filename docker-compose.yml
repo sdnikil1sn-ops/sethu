@@ -4,6 +4,7 @@
 #   edge  - the only network with a published port
 #   app   - internal: API, worker, identity, mail
 #   data  - internal: PostgreSQL, Redis
+#   ai    - internal: the ai-worker (and, later, local model servers); no route out, no published port
 # `internal: true` means containers on that network have no route to the
 # internet. Complaint data cannot leave the deployment at run time.
 
@@ -212,6 +213,35 @@ services:
     networks: [data]
     deploy: { resources: { limits: { memory: 256m } } }
 
+  # The AI layer (docs/AI-PIPELINE.md): its own Celery queue, one process, models from a read-only folder.
+  # On the `ai` zone and `data` (for Redis and PostgreSQL) only: no route to the internet, no published port.
+  ai-worker:
+    <<: *hardening
+    build: ./backend
+    command: ["celery", "-A", "app.ai.tasks:celery", "worker", "-Q", "ai", "--pool", "solo",
+              "-n", "ai@%h", "--loglevel", "INFO"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    volumes:
+      - ${SETHU_MODELS_DIR:-./models}:/models:ro          # models/manifest.json and the files it checks
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A app.ai.tasks:celery inspect ping -d ai@$$HOSTNAME --timeout 10 | grep -q pong"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    environment:
+      <<: *backend-env
+      SETHU_AI_MODELS_DIR: /models
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+    secrets: [complainant_keys]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    networks: [ai, data]
+    deploy: { resources: { limits: { memory: "${SETHU_AI_WORKER_MEMORY:-3g}" } } }
+
   web:
     <<: *hardening
     build: ./web
@@ -244,6 +274,7 @@ networks:
   edge: {}
   app: { internal: true }
   data: { internal: true }
+  ai: { internal: true }
 
 # Secret files, mounted read-only under /run/secrets. Never in the image or an environment value.
 # Created per machine: scripts/init_env.py (dev) or docs/RUNBOOK.md section 7 (production).

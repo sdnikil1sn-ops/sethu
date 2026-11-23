@@ -98,6 +98,14 @@ services:
     environment: *prod-backend-env
     secrets: *prod-backend-secrets
 
+  ai-worker:   # the offline flags and the models folder come from the base file and are checked at start
+    environment:
+      <<: *prod-backend-env
+      SETHU_AI_MODELS_DIR: /models
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+    secrets: *prod-backend-secrets
+
   web:
     volumes: !override
       - ./infra/web/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro

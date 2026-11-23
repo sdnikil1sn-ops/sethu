@@ -119,6 +119,24 @@ jobs:
               image --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --no-progress "$image"
           done
 
+  egress-canary:
+    # Complaint data must never leave AICTE: start the stack, count outbound connection attempts from its networks
+    # for two idle minutes, then probe every container for a route out (scripts/egress_canary.py). ai-worker
+    # must be on internal networks only and reach nothing.
+    needs: [backend-tests]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
+        with: { python-version: "3.12" }
+      - name: Egress canary
+        run: |
+          python scripts/init_env.py
+          python scripts/egress_canary.py --project sethu --start --watch-attempts 120
+      - if: always()
+        run: docker compose --profile dev down -v
+
   browser-tests:
     # The main journeys in a real browser against the full dev stack (Playwright). Slow; runs after the others.
     needs: [backend-tests, web]

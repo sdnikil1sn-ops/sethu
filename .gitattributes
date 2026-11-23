@@ -6,3 +6,6 @@
 *.yml text eol=lf
 Dockerfile text eol=lf
 *.csv text eol=lf
+# Model files are checked by SHA-256 (models/manifest.json): never convert line endings.
+models/** -text
+models/manifest.json text eol=lf

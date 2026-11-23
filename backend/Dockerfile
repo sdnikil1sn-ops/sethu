@@ -31,7 +31,7 @@ RUN --mount=type=cache,target=/root/.cache/sethu-models \
 
 FROM ${PYTHON}
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
-    HF_HUB_OFFLINE=1 SETHU_EMBEDDING_CACHE_DIR=/opt/sethu/models
+    HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 SETHU_EMBEDDING_CACHE_DIR=/opt/sethu/models
 # Debian security fixes released after the base image was built (the base digest stays pinned).
 RUN for try in 1 2 3 4 5; do \
       apt-get update && apt-get upgrade -y --no-install-recommends && ok=1 && break; sleep $((try * 5)); \
