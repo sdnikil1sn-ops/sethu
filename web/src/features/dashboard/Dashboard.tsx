@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLoad } from "../../api";
+import { count } from "../../Pager";
 
 // Mirrors backend/app/modules/dashboard/schemas.py
 type Count = { key: string; label: string; total: number; open: number; overdue: number };
@@ -129,55 +130,55 @@ export function Dashboard() {
       <ul>
         <li>
           <a href="#/overlaps">
-            {a.overlaps_to_review} overlap suggestion{a.overlaps_to_review === 1 ? "" : "s"} awaiting review
+            {count(a.overlaps_to_review)} overlap suggestion{a.overlaps_to_review === 1 ? "" : "s"} awaiting review
           </a>{" "}
-          <small>({a.overlaps_confirmed} confirmed)</small>
+          <small>({count(a.overlaps_confirmed)} confirmed)</small>
         </li>
         <li>
           <a href="#/alerts">
-            {a.alerts_to_approve} alert{a.alerts_to_approve === 1 ? "" : "s"} awaiting approval
+            {count(a.alerts_to_approve)} alert{a.alerts_to_approve === 1 ? "" : "s"} awaiting approval
           </a>
           {a.alerts_unsent > 0 && (
             <>
               {" "}
-              <small>({a.alerts_unsent} approved but not sent yet)</small>
+              <small>({count(a.alerts_unsent)} approved but not sent yet)</small>
             </>
           )}
         </li>
         <li>
           <a href="#/findings">
-            {a.findings_open} open finding{a.findings_open === 1 ? "" : "s"}
+            {count(a.findings_open)} open finding{a.findings_open === 1 ? "" : "s"}
           </a>{" "}
           <small>(transfer loops, stalled transfers, bottlenecks, early warnings)</small>
         </li>
         <li>
-          <a href={cases("overdue", "true")}>{a.overdue_total} overdue case{a.overdue_total === 1 ? "" : "s"}</a>
+          <a href={cases("overdue", "true")}>{count(a.overdue_total)} overdue case{a.overdue_total === 1 ? "" : "s"}</a>
           {a.overdue.length < a.overdue_total && <small> (the {a.overdue.length} most overdue below)</small>}
         </li>
       </ul>
       {a.overdue.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Case</th>
-              <th scope="col">Bureau</th>
-              <th scope="col">Institution</th>
-              <th scope="col">Category</th>
-              <th scope="col">Status</th>
-              <th scope="col">Was due</th>
+        <table className="stack" role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">Case</th>
+              <th role="columnheader" scope="col">Bureau</th>
+              <th role="columnheader" scope="col">Institution</th>
+              <th role="columnheader" scope="col">Category</th>
+              <th role="columnheader" scope="col">Status</th>
+              <th role="columnheader" scope="col">Was due</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody role="rowgroup">
             {a.overdue.map((c) => (
-              <tr key={c.id}>
-                <td>
+              <tr role="row" key={c.id}>
+                <td role="cell" data-label="Case">
                   <a href={`#/cases/${c.id}`}>{c.ref}</a>
                 </td>
-                <td>{c.bureau}</td>
-                <td>{c.institution ?? "Not matched yet"}</td>
-                <td>{c.category}</td>
-                <td>{c.status.replace(/_/g, " ")}</td>
-                <td className="flag">{day(c.due_at)}</td>
+                <td role="cell" data-label="Bureau">{c.bureau}</td>
+                <td role="cell" data-label="Institution">{c.institution ?? "Not matched yet"}</td>
+                <td role="cell" data-label="Category">{c.category}</td>
+                <td role="cell" data-label="Status">{c.status.replace(/_/g, " ")}</td>
+                <td role="cell" data-label="Was due" className="flag">{day(c.due_at)}</td>
               </tr>
             ))}
           </tbody>

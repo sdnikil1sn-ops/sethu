@@ -8,6 +8,8 @@ from uuid import UUID
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.db import paging
+
 OPEN = "status <> 'closed'"
 
 
@@ -123,10 +125,7 @@ def tier1_pairs(session: Session, institution_id: UUID | None) -> list[dict]:
          ORDER BY i.name, a.ref, b.ref""", inst=institution_id)  # noqa: S608
 
 
-def links(session: Session, *, link_id: UUID | None = None, status: str | None = None,
-          institution_id: UUID | None = None, bureau: str | None = None, tier: int | None = None) -> list[dict]:
-    """Links the caller is allowed to see, with both cases' summary fields (never their text)."""
-    return _all(session, """
+LINKS = """
         SELECT l.id, l.tier, l.score, l.reasons, l.signals, l.status, l.created_at, l.decided_at,
                u.display_name AS decided_by, i.id AS institution_id, i.name AS institution, a.category,
                a.id AS a_id, a.ref AS a_ref, ba.code AS a_bureau, a.bureau_id AS a_bureau_id,
@@ -146,9 +145,22 @@ def links(session: Session, *, link_id: UUID | None = None, status: str | None =
            AND (CAST(:status AS text) IS NULL OR l.status = :status)
            AND (CAST(:inst AS uuid) IS NULL OR a.institution_id = :inst)
            AND (CAST(:bureau AS text) IS NULL OR upper(:bureau) IN (ba.code, bb.code))
-           AND (CAST(:tier AS int) IS NULL OR l.tier = :tier)
-         ORDER BY (l.status = 'proposed') DESC, l.created_at DESC, a.ref""",
+           AND (CAST(:tier AS int) IS NULL OR l.tier = :tier)"""
+LINK_ORDER = "(l.status = 'proposed') DESC, l.created_at DESC, a.ref, l.id"
+
+
+def links(session: Session, *, link_id: UUID | None = None, status: str | None = None,
+          institution_id: UUID | None = None, bureau: str | None = None, tier: int | None = None) -> list[dict]:
+    """Links the caller is allowed to see, with both cases' summary fields (never their text). Unbounded: for
+    one link by id, and tests; the screen uses `links_page`."""
+    return _all(session, f"{LINKS} ORDER BY {LINK_ORDER}",  # noqa: S608 - constants only
                 id=link_id, status=status, inst=institution_id, bureau=bureau, tier=tier)
+
+
+def links_page(session: Session, limit: int, offset: int, *, status: str | None = None,
+               institution_id: UUID | None = None, bureau: str | None = None, tier: int | None = None) -> dict:
+    return paging.page(session, LINKS, LINK_ORDER, {"id": None, "status": status, "inst": institution_id,
+                                                    "bureau": bureau, "tier": tier}, limit, offset)
 
 
 def linked_case_ids(session: Session) -> list[UUID]:

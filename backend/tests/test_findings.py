@@ -144,9 +144,10 @@ def test_findings_are_scoped_to_the_bureaus_involved(detected):
     client = TestClient(app)
     try:
         app.dependency_overrides[get_principal] = lambda: detected["rao"]
-        assert {f["id"] for f in client.get("/api/v1/findings").json()} == {str(f["id"]) for f in pgrc}
-        assert client.get("/api/v1/findings", params={"bureau": "RB"}).json() == [
-            f for f in client.get("/api/v1/findings").json() if "RB" in f["bureaus"]]
+        # Phase 5: the list is a page ({"items", "total", ...}); the seed's findings fit on one.
+        assert {f["id"] for f in client.get("/api/v1/findings").json()["items"]} == {str(f["id"]) for f in pgrc}
+        assert client.get("/api/v1/findings", params={"bureau": "RB"}).json()["items"] == [
+            f for f in client.get("/api/v1/findings").json()["items"] if "RB" in f["bureaus"]]
         assert client.post("/api/v1/findings/detect").status_code == 403
         assert client.get("/api/v1/findings", params={"kind": "nonsense"}).status_code == 422
     finally:

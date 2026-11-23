@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.auth import Principal, require_roles
+from app.db.paging import page_params
 from app.db.session import get_session
 from app.modules.complaints import schemas, service
 from app.modules.overlaps import service as overlaps
@@ -30,15 +31,14 @@ def _run(work):
 @router.get("", response_model=schemas.CasePage)
 def list_cases(
     filters: Annotated[schemas.Filters, Query()],
-    limit: int = Query(50, ge=1, le=200),
-    offset: int = Query(0, ge=0),
+    paged: tuple[int, int] = Depends(page_params),
     _: Principal = Depends(READ),
     session: Session = Depends(get_session),
 ) -> dict:
     wanted = filters.model_dump()
     if wanted.pop("overlapping"):
         wanted["ids"] = overlaps.linked_case_ids(session)
-    return service.search(session, wanted, limit, offset)
+    return service.search(session, wanted, *paged)
 
 
 @router.get("/options", response_model=schemas.Options)

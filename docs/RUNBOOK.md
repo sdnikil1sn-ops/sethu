@@ -341,11 +341,17 @@ npx playwright test
 
 Run on 2026-11-21 against a freshly seeded dev stack: 7 passed.
 
+`web/e2e/a11y.spec.ts` checks accessibility and layout. It runs axe (WCAG 2.1 A and AA) on every screen at 1366 and 375 px wide and fails on any serious or critical result, and fails if a page is wider than the screen. It also checks that the keyboard reaches the content with a visible focus ("Skip to main content" first), and that the phone layout of the case list is still a table to assistive technology. `$env:SETHU_SCREENS = "1"` also saves each screen to `docs/screens/<screen>-<width>.png`. Run on 2026-11-22 against a freshly seeded dev stack: 3 passed, then the 7 journeys passed on the same stack; 32 screenshots saved.
+
+After the upgrade to Playwright 1.56.1 (2026-11-22, freshly seeded dev stack, run on the machine's installed Chrome through a local `channel: "chrome"` config while Playwright's own browser download kept failing on the network): all 10 tests passed (3 accessibility, 7 journeys). The overlap journey now waits for the worker's search, which is skipped while the scheduled one is still running.
+
 ### Audit-chain anchors
 
 Every hour (minute 7) the worker appends one line to `audit-anchor.jsonl` in `SETHU_AUDIT_ANCHOR_DIR` (default `./anchor`, mounted read-write into the worker and read-only into the backend): the time, the latest entry number, its hash and the number of entries. The worker only ever opens the file for appending. Make the place write-once yourself: a WORM share, or on a Linux host `sudo chattr +a anchor/audit-anchor.jsonl` once the first line exists (root can still remove the flag, so copy the file off the host as well).
 
 To prove the chain against it: the **Audit log** screen, *Exported anchors* (auditor, oversight, admin), or `docker compose exec backend python -m app.audit.anchor compare` (exit 1 on a mismatch). Every exported entry must still exist with the same hash; a rewritten entry, a truncated chain or a database restored from elsewhere is named. To export now: `docker compose exec worker python -m app.audit.anchor export`.
+
+Drill (2026-11-22, dev stack): the database was replaced (`down -v`, fresh seed) while the anchor folder was kept. `compare` answered `ok: false` with "entry 1410 ... has a different hash now: it was rewritten" and "entry 1476 ... is missing: the chain was truncated or replaced".
 
 ### Edge and recreated containers
 

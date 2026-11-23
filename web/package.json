@@ -14,7 +14,8 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@playwright/test": "1.49.1",
+    "@axe-core/playwright": "4.10.1",
+    "@playwright/test": "1.56.1",
     "@types/cytoscape": "3.21.9",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

@@ -4,6 +4,8 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
+from app.db.paging import PageMeta
+
 
 class LinkedCase(BaseModel):
     id: UUID
@@ -50,6 +52,10 @@ class Tier1Institution(BaseModel):
     tier2_pairs: int
 
 
+class LinkPage(PageMeta):
+    items: list[Link]
+
+
 class DecisionIn(BaseModel):
     decision: Literal["approve", "reject"]
 
@@ -65,3 +71,4 @@ class DetectQueued(BaseModel):
 class DetectStatus(BaseModel):
     state: str                      # PENDING (queued or unknown), STARTED, SUCCESS, FAILURE
     suggested: int | None = None    # when it has finished
+    skipped: bool = False           # another run was already going (its suggestions appear when it finishes)

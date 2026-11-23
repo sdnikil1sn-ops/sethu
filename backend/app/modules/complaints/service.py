@@ -62,8 +62,8 @@ def search(session: Session, filters: dict[str, Any], limit: int, offset: int) -
     filters = {k: v for k, v in filters.items() if v not in (None, "")}
     if "q" in filters:
         filters["q"] = _like(filters["q"].strip())
-    rows = repo.search(session, filters, limit, offset)
-    return {"total": rows[0]["total"] if rows else 0, "items": [r | _sla(r) for r in rows]}
+    found = repo.search(session, filters, limit, offset)
+    return found | {"items": [r | _sla(r) for r in found["items"]]}
 
 
 def lookup(session: Session, q: str, limit: int) -> dict:

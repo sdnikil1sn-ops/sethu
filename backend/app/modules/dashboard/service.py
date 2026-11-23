@@ -23,7 +23,7 @@ def overview(session: Session) -> dict:
         "weekly": repo.weekly(session, WEEKS),
         "attention": pending | {
             "findings_open": findings.open_count(session),
-            "overdue_total": overdue[0]["total"] if overdue else 0,
-            "overdue": [{k: v for k, v in r.items() if k != "total"} for r in overdue],
+            "overdue_total": overdue["total"] + overdue["total_capped"],   # COUNT_CAP + 1 means "1,000+"
+            "overdue": overdue["items"],
         },
     }

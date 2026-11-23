@@ -65,6 +65,77 @@ function ComplaintDetail({ node }: { node: GraphNode }) {
   );
 }
 
+const EDGE_WORDS: Record<string, string> = {
+  holds: "holds cases about",
+  about: "complaint about",
+  transfer: "transferred cases to",
+  overlap_proposed: "suggested overlap with",
+  overlap_approved: "confirmed overlap with",
+};
+
+/** The same facts as the drawing, as tables (for screen readers, keyboards and print). */
+function GraphTable({ graph }: { graph: Graph }) {
+  const byId = new Map(graph.nodes.map((n) => [n.id, n]));
+  const institutions = graph.nodes.filter((n) => n.kind === "institution");
+  return (
+    <details className="graph-table">
+      <summary>The graph as tables ({institutions.length} institutions, {graph.edges.length} connections)</summary>
+      <table>
+        <caption>Institutions</caption>
+        <thead>
+          <tr>
+            <th scope="col">Institution</th>
+            <th scope="col">State</th>
+            <th scope="col" className="num">Cases</th>
+            <th scope="col" className="num">Open</th>
+            <th scope="col">Bureaus</th>
+            <th scope="col">Overlaps (suggested, approved)</th>
+            <th scope="col">Open findings</th>
+          </tr>
+        </thead>
+        <tbody>
+          {institutions.map((n) => (
+            <tr key={n.id}>
+              <th scope="row">
+                <a href={`#/institutions/${n.institution_id}`}>{n.label}</a>
+              </th>
+              <td>{n.state ?? "–"}</td>
+              <td className="num">{n.cases ?? 0}</td>
+              <td className="num">{n.open ?? 0}</td>
+              <td>{n.bureaus?.join(", ")}</td>
+              <td>
+                {n.overlaps?.proposed ?? 0}, {n.overlaps?.approved ?? 0}
+              </td>
+              <td>{n.findings.map((k) => KINDS[k] ?? k).join(", ") || "None"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <table>
+        <caption>Connections</caption>
+        <thead>
+          <tr>
+            <th scope="col">From</th>
+            <th scope="col">Connection</th>
+            <th scope="col">To</th>
+            <th scope="col" className="num">Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {graph.edges.map((e) => (
+            <tr key={e.id}>
+              <td>{byId.get(e.source)?.label ?? e.source}</td>
+              <td>{EDGE_WORDS[e.kind] ?? e.kind}</td>
+              <td>{byId.get(e.target)?.label ?? e.target}</td>
+              <td className="num">{e.count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </details>
+  );
+}
+
 /** Network-wide intelligence graph: every bureau and institution, complaints on request. */
 export function GraphPage() {
   const [f, setF] = useState({ state: "", category: "", bureau: "", filed_from: "", filed_to: "", finding_kind: "" });
@@ -112,13 +183,14 @@ export function GraphPage() {
       {data && (
         <div className="graph-layout">
           <GraphView graph={data} onSelect={setSelected}
-            label={`Graph of ${institutions.length} institutions; the list below gives the same facts.`} />
+            label={`Graph of ${institutions.length} institutions; "The graph as tables" below gives the same facts.`} />
           {selected && (
             <NodePanel node={selected} onExpand={toggle}
               expanded={!!selected.institution_id && expand.includes(selected.institution_id)} />
           )}
         </div>
       )}
+      {data && <GraphTable graph={data} />}
       <h2>Institutions with cases in several bureaus</h2>
       {clusters.length === 0 ? <p>None with these filters.</p> : (
         <ul>

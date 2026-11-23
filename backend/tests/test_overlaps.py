@@ -206,7 +206,7 @@ def test_api_decisions_detection_and_the_overlapping_filter(world, monkeypatch):
         page = client.get("/api/v1/cases", params={"overlapping": "true", "limit": 200}).json()
         assert page["total"] == 14 and {"C-101", "C-102"}  # 7 links, 2 cases each <= {c["ref"] for c in page["items"]}
         assert client.get("/api/v1/cases", params={"overlapping": "true", "bureau": "RB"}).json()["total"] == 7
-        links = client.get("/api/v1/overlaps", params={"status": "proposed"}).json()
+        links = client.get("/api/v1/overlaps", params={"status": "proposed"}).json()["items"]  # a page (Phase 5)
         demo = next(link["id"] for link in links if {c["ref"] for c in link["cases"]} == set(DEMO_PAIR))
         assert len(client.get("/api/v1/overlaps/tier1").json()) == 16  # + Rosemere (RB and NRB)
         for reader in (world["menon"], world["das"]):
@@ -220,7 +220,7 @@ def test_api_decisions_detection_and_the_overlapping_filter(world, monkeypatch):
         assert "body" not in done.json() and "body" not in done.json()["cases"][0]
         assert client.post(f"/api/v1/overlaps/{demo}/decision", json={"decision": "reject"}).status_code == 409
         greenfield = done.json()["institution_id"]
-        assert len(client.get("/api/v1/overlaps", params={"institution_id": greenfield}).json()) == 1
+        assert client.get("/api/v1/overlaps", params={"institution_id": greenfield}).json()["total"] == 1
     finally:
         app.dependency_overrides.clear()
 
@@ -247,3 +247,17 @@ def test_a_second_overlap_run_is_skipped_while_one_is_running(world):
         running.execute(text("SELECT pg_advisory_xact_lock(hashtext('sethu.overlaps.detect'))"))
         assert worker.detect_overlaps() == {"suggested": 0, "embedded": 0, "skipped": 1}
     assert worker.detect_overlaps()["suggested"] == 7
+
+
+def test_the_job_status_says_when_a_run_was_skipped(monkeypatch):
+    """The admin's button while the scheduled run is going: the screen must not say "0 new suggestions"."""
+    class Result:
+        def __init__(self, state, result):
+            self.state, self.result = state, result
+
+    answers = {"a": Result("SUCCESS", {"suggested": 0, "embedded": 0, "skipped": 1}),
+               "b": Result("SUCCESS", {"suggested": 3, "embedded": 5}), "c": Result("PENDING", None)}
+    monkeypatch.setattr(jobs, "_client", lambda: type("C", (), {"AsyncResult": staticmethod(answers.get)})())
+    assert jobs.status("a") == {"state": "SUCCESS", "suggested": 0, "skipped": True}
+    assert jobs.status("b") == {"state": "SUCCESS", "suggested": 3, "skipped": False}
+    assert jobs.status("c") == {"state": "PENDING", "suggested": None, "skipped": False}

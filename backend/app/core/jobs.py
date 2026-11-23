@@ -23,4 +23,5 @@ def queue(name: str) -> str:
 def status(task_id: str) -> dict:
     result = _client().AsyncResult(task_id)
     done = result.state == "SUCCESS" and isinstance(result.result, dict)
-    return {"state": result.state, "suggested": result.result.get("suggested") if done else None}
+    answer = result.result if done else {}
+    return {"state": result.state, "suggested": answer.get("suggested"), "skipped": bool(answer.get("skipped"))}

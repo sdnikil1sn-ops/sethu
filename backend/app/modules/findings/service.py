@@ -222,6 +222,10 @@ def listing(session: Session, filters: dict) -> list[dict]:
     return repo.listing(session, {k: v for k, v in filters.items() if v is not None})
 
 
+def page(session: Session, filters: dict, limit: int, offset: int) -> dict:
+    return repo.page(session, {k: v for k, v in filters.items() if v is not None}, limit, offset)
+
+
 def decide(session: Session, principal: Principal, finding_id: UUID, status: str) -> dict:
     """A person dismisses a finding (not a real problem, or handled outside SETHU) or reopens it."""
     found = repo.listing(session, {"id": finding_id})

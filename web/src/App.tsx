@@ -50,6 +50,10 @@ export function App() {
   return (
     <>
       <header>
+        {/* Hash routing owns "#...", so the skip control moves focus itself instead of linking to #main. */}
+        <button type="button" className="skip" onClick={() => document.getElementById("main")?.focus()}>
+          Skip to main content
+        </button>
         <strong>SETHU</strong>
         <nav aria-label="Main">
           <a href="#/" aria-current={route === "/" ? "page" : undefined}>
@@ -113,7 +117,7 @@ export function App() {
           </button>
         </span>
       </header>
-      <main>
+      <main id="main" tabIndex={-1}>
         {searched !== null ? (
           <SearchResults key={searched} q={searched} />
         ) : caseId ? (

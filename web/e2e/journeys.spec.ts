@@ -44,6 +44,7 @@ test("search finds an institution by an alias", async ({ page }) => {
 });
 
 test("an approved overlap queues an alert to both bureau heads", async ({ page }) => {
+  test.setTimeout(240_000);
   await signIn(page, "admin");
   await page.goto("/#/overlaps");
   const detected = page.waitForResponse((r) => r.url().includes("/api/v1/overlaps/detect"), { timeout: 60_000 });
@@ -51,9 +52,17 @@ test("an approved overlap queues an alert to both bureau heads", async ({ page }
   expect((await detected).ok()).toBe(true);
   await signIn(page, "fernandes");
   await page.goto("/#/overlaps");
+  // The search runs in the worker (and is skipped if the scheduled one is already going): wait for its result.
+  const approve = page.getByRole("button", { name: /^Approve link between C-10[12] and C-10[12]$/ }).first();
+  await expect.poll(async () => {
+    await page.reload();
+    await page.getByRole("heading", { name: "Overlaps", level: 1 }).waitFor();
+    await page.waitForLoadState("networkidle");
+    return approve.count();
+  }, { timeout: 120_000, intervals: [5_000] }).toBeGreaterThan(0);
   const decided = page.waitForResponse((r) => r.url().includes("/api/v1/overlaps/") && r.request().method() === "POST");
   // The two refs come in id order, which differs per seed.
-  await page.getByRole("button", { name: /^Approve link between C-10[12] and C-10[12]$/ }).first().click();
+  await approve.click();
   expect((await decided).ok()).toBe(true);
   await page.goto("/#/alerts");
   await expect(page.getByText("C-101").first()).toBeVisible();

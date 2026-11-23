@@ -43,7 +43,7 @@ function BureauLine({ b, onChanged }: { b: BureauRow; onChanged: (message: strin
       <td>
         <input aria-label={`Name of ${b.code}`} value={name} onChange={(e) => setName(e.target.value)} />{" "}
         {name.trim() !== b.name && (
-          <button type="button" disabled={busy || name.trim().length < 3} onClick={() => save({ name })}>
+          <button type="button" disabled={busy || name.trim().length < 3} onClick={() => save({ name })} aria-label={`Save name of ${b.code}`}>
             Save name
           </button>
         )}
@@ -55,7 +55,7 @@ function BureauLine({ b, onChanged }: { b: BureauRow; onChanged: (message: strin
         {b.heads_with_email === 0 ? <strong className="flag">0: alerts reach nobody</strong> : b.heads_with_email}
       </td>
       <td>
-        <button type="button" disabled={busy} onClick={() => save({ active: !b.active })}>
+        <button type="button" disabled={busy} onClick={() => save({ active: !b.active })} aria-label={`${b.active ? "Deactivate" : "Reactivate"} ${b.code}`}>
           {b.active ? "Deactivate" : "Reactivate"}
         </button>
       </td>
@@ -113,7 +113,7 @@ function Deadlines() {
                   value={edits[d.category] ?? ""}
                   onChange={(e) => setEdits({ ...edits, [d.category]: e.target.value })}
                 />{" "}
-                <button type="button" disabled={!edits[d.category]} onClick={() => save(d.category)}>
+                <button type="button" disabled={!edits[d.category]} onClick={() => save(d.category)} aria-label={`Save days for ${d.category}`}>
                   Save
                 </button>
               </td>

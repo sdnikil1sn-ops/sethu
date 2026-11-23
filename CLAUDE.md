@@ -17,6 +17,11 @@ One screen where an AICTE officer sees every complaint about an institution acro
 | Threat model and control status | `docs/SECURITY.md` |
 | Why each major choice was made | `docs/adr/` |
 | Start, stop, back up, verify | `docs/RUNBOOK.md` |
+| Install, configure, upgrade, rotate, monitor, respond | `docs/OPERATIONS.md` |
+| What each role does on each screen | `docs/USER-GUIDE.md` |
+| The intake API for portals | `docs/API.md` |
+| What stands before go-live (Done, Accepted risk, Open) | `docs/PRODUCTION-READINESS.md` |
+| Security review, load test and drills | `docs/SECURITY-REVIEW.md`, `docs/LOAD-AND-DRILLS.md` |
 
 Do not add features outside the scope docs. New ideas go to the parking lot in `docs/01-SCOPE-LOCK.md`.
 

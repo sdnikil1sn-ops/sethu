@@ -9,6 +9,7 @@ from app.audit import service as audit
 from app.core import jobs
 from app.core.auth import Principal, require_roles
 from app.core.params import Blank, Text20
+from app.db.paging import page_params
 from app.db.session import get_session
 from app.modules.overlaps import schemas, service
 
@@ -19,16 +20,17 @@ DECIDE = require_roles("officer", "bureau_head")  # and the database checks the 
 DETECT = require_roles("admin")                   # needs to read every bureau's text; the worker also runs it
 
 
-@router.get("", response_model=list[schemas.Link])
+@router.get("", response_model=schemas.LinkPage)
 def list_links(
     status: Annotated[Literal["proposed", "approved", "rejected"] | None, Blank] = None,
     institution_id: Annotated[UUID | None, Blank] = None,
     bureau: Text20 = None,
     tier: Annotated[Annotated[int, Field(ge=1, le=3)] | None, Blank] = None,
+    paged: tuple[int, int] = Depends(page_params),
     principal: Principal = Depends(READ),
     session: Session = Depends(get_session),
-) -> list[dict]:
-    return service.links(session, principal, status, institution_id, bureau, tier)
+) -> dict:
+    return service.links_page(session, principal, *paged, status, institution_id, bureau, tier)
 
 
 @router.get("/tier1", response_model=list[schemas.Tier1Institution])

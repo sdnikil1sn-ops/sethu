@@ -35,6 +35,7 @@ class OverdueCase(BaseModel):
 
 
 class Attention(BaseModel):
+    # The counts below stop at app.db.paging.COUNT_CAP + 1; the screen shows more than COUNT_CAP as "1,000+".
     overlaps_to_review: int
     overlaps_confirmed: int
     alerts_to_approve: int

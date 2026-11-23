@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api, useLoad } from "../../api";
+import { type Page, Pager } from "../../Pager";
 import type { Options } from "../cases/types";
 
 // Mirrors backend/app/modules/overlaps/schemas.py
@@ -102,20 +103,26 @@ export function Links({ institutionId, status, bureau }: { institutionId?: strin
   if (institutionId) query.set("institution_id", institutionId);
   if (status) query.set("status", status);
   if (bureau) query.set("bureau", bureau);
-  const { data, error, reload } = useLoad<Link[]>(`/overlaps?${query}`);
+  const [page, setPage] = useState({ limit: 50, offset: 0 });
+  query.set("limit", String(page.limit));
+  query.set("offset", String(page.offset));
+  const { data, error, reload } = useLoad<Page<Link>>(`/overlaps?${query}`);
   if (error) return <p role="alert">{error}</p>;
   if (!data) return <p>Loading…</p>;
-  if (data.length === 0) return institutionId ? null : <p>Nothing here.</p>;
+  if (data.items.length === 0 && page.offset === 0) return institutionId ? null : <p>Nothing here.</p>;
   return (
     <>
-      {institutionId && data.some((l) => l.status !== "rejected") && (
+      {institutionId && data.items.some((l) => l.status !== "rejected") && (
         <p role="status" className="banner">
           {BANNER}
         </p>
       )}
-      {data.map((link) => (
+      {data.items.map((link) => (
         <LinkCard key={link.id + link.status} link={link} onChanged={reload} />
       ))}
+      {(data.has_next || page.offset > 0 || !institutionId) && (
+        <Pager page={data} noun="overlap suggestions" onChange={(limit, offset) => setPage({ limit, offset })} />
+      )}
     </>
   );
 }
@@ -149,7 +156,11 @@ export function OverlapsPage({ canDetect }: { canDetect: boolean }) {
       setMessage("Queued: the worker is looking for new overlaps…");
       for (let i = 0; i < 60; i++) {
         await new Promise((r) => setTimeout(r, 2000));
-        const s = await api<{ state: string; suggested: number | null }>(`/overlaps/detect/${task_id}`);
+        const s = await api<{ state: string; suggested: number | null; skipped: boolean }>(`/overlaps/detect/${task_id}`);
+        if (s.state === "SUCCESS" && s.skipped) {
+          setMessage("A search was already running; its suggestions will appear here when it finishes.");
+          return;
+        }
         if (s.state === "SUCCESS") {
           setMessage(`${s.suggested ?? 0} new suggestion${s.suggested === 1 ? "" : "s"}.`);
           setRound((r) => r + 1);

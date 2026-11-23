@@ -24,7 +24,9 @@ def get(world):
         app.dependency_overrides[get_principal] = lambda: world[who]
         response = client.get(f"/api/v1{path}", params=params)
         assert response.status_code == 200, (path, params, response.text)
-        return response.json()
+        body = response.json()
+        # Phase 5: these lists are pages; the seed's rows fit on the first one (tests/test_paging.py covers paging).
+        return body["items"] if path in ("/overlaps", "/findings") else body
     yield call
     app.dependency_overrides.clear()
 
