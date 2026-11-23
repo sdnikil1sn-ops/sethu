@@ -49,6 +49,34 @@ export type Case = CaseRow & {
   history: Action[];
   can_act: boolean;
   awaiting_acknowledgement: boolean;
+  enrichment: Enrichment | null;
+  attachments: Attachment[];
+};
+
+// Mirrors backend/app/modules/enrichment/schemas.py
+export type Enrichment = {
+  status: "pending" | "done" | "review";
+  language: string | null;
+  language_confidence: number | null;
+  language_candidates: string[];
+  translated_text: string | null;
+  translation_path: "not_needed" | "model" | "glossary" | "untranslated" | null;
+  tags: string[];
+  glossary_version: number | null;
+  glossary_coverage: number | null;
+  ocr_text: string | null;
+  ocr_path: "embedded" | "primary" | "fallback" | "manual" | null;
+  updated_at: string;
+};
+
+export type Attachment = {
+  id: string;
+  filename: string;
+  content_type: string;
+  size_bytes: number;
+  sha256: string;
+  ocr_status: string;
+  created_at: string;
 };
 
 export type Options = {

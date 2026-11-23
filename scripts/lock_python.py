@@ -51,6 +51,13 @@ def write(name: str, entries: list[tuple[str, str]]) -> None:
     print(f"wrote backend/{name}: {len(entries)} packages")
 
 
+def main_ai(freeze: str) -> None:
+    """requirements-ai.lock: what the ai-worker image adds on top of requirements.lock (its freeze minus the
+    runtime pins), installed by the Dockerfile's `ai` stage."""
+    runtime = {p[0].lower() for p in pins(str(ROOT / "backend" / "requirements.lock"))}
+    write("requirements-ai.lock", [p for p in pins(freeze) if p[0].lower() not in runtime])
+
+
 def main(freeze: str, dev: str | None = None) -> None:
     runtime = pins(freeze)
     write("requirements.lock", runtime)
@@ -60,4 +67,7 @@ def main(freeze: str, dev: str | None = None) -> None:
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:3])
+    if sys.argv[1:2] == ["--ai"]:     # python scripts/lock_python.py --ai freeze-ai.txt (docs/AI-PIPELINE.md)
+        main_ai(sys.argv[2])
+    else:
+        main(*sys.argv[1:3])

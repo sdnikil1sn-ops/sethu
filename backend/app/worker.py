@@ -16,6 +16,7 @@ from app.core.logging import configure_logging, request_id
 from app.db.session import SYSTEM, session_for
 from app.modules.alerts import service as alerts
 from app.modules.complaints import service as complaints
+from app.modules.enrichment import service as enrichment
 from app.modules.findings import service as findings
 from app.modules.institutions import service as institutions
 from app.modules.intake import service as intake
@@ -67,6 +68,8 @@ celery.conf.update(
         "resolve-institutions": {"task": "sethu.institutions.resolve_pending", "schedule": 300.0},
         "detect-overlaps": {"task": "sethu.overlaps.detect", "schedule": 300.0},
         "detect-findings": {"task": "sethu.findings.detect", "schedule": 300.0},
+        # The AI pipeline: run by the ai-worker (its own queue), never by this worker.
+        "ai-enrich": {"task": "sethu.ai.enrich_pending", "schedule": 10.0, "options": {"queue": "ai"}},
         "deliver-alerts": {"task": "sethu.alerts.deliver", "schedule": 15.0},
         "intake-process": {"task": "sethu.intake.process", "schedule": 10.0},
         "intake-spool": {"task": "sethu.intake.spool", "schedule": 30.0},
@@ -170,7 +173,14 @@ def rotate_complainant_keys() -> dict:
             done = complaints.rotate_complainant_keys(session, SYSTEM)
         total += done["rekeyed"]
         if not done["left"]:
-            return {"rekeyed": total}
+            break
+    files = 0
+    while True:   # attachments are sealed with the same keyring
+        with session_for(SYSTEM) as session:
+            done = enrichment.rekey_attachments(session, SYSTEM)
+        files += done["rekeyed"]
+        if not done["left"]:
+            return {"rekeyed": total, "attachments_rekeyed": files}
 
 
 @celery.task(name="sethu.alerts.deliver")

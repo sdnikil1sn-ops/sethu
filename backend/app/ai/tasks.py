@@ -47,6 +47,15 @@ def run_task(task: str, payload: dict, subject_type: str | None = None, subject_
     return result
 
 
+@celery.task(name="sethu.ai.enrich_pending")
+def enrich_pending() -> dict:
+    """Pending complaints and attachments, in batches: language, OCR, translation, tags (one model at a time)."""
+    from app.modules.enrichment import service as enrichment
+    done = enrichment.enrich_pending(limit=10)
+    publish()
+    return done
+
+
 def state() -> dict:
     """What the health screen shows about this worker (no payloads, no model contents)."""
     tasks = {}

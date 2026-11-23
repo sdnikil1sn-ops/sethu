@@ -2,9 +2,10 @@
 that is healthy, on time, valid and confident enough; if none is, the item goes to a person ("human_review").
 
 A provider falls through when its circuit is open, health() is false, run() raises or exceeds
-`ai_timeout_seconds`, validate() rejects the output, or its confidence is below `ai.<task>.min_confidence` in
-sethu.app_settings (default `ai_default_min_confidence`). `ai_circuit_failures` failures in a row open its circuit
-for `ai_circuit_cooldown_seconds`; then one trial call is let through (half open). Low confidence is not a failure.
+`ai.<task>.timeout_seconds` (default `ai_timeout_seconds`), validate() rejects the output, or its confidence is
+below `ai.<task>.min_confidence` (default `ai_default_min_confidence`); both settings live in sethu.app_settings.
+`ai_circuit_failures` failures in a row open its circuit for `ai_circuit_cooldown_seconds`; then one trial call is
+let through (half open). Low confidence is not a failure.
 
 Every call writes one sethu.ai_runs row (provenance: task, subject, provider, model and version, path, confidence,
 latency, status, the reasons earlier providers fell through) and an audit-ledger entry, in the caller's transaction.
@@ -20,7 +21,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.ai.memory import manager
-from app.ai.providers import PROVIDERS, Provider
+from app.ai.providers import Provider
 from app.audit import service as audit
 from app.core.auth import Principal
 from app.core.config import get_settings
@@ -71,16 +72,21 @@ def reset_circuits() -> None:
 
 
 def chain_for(task: str) -> list[Provider]:
+    from app.ai.catalog import PROVIDERS  # noqa: I001 - here, not at the top: it imports every engine module
     names = get_settings().ai_routes.get(task)
     if not names:
         raise ValueError(f"no providers are configured for AI task {task}")
     return [PROVIDERS[n]() for n in names]
 
 
+def setting(session: Session, key: str, default):
+    """A value from sethu.app_settings (JSON), or the default."""
+    value = session.execute(text("SELECT value FROM sethu.app_settings WHERE key = :k"), {"k": key}).scalar()
+    return default if value is None else value
+
+
 def min_confidence(session: Session, task: str) -> float:
-    value = session.execute(text("SELECT value FROM sethu.app_settings WHERE key = :k"),
-                            {"k": f"ai.{task}.min_confidence"}).scalar()
-    return float(value) if value is not None else get_settings().ai_default_min_confidence
+    return float(setting(session, f"ai.{task}.min_confidence", get_settings().ai_default_min_confidence))
 
 
 def run(session: Session, principal: Principal, task: str, payload: dict, *, subject_type: str | None = None,
@@ -89,7 +95,7 @@ def run(session: Session, principal: Principal, task: str, payload: dict, *, sub
     in `session`, so they commit (or roll back) with the caller's work."""
     chain = chain if chain is not None else chain_for(task)
     threshold = min_confidence(session, task)
-    timeout = get_settings().ai_timeout_seconds
+    timeout = float(setting(session, f"ai.{task}.timeout_seconds", get_settings().ai_timeout_seconds))
     started, why = time.monotonic(), []
     for i, provider in enumerate(chain):
         path = PATHS[min(i, len(PATHS) - 1)]

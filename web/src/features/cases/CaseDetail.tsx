@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from "react";
 import { api, useLoad } from "../../api";
+import { Attachments, EnrichmentPanel, LanguageBadge } from "./Enrichment";
 import { History } from "./History";
 import { CLOSE_REASONS, type Case, type Options, day, sla, words } from "./types";
 
@@ -123,7 +124,7 @@ function ActionForm({ c, onDone }: { c: Case; onDone: (updated: Case) => void })
 }
 
 export function CaseDetail({ id }: { id: string }) {
-  const { data, error } = useLoad<Case>(`/cases/${id}`);
+  const { data, error, reload } = useLoad<Case>(`/cases/${id}`);
   const [updated, setUpdated] = useState<Case | null>(null);
   if (error) return <p role="alert">{error}</p>;
   const c = updated ?? data;
@@ -177,11 +178,17 @@ export function CaseDetail({ id }: { id: string }) {
         {c.category && <> · Category: {c.category}</>}
       </p>
 
-      <h2>Complaint</h2>
+      <h2>
+        Complaint <LanguageBadge e={c.enrichment} />
+      </h2>
       {c.readable ? (
-        <p className="complaint" lang={c.language ?? undefined}>
-          {c.body}
-        </p>
+        <>
+          <p className="complaint" lang={c.enrichment?.language && c.enrichment.language !== "unknown"
+            ? c.enrichment.language : c.language ?? undefined}>
+            {c.body}
+          </p>
+          <EnrichmentPanel c={c} />
+        </>
       ) : (
         <p role="note">
           This case is held by {c.bureau_name} ({c.bureau}). The complaint text and history are visible to that unit
@@ -217,6 +224,7 @@ export function CaseDetail({ id }: { id: string }) {
         </p>
       )}
 
+      <Attachments c={c} onAdded={() => (setUpdated(null), reload())} />
       {c.readable && (
         <>
           <h2>History</h2>

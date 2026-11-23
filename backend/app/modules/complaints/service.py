@@ -21,6 +21,7 @@ from app.core.auth import Principal
 from app.core.config import get_settings
 from app.core.crypto import Keyring, KeyringError, key_id_of, load_keyring
 from app.modules.complaints import repo
+from app.modules.enrichment import service as enrichment
 from app.modules.users import service as users
 
 # action -> (case_actions.action, statuses it is allowed from, status afterwards; None keeps it)
@@ -110,7 +111,7 @@ def get(session: Session, principal: Principal, complaint_id: UUID) -> dict:
         "deadline_days": deadline_days(session, case["category"]),
         "can_act": readable and can_act(principal, case),
         "awaiting_acknowledgement": case["status"] == "transferred",
-    }
+    } | (enrichment.for_case(session, complaint_id) if readable else {"enrichment": None, "attachments": []})
 
 
 def rotate_complainant_keys(session: Session, principal: Principal, batch: int = 500) -> dict:
@@ -259,6 +260,7 @@ def create(session: Session, principal: Principal, *, bureau_id: UUID, source: s
         complainant_enc=keyring().encrypt(complainant, str(cid)) if complainant else None)
     repo.insert_action(session, complaint_id=cid, action="filed", to_bureau_id=bureau_id,
                        note=f"Received via {source}")
+    enrichment.mark_pending(session, cid)   # the AI pipeline enriches it later; the case is usable now
     audit.record(session, principal, "complaint.created", entity_type="complaints", entity_id=str(cid),
                  payload={"ref": ref, "source": source, "resolved": institution_id is not None} | audit_extra)
     return {"id": cid, "ref": ref}

@@ -1,0 +1,145 @@
+language,term,english,type,notes,needs_review
+hi,छात्रवृत्ति,scholarship,category,,false
+hi,वजीफा,scholarship,category,,false
+hi,फीस वापसी,fee refund,fee,,false
+hi,शुल्क वापसी,fee refund,fee,,false
+hi,रिफंड,fee refund,fee,loanword,false
+hi,फीस,fee,fee,,false
+hi,शुल्क,fee,fee,,false
+hi,कैपिटेशन फीस,capitation fee,fee,,false
+hi,दान राशि,donation,fee,,false
+hi,डोनेशन,donation,fee,loanword,false
+hi,जमानत राशि,caution deposit,fee,,false
+hi,कॉशन मनी,caution deposit,fee,loanword,false
+hi,छात्रावास शुल्क,hostel fee,fee,,false
+hi,रैगिंग,ragging,category,,false
+hi,उत्पीड़न,harassment,category,,false
+hi,परीक्षा,examination,category,,false
+hi,परीक्षा परिणाम,examination result,category,,false
+hi,पुनर्मूल्यांकन,revaluation,category,,false
+hi,अंकतालिका,marksheet,document,,false
+hi,अंक पत्र,marksheet,document,,false
+hi,प्रवेश,admission,category,,false
+hi,दाखिला,admission,category,,false
+hi,प्रवेश में अनियमितता,admission irregularity,category,,false
+hi,सीट,seat,general,,false
+hi,प्लेसमेंट,placement,category,loanword,false
+hi,नौकरी,job,general,,false
+hi,संकाय,faculty,category,,false
+hi,शिक्षकों की कमी,faculty shortage,category,,false
+hi,प्राध्यापक,faculty,person,,false
+hi,बुनियादी ढांचा,infrastructure,category,,false
+hi,प्रयोगशाला,laboratory,institution,,false
+hi,पुस्तकालय,library,institution,,false
+hi,छात्रावास,hostel,institution,,false
+hi,हॉस्टल,hostel,institution,loanword,false
+hi,कैंटीन,canteen,institution,loanword,false
+hi,महाविद्यालय,college,institution,,false
+hi,कॉलेज,college,institution,loanword,false
+hi,विश्वविद्यालय,university,institution,,false
+hi,संस्थान,institute,institution,,false
+hi,तकनीकी संस्थान,technical institute,institution,,false
+hi,प्राचार्य,principal,person,,false
+hi,प्रिंसिपल,principal,person,loanword,false
+hi,निदेशक,director,person,,false
+hi,कुलसचिव,registrar,person,,false
+hi,रजिस्ट्रार,registrar,person,loanword,false
+hi,वार्डन,warden,person,loanword,false
+hi,छात्र,student,person,,false
+hi,विद्यार्थी,student,person,,false
+hi,अभिभावक,parent,person,,false
+hi,शपथ पत्र,affidavit,document,,false
+hi,हलफनामा,affidavit,document,,false
+hi,अनापत्ति प्रमाण पत्र,noc,document,no objection certificate,false
+hi,प्रमाण पत्र,certificate,document,,false
+hi,स्थानांतरण प्रमाण पत्र,transfer certificate,document,,false
+hi,प्रवासन प्रमाण पत्र,migration certificate,document,,false
+hi,मूल प्रमाण पत्र,original certificate,document,,false
+hi,रसीद,receipt,document,,false
+hi,आवेदन,application,document,,false
+hi,अर्जी,application,document,,false
+hi,शिकायत,complaint,general,,false
+hi,मान्यता,approval,approval,,false
+hi,अनुमोदन,approval,approval,,false
+hi,संबद्धता,affiliation,approval,,false
+hi,विस्तार अनुमोदन,extension of approval,approval,,false
+hi,अनुमति,permission,approval,,false
+hi,कार्रवाई नहीं,no action,action,,false
+hi,देरी,delay,action,,false
+hi,विलंब,delay,action,,false
+hi,वापस नहीं किया,not refunded,action,,false
+hi,रोक लिया,withheld,action,,false
+hi,धमकी,threat,action,,false
+hi,रिश्वत,bribe,action,,false
+hi,अतिरिक्त शुल्क,excess fee,fee,,false
+hi,ट्यूशन फीस,tuition fee,fee,,false
+hi,बस शुल्क,transport fee,fee,,false
+hi,सेमेस्टर,semester,general,loanword,false
+hi,उपस्थिति,attendance,general,,false
+hi,इंटर्नशिप,internship,general,loanword,false
+hi-latn,fees refund,fee refund,fee,,false
+hi-latn,fee wapas,fee refund,fee,,false
+hi-latn,refund nahi,not refunded,action,,false
+hi-latn,chhatravritti,scholarship,category,,false
+hi-latn,scholarship nahi mili,scholarship not received,category,,false
+hi-latn,ragging,ragging,category,,false
+hi-latn,hostel,hostel,institution,,false
+hi-latn,college,college,institution,,false
+hi-latn,principal sahab,principal,person,,false
+hi-latn,noc,noc,document,,false
+hi-latn,affidavit,affidavit,document,,false
+hi-latn,halafnama,affidavit,document,,false
+hi-latn,marksheet,marksheet,document,,false
+hi-latn,pariksha,examination,category,,false
+hi-latn,dakhila,admission,category,,false
+hi-latn,donation,donation,fee,,false
+hi-latn,capitation fee,capitation fee,fee,,false
+hi-latn,shikayat,complaint,general,,false
+en,fee refund,fee refund,fee,,false
+en,refund of fees,fee refund,fee,,false
+en,fees,fee,fee,,false
+en,fee,fee,fee,,false
+en,caution deposit,caution deposit,fee,,false
+en,capitation fee,capitation fee,fee,,false
+en,scholarship,scholarship,category,,false
+en,ragging,ragging,category,,false
+en,hostel,hostel,institution,,false
+en,college,college,institution,,false
+en,institute,institute,institution,,false
+en,university,university,institution,,false
+en,principal,principal,person,,false
+en,noc,noc,document,no objection certificate,false
+en,no objection certificate,noc,document,,false
+en,affidavit,affidavit,document,,false
+en,marksheet,marksheet,document,,false
+en,mark sheet,marksheet,document,,false
+en,application,application,document,,false
+en,approval,approval,approval,,false
+en,extension of approval,extension of approval,approval,,false
+en,affiliation,affiliation,approval,,false
+en,complaint,complaint,general,,false
+ta,உதவித்தொகை,scholarship,category,,true
+ta,கட்டணம்,fee,fee,,true
+ta,கல்லூரி,college,institution,,true
+ta,விடுதி,hostel,institution,,true
+ta,விண்ணப்ப,application,document,stem: case endings follow,true
+te,ఉపకార వేతనం,scholarship,category,,true
+te,ఫీజు,fee,fee,,true
+te,కళాశాల,college,institution,,true
+te,హాస్టల్,hostel,institution,,true
+te,దరఖాస్తు,application,document,,true
+kn,ವಿದ್ಯಾರ್ಥಿವೇತನ,scholarship,category,,true
+kn,ಶುಲ್ಕ ಮರುಪಾವತಿ,fee refund,fee,,true
+kn,ಶುಲ್ಕ,fee,fee,,true
+kn,ಕಾಲೇಜು,college,institution,,true
+kn,ಅರ್ಜಿ,application,document,,true
+bn,বৃত্তি,scholarship,category,,true
+bn,ফি ফেরত,fee refund,fee,,true
+bn,ফি,fee,fee,,true
+bn,কলেজ,college,institution,,true
+bn,আবেদন,application,document,,true
+mr,शिष्यवृत्ती,scholarship,category,,true
+mr,शुल्क परतावा,fee refund,fee,,true
+mr,शुल्क परताव्या,fee refund,fee,oblique form,true
+mr,महाविद्यालय,college,institution,,true
+mr,अर्ज,application,document,,true

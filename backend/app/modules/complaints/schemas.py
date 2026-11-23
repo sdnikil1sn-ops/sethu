@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, model_validator
 
 from app.core.params import blank_to_none
 from app.db.paging import PageMeta
+from app.modules.enrichment.schemas import Attachment, Enrichment
 
 
 class CaseRow(BaseModel):
@@ -68,6 +69,8 @@ class Case(CaseRow):
     history: list[Action]
     can_act: bool
     awaiting_acknowledgement: bool
+    enrichment: Enrichment | None = None   # what the AI pipeline found (only where the text is readable)
+    attachments: list[Attachment] = []
 
 
 class Timeline(BaseModel):

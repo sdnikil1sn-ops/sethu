@@ -57,10 +57,3 @@ class StubProvider(Provider):
     def validate(self, output: dict) -> bool:
         return isinstance(output, dict) and isinstance(output.get("text"), str)
 
-
-# The providers that SETHU_AI_ROUTES may name, each made fresh per call (they hold no state; circuits are kept by
-# the router, by name).
-PROVIDERS = {
-    "stub-model": lambda: StubProvider("stub-model", confidence=0.9, model="stub-echo"),
-    "stub-rules": lambda: StubProvider("stub-rules", confidence=0.7),
-}

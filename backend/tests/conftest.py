@@ -41,7 +41,8 @@ requires_db = pytest.mark.skipif(not HAVE_DB, reason=SKIP_REASON)
 
 TABLES = (
     "job_runs, complaint_embeddings, intake_nonces, intake_items, intake_sources, "
-    "ai_runs, findings, alerts, overlap_links, case_actions, complaints, institution_aliases, "
+    "review_items, complaint_attachments, complaint_enrichment, glossary_terms, ai_runs, "
+    "findings, alerts, overlap_links, case_actions, complaints, institution_aliases, "
     "institutions, app_users, bureaus, audit_log"
 )
 

@@ -3,6 +3,7 @@ import { useLoad } from "./api";
 import { logout } from "./auth";
 import { AdminPage } from "./features/admin/Admin";
 import { AiHealthPage } from "./features/admin/AiHealth";
+import { ReviewPage } from "./features/review/Review";
 import { AlertsPage } from "./features/alerts/Alerts";
 import { AuditLog } from "./features/audit/AuditLog";
 import { CaseDetail } from "./features/cases/CaseDetail";
@@ -27,6 +28,8 @@ const CAN_INTAKE = ["officer", "bureau_head", "admin", "oversight", "auditor"];
 const HAS_CASES = ["officer", "bureau_head"];
 const SEES_WORKLOAD = ["bureau_head", "oversight", "admin"];
 const SEES_AI_HEALTH = ["admin", "oversight"];
+const SEES_REVIEW = ["officer", "bureau_head", "oversight", "admin"];
+const DECIDES_REVIEW = ["officer", "bureau_head", "admin"];
 
 /** The route, and a count of hash changes. The case list rewrites its own address with replaceState
  * (no hashchange), so the stored route can be stale; `visit` changes whenever a link is followed. */
@@ -105,6 +108,11 @@ export function App() {
               Admin
             </a>
           )}
+          {me && SEES_REVIEW.includes(me.role) && (
+            <a href="#/review" aria-current={route === "/review" ? "page" : undefined}>
+              Review
+            </a>
+          )}
           {me && SEES_AI_HEALTH.includes(me.role) && (
             <a href="#/ai" aria-current={route === "/ai" ? "page" : undefined}>
               AI health
@@ -147,6 +155,8 @@ export function App() {
           <AdminPage />
         ) : route === "/ai" ? (
           <AiHealthPage />
+        ) : route === "/review" ? (
+          <ReviewPage canDecide={!!me && DECIDES_REVIEW.includes(me.role)} />
         ) : route === "/graph" ? (
           <GraphPage />
         ) : route === "/mine" ? (

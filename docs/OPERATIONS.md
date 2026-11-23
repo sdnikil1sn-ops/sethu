@@ -65,6 +65,15 @@ operator is most likely to change:
 CPU limits are not set by default because they depend on the host. On a shared host add, in an override file,
 `deploy.resources.limits.cpus` for `worker` (the embedding model is the heaviest user) and `postgres`.
 
+### AI models (A2)
+
+The ai-worker reads models only from `SETHU_MODELS_DIR` (read-only, checked against `models/manifest.json`). Fetch
+them on a machine with internet access and copy the folder to the host: the commands and sizes are in
+docs/AI-PIPELINE.md, "Getting the models". Without them every AI step falls back (Unicode script for the language,
+the glossary for translation, a person for OCR) and nothing breaks. The thresholds and limits are rows in
+`sethu.app_settings` (docs/AI-PIPELINE.md, "Settings"); the image's AI packages are pinned in
+`backend/requirements-ai.lock` (`python scripts/lock_python.py --ai <freeze>` to update).
+
 ## 4. First-time setup (after the first start)
 
 1. **Keycloak administrators**: through the SSH tunnel (RUNBOOK, "Keycloak administration"), create a named
