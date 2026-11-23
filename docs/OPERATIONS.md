@@ -13,13 +13,14 @@ One Docker host, one Compose project. Production is `docker-compose.yml` plus `d
 | `web` (nginx) | The only published service: the app, `/api`, the sign-in pages; TLS on 443; Keycloak administration on 127.0.0.1:9443 | edge, app |
 | `backend` (FastAPI) | The API; every query through Row-Level Security | app, data |
 | `worker`, `scheduler` (Celery) | Detectors, intake processing, alert mail, chain check, anchors; one scheduler at a time (it holds a lock) | app, data |
+| `ai-worker` (Celery, queue `ai`, one process) | The AI layer: model registry, router, provenance (docs/AI-PIPELINE.md); models from the read-only `models/` folder | ai, data |
 | `keycloak` | Sign-in (OIDC with PKCE), roles | edge, data |
 | `postgres` (16, pgvector) | The `sethu` and `keycloak` databases | data |
 | `redis` | Job queue | data |
 | `migrate` | Applies schema migrations, then exits | data |
 | `backup` (production only) | Encrypted dumps of both databases | data |
 
-The `app` and `data` networks are internal: nothing on them can reach the internet. No service calls an outside API,
+The `app`, `data` and `ai` networks are internal: nothing on them can reach the internet. No service calls an outside API,
 model hub or CDN at run time.
 
 ## 2. Install
@@ -55,6 +56,11 @@ operator is most likely to change:
 | `SETHU_DETECT_BATCH` | 500 | New findings or overlap links written per transaction (keeps the audit lock short) |
 | `SETHU_STALLED_TRANSFER_DAYS`, `SETHU_BOTTLENECK_MIN_OPEN`, `SETHU_BOTTLENECK_SHARE`, `SETHU_SPIKE_MIN_COUNT`, `SETHU_SPIKE_RATIO` | 7, 3, 0.6, 5, 3.0 | Detector rules |
 | `BACKUP_INTERVAL_HOURS`, `BACKUP_KEEP_DAYS`, `SETHU_BACKUP_DIR` | 24, 14, `./backups` | Backups (section 6) |
+| `SETHU_MODELS_DIR` (host folder), `SETHU_AI_WORKER_MEMORY` | `./models`, `3g` | The AI models (read-only, checked against `models/manifest.json`) and the ai-worker's memory limit |
+| `SETHU_AI_IDLE_UNLOAD_SECONDS`, `SETHU_AI_TIMEOUT_SECONDS`, `SETHU_AI_CIRCUIT_FAILURES`, `SETHU_AI_CIRCUIT_COOLDOWN_SECONDS` | 300, 30, 3, 60 | Unload an unused model; a provider's time limit; failures that open its circuit, and for how long |
+| `SETHU_AI_ROUTES`, `SETHU_AI_ENDPOINTS` | stub pair, none | Providers per task, in order; model-server URLs inside the `ai` zone (production refuses any other address) |
+| `HF_HUB_OFFLINE`, `TRANSFORMERS_OFFLINE` | `1` (set in the image) | Production refuses to start unless both are `1` |
+| `ai.<task>.min_confidence` (row in `sethu.app_settings`) | 0.5 | Below this an answer falls through to the next provider |
 
 CPU limits are not set by default because they depend on the host. On a shared host add, in an override file,
 `deploy.resources.limits.cpus` for `worker` (the embedding model is the heaviest user) and `postgres`.
@@ -71,7 +77,8 @@ CPU limits are not set by default because they depend on the host. On a shared h
 6. **Intake sources**: Intake > Sources: one per portal or channel, with its fallback; issue an API key for each API
    source and hand it to the portal over a secure channel (it is shown once). Docs: [API.md](API.md).
 7. **Anchors**: once the first `audit-anchor.jsonl` line exists, make the file append-only (section 8).
-8. **Check**: sign in with each role; Audit log > Verify chain says intact; the backup service is healthy.
+8. **AI models**: copy the `models/` folder prepared on a connected machine (`scripts/fetch_models.py`, docs/AI-PIPELINE.md) to the host; the ai-worker logs `model check` per model at start and the **AI health** screen shows each verdict.
+9. **Check**: sign in with each role; Audit log > Verify chain says intact; the backup service is healthy; AI health says the worker is reporting.
 
 ## 5. Upgrade
 
@@ -122,7 +129,7 @@ mismatch). A rewritten entry, a truncated chain and a replaced database are each
 
 ## 9. Monitoring and thresholds
 
-Logs are JSON on stdout, one request id per request across nginx, backend and worker, with no complaint text or
+The **AI health** screen (`GET /api/v1/ai/health`) shows whether the ai-worker reports, model checksums, provider health and circuits, the queue depth and the last day's runs by path; alert when it stops reporting for 5 minutes, when a circuit stays open, or when human review grows. Logs are JSON on stdout, one request id per request across nginx, backend and worker, with no complaint text or
 personal details (tested). Ship them to the AICTE log store (readiness row 32). Metrics: `GET /metrics` on the backend's
 own port, internal network only. The alert thresholds to configure are in RUNBOOK, "Observability":
 
@@ -146,6 +153,8 @@ own port, internal network only. The alert thresholds to configure are in RUNBOO
 | Intake dead letters | Intake > Queue (reason per item) | Fix the cause, then Retry (admin) |
 | Verify chain fails, or an anchor does not match | Audit log screen; `python -m app.audit.anchor compare` | Treat as a security incident: stop writes (stop backend and worker), keep the database volume and the anchor file as they are, take a copy, inform the AICTE security officer; do not "repair" the chain. Restore from a backup whose chain verifies only with the security officer's agreement |
 | Suspected leaked password or key | Keycloak events (Audit log > Failed sign-ins), nginx JSON log | Rotate it (section 7); for a person, reset their Keycloak credentials and sessions |
+| AI health: a model "Refused" | The model's files differ from `models/manifest.json` | Do not edit the manifest to match: restore the files from the connected machine where they were fetched and checked, then restart `ai-worker` |
+| AI health: not reporting | `ps ai-worker`, `logs ai-worker` | Items wait in the `ai` queue; restart it. Nothing else depends on it |
 | Disk filling | `df -h`; Docker volumes; `backups/` | Copy old backups off and delete them; the backup service fails loudly rather than overwrite (drill pending, readiness row 57) |
 
 After any incident: write down what happened, when, and what was changed; the hash-chained audit log already holds every
@@ -161,6 +170,7 @@ change made through SETHU.
 - **The case text search reads every row** (about 100 ms at 20,000 complaints); it needs a rewrite before 100,000+.
 - **Totals stop at 1,000**: lists and dashboard counts show "1,000+" beyond that, by design, to stay fast.
 - **The dashboard refreshes every 30 seconds**, not within 5 seconds of a change (unticked checklist line).
+- **The AI layer is a foundation only (A1)**: stub providers, no OCR, translation or matching yet; human-review items are counted, not yet listed on a screen. ai-worker idle memory measured 64 to 76 MiB on a dev stack.
 - **One host.** No high availability; recovery is restart or restore. Connections inside the host are not TLS (row 28).
 - **Rate limits are per client address** at the edge; a whole office behind one address shares them.
 - **Keycloak realm changes after the first start** need the console or a full re-import (row 17).

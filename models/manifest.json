@@ -1,0 +1,13 @@
+{
+  "models": [
+    {
+      "name": "stub-echo",
+      "version": "1",
+      "task": "stub.echo",
+      "license": "Apache-2.0 (SETHU test fixture)",
+      "sha256": "f81b85ec850f3bc225100991d0aa18a0e15402592a2308791c24219977ba198c",
+      "path": "stub-echo/stub.txt",
+      "approx_memory_mb": 1
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLoad } from "./api";
 import { logout } from "./auth";
 import { AdminPage } from "./features/admin/Admin";
+import { AiHealthPage } from "./features/admin/AiHealth";
 import { AlertsPage } from "./features/alerts/Alerts";
 import { AuditLog } from "./features/audit/AuditLog";
 import { CaseDetail } from "./features/cases/CaseDetail";
@@ -25,6 +26,7 @@ const CAN_DECIDE = ["bureau_head", "oversight"];
 const CAN_INTAKE = ["officer", "bureau_head", "admin", "oversight", "auditor"];
 const HAS_CASES = ["officer", "bureau_head"];
 const SEES_WORKLOAD = ["bureau_head", "oversight", "admin"];
+const SEES_AI_HEALTH = ["admin", "oversight"];
 
 /** The route, and a count of hash changes. The case list rewrites its own address with replaceState
  * (no hashchange), so the stored route can be stale; `visit` changes whenever a link is followed. */
@@ -103,6 +105,11 @@ export function App() {
               Admin
             </a>
           )}
+          {me && SEES_AI_HEALTH.includes(me.role) && (
+            <a href="#/ai" aria-current={route === "/ai" ? "page" : undefined}>
+              AI health
+            </a>
+          )}
           {me && CAN_AUDIT.includes(me.role) && (
             <a href="#/audit" aria-current={route === "/audit" ? "page" : undefined}>
               Audit log
@@ -138,6 +145,8 @@ export function App() {
           <ReportsPage />
         ) : route === "/admin" ? (
           <AdminPage />
+        ) : route === "/ai" ? (
+          <AiHealthPage />
         ) : route === "/graph" ? (
           <GraphPage />
         ) : route === "/mine" ? (

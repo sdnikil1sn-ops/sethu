@@ -19,15 +19,18 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
         FastAPI           OIDC, roles      Celery          *dev only
             |                 |                |
         ============ data network (internal, no internet) ============
-            |                                  |
-       [ postgres 16 ]                     [ redis ]
-        schema sethu, RLS,                  job queue
-        hash-chained audit log
+            |                                  |                |
+       [ postgres 16 ]                     [ redis ]        [ ai-worker ]  registry, router, one model at a time
+        schema sethu, RLS,                  job queue            |
+        hash-chained audit log                          ======= ai network (internal, no internet) =======
+                                                          (later: local model servers; nothing else)
 ```
 
-`app` and `data` are Docker `internal` networks: containers on them have no route out. That is how "data never leaves AICTE" is enforced by the platform instead of by promise. Only `web` touches the edge, and it holds no data.
+`app`, `data` and `ai` are Docker `internal` networks: containers on them have no route out. That is how "data never leaves AICTE" is enforced by the platform instead of by promise. Only `web` touches the edge, and it holds no data.
 
 ## 2. Components
+
+The AI layer (ai-worker, `backend/app/ai/`, `ai` zone, `sethu.ai_runs`) is described in [AI-PIPELINE.md](AI-PIPELINE.md).
 
 | Component | Responsibility | Status |
 |---|---|---|
@@ -39,6 +42,7 @@ A modular monolith with a worker pool, deployed as containers on one AICTE-contr
 | graph (module) | Network-wide intelligence graph | Built: `GET /api/v1/graph`, aggregated to bureaus and institutions by default (5,200 extra complaints still give under 60 nodes, tested), complaints for expanded institutions; metadata only, overlap links, transfers and findings under Row-Level Security; Cytoscape.js bundled and loaded on demand |
 | semantic overlap signal (overlaps, worker) | Embedding similarity beside trigram for Tier 2 suggestions | Built: fastembed with a pinned, hash-checked ONNX model baked into the image; vectors in pgvector under the text's Row-Level Security; both signals shown on every suggestion; off switch gives trigram only; measured on the seed (RUNBOOK, Semantic overlap) |
 | observability | Logs, metrics, sign-in events | Built: JSON logs with a request id on every line (edge to backend; task id in the worker), no text or secrets (tested over a request cycle); `/metrics` (Prometheus) on the internal network only; job runs in `job_runs`; Keycloak login and admin events on, failed sign-ins shown read-only on the Audit log screen. Not yet: central log store, a Prometheus server |
+| AI layer (ai-worker, `app/ai`) | Model registry with checksums, one model in memory, router with fallback to a person, provenance | Built (A1, the foundation; stub providers only): docs/AI-PIPELINE.md |
 | paged lists (`app/db/paging.py`) | Long lists stay fast as data grows | Built: cases, findings and overlaps a page at a time (default 50, at most 200) with a total counted up to 1,000 ("1,000+"); dashboard counts capped the same way; detectors write at most 500 new items per transaction |
 | audit anchors (worker, audit) | Proof outside the database | Built: hourly append-only anchor export; comparison on the Audit log screen and by command |
 | build and CI | Reproducible images and checks | Built: Python locked with hashes, npm by lock file, base images by digest, model by hash; GitHub Actions workflow (lint, tests, build, secret scan, dependency audit, image scan, Playwright); Playwright journeys pass locally. The workflow has not run on GitHub yet |

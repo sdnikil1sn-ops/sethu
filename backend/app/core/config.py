@@ -4,12 +4,13 @@ In production (`SETHU_ENVIRONMENT=prod`) the settings are checked when they are 
 so the API and the worker refuse to start on a missing, placeholder or dev value instead of
 running half-configured. See docs/RUNBOOK.md, "Production configuration".
 """
+import ipaddress
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
-from pydantic import PrivateAttr, model_validator
+from pydantic import AliasChoices, Field, PrivateAttr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.core.crypto import KeyringError, load_keyring
@@ -94,6 +95,20 @@ class Settings(BaseSettings):
     spike_min_count: int = 5           # a state and category with fewer complaints in 30 days is never a spike
     spike_ratio: float = 3.0           # ...and it must be at least this many times its 90-day baseline (per 30 days)
 
+    # AI layer (app/ai, docs/AI-PIPELINE.md). Models come only from the read-only models folder; never downloaded.
+    ai_models_dir: str = "/models"                 # holds manifest.json and the model files
+    ai_idle_unload_seconds: int = 300              # a loaded model is unloaded after this long unused
+    ai_timeout_seconds: float = 30.0               # a provider slower than this falls through to the next
+    ai_circuit_failures: int = 3                   # failures in a row that open a provider's circuit...
+    ai_circuit_cooldown_seconds: int = 60          # ...for this long; then one trial call is let through
+    ai_default_min_confidence: float = 0.5         # when app_settings has no ai.<task>.min_confidence
+    ai_routes: dict[str, list[str]] = {"stub.echo": ["stub-model", "stub-rules"]}   # task: providers in order
+    ai_endpoints: dict[str, str] = {}              # provider: URL of a model server inside the `ai` zone
+    # The libraries' own offline switches; production refuses to start unless both are "1".
+    hf_hub_offline: str | None = Field(None, validation_alias=AliasChoices("HF_HUB_OFFLINE", "hf_hub_offline"))
+    transformers_offline: str | None = Field(
+        None, validation_alias=AliasChoices("TRANSFORMERS_OFFLINE", "transformers_offline"))
+
     @model_validator(mode="after")
     def _production_ready(self) -> "Settings":
         self._inline_passwords = {name for name, url in (("SETHU_DATABASE_URL", self.database_url),
@@ -135,6 +150,19 @@ def with_password(url: str, password: str) -> str:
     return urlunsplit(parts._replace(netloc=netloc))
 
 
+def remote_url(url: str) -> bool:
+    """True unless the URL names a service inside this deployment: a one-word Compose service name, localhost, or a
+    loopback or private address. Anything with a dotted name or a public address could leave AICTE."""
+    host = urlsplit(url).hostname or ""
+    if not host:
+        return True
+    try:
+        address = ipaddress.ip_address(host)
+    except ValueError:
+        return "." in host          # "localhost" and Compose service names have no dot
+    return not (address.is_loopback or address.is_private) or address.is_link_local
+
+
 def _weak(secret: str | None) -> str | None:
     """Why a secret is unfit for production, or None if it is fine."""
     if not secret:
@@ -172,6 +200,11 @@ def production_problems(s: Settings) -> list[str]:
         problems.append("SETHU_SMTP_USERNAME is set but SETHU_SMTP_PASSWORD is missing")
     if s.smtp_ca_file and not Path(s.smtp_ca_file).is_file():
         problems.append("SETHU_SMTP_CA_FILE does not exist")
+    for flag, value in (("HF_HUB_OFFLINE", s.hf_hub_offline), ("TRANSFORMERS_OFFLINE", s.transformers_offline)):
+        if value != "1":
+            problems.append(f"{flag} is not 1: AI libraries must not reach a model hub")
+    for provider in sorted(p for p, url in s.ai_endpoints.items() if remote_url(url)):
+        problems.append(f"SETHU_AI_ENDPOINTS: provider {provider} points outside the deployment")
     if not s.complainant_keys_file:
         problems.append("SETHU_COMPLAINANT_KEYS_FILE is not set")
     else:

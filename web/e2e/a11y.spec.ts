@@ -48,7 +48,7 @@ test.beforeAll(() => expect(PASSWORD, "set DEMO_USER_PASSWORD (the stack's .env)
 
 const SCREENS_BY_USER: Record<string, string[]> = {
   admin: ["/", "/institutions", "/cases", "/graph", "/overlaps", "/alerts", "/findings", "/queue", "/reports",
-          "/intake", "/admin", "/audit"],
+          "/intake", "/admin", "/ai", "/audit"],
   rao: ["/mine"],
   fernandes: ["/workload"],
 };

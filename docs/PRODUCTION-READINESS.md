@@ -16,7 +16,7 @@ Risk: **high** = could expose complaint data, let the wrong person in, or lose d
 
 ## Gaps
 
-Status on 2026-11-22: **60 rows: 46 Done, 5 Accepted risk (each with its reason), 9 Open (each with an owner and a plan)**. Every row is one of the three.
+Status on 2026-11-23: **61 rows: 47 Done, 5 Accepted risk (each with its reason), 9 Open (each with an owner and a plan)**. Every row is one of the three.
 
 | # | Area | What is wrong or missing today | Risk | Phase | Status |
 |---|---|---|---|---|---|
@@ -80,3 +80,4 @@ Status on 2026-11-22: **60 rows: 46 Done, 5 Accepted risk (each with its reason)
 | 58 | Scale | Findings, Overlaps and the case list returned every row; the case list counted every match; dashboard counts were unbounded. | high | 5 | Done (paged with a capped total: app/db/paging.py, tests/test_paging.py; measured before and after at 20,000 complaints, docs/LOAD-AND-DRILLS.md "Paged lists". Still open inside row 56: the case text search scans every row, about 100 ms at 20,000; rewrite it to union indexed matches before 100,000+) |
 | 59 | Accessibility | No visible focus style; low-contrast empty inputs and dark-mode reds; repeated buttons without the item in their name; the graph had no full non-visual alternative; five screens wider than a phone; long tables squeezed letter by letter at 375 px. | medium | 5 | Done (focus ring, 3:1 field borders, dark-mode colours, skip control, named buttons, "The graph as tables", stacked cards with table roles on phones; web/e2e/a11y.spec.ts: axe WCAG 2.1 A/AA with no serious or critical result on 16 screens at 1366 and 375 px, no horizontal overflow, keyboard focus; screenshots in docs/screens/; Chromium only, no screen-reader session) |
 | 60 | Supply chain | `@playwright/test` 1.49.1 (dev and CI only) downloads browsers without verifying the TLS certificate (GHSA-7mvr-c777-76hp, high); CI's `npm audit --audit-level=high` would fail on it. | medium | 5 | Done (upgraded to 1.56.1; `npm audit` 0 vulnerabilities on 2026-11-22; docs/SECURITY-REVIEW.md OWASP-A03-001) |
+| 61 | AI layer | No place for AI to run without a route out, no model integrity check, no fallback to a person, no record of AI decisions. | high | A1 | Done (ai zone and ai-worker, model registry with checksums, one-model memory manager, router with circuit breaker and human review, `sethu.ai_runs` with audit, health API and screen, offline checks at start, egress canary in CI: docs/AI-PIPELINE.md; tests test_ai_*.py, test_egress_canary.py) |

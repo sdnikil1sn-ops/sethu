@@ -35,6 +35,9 @@ GOOD = {
     "smtp_host": "relay.aicte.example",
     "smtp_security": "starttls",
     "alert_from": "sethu-alerts@aicte.example",
+    # AI Phase A1: production now also requires the AI libraries' offline switches (the image sets both).
+    "hf_hub_offline": "1",
+    "transformers_offline": "1",
 }
 
 
@@ -76,6 +79,10 @@ def test_a_complete_production_configuration_starts():
     ({"smtp_security": "none"}, "SETHU_SMTP_SECURITY is none"),
     ({"smtp_username": "relay-user"}, "SETHU_SMTP_USERNAME is set but SETHU_SMTP_PASSWORD is missing"),
     ({"smtp_ca_file": "/no/such/ca.pem"}, "SETHU_SMTP_CA_FILE does not exist"),
+    ({"hf_hub_offline": None}, "HF_HUB_OFFLINE is not 1"),
+    ({"transformers_offline": "0"}, "TRANSFORMERS_OFFLINE is not 1"),
+    ({"ai_endpoints": {"ocr": "https://api.example.com/v1/ocr"}}, "provider ocr points outside the deployment"),
+    ({"ai_endpoints": {"ocr": "http://8.8.8.8:8000"}}, "provider ocr points outside the deployment"),
 ])
 def test_each_unsafe_value_is_refused_by_name(changes, says):
     message = refused(**changes)
@@ -138,3 +145,11 @@ def test_passwords_come_from_secret_files_url_encoded():
 def test_an_unreadable_secret_file_is_named_not_shown():
     message = refused(database_password_file=str(SECRETS / "does-not-exist"))
     assert "SETHU_DATABASE_PASSWORD_FILE: the secret file cannot be read" in message
+
+
+def test_ai_endpoints_inside_the_deployment_are_allowed():
+    inside = {"ocr": "http://ocr-server:8000", "mt": "http://localhost:9000", "nlp": "http://172.20.0.5:8080"}
+    assert settings(ai_endpoints=inside).ai_endpoints == inside
+    message = refused(ai_endpoints={"a": "http://model.internal.example:80", "b": "http://169.254.169.254/"})
+    assert "provider a points outside" in message and "provider b points outside" in message
+    assert "model.internal" not in message                                # the URL itself is never echoed

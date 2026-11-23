@@ -66,6 +66,14 @@ section 3), browser tests in `web/e2e/` (run against a freshly seeded dev stack)
 - [x] Profile DNA: 6 measures visible on the institution page. Evidence: `test_institutions.py::test_profile_dna_measures`; `docs/screens/institution-1366.png` (category mix, volume, recurrence, disposal time, bureaus involved, trend).
 - [x] Early warning: one regional spike flagged, with the baseline shown. Evidence: `test_findings.py::test_seeded_spike_is_found_once_with_its_counts_and_no_alert`, `test_spike_rule_minimum_ratio_and_its_numbers`.
 
-## Counts (2026-11-22)
+## AI layer, Phase A1 (foundation; no OCR, translation or matching yet)
+- [x] AI runs only inside AICTE: an internal `ai` zone, models from a read-only folder, offline flags required in production, no remote provider URL accepted. Evidence: `test_config.py` (AI cases); `scripts/egress_canary.py` on a dev stack, 2026-11-23: 0 outbound attempts in 60 idle seconds, ai-worker on `ai` and `data` only with no route out; the counter caught a deliberate attempt.
+- [x] A model whose checksum does not match the manifest is never loaded. Evidence: `test_ai_registry.py` (6 tests); the ai-worker logged `model check stub-echo ok` at start.
+- [x] At most one model in memory, unloaded when idle; the ai-worker idles small. Evidence: `test_ai_registry.py::test_one_model_at_a_time_and_idle_unload`; ai-worker measured at 64 to 76 MiB idle on a dev stack (target under about 300 MB).
+- [x] Router falls back from primary to fallback to last resort, then to human review, with a circuit breaker. Evidence: `test_ai_router.py` (primary success, primary timeout, validation failure, low confidence, open circuit and half-open trial, unhealthy, all fail to human review).
+- [x] Every AI call is recorded (`sethu.ai_runs`, append-only, Row-Level Security) and in the hash-chained audit log, without the text. Evidence: `test_ai_router.py::test_primary_success_is_recorded_with_its_model_and_without_the_text`, `test_ai_runs_are_append_only_and_scoped`; a run through the ai-worker's queue on a dev stack wrote both.
+- [x] Model health for admin and oversight. Evidence: `test_ai_health.py` (3 tests); `docs/screens/ai-1366.png` (live data from the dev stack; axe passes at 1366 and 375 px).
 
-41 lines: 39 ticked with evidence, 2 not proven ("Updates within 5 seconds", "Runs with Wi-Fi off").
+## Counts (2026-11-23)
+
+47 lines: 45 ticked with evidence, 2 not proven ("Updates within 5 seconds", "Runs with Wi-Fi off").
