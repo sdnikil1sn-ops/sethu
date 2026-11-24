@@ -298,6 +298,18 @@ This is term normalisation, not translation, and the screens say so.
 
 ### Getting the models (connected machine only)
 
+One command installs every small model SETHU uses (about 66.5 MB): fastText lid-176, RapidOCR PP-OCRv5 for English,
+Devanagari (Hindi, Marathi), Tamil and Telugu, and Tesseract eng, hin, mar, tam, tel, kan, ben. Each file's SHA-256
+is pinned in the script; a model already installed and intact is skipped, and a failure does not stop the rest. It
+prints installed, skipped and failed, then the restart command (`docker compose restart ai-worker`). Not included:
+IndicTrans2 (gated, below) and a RapidOCR Kannada model (PP-OCRv5 has none; Tesseract `kan` reads Kannada).
+
+```powershell
+python scripts/fetch_models.py small
+```
+
+Other languages, one model at a time:
+
 ```powershell
 python scripts/fetch_models.py add lid-176 1 language.detect "CC-BY-SA-3.0 (fastText)" 5 https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz
 $ms = "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5"
