@@ -94,11 +94,12 @@ def by_acronym(session: Session, acronym: str) -> list[dict]:
          ORDER BY i.name LIMIT 20""", acronym=acronym)  # noqa: S608
 
 
-def unresolved(session: Session, limit: int) -> list[dict]:
+def unresolved(session: Session, limit: int, ids: list[UUID] | None = None) -> list[dict]:
     return _all(session, """
         SELECT c.id, c.ref, b.code AS bureau, c.institution_name_raw, c.filed_at
           FROM sethu.complaints c JOIN sethu.bureaus b ON b.id = c.bureau_id
-         WHERE c.resolution_state = 'unresolved' ORDER BY c.filed_at, c.ref LIMIT :limit""", limit=limit)
+         WHERE c.resolution_state = 'unresolved' AND (CAST(:ids AS uuid[]) IS NULL OR c.id = ANY(:ids))
+         ORDER BY c.filed_at, c.ref LIMIT :limit""", limit=limit, ids=ids)
 
 
 def set_resolution(session: Session, complaint_id: UUID, institution_id: UUID, state: str) -> dict | None:

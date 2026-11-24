@@ -7,19 +7,23 @@ category, filed within 30 days of each other, whose texts are similar. Stored as
 `proposed` link (the suggestion) until an officer or head of either bureau
 approves or rejects it. Approving queues an alert to both bureau heads.
 
-Signals, inside the rules: pg_trgm text similarity always; with SETHU_SEMANTIC_OVERLAP on and the model present,
-also the cosine similarity of the two complaints' embeddings (English only), which catches paraphrases trigram
-misses. Either signal can raise a suggestion; each suggestion records both values and which fired. The
-embeddings come from a local ONNX model baked into the image (no download at run time), are computed by the
-worker only, stay in the database under the same Row-Level Security as the text, and are never returned by an
-API or logged. With the setting off or the model missing, detection is exactly the trigram rule.
+Matching, inside the rules, is AI task "match.complaints" through the A1 router (provenance, circuit breaker,
+confidence threshold): e5-match (cosine of the two complaints' E5 vectors, any languages) -> text-match (pg_trgm
+similarity, same language only: what SETHU used before A3) -> a person (the pair is suggested, marked for officer
+review, only if a signal crossed its threshold). Each pair is judged once per `match_key` (model version, both
+thresholds, category, institution), so a run only judges new or changed pairs. Every suggestion stores its
+evidence in `signals` (method, similarity, confidence, agreement, model version, the shared institution and
+category, both complaint ids, the ai_runs row) and an explanation in `reasons`. The vectors are made by the
+ai-worker (app/modules/semantic), stay in the database under the text's Row-Level Security, and are never returned
+by an API or logged. With SETHU_SEMANTIC_OVERLAP off or no E5 vectors, matching is exactly the trigram rule.
 """
-import logging
-from functools import lru_cache
 from uuid import UUID
 
 from sqlalchemy.orm import Session
 
+from app.ai import router
+from app.ai import suggestions as feedback
+from app.ai.e5 import MODEL as E5
 from app.audit import service as audit
 from app.core.auth import Principal
 from app.core.config import get_settings
@@ -32,58 +36,8 @@ from app.modules.users import service as users
 SIMILARITY_THRESHOLD = 0.30
 WINDOW_DAYS = 30
 BANNER = "Potential Overlapping Cases – Coordination Required"
-
-
-log = logging.getLogger("sethu.overlaps")
-EMBED_BATCH = 64
-
-
-@lru_cache
-def _embedder():
-    """The local model, or None (setting off, no model directory, or the library missing): trigram only."""
-    s = get_settings()
-    if not (s.semantic_overlap and s.embedding_cache_dir):
-        return None
-    try:
-        import onnxruntime
-        from fastembed import TextEmbedding  # only the worker image needs it at run time
-
-        onnxruntime.disable_telemetry_events()     # no telemetry, ever (the worker has no route out anyway)
-        onnxruntime.set_default_logger_severity(3)  # errors only: its native lines bypass the JSON logs
-        from loguru import logger as loguru  # fastembed's logger: send it through the JSON logs, not stderr
-
-        loguru.remove()
-        loguru.add(lambda m: logging.getLogger("fastembed").log(m.record["level"].no, m.record["message"]),
-                   level="INFO")
-
-        return TextEmbedding(s.embedding_model, cache_dir=s.embedding_cache_dir)
-    except Exception as e:  # noqa: BLE001 - any failure means: carry on with trigram
-        log.warning("semantic overlap signal unavailable, using trigram only", extra={"reason": type(e).__name__})
-        return None
-
-
-def semantic_on() -> bool:
-    return _embedder() is not None
-
-
-def embed_pending(session: Session, limit: int = 500) -> int:
-    """Embed complaints that have no vector for the current model. Worker only (needs every bureau's text).
-    Logs counts, never text or vectors."""
-    model = _embedder()
-    if model is None:
-        return 0
-    name, done = get_settings().embedding_model, 0
-    while done < limit:
-        rows = repo.unembedded(session, name, min(EMBED_BATCH, limit - done))
-        if not rows:
-            break
-        vectors = model.embed([r["body"] for r in rows])
-        repo.store_embeddings(session, name, [(r["id"], [float(x) for x in v]) for r, v in zip(rows, vectors,
-                                                                                                strict=True)])
-        done += len(rows)
-    if done:
-        log.info("complaints embedded", extra={"count": done, "model": name})
-    return done
+METHOD = {"e5": "E5 meaning similarity (any language)", "text": "text similarity (trigram fallback)",
+          "officer": "no confident answer: an officer decides"}
 
 
 class OverlapError(Exception):
@@ -94,18 +48,78 @@ class OverlapError(Exception):
         self.status = status
 
 
-def detect(session: Session, principal: Principal) -> dict[str, int]:
-    """Find new Tier 2 pairs and store them as suggestions. Safe to repeat. Stores at most `detect_batch`
-    (the strongest first); `suggested == detect_batch` means call again in a new transaction (the worker does)."""
-    s = get_settings()
-    created = repo.suggest_tier2(session, SIMILARITY_THRESHOLD, WINDOW_DAYS,
-                                 s.semantic_threshold if semantic_on() else None, s.embedding_model, s.detect_batch)
-    ref = repo.refs(session, [c for row in created for c in (row["complaint_a"], row["complaint_b"])])
+def match_settings(session: Session) -> dict:
+    return {key: float(router.setting(session, f"ai.match.complaints.{key}", default)) for key, default in (
+        ("e5_threshold", 0.88), ("trigram_threshold", SIMILARITY_THRESHOLD), ("confidence_span", 0.06),
+        ("agreement_bonus", 0.15), ("disagreement_penalty", 0.25))}
+
+
+def active_embedding(session: Session) -> dict | None:
+    """{"model", "version"} of the E5 vectors the ai-worker makes now (it writes this setting), or None."""
+    found = router.setting(session, "ai.embedding.active", None)
+    return found if isinstance(found, dict) and found.get("model") == E5 and found.get("version") else None
+
+
+def detect(session: Session, principal: Principal) -> dict:
+    """Judge new or changed rule-allowed pairs and store each match as a suggestion. Safe to repeat. Judges at
+    most `detect_batch` pairs; {"more": True} means call again in a new transaction (the worker does)."""
+    s, batch = match_settings(session), get_settings().detect_batch
+    active = active_embedding(session)
+    model, version = (active["model"], active["version"]) if active else (None, None)
+    todo = []
+    for p in repo.candidates(session, WINDOW_DAYS, model, version):
+        vectors = f"{model}@{version}" if p["semantic"] is not None else "no-vectors"
+        key = (f"{vectors}|e5>={s['e5_threshold']:g}|trgm>={s['trigram_threshold']:g}"
+               f"|{p['category']}|{p['institution_id']}")
+        if p["last_key"] != key:
+            todo.append((p, key))
+    created = []
+    for p, key in todo[:batch]:
+        created += _judge(session, principal, p, key, s, version)
+    ref = repo.refs(session, [c for row in created for c in (row["a"], row["b"])])
     for row in created:
         audit.record(session, principal, "overlap.suggested", entity_type="overlap_links", entity_id=str(row["id"]),
-                     payload={"cases": sorted([ref[row["complaint_a"]], ref[row["complaint_b"]]]), "tier": 2,
-                              "score": float(row["score"]), "signals": row["signals"]})
-    return {"suggested": len(created)}
+                     payload={"cases": sorted([ref[row["a"]], ref[row["b"]]]), "tier": 2, "score": row["score"],
+                              "method": row["signals"]["method"], "confidence": row["signals"]["confidence"],
+                              "model_version": row["signals"].get("model_version")})
+    return {"suggested": len(created)} | ({"more": True} if len(todo) > batch else {})
+
+
+def _judge(session: Session, principal: Principal, p: dict, key: str, s: dict, version: str | None) -> list[dict]:
+    a, b = p["complaint_a"], p["complaint_b"]
+    semantic = None if p["semantic"] is None else float(p["semantic"])
+    trigram = float(p["trigram"])
+    pair = {"semantic": semantic, "trigram": trigram, "same_language": bool(p["same_language"])}
+    r = router.run(session, principal, "match.complaints", {"pair": pair, "settings": s, "model_version": version},
+                   subject_type="complaint_pair", subject_id=f"{a}:{b}")
+    if r["status"] == "ok":
+        out = r["output"]
+        matched, method, score, confidence = out["matched"], out["method"], out["score"], r["confidence"]
+        agreement = out.get("agreement")
+    else:   # last resort: suggest only, for an officer, when a signal crossed its threshold
+        matched = (semantic is not None and semantic >= s["e5_threshold"]) or trigram >= s["trigram_threshold"]
+        method, score, confidence, agreement = "officer", max(trigram, semantic or 0.0), None, None
+    repo.save_evaluation(session, a, b, key, matched, method, score, confidence, r["run_id"])
+    if not matched:
+        return []
+    signals = {"method": method, "similarity": score, "confidence": confidence, "agreement": agreement,
+               "trigram": trigram, "semantic": semantic, "same_language": pair["same_language"],
+               "fired": [n for n, v, t in (("trigram", trigram, s["trigram_threshold"]),
+                                            ("semantic", semantic, s["e5_threshold"])) if v is not None and v >= t],
+               "model": E5 if semantic is not None else None,
+               "model_version": version if semantic is not None else None,
+               "thresholds": {"e5": s["e5_threshold"], "trigram": s["trigram_threshold"]},
+               "shared": {"institution_id": str(p["institution_id"]), "category": p["category"]},
+               "complaints": [str(a), str(b)], "run_id": r["run_id"]}
+    reasons = ["same institution", f"same category: {p['category']}", f"filed {p['days_apart']} days apart",
+               f"text similarity {trigram:.2f}" + (" (fired)" if trigram >= s["trigram_threshold"] else "")]
+    if semantic is not None:
+        reasons.append(f"meaning similarity {semantic:.2f}" + (" (fired)" if semantic >= s["e5_threshold"] else ""))
+    reasons.append(f"decided by: {METHOD[method]}"
+                   + (f", confidence {confidence:.2f}" if confidence is not None else "")
+                   + (f", the two signals {agreement}" if agreement in ("agree", "disagree") else ""))
+    link_id = repo.insert_link(session, a, b, score, reasons, signals)
+    return [{"id": link_id, "a": a, "b": b, "score": score, "signals": signals}] if link_id else []
 
 
 def tier1(session: Session, institution_id: UUID | None = None) -> list[dict]:
@@ -137,7 +151,7 @@ def _cases(link: dict) -> list[dict]:
 
 
 def _shape(principal: Principal, link: dict) -> dict:
-    keep = ("id", "tier", "score", "reasons", "status", "created_at", "decided_at", "decided_by",
+    keep = ("id", "tier", "score", "reasons", "signals", "status", "created_at", "decided_at", "decided_by",
             "institution_id", "institution", "category", "alert_status", "alert_recipients")
     return {k: link[k] for k in keep} | {"cases": _cases(link), "can_decide": _can_decide(principal, link)}
 
@@ -192,4 +206,9 @@ def decide(session: Session, principal: Principal, link_id: UUID, approve: bool)
         payload |= {"alert_id": str(alert_id), "recipients": len(recipients), "missing_recipients": missing}
     audit.record(session, principal, "overlap.approve" if approve else "overlap.reject",
                  entity_type="overlap_links", entity_id=str(link_id), payload=payload)
+    method = (link["signals"] or {}).get("method")
+    feedback.record(session, principal, "overlap", link["a_id"], "accepted" if approve else "rejected",
+                    actor_id=actor, suggested="overlap", old="proposed", new="approved" if approve else "rejected",
+                    suggested_path={"e5": "model", "text": "fallback", "officer": "officer"}.get(method, "fallback"),
+                    overlap_link_id=link_id)
     return _shape(principal, repo.links(session, link_id=link_id)[0])

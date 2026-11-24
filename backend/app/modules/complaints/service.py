@@ -215,6 +215,26 @@ def act(session: Session, principal: Principal, complaint_id: UUID, action: str,
     return get(session, principal, complaint_id)
 
 
+def set_category(session: Session, principal: Principal, complaint_id: UUID, category: str) -> str | None:
+    """The holding bureau sets a case's category (from an AI suggestion: app/modules/semantic). Returns the old
+    one. Audited; a change also moves the case into other overlap pairs, which the next detection run judges."""
+    category = " ".join(category.split())
+    if not 1 <= len(category) <= 100:
+        raise CaseError(422, "a category is 1 to 100 characters")
+    case = repo.lock(session, complaint_id)
+    if case is None:
+        raise CaseError(403, "this case belongs to another bureau") if repo.exists(session, complaint_id) \
+            else CaseError(404, "case not found")
+    if not can_act(principal, case | {"holder_id": case["bureau_id"]}):
+        raise CaseError(403, "only the bureau holding this case can change its category")
+    if case["category"] != category:
+        repo.set_category(session, complaint_id, category)
+        audit.record(session, principal, "case.category_changed", entity_type="complaints",
+                     entity_id=str(complaint_id), payload={"ref": case["ref"], "from": case["category"],
+                                                           "to": category})
+    return case["category"]
+
+
 def deadline_days(session: Session, category: str | None) -> int:
     """Days to close a case of this category: the admin's setting, else the default (SETHU_SLA_DAYS)."""
     return repo.deadline_days(session, category) or get_settings().sla_days

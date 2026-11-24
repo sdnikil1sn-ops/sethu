@@ -57,7 +57,9 @@ A feature is done only when:
 - Demo must run offline (we will switch Wi-Fi off during the demo).
 
 ## Parking lot
-- (empty)
+- A per-language trigram threshold for the overlap fallback: Hindi and Tamil complaints in one category reach 0.30
+  through shared function words (docs/AI-PIPELINE.md, A3).
+- Remove the unused bge-small model and fastembed from the backend image (needs the lock files regenerated).
 
 ## Sign-off
 - [ ] Member 1

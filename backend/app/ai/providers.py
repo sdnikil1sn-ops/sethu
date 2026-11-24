@@ -18,6 +18,11 @@ class Result:
     confidence: float
 
 
+class NotApplicable(Exception):  # noqa: N818 - a verdict, not an error
+    """The provider cannot judge this item (for example, no vector for it yet): the router moves on to the next
+    provider without counting a failure against this one's circuit."""
+
+
 class Provider:
     name = "provider"
     model: str | None = None        # the registry name of the model it loads, if any

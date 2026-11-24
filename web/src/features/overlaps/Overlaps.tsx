@@ -5,10 +5,24 @@ import type { Options } from "../cases/types";
 
 // Mirrors backend/app/modules/overlaps/schemas.py
 type LinkedCase = { id: string; ref: string; bureau: string; status: string; filed_at: string };
+// The evidence stored with a suggestion (A3). Older suggestions carry only trigram/semantic/fired.
+type Signals = {
+  method?: "e5" | "text" | "officer";
+  similarity?: number | null;
+  confidence?: number | null;
+  agreement?: "agree" | "disagree" | "not compared" | null;
+  trigram?: number;
+  semantic?: number | null;
+  same_language?: boolean;
+  model?: string | null;
+  model_version?: string | null;
+  thresholds?: { e5: number; trigram: number };
+};
 type Link = {
   id: string;
   score: number | null;
   reasons: string[];
+  signals: Signals;
   status: "proposed" | "approved" | "rejected";
   decided_at: string | null;
   decided_by: string | null;
@@ -32,6 +46,46 @@ type Tier1 = {
 export const BANNER = "Potential Overlapping Cases – Coordination Required";
 const STATUS = { proposed: "Suggested", approved: "Approved", rejected: "Rejected" };
 const day = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { dateStyle: "medium" });
+const METHOD = {
+  e5: "Meaning similarity (E5 model, works across languages)",
+  text: "Text similarity (trigram fallback, same language only)",
+  officer: "No confident answer: shown for an officer to judge",
+};
+
+/** How the suggestion was made, and how sure the system is. */
+function Explanation({ s }: { s: Signals }) {
+  if (!s.method) return null;
+  const pct = (x: number | null | undefined) => (x === null || x === undefined ? "–" : `${Math.round(x * 100)}%`);
+  return (
+    <dl className="evidence">
+      <dt>Matched by</dt>
+      <dd>{METHOD[s.method]}</dd>
+      <dt>Matching confidence</dt>
+      <dd>{s.confidence === null || s.confidence === undefined ? "not rated (officer review)" : pct(s.confidence)}</dd>
+      <dt>Similarity</dt>
+      <dd>
+        meaning {s.semantic === null || s.semantic === undefined ? "not available" : s.semantic.toFixed(2)}
+        {s.thresholds && ` (threshold ${s.thresholds.e5})`}; text {s.trigram?.toFixed(2)}
+        {s.thresholds && ` (threshold ${s.thresholds.trigram})`}
+        {s.same_language === false && "; different languages, so text similarity is not used"}
+      </dd>
+      {s.agreement && s.agreement !== "not compared" && (
+        <>
+          <dt>Signals</dt>
+          <dd>{s.agreement === "agree" ? "agree (confidence raised)" : "disagree (confidence lowered)"}</dd>
+        </>
+      )}
+      {s.model_version && (
+        <>
+          <dt>Model</dt>
+          <dd>
+            {s.model} {s.model_version}
+          </dd>
+        </>
+      )}
+    </dl>
+  );
+}
 
 function LinkCard({ link, onChanged }: { link: Link; onChanged: () => void }) {
   const [busy, setBusy] = useState(false);
@@ -69,6 +123,7 @@ function LinkCard({ link, onChanged }: { link: Link; onChanged: () => void }) {
         ))}
       </div>
       <p>Why: {link.reasons.join("; ")}.</p>
+      <Explanation s={link.signals ?? {}} />
       {link.status === "proposed" && !link.can_decide && (
         <p className="note">Waiting for an officer or head of {link.cases.map((c) => c.bureau).join(" or ")} to decide.</p>
       )}
@@ -182,8 +237,9 @@ export function OverlapsPage({ canDetect }: { canDetect: boolean }) {
       <h1>Overlaps</h1>
       <h2>Same matter in two bureaus</h2>
       <p>
-        Two open cases in different bureaus about the same institution and category, filed within 30 days, with
-        similar wording. The system only suggests; an officer or head of either bureau decides.
+        Two open cases in different bureaus about the same institution and category, filed within 30 days, that say
+        the same thing, in any language. Each suggestion explains how it was found and how sure the system is. The
+        system only suggests; an officer or head of either bureau decides.
       </p>
       <label>
         Show

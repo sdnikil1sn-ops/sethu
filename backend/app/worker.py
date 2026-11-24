@@ -70,6 +70,7 @@ celery.conf.update(
         "detect-findings": {"task": "sethu.findings.detect", "schedule": 300.0},
         # The AI pipeline: run by the ai-worker (its own queue), never by this worker.
         "ai-enrich": {"task": "sethu.ai.enrich_pending", "schedule": 10.0, "options": {"queue": "ai"}},
+        "ai-maintain": {"task": "sethu.ai.maintain", "schedule": 30.0, "options": {"queue": "ai"}},
         "deliver-alerts": {"task": "sethu.alerts.deliver", "schedule": 15.0},
         "intake-process": {"task": "sethu.intake.process", "schedule": 10.0},
         "intake-spool": {"task": "sethu.intake.spool", "schedule": 30.0},
@@ -128,22 +129,17 @@ def resolve_pending() -> dict:
 
 @celery.task(name="sethu.overlaps.detect")
 def detect_overlaps() -> dict:
-    """Embed new complaints (if the semantic signal is on), then suggest new Tier 2 overlap links. A person
-    approves or rejects each one."""
-    with session_for(SYSTEM) as session:
-        if not _only_run(session, "sethu.overlaps.detect"):
-            return {"suggested": 0, "embedded": 0, "skipped": 1}
-        embedded = overlaps.embed_pending(session)
+    """Judge new or changed rule-allowed pairs (AI task match.complaints: E5 vectors made by the ai-worker, else
+    trigram) and suggest new Tier 2 overlap links. A person approves or rejects each one."""
     total = 0
     while True:  # batch by batch, each its own transaction (the audit chain's lock is held until commit)
         with session_for(SYSTEM) as session:
             if not _only_run(session, "sethu.overlaps.detect"):
-                break
-            done = overlaps.detect(session, SYSTEM)["suggested"]
-        total += done
-        if done < settings.detect_batch:
-            break
-    return {"suggested": total, "embedded": embedded}
+                return {"suggested": total, "skipped": 1}
+            done = overlaps.detect(session, SYSTEM)
+        total += done["suggested"]
+        if not done.get("more"):
+            return {"suggested": total}
 
 
 def _only_run(session, job: str) -> bool:

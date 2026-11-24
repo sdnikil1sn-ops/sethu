@@ -52,7 +52,7 @@ operator is most likely to change:
 | `SETHU_INTAKE_MAX_UPLOAD_BYTES`, `SETHU_INTAKE_MAX_ROWS`, `SETHU_INTAKE_MAX_XLSX_EXPANDED_BYTES` | 2,000,000; 5,000; 20,000,000 | Limits on uploaded and spooled files |
 | `SETHU_INTAKE_SPOOL_DIR` (host folder) | `./spool` | The fallback channel's folder (one subfolder per spool source), mounted into the worker |
 | `SETHU_AUDIT_ANCHOR_DIR` (host folder) | `./anchor` | Where the hourly audit-chain anchors go; make it write-once (section 8) |
-| `SETHU_SEMANTIC_OVERLAP`, `SETHU_SEMANTIC_THRESHOLD` | true, 0.75 | Meaning-based overlap signal (local model in the image); off means trigram only |
+| `SETHU_SEMANTIC_OVERLAP` | true | Meaning-based overlap signal (A3: E5 vectors made by the ai-worker); off means trigram only. Its threshold is the setting `ai.match.complaints.e5_threshold` (0.88), no longer an environment variable |
 | `SETHU_DETECT_BATCH` | 500 | New findings or overlap links written per transaction (keeps the audit lock short) |
 | `SETHU_STALLED_TRANSFER_DAYS`, `SETHU_BOTTLENECK_MIN_OPEN`, `SETHU_BOTTLENECK_SHARE`, `SETHU_SPIKE_MIN_COUNT`, `SETHU_SPIKE_RATIO` | 7, 3, 0.6, 5, 3.0 | Detector rules |
 | `BACKUP_INTERVAL_HOURS`, `BACKUP_KEEP_DAYS`, `SETHU_BACKUP_DIR` | 24, 14, `./backups` | Backups (section 6) |
@@ -63,7 +63,7 @@ operator is most likely to change:
 | `ai.<task>.min_confidence` (row in `sethu.app_settings`) | 0.5 | Below this an answer falls through to the next provider |
 
 CPU limits are not set by default because they depend on the host. On a shared host add, in an override file,
-`deploy.resources.limits.cpus` for `worker` (the embedding model is the heaviest user) and `postgres`.
+`deploy.resources.limits.cpus` for `ai-worker` (the AI models are the heaviest users) and `postgres`.
 
 ### AI models (A2)
 
@@ -73,6 +73,45 @@ docs/AI-PIPELINE.md, "Getting the models". Without them every AI step falls back
 the glossary for translation, a person for OCR) and nothing breaks. The thresholds and limits are rows in
 `sethu.app_settings` (docs/AI-PIPELINE.md, "Settings"); the image's AI packages are pinned in
 `backend/requirements-ai.lock` (`python scripts/lock_python.py --ai <freeze>` to update).
+
+### Matching, classification and resolution models (A3): re-embed, retrain, roll back
+
+The jobs:
+
+- **Install or upgrade E5**:
+  1. `python scripts/fetch_models.py small` on a connected machine. It adds `multilingual-e5-small` 614241f-int8,
+     135 MB.
+  2. Copy `models/` to the host.
+  3. `docker compose restart ai-worker`.
+  4. Within a minute **AI health** lists the model as "Matches the manifest". Complaint vectors then start to fill
+     in (the *Complaint vectors* line).
+- **Re-embed**: automatic. The `sethu.ai.maintain` job (every 30 s, ai queue) embeds complaints that have no vector of
+  the installed version, in batches of `ai.embed.reembed_batch` (64), newest first. It also embeds the registry's
+  names and aliases.
+  - **Interruptions**: each batch is committed on its own, so a restart or a crash loses at most one batch. The next
+    tick carries on.
+  - **Run it now**: *Re-embed now* on AI health.
+  - **Measured speed**: about 7 ms per complaint, so 100,000 complaints take about 12 minutes of ai-worker time.
+  - **During a model upgrade**: pairs not yet re-embedded are matched by text similarity. Vectors of different
+    versions are never compared.
+- **Retrain the classifier**: AI health > *Retrain classifier* (admin). The ai-worker trains on the bootstrap set
+  plus officers' accepted or changed categories.
+  - It activates the new version only if it does no worse on the fixed held-out set; otherwise the version is listed
+    as "not used (did worse)".
+  - A first version is trained automatically when E5 is installed and there is none.
+  - Retrain after a batch of officer corrections, or after an E5 upgrade. A classifier trained on another E5 version
+    is not used: classification falls back to the rules until a retrain.
+- **Roll back**: AI health > *Use vN* on an earlier version that is not marked "did worse" (admin). It is checked
+  against its SHA-256 before it is used, and audited (`classifier.activated`).
+- **Thresholds**: `ai.match.complaints.e5_threshold` (0.88), `ai.institution.resolve.e5_threshold` (0.93) and
+  `e5_margin` (0.03), `ai.classify.category.min_confidence` (0.6), with their measured effect in
+  docs/AI-PIPELINE.md, A3.
+  - **Matching**: changing a matching threshold makes the next detection run judge every pair again. That writes one
+    `ai_runs` row per pair.
+  - **Institutions**: watch the resolution queue and the `institution.resolve` audit entries with step `e5` in the
+    first weeks. The institution thresholds were measured on synthetic names only.
+- **Without E5**: everything keeps working. Matching is trigram only, institutions use the spelling cascade, and
+  categories use the keyword and glossary rules or an officer.
 
 ## 4. First-time setup (after the first start)
 

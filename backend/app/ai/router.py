@@ -21,7 +21,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.ai.memory import manager
-from app.ai.providers import Provider
+from app.ai.providers import NotApplicable, Provider
 from app.audit import service as audit
 from app.core.auth import Principal
 from app.core.config import get_settings
@@ -104,9 +104,12 @@ def run(session: Session, principal: Principal, task: str, payload: dict, *, sub
             why.append(f"{path} {provider.name}: {reason}")
             continue
         result = reason
-        model = manager().report() if provider.model else None
+        # A provider that works from stored vectors or a trained artifact names its version in the output; one
+        # that loads a model reports the version the memory manager loaded.
+        version = result.output.get("model_version") or (
+            manager().report()["version"] if provider.model else None)
         row = _record(session, principal, task, subject_type, subject_id, provider.name,
-                      provider.model, model and model["version"], path, result.confidence, started, "ok", why)
+                      provider.model, version, path, result.confidence, started, "ok", why)
         return {"run_id": row, "status": "ok", "path": path, "provider": provider.name,
                 "confidence": result.confidence, "output": result.output}
     row = _record(session, principal, task, subject_type, subject_id, None, None, None, None, None, started,
@@ -129,6 +132,8 @@ def _try(provider: Provider, payload: dict, threshold: float, timeout: float):
     future = _pool.submit(provider.run, payload)
     try:
         result = future.result(timeout=timeout)
+    except NotApplicable as e:
+        return f"not applicable ({str(e)[:120]})"
     except FutureTimeout:
         _failed(provider.name)
         return f"timed out after {timeout:g} s"

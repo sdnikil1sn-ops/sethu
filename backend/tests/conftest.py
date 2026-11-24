@@ -40,6 +40,7 @@ SKIP_REASON = "set MIGRATION_DATABASE_URL, SETHU_DATABASE_URL and SETHU_TEST_DB_
 requires_db = pytest.mark.skipif(not HAVE_DB, reason=SKIP_REASON)
 
 TABLES = (
+    "ai_feedback, ai_suggestions, match_evaluations, institution_embeddings, classifier_versions, "
     "job_runs, complaint_embeddings, intake_nonces, intake_items, intake_sources, "
     "review_items, complaint_attachments, complaint_enrichment, glossary_terms, ai_runs, "
     "findings, alerts, overlap_links, case_actions, complaints, institution_aliases, "
@@ -76,6 +77,7 @@ def clean_db(request):
         conn.execute(text("ALTER TABLE sethu.audit_log DISABLE TRIGGER audit_log_no_truncate"))
         conn.execute(text(f"TRUNCATE {', '.join('sethu.' + t.strip() for t in TABLES.split(','))} CASCADE"))
         conn.execute(text("ALTER TABLE sethu.audit_log ENABLE TRIGGER audit_log_no_truncate"))
+        conn.execute(text("DELETE FROM sethu.app_settings WHERE key = 'ai.embedding.active'"))   # written by A3
     yield
 
 

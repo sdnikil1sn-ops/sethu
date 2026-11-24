@@ -49,9 +49,31 @@ def run_task(task: str, payload: dict, subject_type: str | None = None, subject_
 
 @celery.task(name="sethu.ai.enrich_pending")
 def enrich_pending() -> dict:
-    """Pending complaints and attachments, in batches: language, OCR, translation, tags (one model at a time)."""
+    """Pending complaints and attachments, in batches: language, OCR, translation, tags, then (A3) E5 vectors,
+    category and institution (one model at a time)."""
     from app.modules.enrichment import service as enrichment
-    done = enrichment.enrich_pending(limit=10)
+    from app.modules.semantic import service as semantic
+    done = enrichment.enrich_pending(limit=10, then=semantic.stages)
+    publish()
+    return done
+
+
+@celery.task(name="sethu.ai.maintain")
+def maintain() -> dict:
+    """Every 30 s: registry name vectors, one round of re-embedding (resumable), a first classifier if none."""
+    from app.modules.semantic import service as semantic
+    done = semantic.maintain()
+    publish()
+    return done
+
+
+@celery.task(name="sethu.ai.retrain_classifier")
+def retrain_classifier(requested_by: str | None = None) -> dict:
+    """An admin asked for a new classifier version (POST /api/v1/ai/classifier/retrain)."""
+    from uuid import UUID
+
+    from app.modules.semantic import service as semantic
+    done = semantic.retrain(UUID(requested_by) if requested_by else None)
     publish()
     return done
 

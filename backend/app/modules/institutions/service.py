@@ -18,13 +18,15 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
+from app.ai import suggestions
 from app.audit import service as audit
 from app.core.auth import Principal
 from app.modules.institutions import repo
+from app.modules.users import service as users
 
 AUTO_ACCEPT = 95.0     # minimum fuzzy score to link without a person
 RUNNER_UP_GAP = 5.0    # and the next institution must be at least this far behind
-TOP = 5                # candidates shown to the officer
+TOP = 3                # candidates shown to the officer
 
 PERMANENT_ID = re.compile(r"\b\d-\d{6,}\b")
 ABBREVIATIONS = {
@@ -76,7 +78,7 @@ def rank(session: Session, raw: str) -> tuple[dict | None, list[dict]]:
     # Acronyms ("SCE Nagpur") are only ever a suggestion: too many colleges share initials.
     first, _, rest = raw.strip().partition(" ")
     first = first.strip(".,")
-    if first.isalpha() and first.isupper() and 2 <= len(first) <= 6:
+    if is_acronym(raw):
         for inst in repo.by_acronym(session, first):
             offer(inst, 90 if rest and normalize(rest) == normalize(inst["district"] or "") else 75, "acronym")
 
@@ -89,31 +91,60 @@ def rank(session: Session, raw: str) -> tuple[dict | None, list[dict]]:
     return None, ranked
 
 
+def is_acronym(raw: str) -> bool:
+    """"SCE Nagpur", "GIT": too many colleges share initials, so such a name is never linked automatically."""
+    first = raw.strip().partition(" ")[0].strip(".,")
+    return first.isalpha() and first.isupper() and 2 <= len(first) <= 6
+
+
+def auto_link(session: Session, principal: Principal, complaint_id: UUID, decision: dict) -> bool:
+    """Link an unresolved complaint without a person (the cascade's rules allowed it). Audited."""
+    row = repo.set_resolution(session, complaint_id, decision["institution_id"], "auto")
+    if row:
+        audit.record(session, principal, "institution.resolve", entity_type="complaints", entity_id=str(complaint_id),
+                     payload={"ref": row["ref"], "institution_id": str(decision["institution_id"]),
+                              "step": decision["step"], "score": decision["score"]})
+    return bool(row)
+
+
+def unresolved_among(session: Session, ids: list[UUID]) -> list[dict]:
+    return repo.unresolved(session, len(ids), ids) if ids else []
+
+
 def resolve_pending(session: Session, principal: Principal, limit: int = 500) -> dict[str, int]:
-    """Run the cascade over unresolved complaints the caller can write. Safe to repeat."""
+    """Run the deterministic cascade over unresolved complaints the caller can write. Safe to repeat. (The
+    ai-worker adds the E5 step for what is left: app/modules/semantic.)"""
     pending = repo.unresolved(session, limit)
     resolved = 0
     for c in pending:
         decision, _ = rank(session, c["institution_name_raw"])
-        if decision and repo.set_resolution(session, c["id"], decision["institution_id"], "auto"):
-            audit.record(session, principal, "institution.resolve", entity_type="complaints",
-                         entity_id=str(c["id"]),
-                         payload={"ref": c["ref"], "institution_id": str(decision["institution_id"]),
-                                  "step": decision["step"], "score": decision["score"]})
+        if decision and auto_link(session, principal, c["id"], decision):
             resolved += 1
     return {"resolved": resolved, "queued": len(pending) - resolved}
 
 
 def queue(session: Session, limit: int = 50) -> list[dict]:
-    """Unresolved complaints visible to the caller, each with candidates to pick from."""
-    return [c | {"candidates": rank(session, c["institution_name_raw"])[1][:TOP]}
-            for c in repo.unresolved(session, limit)]
+    """Unresolved complaints visible to the caller, each with its top three candidates: the AI's (E5, with the
+    cosine score) when the ai-worker made a suggestion, then the spelling cascade's."""
+    out = []
+    for c in repo.unresolved(session, limit):
+        found = suggestions.get(session, c["id"], "institution")
+        ai = [{"id": UUID(t["institution_id"]), "permanent_id": None, "name": t.get("name") or t.get("label"),
+               "state": None, "district": None,
+               "score": round(float(t["score"]) * 100, 1) if t.get("method") == "e5" else float(t["score"]),
+               "reason": "meaning match (E5)" if t.get("method") == "e5" else t.get("reason") or "similar spelling"}
+              for t in (found or {}).get("candidates") or []]
+        seen = {a["id"] for a in ai}
+        merged = ai + [x for x in rank(session, c["institution_name_raw"])[1] if x["id"] not in seen]
+        out.append(c | {"candidates": merged[:TOP]})
+    return out
 
 
 def resolve_by_officer(session: Session, principal: Principal, complaint_id: UUID,
                        institution_id: UUID) -> dict | None:
-    """An officer's choice from the queue. The typed name becomes an alias, so the
-    same spelling resolves by itself next time. None if either id is not found."""
+    """An officer's choice from the queue or the case page. The typed name becomes an alias, so the same
+    spelling resolves by itself next time; an open AI suggestion is marked accepted or changed (ai_feedback).
+    None if either id is not found."""
     if not repo.get(session, institution_id):
         return None
     row = repo.set_resolution(session, complaint_id, institution_id, "officer")
@@ -123,6 +154,8 @@ def resolve_by_officer(session: Session, principal: Principal, complaint_id: UUI
     audit.record(session, principal, "institution.resolve", entity_type="complaints", entity_id=str(complaint_id),
                  payload={"ref": row["ref"], "institution_id": str(institution_id), "step": "officer",
                           "alias_added": alias_added})
+    suggestions.decide(session, principal, complaint_id, "institution", str(institution_id), None,
+                       users.sync(session, principal) if principal.role != "system" else None)
     return {"ref": row["ref"], "institution_id": institution_id, "alias_added": alias_added}
 
 

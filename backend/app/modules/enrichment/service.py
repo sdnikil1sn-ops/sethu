@@ -121,6 +121,11 @@ def rekey_attachments(session: Session, principal: Principal, batch: int = 50) -
 
 # --- Human review --------------------------------------------------------------------------------------
 
+def add_review(session: Session, kind: str, complaint_id: UUID, reason: str, run_id: str | None = None) -> UUID:
+    """Work for a person when the AI is unsure (worker only; A3 adds the kinds "category" and "institution")."""
+    return repo.add_review(session, kind, complaint_id, reason, run_id)
+
+
 def review_items(session: Session, status: str | None) -> list[dict]:
     return repo.review_items(session, status, 200)
 
@@ -136,7 +141,9 @@ def resolve(session: Session, principal: Principal, item_id: UUID, status: str) 
 
 # --- The pipeline (ai-worker, as the system principal) -------------------------------------------------
 
-def enrich_pending(limit: int = 10, engine=None) -> dict:
+def enrich_pending(limit: int = 10, engine=None, then=None) -> dict:
+    """`then(ids, engine)`: the stages that follow on the same batch (A3: embed, classify, resolve by meaning;
+    app/ai/tasks.py passes them, so this module does not depend on them)."""
     with session_for(SYSTEM, engine) as s:
         batch = repo.claim(s, limit)
     if not batch:
@@ -155,6 +162,8 @@ def enrich_pending(limit: int = 10, engine=None) -> dict:
         _attachments(cid, st, engine)
     for cid, st in state.items():      # stage 3: translation (the translation model), then glossary tags
         _translate_and_tag(cid, st, engine)
+    if then is not None:               # stages 4-6 (A3): the E5 model, after the translation model is let go
+        then(list(state), engine)
     return {"complaints": len(state), "review": sum(st["review"] for st in state.values())}
 
 

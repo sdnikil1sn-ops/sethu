@@ -16,8 +16,9 @@ def _client() -> Celery:
     return Celery("sethu", broker=url, backend=url)
 
 
-def queue(name: str) -> str:
-    return _client().send_task(name).id
+def queue(name: str, kwargs: dict | None = None, on: str | None = None) -> str:
+    """`on`: the Celery queue (the ai-worker's is "ai"); identifiers only in `kwargs`, never content."""
+    return _client().send_task(name, kwargs=kwargs or {}, queue=on).id
 
 
 def status(task_id: str) -> dict:
