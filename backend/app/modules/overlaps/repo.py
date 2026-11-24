@@ -22,83 +22,64 @@ def _one(session: Session, sql: str, **params: Any) -> dict | None:
     return rows[0] if rows else None
 
 
-# The pairs the rules allow (same institution and category, different bureaus, both open, filed close together),
-# with both signals. `semantic` is NULL unless both complaints are English and embedded with `model`.
+# The pairs the rules allow (same institution and category, different bureaus, both open, filed close together)
+# that have no link yet, with both signals and the last verdict's key. `semantic` is NULL unless both complaints
+# have a vector of exactly this model AND version: vectors of different models are never compared. The language
+# is the one detected by enrichment, else the one the complaint was filed with.
 CANDIDATES = """
-        SELECT a.id AS complaint_a, b.id AS complaint_b, a.category, x.days_apart,
+        SELECT a.id AS complaint_a, b.id AS complaint_b, a.category, a.institution_id, x.days_apart,
                similarity(a.body, b.body)::numeric(5,4) AS trigram,
-               CASE WHEN a.language = 'en' AND b.language = 'en'
-                    THEN (1 - (ea.embedding <=> eb.embedding))::numeric(5,4) END AS semantic
+               (1 - (ea.embedding <=> eb.embedding))::numeric(6,5) AS semantic,
+               coalesce(nullif(na.language, 'unknown'), a.language)
+                   = coalesce(nullif(nb.language, 'unknown'), b.language) AS same_language,
+               me.match_key AS last_key
           FROM sethu.complaints a
           JOIN sethu.complaints b
             ON b.institution_id = a.institution_id AND b.bureau_id <> a.bureau_id AND a.id < b.id
            AND b.category = a.category
-          LEFT JOIN sethu.complaint_embeddings ea ON ea.complaint_id = a.id AND ea.model = :model
-          LEFT JOIN sethu.complaint_embeddings eb ON eb.complaint_id = b.id AND eb.model = :model
+          LEFT JOIN sethu.complaint_embeddings ea ON ea.complaint_id = a.id
+           AND ea.embedding_model = :model AND ea.embedding_version = :version
+          LEFT JOIN sethu.complaint_embeddings eb ON eb.complaint_id = b.id
+           AND eb.embedding_model = :model AND eb.embedding_version = :version
+          LEFT JOIN sethu.complaint_enrichment na ON na.complaint_id = a.id
+          LEFT JOIN sethu.complaint_enrichment nb ON nb.complaint_id = b.id
+          LEFT JOIN sethu.match_evaluations me ON me.complaint_a = a.id AND me.complaint_b = b.id
           CROSS JOIN LATERAL (SELECT abs(a.filed_at::date - b.filed_at::date) AS days_apart) x
-         WHERE a.status <> 'closed' AND b.status <> 'closed' AND x.days_apart <= :window"""
+         WHERE a.status <> 'closed' AND b.status <> 'closed' AND x.days_apart <= :window
+           AND NOT EXISTS (SELECT 1 FROM sethu.overlap_links l
+                            WHERE l.complaint_a = a.id AND l.complaint_b = b.id AND l.tier = 2)"""
 
 
-def candidates(session: Session, window_days: int, model: str) -> list[dict]:
-    """Every pair the rules allow, with its signal values (no text leaves the database)."""
-    return _all(session, CANDIDATES, window=window_days, model=model)
+def candidates(session: Session, window_days: int, model: str | None, version: str | None) -> list[dict]:
+    """Every unlinked pair the rules allow, with its signal values (no text leaves the database). Reads both
+    bureaus' text and vectors, so it finds everything only as `system` (the worker) or `admin`."""
+    return _all(session, f"{CANDIDATES} ORDER BY a.filed_at DESC, a.id, b.id",  # noqa: S608 - constants only
+                window=window_days, model=model, version=version)
 
 
-def suggest_tier2(session: Session, threshold: float, window_days: int, semantic_threshold: float | None,
-                  model: str, limit: int) -> list[dict]:
-    """Store every new Tier 2 pair as a proposed link and return the rows created.
+def save_evaluation(session: Session, a: UUID, b: UUID, key: str, matched: bool, method: str,
+                    score: float | None, confidence: float | None, run_id: str | None) -> None:
+    session.execute(text("""
+        INSERT INTO sethu.match_evaluations (complaint_a, complaint_b, match_key, matched, method, score, confidence,
+                                             ai_run_id)
+        VALUES (:a, :b, :key, :matched, :method, :score, :conf, :run)
+        ON CONFLICT (complaint_a, complaint_b) DO UPDATE SET
+            match_key = EXCLUDED.match_key, matched = EXCLUDED.matched, method = EXCLUDED.method,
+            score = EXCLUDED.score, confidence = EXCLUDED.confidence, ai_run_id = EXCLUDED.ai_run_id,
+            evaluated_at = now()"""),
+        {"a": a, "b": b, "key": key, "matched": matched, "method": method, "score": score, "conf": confidence,
+         "run": run_id})
 
-    The rules gate; then a pair is suggested when its trigram similarity reaches `threshold` or, with the
-    semantic signal on (`semantic_threshold` not None), its embedding similarity reaches that. The score is the
-    higher of the two; `signals` records both values and which fired. Reads complaint text and embeddings of
-    both bureaus, so it only finds everything when run as `system` (the worker) or `admin`. A pair that already
-    has a link, decided or not, is left alone: a rejected pair is never suggested again.
-    """
-    return _all(session, f"""
-        WITH c AS ({CANDIDATES}),
-        s AS (SELECT c.*, c.trigram >= :threshold AS t_fired,
-                     coalesce(CAST(:semantic_threshold AS numeric) IS NOT NULL
-                              AND c.semantic >= CAST(:semantic_threshold AS numeric), false) AS s_fired
-                FROM c)
+
+def insert_link(session: Session, a: UUID, b: UUID, score: float | None, reasons: list[str],
+                signals: dict) -> UUID | None:
+    """A proposed Tier 2 link; None if the pair got one meanwhile (a rejected pair is never suggested again)."""
+    return session.execute(text("""
         INSERT INTO sethu.overlap_links (complaint_a, complaint_b, tier, score, reasons, signals)
-        SELECT complaint_a, complaint_b, 2, greatest(trigram, CASE WHEN s_fired THEN semantic END),
-               jsonb_build_array('same institution', 'same category: ' || category,
-                                 'filed ' || days_apart || ' days apart',
-                                 'text similarity ' || to_char(trigram, 'FM0.00')
-                                     || CASE WHEN t_fired THEN ' (fired)' ELSE '' END)
-               || CASE WHEN semantic IS NULL OR CAST(:semantic_threshold AS numeric) IS NULL THEN '[]'::jsonb
-                       ELSE jsonb_build_array('meaning similarity ' || to_char(semantic, 'FM0.00')
-                                              || CASE WHEN s_fired THEN ' (fired)' ELSE '' END) END,
-               jsonb_strip_nulls(jsonb_build_object(
-                   'trigram', trigram,
-                   'semantic', CASE WHEN CAST(:semantic_threshold AS numeric) IS NOT NULL THEN semantic END,
-                   'fired', to_jsonb(array_remove(ARRAY[CASE WHEN t_fired THEN 'trigram' END,
-                                                        CASE WHEN s_fired THEN 'semantic' END], NULL)),
-                   'model', CASE WHEN s_fired THEN CAST(:model AS text) END))
-          FROM s WHERE (t_fired OR s_fired) AND NOT EXISTS (
-               SELECT 1 FROM sethu.overlap_links l
-                WHERE l.complaint_a = s.complaint_a AND l.complaint_b = s.complaint_b AND l.tier = 2)
-         ORDER BY greatest(trigram, CASE WHEN s_fired THEN semantic END) DESC LIMIT :limit
-            ON CONFLICT (complaint_a, complaint_b, tier) DO NOTHING
-     RETURNING id, complaint_a, complaint_b, score, signals""",  # noqa: S608 - fixed text
-                threshold=threshold, window=window_days, semantic_threshold=semantic_threshold, model=model,
-                limit=limit)
-
-
-def unembedded(session: Session, model: str, limit: int) -> list[dict]:
-    """Complaints with no embedding for this model yet: their id and text, for the worker only."""
-    return _all(session, """
-        SELECT c.id, c.body FROM sethu.complaints c
-         WHERE NOT EXISTS (SELECT 1 FROM sethu.complaint_embeddings e WHERE e.complaint_id = c.id AND e.model = :m)
-         ORDER BY c.filed_at DESC LIMIT :limit""", m=model, limit=limit)
-
-
-def store_embeddings(session: Session, model: str, rows: list[tuple[UUID, list[float]]]) -> None:
-    for complaint_id, vector in rows:
-        session.execute(text("""
-            INSERT INTO sethu.complaint_embeddings (complaint_id, model, embedding)
-            VALUES (:c, :m, CAST(:v AS vector)) ON CONFLICT (complaint_id, model) DO NOTHING"""),
-            {"c": complaint_id, "m": model, "v": "[" + ",".join(f"{x:.6f}" for x in vector) + "]"})
+        VALUES (:a, :b, 2, :score, CAST(:reasons AS jsonb), CAST(:signals AS jsonb))
+        ON CONFLICT (complaint_a, complaint_b, tier) DO NOTHING RETURNING id"""),
+        {"a": a, "b": b, "score": score, "reasons": json.dumps(reasons),
+         "signals": json.dumps(signals, default=str)}).scalar()
 
 
 def refs(session: Session, ids: list[UUID]) -> dict[UUID, str]:

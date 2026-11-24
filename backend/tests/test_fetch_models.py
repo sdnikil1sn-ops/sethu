@@ -70,6 +70,7 @@ def test_download_failure_does_not_stop_the_rest(fake, capsys):
 def test_pinned_list_matches_what_the_providers_look_up():
     names = {name for name, *_ in fetch_models.SMALL}
     assert names == {"lid-176", "rapidocr-en", "rapidocr-devanagari", "rapidocr-ta", "rapidocr-te",
+                     "multilingual-e5-small",
                      *(f"tessdata-{lang}" for lang in ("eng", "hin", "mar", "tam", "tel", "kan", "ben"))}
     for *_, files in fetch_models.SMALL:
         for url, sha in files:

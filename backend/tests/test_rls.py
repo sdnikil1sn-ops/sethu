@@ -217,3 +217,54 @@ def test_intake_items_are_read_and_written_only_as_migration_0009_says(app_engin
     with pytest.raises(DBAPIError, match="row-level security"), session_for(officer, app_engine) as s:
         s.execute(text("INSERT INTO sethu.intake_sources (name, channel, bureau_id) VALUES ('x-api', 'api', :b)"),
                   {"b": world["pgrc"]})
+
+
+def test_a3_tables_are_read_and_written_only_as_migration_0016_says(app_engine, world):
+    """institution_embeddings and classifier_versions: worker and admin (classifiers also oversight and auditor);
+    match_evaluations: the bureaus party to the pair; ai_suggestions: where the complaint's text is readable;
+    ai_feedback: append-only, inserted by the bureau whose case it is."""
+    officer = Principal("u1", "rao", "officer", world["pgrc"])
+    rb = Principal("u2", "x", "officer", world["rb"])
+    with session_for(SYSTEM, app_engine) as s:
+        c101, c102 = (s.execute(text("SELECT id FROM sethu.complaints WHERE ref = :r"), {"r": r}).scalar_one()
+                      for r in ("C-101", "C-102"))
+        inst = s.execute(text("SELECT id FROM sethu.institutions")).scalar_one()
+        a, b = sorted([c101, c102], key=str)
+        s.execute(text("INSERT INTO sethu.institution_embeddings (institution_id, label, embedding_model,"
+                       " embedding_version, embedding) VALUES (:i, 'x', 'm', 'v', array_fill(0, ARRAY[384])::vector)"),
+                  {"i": inst})
+        s.execute(text("INSERT INTO sethu.match_evaluations (complaint_a, complaint_b, match_key, matched, method)"
+                       " VALUES (:a, :b, 'k', false, 'text')"), {"a": a, "b": b})
+        s.execute(text("INSERT INTO sethu.ai_suggestions (complaint_id, kind, suggested, path, attempt_key)"
+                       " VALUES (:c, 'category', 'Ragging', 'fallback', 'k')"), {"c": c101})
+        s.execute(text("INSERT INTO sethu.classifier_versions (version, task, format, artifact, sha256,"
+                       " embedding_model, embedding_version, metrics, status) VALUES (1, 'classify.category',"
+                       " 'sethu-logreg-json-1', '{}', repeat('a', 64), 'm', 'v', '{}', 'inactive')"))
+    other = Principal("u4", "x", "officer", uuid4())
+    for who, embeddings, evaluations, suggestions, classifiers in (
+            (officer, 0, 1, 1, 0), (rb, 0, 1, 0, 0), (other, 0, 0, 0, 0),
+            (Principal("o", "m", "oversight", None), 0, 1, 1, 1), (Principal("d", "d", "auditor", None), 0, 1, 1, 1)):
+        with session_for(who, app_engine) as s:
+            counts = [s.execute(text(f"SELECT count(*) FROM sethu.{t}")).scalar() for t in (  # noqa: S608
+                "institution_embeddings", "match_evaluations", "ai_suggestions", "classifier_versions")]
+        assert counts == [embeddings, evaluations, suggestions, classifiers], (who.role, counts)
+    for sql in ("INSERT INTO sethu.ai_suggestions (complaint_id, kind, path, attempt_key) VALUES (:c, 'institution',"
+                " 'officer', 'k')",
+                "INSERT INTO sethu.match_evaluations (complaint_a, complaint_b, match_key, matched, method)"
+                " VALUES (:c, :c, 'k', true, 'e5')"):
+        with pytest.raises(DBAPIError, match="row-level security"), session_for(officer, app_engine) as s:
+            s.execute(text(sql), {"c": c101})
+    with session_for(rb, app_engine) as s:                    # RB cannot decide PGRC's suggestion
+        assert s.execute(text("UPDATE sethu.ai_suggestions SET status = 'accepted'")).rowcount == 0
+    with session_for(officer, app_engine) as s:               # PGRC can
+        assert s.execute(text("UPDATE sethu.ai_suggestions SET status = 'accepted'")).rowcount == 1
+        s.execute(text("INSERT INTO sethu.ai_feedback (kind, complaint_id, decision) VALUES ('category', :c,"
+                       " 'accepted')"), {"c": c101})
+    with pytest.raises(DBAPIError, match="row-level security"), session_for(rb, app_engine) as s:
+        s.execute(text("INSERT INTO sethu.ai_feedback (kind, complaint_id, decision) VALUES ('category', :c,"
+                       " 'changed')"), {"c": c101})
+    for sql in ("UPDATE sethu.ai_feedback SET decision = 'changed'", "DELETE FROM sethu.ai_feedback"):
+        with pytest.raises(DBAPIError, match="permission denied"), session_for(SYSTEM, app_engine) as s:
+            s.execute(text(sql))
+    with session_for(rb, app_engine) as s:
+        assert s.execute(text("SELECT count(*) FROM sethu.ai_feedback")).scalar() == 0

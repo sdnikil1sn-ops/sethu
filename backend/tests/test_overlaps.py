@@ -245,7 +245,8 @@ def test_a_second_overlap_run_is_skipped_while_one_is_running(world):
     from app import worker
     with session_for(SYSTEM, world["engine"]) as running:
         running.execute(text("SELECT pg_advisory_xact_lock(hashtext('sethu.overlaps.detect'))"))
-        assert worker.detect_overlaps() == {"suggested": 0, "embedded": 0, "skipped": 1}
+        # (A3: no "embedded" count any more: the ai-worker makes the vectors, not this job.)
+        assert worker.detect_overlaps() == {"suggested": 0, "skipped": 1}
     assert worker.detect_overlaps()["suggested"] == 7
 
 

@@ -125,16 +125,21 @@ The task re-encrypts every value onto the active key and writes a `complainant.r
 
 ### Semantic overlap
 
-Overlap suggestions (Tier 2) are gated by the rules: same institution, same category, different bureaus, both open, filed within 30 days. Inside that gate a pair is suggested when **either** signal fires: trigram text similarity (pg_trgm) of at least 0.30, or meaning similarity (cosine of two embeddings) of at least `SETHU_SEMANTIC_THRESHOLD` (0.75). Every suggestion shows both values and which fired ("text similarity 0.18; meaning similarity 0.76 (fired)"); `overlap_links.signals` keeps them.
+**Since A3** (docs/AI-PIPELINE.md, "Phase A3"), Tier 2 matching is the AI task `match.complaints`, run through the router. Its stages:
 
-- **Model**: `BAAI/bge-small-en-v1.5` (ONNX, quantized, 384 dimensions) run by fastembed 0.9.1 in the worker. `backend/models.lock.json` pins the Hugging Face repository `Qdrant/bge-small-en-v1.5-onnx-Q` at revision `aa8f8b06…` and the SHA-256 of each of its five files (the weights: `51f1bd0a…`, 66 MB). `backend/fetch_model.py` downloads them at image build time with retries and a resumable cache mount, refuses any file whose hash differs, and lays them out for offline use; the image sets `HF_HUB_OFFLINE=1`. Run time never downloads anything (verified: the worker, on internal networks only, embedded all 312 seed complaints).
-- **Off switch**: `SETHU_SEMANTIC_OVERLAP=false` (or no model directory) gives exactly the trigram rule; nothing else changes. Embeddings are computed only for English complaints' comparisons (a Hindi pair uses trigram only).
-- **Where they live**: `complaint_embeddings`, readable exactly where the complaint text is (Row-Level Security), written only by the worker; no API returns them and no log prints them.
-- **Measure** on any data: `docker compose exec worker python -m app.modules.overlaps.measure [threshold]` prints, for every pair the rules allow, both values and which signal suggests it (references and numbers, never text).
+1. E5 meaning similarity of the original texts, in any languages, at threshold `ai.match.complaints.e5_threshold` (0.88).
+2. Trigram similarity at 0.30, for same-language pairs.
+3. An officer.
 
-**Measured on the seed (2026-11-21).** The rules allow 7 pairs, all 7 already suggested by trigram (0.34 to 0.62); their meaning similarity is 0.77 to 0.91. So on the seed the semantic signal changes **no** suggestion (and adds no false one). A paraphrased pair filed through intake (two complaints about a withheld caution deposit in different words, PGRC and RB, same institution and category) scores trigram 0.18 and meaning 0.76: trigram misses it, the semantic signal suggests it. The threshold 0.75 is just above the 99th percentile (0.749) of meaning similarity for unrelated English complaints of different categories.
+It runs inside the same rules: same institution, same category, different bureaus, both open, filed within 30 days.
 
-**Limits.** This small English model rates complaints of the *same category* as close even when they are about different matters (median 0.80, 95th percentile 0.94 across institutions on the seed, whose texts come from templates), so meaning similarity is only usable inside the rules' gate, and within it two different matters at one institution in one category may be suggested; an officer decides every suggestion. Hindi text is not compared by meaning. The values depend on the model: change the model and re-measure before trusting the threshold.
+- **The suggestion**: each one shows the explanation and a matching confidence on the overlaps screen.
+- **The vectors**: the ai-worker makes them (`sethu.ai.maintain`, resumable). The backend worker no longer embeds.
+- **Old vectors**: the bge-small-en-v1.5 vectors from before A3 stay, labelled `BAAI/bge-small-en-v1.5` / `fastembed-0.9.1`, and are never compared with E5 vectors.
+- **Off switch**: `SETHU_SEMANTIC_OVERLAP=false`, or no E5 model, gives exactly the trigram rule.
+- **Measure**: `scripts/measure_a3.py` (offline, in the ai-worker image) prints precision and recall at every threshold. It replaces `app.modules.overlaps.measure`.
+
+**History (2026-11-21, bge-small).** The English-only bge-small model scored the 7 seed pairs 0.77 to 0.91, with a threshold of 0.75. It did not compare Hindi text. Its weights are still baked into the backend image by `backend/fetch_model.py` (`models.lock.json`) but are no longer used. Removing them needs the lock files regenerated (readiness row 66 plan, or a later clean-up).
 
 ### Graph
 

@@ -66,12 +66,10 @@ class Settings(BaseSettings):
     # appends; the backend reads it to compare. Empty: no export.
     audit_anchor_dir: str | None = None
 
-    # Semantic overlap signal (app/modules/overlaps): a local ONNX model baked into the image, never downloaded at
-    # run time. Off, or with no model directory, overlap detection is trigram only, as before.
+    # Semantic overlap signal (A3, docs/AI-PIPELINE.md): E5 vectors made by the ai-worker from the verified models
+    # folder. Off, the e5-match provider is unhealthy and matching is trigram only (the fallback). The threshold is a
+    # setting in sethu.app_settings (ai.match.complaints.e5_threshold), calibrated per model.
     semantic_overlap: bool = True
-    embedding_model: str = "BAAI/bge-small-en-v1.5"
-    embedding_cache_dir: str | None = None     # set in the image: /opt/sethu/models
-    semantic_threshold: float = 0.75           # cosine similarity, inside the rules; calibrated on the seed (RUNBOOK)
 
     # Complaint intake (app/modules/intake). No setting here makes a network call.
     intake_spool_dir: str | None = None       # fallback channel: a mounted folder, one subfolder per spool source
@@ -108,6 +106,10 @@ class Settings(BaseSettings):
         "ocr.read": ["rapidocr", "tesseract"],
         "translate.to_en": ["indictrans2", "glossary"],
         "glossary.tag": ["glossary-tags"],
+        "embed.text": ["e5"],
+        "match.complaints": ["e5-match", "text-match"],
+        "institution.resolve": ["institution-e5", "institution-fuzzy"],
+        "classify.category": ["category-e5", "category-rules"],
     }
     ai_endpoints: dict[str, str] = {}              # provider: URL of a model server inside the `ai` zone
     # The libraries' own offline switches; production refuses to start unless both are "1".

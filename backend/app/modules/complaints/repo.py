@@ -124,6 +124,11 @@ def case_counts(session: Session, institution_id: UUID) -> dict:
          WHERE s.institution_id = :id""", id=institution_id)  # type: ignore[return-value]
 
 
+def set_category(session: Session, complaint_id: UUID, category: str) -> None:
+    session.execute(text("UPDATE sethu.complaints SET category = :c, updated_at = now() WHERE id = :id"),
+                    {"c": category, "id": complaint_id})
+
+
 def lock(session: Session, complaint_id: UUID) -> dict | None:
     """The case as the caller may read it, locked until the transaction ends."""
     return _one(session, """

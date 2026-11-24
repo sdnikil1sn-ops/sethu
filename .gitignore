@@ -13,6 +13,9 @@ dist/
 .w_test
 # real data never belongs in the repository
 data/
+# ...but these hold synthetic test and bootstrap data (mock only, @sethu.test rules apply)
+!backend/tests/data/
+!backend/app/ai/data/
 *.dump
 backups/
 spool/

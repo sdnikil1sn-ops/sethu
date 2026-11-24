@@ -29,3 +29,6 @@ class AiHealth(BaseModel):
     memory: Memory | None = None
     models: dict[str, str]       # model name: "ok" or why it is refused
     tasks: list[TaskHealth]
+    classifier: dict | None = None        # the active category classifier and its held-out accuracy (A3)
+    classifier_versions: int = 0
+    embeddings: dict | None = None        # vectors per model and version, and the active one (A3)

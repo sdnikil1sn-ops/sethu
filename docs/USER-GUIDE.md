@@ -35,9 +35,22 @@ Works the cases of their own bureau.
   - add a note (seen only by the bureau holding the case).
 
   Every action is in the history and the audit log.
-- **Overlaps**: two open cases in different bureaus about the same institution and matter. If your bureau holds one of
-  them, decide: **Approve link** (it queues an alert to both bureau heads, which a head then releases) or **Not the same
-  matter**. Both choices are recorded.
+- **Overlaps**: two open cases in different bureaus about the same institution and matter, in any language. Each
+  suggestion explains how it was found:
+  - meaning similarity by the AI model, or text similarity as the fallback;
+  - the scores against their thresholds;
+  - whether the two signals agree;
+  - a matching confidence.
+
+  If your bureau holds one of the two cases, decide: **Approve link** (it queues an alert to both bureau heads, which a
+  head then releases) or **Not the same matter**. Both choices are recorded.
+- **AI suggestions** (on a case your bureau holds): the suggested category and institution, and what produced them:
+  the AI model, the fallback rules, or nobody (then you pick).
+  - **Category**: **Accept** the suggested category, or **Change to** another one. To keep the category the case has,
+    choose that one.
+  - **Institution**: **Accept**, or **Choose this one** among the top three. If none is right, use **Unmatched names**.
+
+  Nothing changes until you decide. Your decision is recorded, and it helps train the next classifier.
 - **Intake**: enter a complaint by hand or upload a CSV or XLSX file for your bureau's sources. An upload reports each bad
   row by row number and field, and queues the good ones.
 - **Unmatched names**: complaints whose institution name could not be matched automatically; pick the right institution.
@@ -87,6 +100,13 @@ Runs the system; does not work cases.
 - **Intake > Queue**: **Retry** an item that failed its attempts (the reason is shown).
 - **Overlaps**: **Look for new overlaps now** (the worker searches; the answer appears when it finishes).
 - **Findings**: **Check now**.
+- **AI health** (also readable by oversight):
+  - the active category classifier, its accuracy on the held-out set (synthetic data: not real-world accuracy) and
+    its earlier versions;
+  - how many complaints have a vector of the active E5 model.
+
+  The admin buttons: **Retrain classifier** (a new version is used only if it does no worse), **Use vN** (roll back)
+  and **Re-embed now**.
 - **Audit log**: see Auditor.
 
 People and roles themselves are managed in Keycloak by the identity administrator (docs/OPERATIONS.md, section 4).

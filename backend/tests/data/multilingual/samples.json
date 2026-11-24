@@ -1,0 +1,114 @@
+{
+ "_note": "Mock complaint sentences written for tests (no real complaint, no real person). Not reviewed by native speakers: use them to exercise the pipeline, not to judge translation quality.",
+ "samples": [
+  {
+   "id": "hi-1",
+   "language": "hi",
+   "script": "Deva",
+   "text": "छात्रवृत्ति की राशि छह महीने से नहीं मिली है। कॉलेज ने फीस वापसी का आवेदन भी स्वीकार नहीं किया।",
+   "english": "The scholarship amount has not been received for six months. The college also did not accept the fee refund application.",
+   "tags": [
+    "scholarship",
+    "fee refund"
+   ]
+  },
+  {
+   "id": "hi-2",
+   "language": "hi",
+   "script": "Deva",
+   "text": "छात्रावास में रैगिंग हो रही है और प्राचार्य शिकायत पर कोई कार्रवाई नहीं कर रहे हैं।",
+   "english": "Ragging is happening in the hostel and the principal is taking no action on the complaint.",
+   "tags": [
+    "ragging",
+    "hostel",
+    "principal",
+    "complaint"
+   ]
+  },
+  {
+   "id": "mr-1",
+   "language": "mr",
+   "script": "Deva",
+   "text": "शिष्यवृत्ती सहा महिन्यांपासून मिळालेली नाही. महाविद्यालयाने शुल्क परताव्याचा अर्ज स्वीकारला नाही.",
+   "english": "The scholarship has not been received for six months. The college did not accept the fee refund application.",
+   "tags": [
+    "scholarship",
+    "college",
+    "fee refund"
+   ]
+  },
+  {
+   "id": "ta-1",
+   "language": "ta",
+   "script": "Taml",
+   "text": "ஆறு மாதங்களாக உதவித்தொகை கிடைக்கவில்லை. கல்லூரி கட்டணம் திரும்பப் பெறும் விண்ணப்பத்தை ஏற்கவில்லை.",
+   "english": "The scholarship has not been received for six months. The college did not accept the fee refund application.",
+   "tags": [
+    "scholarship",
+    "college",
+    "fee"
+   ]
+  },
+  {
+   "id": "te-1",
+   "language": "te",
+   "script": "Telu",
+   "text": "ఆరు నెలలుగా ఉపకార వేతనం రాలేదు. కళాశాల ఫీజు వాపసు దరఖాస్తును స్వీకరించలేదు.",
+   "english": "The scholarship has not come for six months. The college did not accept the fee refund application.",
+   "tags": [
+    "scholarship",
+    "college",
+    "fee"
+   ]
+  },
+  {
+   "id": "bn-1",
+   "language": "bn",
+   "script": "Beng",
+   "text": "ছয় মাস ধরে বৃত্তির টাকা পাইনি। কলেজ ফি ফেরতের আবেদনও গ্রহণ করেনি।",
+   "english": "I have not received the scholarship money for six months. The college also did not accept the fee refund application.",
+   "tags": [
+    "scholarship",
+    "college",
+    "fee refund"
+   ]
+  },
+  {
+   "id": "kn-1",
+   "language": "kn",
+   "script": "Knda",
+   "text": "ಆರು ತಿಂಗಳಿಂದ ವಿದ್ಯಾರ್ಥಿವೇತನ ಬಂದಿಲ್ಲ. ಕಾಲೇಜು ಶುಲ್ಕ ಮರುಪಾವತಿ ಅರ್ಜಿಯನ್ನು ಸ್ವೀಕರಿಸಿಲ್ಲ.",
+   "english": "The scholarship has not come for six months. The college did not accept the fee refund application.",
+   "tags": [
+    "scholarship",
+    "college",
+    "fee refund"
+   ]
+  },
+  {
+   "id": "en-1",
+   "language": "en",
+   "script": "Latn",
+   "text": "The scholarship has not been received for six months. The college did not accept the fee refund application.",
+   "english": "The scholarship has not been received for six months. The college did not accept the fee refund application.",
+   "tags": [
+    "scholarship",
+    "college",
+    "fee refund"
+   ]
+  },
+  {
+   "id": "hi-latn-1",
+   "language": "hi",
+   "script": "Latn",
+   "text": "College ne fees refund nahi kiya aur NOC bhi nahi diya, affidavit do baar jama kiya.",
+   "english": "The college did not refund the fees and did not give the NOC either; the affidavit was submitted twice.",
+   "tags": [
+    "college",
+    "fee refund",
+    "noc",
+    "affidavit"
+   ]
+  }
+ ]
+}

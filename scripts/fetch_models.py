@@ -7,7 +7,7 @@ ai-worker. This script refuses to run inside a container or with SETHU_ENVIRONME
     python scripts/fetch_models.py add NAME VERSION TASK LICENSE MEMORY_MB URL [URL ...] [--sha256 FILE_SHA256 ...]
     python scripts/fetch_models.py record NAME VERSION TASK LICENSE MEMORY_MB    # a folder unpacked by hand
     python scripts/fetch_models.py check            # recompute every model's checksum against the manifest
-    python scripts/fetch_models.py small            # every small model SETHU uses, in one run (about 66.5 MB)
+    python scripts/fetch_models.py small            # every small model SETHU uses, in one run (about 202 MB)
 
 Each URL (https only) is saved under models/NAME/VERSION/. Give --sha256 for each file when the publisher lists
 one (strongly advised): a file that does not match is deleted and nothing is recorded. The manifest gets the
@@ -28,12 +28,13 @@ MODELS = Path(os.environ.get("SETHU_MODELS_DIR") or ROOT / "models")   # the fol
 sys.path.insert(0, str(ROOT / "backend"))
 from app.ai.registry import FIELDS, ModelIntegrityError, check_all, digest, load_manifest, verify  # noqa: E402
 
-# `small`: the models the providers look up (app/ai/lid.py, app/ai/ocr.py), with each file's SHA-256 pinned (taken
+# `small`: the models the providers look up (app/ai/lid.py, ocr.py, e5.py), with each file's SHA-256 pinned (taken
 # from copies downloaded and checked on 2026-11-23). Not here: IndicTrans2 (gated: docs/AI-PIPELINE.md) and a
 # RapidOCR Kannada model (only PP-OCRv4 has one, and it was not shown to work; Tesseract reads Kannada).
 # Tesseract needs no script or OSD data: SETHU runs it with --psm 6 and an explicit language.
 RAPID = "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5"
 TESS = "https://github.com/tesseract-ocr/tessdata_fast/raw/4.1.0"
+E5 = "https://huggingface.co/intfloat/multilingual-e5-small/resolve/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx"
 DET = (f"{RAPID}/det/ch_PP-OCRv5_det_mobile.onnx", "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae")
 SMALL = [  # name, version, task, licence, approx memory MB, [(url, sha256), ...]
     ("lid-176", "1", "language.detect", "CC-BY-SA-3.0 (fastText)", 5,
@@ -54,6 +55,11 @@ SMALL = [  # name, version, task, licence, approx memory MB, [(url, sha256), ...
         ("tel", "d10691fddd5b67802e1c12800ebb321d3b8bcd8d24a2ac3ff206f93188c04ab5"),
         ("kan", "bd31e6b6ae93271e3bcf5383d306d8eefbb91542937cd6d735a5930c970e61d8"),
         ("ben", "31163084c279aaebd376216f0c3d5c17ad4b5fee8db49dae79c20000b5de5964"))],
+    # A3: multilingual-e5-small (MIT), the publisher's int8 ONNX build and its tokenizer, at a pinned revision. The
+    # hashes are the publisher's (Hugging Face LFS) and matched our download on 2026-11-24. 135 MB.
+    ("multilingual-e5-small", "614241f-int8", "embed.text", "MIT (intfloat/multilingual-e5-small)", 550,
+     [(f"{E5}/model_qint8_avx512_vnni.onnx", "dd476dd0c2514e9b9be83aeb3853fac0763e0bdf4a71645407587d77c48a2d88"),
+      (f"{E5}/tokenizer.json", "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39")]),
 ]
 
 

@@ -2,6 +2,7 @@ import { type FormEvent, useState } from "react";
 import { api, useLoad } from "../../api";
 import { Attachments, EnrichmentPanel, LanguageBadge } from "./Enrichment";
 import { History } from "./History";
+import { AiSuggestions } from "./Suggestions";
 import { CLOSE_REASONS, type Case, type Options, day, sla, words } from "./types";
 
 // Mirrors ACTIONS in backend/app/modules/complaints/service.py: what each status allows.
@@ -188,6 +189,7 @@ export function CaseDetail({ id }: { id: string }) {
             {c.body}
           </p>
           <EnrichmentPanel c={c} />
+          <AiSuggestions c={c} onDone={reload} />
         </>
       ) : (
         <p role="note">

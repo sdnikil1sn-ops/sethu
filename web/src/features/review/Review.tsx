@@ -5,7 +5,7 @@ import { moment } from "../cases/types";
 // Mirrors backend/app/modules/enrichment/schemas.py ReviewItem
 type Item = {
   id: string;
-  kind: "language" | "ocr" | "translation";
+  kind: "language" | "ocr" | "translation" | "category" | "institution";
   complaint_id: string;
   ref: string;
   bureau: string;
@@ -16,7 +16,18 @@ type Item = {
   resolved_at: string | null;
 };
 
-const KIND = { language: "Language", ocr: "Reading an attachment", translation: "Translation" };
+const KIND = {
+  language: "Language",
+  ocr: "Reading an attachment",
+  translation: "Translation",
+  category: "Category",
+  institution: "Institution",
+};
+// Where the person settles each kind (A3): the case page for a category, the resolution queue for an institution.
+const WHERE: Partial<Record<Item["kind"], (i: Item) => string>> = {
+  category: (i) => `#/cases/${i.complaint_id}`,
+  institution: () => "#/queue",
+};
 
 /** Work for a person where the AI layer was unsure or failed. The holding bureau's officers and heads (and admin)
  *  resolve; oversight reads. */
@@ -39,9 +50,10 @@ export function ReviewPage({ canDecide }: { canDecide: boolean }) {
     <section>
       <h1>Review</h1>
       <p className="note">
-        The AI layer only suggests. Where it could not tell the language, read an attachment or translate with enough
-        confidence, a person decides: open the case, check the original, and mark the item resolved (you dealt with
-        it) or dismissed (nothing needed).
+        The AI layer only suggests. Where it could not tell the language, read an attachment, translate, pick a
+        category or link the institution with enough confidence, a person decides: open the case, check the original,
+        settle it (a category on the case page, an institution in the resolution queue), and mark the item resolved
+        (you dealt with it) or dismissed (nothing needed).
       </p>
       <form className="filters" onSubmit={(e) => e.preventDefault()}>
         <label>
@@ -75,7 +87,9 @@ export function ReviewPage({ canDecide }: { canDecide: boolean }) {
                   <a href={`#/cases/${i.complaint_id}`}>{i.ref}</a>
                 </td>
                 <td role="cell" data-label="Bureau">{i.bureau}</td>
-                <td role="cell" data-label="What">{KIND[i.kind]}</td>
+                <td role="cell" data-label="What">
+                  {WHERE[i.kind] ? <a href={WHERE[i.kind]!(i)}>{KIND[i.kind]}</a> : KIND[i.kind]}
+                </td>
                 <td role="cell" data-label="Why">{i.reason}</td>
                 <td role="cell" data-label="Since">{moment(i.created_at)}</td>
                 {canDecide && status === "open" && (

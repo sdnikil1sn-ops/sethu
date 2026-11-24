@@ -27,6 +27,8 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["app*"]
+[tool.setuptools.package-data]
+"app.ai" = ["data/*.jsonl"]   # the category classifier's bootstrap set (scripts/make_category_bootstrap.py)
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

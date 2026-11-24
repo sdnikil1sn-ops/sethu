@@ -154,7 +154,7 @@ export function App() {
         ) : route === "/admin" ? (
           <AdminPage />
         ) : route === "/ai" ? (
-          <AiHealthPage />
+          <AiHealthPage isAdmin={me?.role === "admin"} />
         ) : route === "/review" ? (
           <ReviewPage canDecide={!!me && DECIDES_REVIEW.includes(me.role)} />
         ) : route === "/graph" ? (
