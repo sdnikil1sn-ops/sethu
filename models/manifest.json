@@ -116,6 +116,15 @@
       "sha256": "bf42b26e3ad6d7cac23d6b2546cd1c1914aa6f1f4b3e7c0aaa1ee558b274d7dc",
       "path": "tessdata-ben/4.1.0-fast",
       "approx_memory_mb": 60
+    },
+    {
+      "name": "multilingual-e5-small",
+      "version": "614241f-int8",
+      "task": "embed.text",
+      "license": "MIT (intfloat/multilingual-e5-small)",
+      "sha256": "f3639a06849d934655e33df6a498729259329f9a9b37aafd3a7a8b34681d6d43",
+      "path": "multilingual-e5-small/614241f-int8",
+      "approx_memory_mb": 550
     }
   ]
 }
