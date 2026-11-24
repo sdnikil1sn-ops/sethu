@@ -1,14 +1,14 @@
 {
-  "snapshot_id": "sha256:2ffcd01876f79483c5f12423e8284a51cdf008229881290c595c2f00cac430e9",
+  "snapshot_id": "sha256:41d2d36a778dd59ea5ae1a7aec78b127bc326d77e3e4fb0641672f38b0b8ad64",
   "format_version": 1,
   "enola_version": "0.4.21",
   "extractor_version": "v270",
-  "generated_at": "2026-11-22T07:42:25Z",
-  "duration": "2.7112187s",
+  "generated_at": "2026-11-23T14:09:24Z",
+  "duration": "12.4224444s",
   "repo_path": "E:\\App\\Project\\SETHU",
   "git": {
     "ref": "main",
-    "commit": "16efd629aa5f2ad0c735f51d3219eed40bd6b468",
+    "commit": "bb45a4e71eb643755ce3f56464223405dec932ea",
     "dirty": false,
     "remote": "github.com/sdnikil1sn-ops/sethu"
   },
@@ -48,16 +48,16 @@
   "config_hash": "sha256:73d78ea79f51e19979d4c7d00bd9463ae684ebcb909116abad86675323c32c05",
   "ignore_glob_hash": "sha256:7523cc6397a498e151125a682d28fbf6df20c6f51f6dfaf18fd8f5239a20d2d8",
   "output_hashes": {
-    "facts.jsonl": "sha256:f1207e6ecdfaea7e52a9c8ea6b145c884eabbc588c6b23b238daeb7768e294c6",
-    "insights.json": "sha256:148c9c554b18fcc0e8c7c69aef861b19756dc6adca77306c7955d578f5eb1656",
-    "llm_context.md": "sha256:8cde9aa26d9df5346039536b90b19686a5e60d0f58c2a4ccd6d4a5dd7273e33c"
+    "facts.jsonl": "sha256:3325c86ee7ec2e0fef25fad77d9fc4dfe12cc538266a32db52e17257f41a1880",
+    "insights.json": "sha256:21b3fb5fc74441841bd6661aa56b428f9a6da920216efade3ce2b703458ef7f0",
+    "llm_context.md": "sha256:69f4d000dd18a26562eeff6e38129edce5ce72cf8d45b9e0e48fa792161f6d32"
   },
-  "fact_count": 3898,
-  "insight_count": 185,
+  "fact_count": 4426,
+  "insight_count": 187,
   "quality": {
-    "files_seen": 1406,
-    "files_parsed": 296,
-    "files_skipped": 57,
+    "files_seen": 1663,
+    "files_parsed": 336,
+    "files_skipped": 69,
     "dirs_skipped": 8,
     "skipped_sample": [
       ".claude/worktrees/jolly-feynman-1a9f96/.enola/ (glob: **/.enola/**)",
@@ -67,6 +67,9 @@
       ".claude/worktrees/jolly-feynman-1a9f96/backend/.ruff_cache/ (glob: **/.ruff_cache/**)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/__init__.py (glob: **/tests/**/*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/conftest.py (glob: **/conftest.py)",
+      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_ai_health.py (glob: **/test_*.py)",
+      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_ai_registry.py (glob: **/test_*.py)",
+      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_ai_router.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_alerts.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_anchor.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_audit.py (glob: **/test_*.py)",
@@ -76,25 +79,22 @@
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_complainant.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_config.py (glob: **/test_*.py)",
       ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_dashboard.py (glob: **/test_*.py)",
-      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_directory.py (glob: **/test_*.py)",
-      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_filters.py (glob: **/test_*.py)",
-      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_findings.py (glob: **/test_*.py)",
-      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_graph.py (glob: **/test_*.py)"
+      ".claude/worktrees/jolly-feynman-1a9f96/backend/tests/test_directory.py (glob: **/test_*.py)"
     ],
     "parse_errors": 0,
-    "heuristic_insights": 183,
+    "heuristic_insights": 185,
     "coverage": {
       "services_total": 0,
       "coverage_gaps": 0,
       "unresolved_edges": 0,
       "extractors_reporting": 1,
-      "extraction_unresolved": 270
+      "extraction_unresolved": 318
     },
     "census": {
-      "files_walked": 1463,
-      "parsed": 296,
-      "excluded_by_ignore": 57,
-      "excluded_by_kind": 1062,
+      "files_walked": 1732,
+      "parsed": 336,
+      "excluded_by_ignore": 69,
+      "excluded_by_kind": 1275,
       "excluded_kinds": {
         "(no extension)": 9,
         ".conf": 4,
@@ -108,21 +108,23 @@
         ".graphify_root": 2,
         ".graphify_version": 2,
         ".ini": 2,
-        ".json": 983,
+        ".json": 1125,
+        ".jsonl": 1,
         ".lock": 6,
         ".nudges": 1,
+        ".png": 68,
         ".sh": 8,
         ".sig": 2,
         ".sql": 2,
         ".toml": 2,
-        ".txt": 4,
+        ".txt": 6,
         ".yml": 8
       },
-      "skipped_with_cause": 48,
+      "skipped_with_cause": 52,
       "top_skip_causes": [
         {
           "cause": "claimed by python, no facts emitted",
-          "count": 38
+          "count": 42
         },
         {
           "cause": "claimed by typescript, no facts emitted",

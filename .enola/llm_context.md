@@ -2,42 +2,42 @@
 
 ## Repository Map
 
-82 modules, 1600 symbols, grouped by area. Every module is in `facts.jsonl`, or query_facts(kind="module").
+88 modules, 1866 symbols, grouped by area. Every module is in `facts.jsonl`, or query_facts(kind="module").
 
 | Area | Modules | Symbols | Languages |
 |------|---------|---------|-----------|
-| `.claude` | 41 | 800 | python, typescript |
-| `backend` | 24 | 558 | python |
-| `web` | 14 | 176 | typescript |
+| `.claude` | 44 | 933 | python, typescript |
+| `backend` | 26 | 671 | python |
+| `web` | 15 | 194 | typescript |
 | `loadtest` | 1 | 30 | python |
-| `scripts` | 1 | 26 | python |
+| `scripts` | 1 | 28 | python |
 | `seed` | 1 | 10 | python |
 
 Largest modules:
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/ai` — 90 symbols (python)
+- `backend/app/ai` — 90 symbols (python)
 - `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` — 78 symbols (python)
 - `backend/app/modules/complaints` — 78 symbols (python)
 - `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/intake` — 72 symbols (python)
 - `backend/app/modules/intake` — 72 symbols (python)
 - `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions` — 46 symbols (python)
 - `backend/app/modules/institutions` — 46 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/enrichment` — 43 symbols (python)
 - `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` — 43 symbols (python)
+- `backend/app/modules/enrichment` — 43 symbols (python)
 - `backend/app/modules/findings` — 43 symbols (python)
 - `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` — 42 symbols (python)
 - `backend/app/modules/overlaps` — 42 symbols (python)
-- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/ai` — 41 symbols (python)
-- `backend/app/ai` — 41 symbols (python)
-- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/core` — 37 symbols (python)
-- `backend/app/core` — 37 symbols (python)
-- `.claude/worktrees/jolly-feynman-1a9f96/web/src` — 35 symbols (typescript)
-- `web/src` — 35 symbols (typescript)
-- `.claude/worktrees/jolly-feynman-1a9f96/loadtest` — 30 symbols (python)
-- `loadtest` — 30 symbols (python)
-- `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions` — 28 symbols (python)
-- `backend/alembic/versions` — 28 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/backend/app/core` — 39 symbols (python)
+- `backend/app/core` — 39 symbols (python)
+- `.claude/worktrees/jolly-feynman-1a9f96/web/src` — 37 symbols (typescript)
+- `web/src` — 37 symbols (typescript)
+- `.claude/worktrees/jolly-feynman-1a9f96/web/src/features/cases` — 33 symbols (typescript)
+- `web/src/features/cases` — 33 symbols (typescript)
 
 ## Extraction Quality
 
-- Files parsed: **336** / 1663 seen (69 file(s) + 8 directory tree(s) skipped by ignore globs)
+- Files parsed: **370** / 1810 seen (77 file(s) + 10 directory tree(s) skipped by ignore globs)
 - Parse errors: 0
 
 ## Architecture Pattern
@@ -76,7 +76,7 @@ _No specific architecture pattern detected._
 - **main**: `scripts/install_cert.main` (scripts/install_cert.py)
 - **main**: `scripts/lock_python.main` (scripts/lock_python.py)
 - **main**: `seed/volume.main` (seed/volume.py)
-132 routes, 15 shown:
+146 routes, 15 shown:
 - **route** GET `/api/v1/admin/bureaus` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/bureaus/api.py)
 - **route** GET `/api/v1/admin/bureaus` (backend/app/modules/bureaus/api.py)
 - **route** GET `/api/v1/admin/deadlines` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints/api.py)
@@ -92,95 +92,100 @@ _No specific architecture pattern detected._
 - **route** GET `/api/v1/audit/signins` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view/api.py)
 - **route** GET `/api/v1/audit/signins` (backend/app/modules/audit_view/api.py)
 - **route** GET `/api/v1/audit/verify` (.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view/api.py)
-- … and 117 more (query_facts(kind="route") for all)
+- … and 131 more (query_facts(kind="route") for all)
 
 ## Routes
 
-132 routes, grouped by path prefix. query_facts(kind="route") for all of them.
+146 routes, grouped by path prefix. query_facts(kind="route") for all of them.
 
 | Prefix | Routes | Methods | Example |
 |--------|--------|---------|----------|
-| `/api` | 124 | GET, PATCH, POST, PUT | `/api/v1` |
+| `/api` | 138 | GET, PATCH, POST, PUT | `/api/v1` |
 | `/health` | 4 | GET | `/health/live` |
 | `/auth` | 2 | POST | `/auth/realms/sethu/protocol/openid-connect/token` |
 | `/metrics` | 2 | GET | `/metrics` |
 
 ## Dependency Rules
 
-147 internal module dependencies. The modules that reach furthest; traverse() or query_facts(kind="dependency") for the edges themselves.
+171 internal module dependencies. The modules that reach furthest; traverse() or query_facts(kind="dependency") for the edges themselves.
 
 | Module | Depends on |
 |--------|------------|
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app` | 9 modules |
-| `backend/app` | 9 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app` | 10 modules |
+| `backend/app` | 10 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/intake` | 7 modules |
 | `backend/app/modules/intake` | 7 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` | 6 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/overlaps` | 6 modules |
+| `backend/app/modules/complaints` | 6 modules |
 | `backend/app/modules/overlaps` | 6 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96` | 5 modules |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/complaints` | 5 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/enrichment` | 5 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/findings` | 5 modules |
-| `backend/app/modules/complaints` | 5 modules |
+| `backend/app/modules/enrichment` | 5 modules |
 | `backend/app/modules/findings` | 5 modules |
 | `.` | 4 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/ai` | 3 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/alerts` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/dashboard` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/search` | 3 modules |
+| `backend/app/ai` | 3 modules |
+| `backend/app/modules` | 3 modules |
 | `backend/app/modules/alerts` | 3 modules |
 | `backend/app/modules/dashboard` | 3 modules |
 | `backend/app/modules/search` | 3 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend` | 2 modules |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/ai` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/api` | 2 modules |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/ai_health` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/audit_view` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/bureaus` | 2 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/glossary` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/institutions` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/reports` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/users` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/loadtest` | 2 modules |
+| `.claude/worktrees/jolly-feynman-1a9f96/seed` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/web/src/features` | 2 modules |
 | `backend` | 2 modules |
-| `backend/app/ai` | 2 modules |
 | `backend/app/api` | 2 modules |
-| `backend/app/modules` | 2 modules |
 | `backend/app/modules/ai_health` | 2 modules |
 | `backend/app/modules/audit_view` | 2 modules |
 | `backend/app/modules/bureaus` | 2 modules |
+| `backend/app/modules/glossary` | 2 modules |
 | `backend/app/modules/institutions` | 2 modules |
 | `backend/app/modules/reports` | 2 modules |
 | `backend/app/modules/users` | 2 modules |
 | `loadtest` | 2 modules |
+| `seed` | 2 modules |
 | `web/src/features` | 2 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic` | 1 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/alembic/versions` | 1 modules |
 | `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules/graph` | 1 modules |
-| `.claude/worktrees/jolly-feynman-1a9f96/seed` | 1 modules |
 | `backend/alembic` | 1 modules |
 | `backend/alembic/versions` | 1 modules |
 | `backend/app/modules/graph` | 1 modules |
-| `seed` | 1 modules |
 
 ## Critical Modules
 
 | Module | Fan-In | Fan-Out | Criticality |
 |--------|--------|---------|-------------|
-| `backend/app/db` | 40 | 0 | high |
-| `backend/app/core` | 33 | 0 | high |
-| `backend/app/audit` | 32 | 0 | high |
-| `backend/alembic` | 29 | 1 | high |
-| `backend/app/modules/complaints` | 16 | 6 | high |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app` | 0 | 17 | high |
-| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | 0 | 16 | high |
-| `backend/app` | 0 | 16 | high |
-| `backend/app/modules` | 0 | 16 | high |
-| `backend/app/modules/overlaps` | 7 | 9 | high |
+| `backend/app/db` | 44 | 0 | high |
+| `backend/app/audit` | 36 | 0 | high |
+| `backend/app/core` | 35 | 0 | high |
+| `backend/alembic` | 31 | 1 | high |
+| `backend/app/ai` | 15 | 9 | high |
+| `backend/app/modules/complaints` | 16 | 7 | high |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app/modules` | 0 | 20 | high |
+| `backend/app/modules` | 0 | 20 | high |
+| `.claude/worktrees/jolly-feynman-1a9f96/backend/app` | 0 | 18 | high |
+| `backend/app` | 0 | 17 | high |
 
 ## Risk Zones
 
+- **Cyclic dependency detected (3 modules)** (confidence: 100%): The following modules form a dependency cycle: backend/app/ai -> backend/app/modules/enrichment -> backend/app/modules/glossary -> backend/app/ai. This can cause initialization issues, make refactoring harder, and indicates tight coupling.
 - **Cyclic dependency detected (2 modules)** (confidence: 100%): The following modules form a dependency cycle: backend/app/modules/complaints -> backend/app/modules/overlaps -> backend/app/modules/complaints. This can cause initialization issues, make refactoring harder, and indicates tight coupling.
 
 ---
 
-*Generated at 2026-11-23T14:09:24Z in 12.4224444s. 4426 facts, 187 insights.*
+*Generated at 2026-11-24T15:55:37Z in 10.859911s. 5006 facts, 190 insights.*

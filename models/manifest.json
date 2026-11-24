@@ -8,6 +8,114 @@
       "sha256": "f81b85ec850f3bc225100991d0aa18a0e15402592a2308791c24219977ba198c",
       "path": "stub-echo/stub.txt",
       "approx_memory_mb": 1
+    },
+    {
+      "name": "lid-176",
+      "version": "1",
+      "task": "language.detect",
+      "license": "CC-BY-SA-3.0 (fastText)",
+      "sha256": "4c4f87ba853a407e75d00638f612bda7bfe0205778a9c78f38a348f0ee831d13",
+      "path": "lid-176/1",
+      "approx_memory_mb": 5
+    },
+    {
+      "name": "rapidocr-en",
+      "version": "PP-OCRv5",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (PaddleOCR models)",
+      "sha256": "f16201ae159cbf23a8b199ec3ef80e6acba8744ea1e014708a7a975428711ca2",
+      "path": "rapidocr-en/PP-OCRv5",
+      "approx_memory_mb": 200
+    },
+    {
+      "name": "rapidocr-devanagari",
+      "version": "PP-OCRv5",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (PaddleOCR models)",
+      "sha256": "4339f46730bcf7cb45a1542270ae70d5ed39d15b02e9652a2424c73c5615c3aa",
+      "path": "rapidocr-devanagari/PP-OCRv5",
+      "approx_memory_mb": 200
+    },
+    {
+      "name": "rapidocr-ta",
+      "version": "PP-OCRv5",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (PaddleOCR models)",
+      "sha256": "c3caabd9c70d27a1575e852208110554067081fc5e3b6d26a3eaeba9978cd292",
+      "path": "rapidocr-ta/PP-OCRv5",
+      "approx_memory_mb": 200
+    },
+    {
+      "name": "rapidocr-te",
+      "version": "PP-OCRv5",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (PaddleOCR models)",
+      "sha256": "30720702624b9acf1a48aa62a3b184a7c103a514aed891848cd1104a14bc8986",
+      "path": "rapidocr-te/PP-OCRv5",
+      "approx_memory_mb": 200
+    },
+    {
+      "name": "tessdata-eng",
+      "version": "4.1.0-fast",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (tessdata_fast)",
+      "sha256": "bdca546d9c058cbad486233f20376058bef6f9a3e40f4a667e82a23f1f86c0c6",
+      "path": "tessdata-eng/4.1.0-fast",
+      "approx_memory_mb": 60
+    },
+    {
+      "name": "tessdata-hin",
+      "version": "4.1.0-fast",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (tessdata_fast)",
+      "sha256": "d1b99705e883b0d8b2387e0182d60771d1da1f7116ad8fae7080622deaec2a76",
+      "path": "tessdata-hin/4.1.0-fast",
+      "approx_memory_mb": 60
+    },
+    {
+      "name": "tessdata-mar",
+      "version": "4.1.0-fast",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (tessdata_fast)",
+      "sha256": "c169a014fd99a943e62f70536a7c707b0bc29a5e61244f6d7b93ab4704b64c92",
+      "path": "tessdata-mar/4.1.0-fast",
+      "approx_memory_mb": 60
+    },
+    {
+      "name": "tessdata-tam",
+      "version": "4.1.0-fast",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (tessdata_fast)",
+      "sha256": "0503e10cc391870d8f93c0314385efbef34aa1e8936169d5e0d899a43bc8c401",
+      "path": "tessdata-tam/4.1.0-fast",
+      "approx_memory_mb": 60
+    },
+    {
+      "name": "tessdata-tel",
+      "version": "4.1.0-fast",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (tessdata_fast)",
+      "sha256": "202e5ee7bf32de91c7fcf92881e13f61a9ce7b69a4fdd2db2b83b4007f8d0290",
+      "path": "tessdata-tel/4.1.0-fast",
+      "approx_memory_mb": 60
+    },
+    {
+      "name": "tessdata-kan",
+      "version": "4.1.0-fast",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (tessdata_fast)",
+      "sha256": "823781d9d1b9456c1e41077a2b73bfc4aacafb77bde6c47d7143e3d7e846fc18",
+      "path": "tessdata-kan/4.1.0-fast",
+      "approx_memory_mb": 60
+    },
+    {
+      "name": "tessdata-ben",
+      "version": "4.1.0-fast",
+      "task": "ocr.read",
+      "license": "Apache-2.0 (tessdata_fast)",
+      "sha256": "bf42b26e3ad6d7cac23d6b2546cd1c1914aa6f1f4b3e7c0aaa1ee558b274d7dc",
+      "path": "tessdata-ben/4.1.0-fast",
+      "approx_memory_mb": 60
     }
   ]
 }
