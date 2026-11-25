@@ -104,7 +104,7 @@ def test_cascade_resolves_most_variants_and_queues_the_rest(seeded):
         linked = s.execute(text(
             "SELECT c.ref, i.permanent_id FROM sethu.complaints c JOIN sethu.institutions i ON i.id = c.institution_id"
         )).all()
-        assert len(linked) == 310 - result["queued"]
+        assert len(linked) == 318 - result["queued"]
         assert all(pid == ANSWER[ref] for ref, pid in linked), "a complaint was linked to the wrong institution"
         assert scalar(s, "SELECT count(*) FROM sethu.audit_log WHERE action = 'institution.resolve'"
                          " AND payload->>'step' IN ('alias', 'fuzzy')") == result["resolved"]
@@ -167,7 +167,7 @@ def test_profile_shows_every_bureau_without_complaint_text(seeded):
         assert service.profile(s, uuid4()) is None
 
         everything = service.list_institutions(s, None, None, 200, 0)
-        assert len(everything) == 43 and sum(i["complaints"] for i in everything) == 272
+        assert len(everything) == 43 and sum(i["complaints"] for i in everything) == 280   # 272 + A4's 8
         assert {i["state"] for i in service.list_institutions(s, None, "Gujarat", 200, 0)} == {"Gujarat"}
 
 

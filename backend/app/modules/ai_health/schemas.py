@@ -13,6 +13,7 @@ class TaskHealth(BaseModel):
     task: str
     providers: list[ProviderHealth]
     last_24h: dict[str, int]     # runs by path, and "human_review"
+    last_run: dict | None = None  # A4: the latest run: when, path, provider (the method in use)
 
 
 class Memory(BaseModel):
@@ -32,3 +33,4 @@ class AiHealth(BaseModel):
     classifier: dict | None = None        # the active category classifier and its held-out accuracy (A3)
     classifier_versions: int = 0
     embeddings: dict | None = None        # vectors per model and version, and the active one (A3)
+    graph: dict | None = None             # the latest relationship-graph build (A4)

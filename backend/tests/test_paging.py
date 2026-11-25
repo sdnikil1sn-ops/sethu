@@ -68,7 +68,7 @@ def test_filters_combine_with_pages(world, client):
 def test_the_total_is_capped_on_a_broad_filter(world, client, monkeypatch):
     monkeypatch.setattr(paging, "COUNT_CAP", 100)
     as_(world["menon"])
-    broad = client.get("/api/v1/cases").json()                               # 310 cases
+    broad = client.get("/api/v1/cases").json()                               # 318 cases
     assert broad["total"] == 100 and broad["total_capped"] and broad["has_next"]
     narrow = client.get("/api/v1/cases", params={"overdue": "true"}).json()
     assert narrow["total"] == 25 and not narrow["total_capped"]
@@ -113,7 +113,7 @@ def test_role_scoping_is_unchanged_by_paging(detected, client):
     cases_seen = [(c["ref"], c["readable"]) for p in walk(client, "/api/v1/cases", 100) for c in p["items"]]
     with session_for(rao, detected["engine"]) as s:
         unpaged = [(c["ref"], c["readable"]) for c in cases.search(s, {}, 1000, 0)["items"]]
-    assert cases_seen == unpaged and len(unpaged) == 310 and 0 < sum(r for _, r in unpaged) < 310
+    assert cases_seen == unpaged and len(unpaged) == 318 and 0 < sum(r for _, r in unpaged) < 318
 
 
 def test_dashboard_counts_are_bounded(detected, client, monkeypatch):

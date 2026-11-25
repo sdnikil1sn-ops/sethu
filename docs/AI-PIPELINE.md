@@ -610,3 +610,171 @@ model. It passed in the ai-worker image:
 - **Languages other than English, Hindi and Tamil**: cross-lingual matching was not measured for them.
 - **Larger data**: re-embedding and resolution at the size of AICTE's data. Each batch is small, and pgvector
   scans without an index at this size.
+
+## Phase A4: relationship graph, workflow bottlenecks, national early warning, India map
+
+All three tasks run in the backend worker through the A1 router (provenance in `ai_runs`, circuit breaker,
+`ai.<task>.min_confidence` and `timeout_seconds`). No model is loaded; nothing leaves the deployment.
+
+| Task | Primary | Fallback | Last resort |
+|---|---|---|---|
+| `graph.build` | NetworkX graph from `sethu.graph_edges`, Louvain communities (fixed seed 26264, resolution 1.0) | recursive CTE over the same table (N-hop links on request, no communities) | direct links only |
+| `bottleneck.detect` | workflow graph of bureau and stage (dwell, SLA breach, queue, betweenness; repeated handoff loops) plus the rules' findings, explained | the rules used before A4 (loops, stalls, queue shares) | the overdue list (deadline findings, always produced); existing loop and bottleneck findings are kept, not resolved |
+| `warning.detect` | DBSCAN over place and time | weekly Z-score against the 90-day baseline | the baseline ratio rule |
+
+### Dependencies
+
+- **NetworkX 3.7** added to the backend image (pure Python, 19 MB installed, hashed in `requirements.lock`).
+- **scikit-learn not added**: with SciPy, joblib and threadpoolctl it measured **194 MB** installed (SciPy 113 MB,
+  scikit-learn 49 MB, SciPy's libraries 30 MB) for one algorithm. DBSCAN is about 30 lines of numpy in
+  `app/ai/warning.py`, block-wise so memory stays at 512 × n distances.
+- **ECharts 6.1.0** (npm, bundled by Vite into its own chunk: 496 KB, 166 KB gzipped, loaded only by the map page).
+  5.6.0 was refused: it has a moderate XSS advisory (GHSA-fgmj-fm8m-jvvx).
+
+### The relationship graph
+
+- **Edges**: `sethu.graph_edges`, one row per relationship and each from one complaint. The edge types:
+  - complaint → institution (`about`, with how it was linked and, for an AI link, its confidence and model version);
+  - complaint → bureau (`held_by`);
+  - institution → bureau (`handled_by`);
+  - bureau → bureau (`transfer`, one per transfer action);
+  - complaint → complaint (`overlap`, with A3's method, confidence, model and version, similarity, reasons and
+    `ai_runs` id).
+
+  The sync is set-based and idempotent. It runs every 5 minutes; communities are recomputed only when the edge
+  table changed (count and last update). Decisions (an overlap approved or rejected, an institution resolved)
+  change the sources, so the next run picks them up.
+- **Node cap** `ai.graph.node_cap` (60,000):
+  - At or below it, Louvain runs on the whole graph.
+  - Above it, Louvain runs on the institution-bureau graph (complaints folded into weights).
+  - Communities are stored only for institutions and bureaus.
+  - Large data is explored per institution by ego graph: a recursive CTE over `about` and `overlap` edges, at most
+    `ai.graph.max_hops` (3). Bureaus are hubs and are not walked through.
+- **Seed** (measured): 318 complaints give 365 nodes, 660 edges and 16 Louvain communities. The communities are
+  institution groups around each bureau's holdings, with the multi-bureau institutions between bureaus. Louvain
+  with the fixed seed gives the same communities on every run (tested).
+- **Screen**:
+  - It colours nodes by community and filters overlap links by minimum confidence.
+  - Click a link, or **Explain** in the table, for the method, the confidence, the model version and the cases
+    behind it. A case the viewer cannot read shows "restricted record" instead of its details.
+
+### Workflow bottlenecks
+
+- **Stints**: each case's path is a series of stints at a node: a bureau and a stage, "waiting to be assigned" or
+  "with an officer". Filing, assignment, transfer and closing move it.
+- **Node figures**: stints, mean dwell days, SLA breach rate (the stints during which the case passed its
+  deadline), open stints (the queue) and betweenness centrality.
+- **Bottleneck**: a node with at least `ai.bottleneck.min_cases` (3) stints, a mean dwell of at least
+  `min_dwell_days` (10) and a breach rate above `min_breach_rate` (0.6).
+- **Repeated loop**: a handoff cycle between bureaus (up to four) that at least `loop_min_cases` (2) cases followed.
+- **Seed result**:
+  - PGRC → RB → PGRC (3 cases: C-090 and the two acknowledged round trips) is found as a repeated loop.
+  - C-090 is still found as a transfer loop, and the existing findings tests pass unchanged.
+
+### National early warning
+
+**DBSCAN**:
+
+- **Points**: complaints of the last 30 days per category group, placed at their state's centroid. The centroids
+  are computed from the bundled boundary file: area-weighted, in `app/ai/data/state_centroids.json`.
+- **Scale**: **500 km = 10 days = 1 unit**, eps 1.0, min_samples 6. Two complaints in one state count as near
+  within 10 days. Karnataka and Tamil Nadu (centroids 477 km apart, 0.95 unit) are near only within about 3 days.
+  Uttar Pradesh and Rajasthan (680 km) never join.
+- **A cluster becomes a signal** when it has at least `min_members` (8) complaints and the 90-day baseline of its
+  states and group, scaled to its time span, would explain at most half of them (`max_baseline_share` 0.5).
+  Normal volume in a big state is dense too.
+- **District centroids are not used**: the only open district boundaries (DataMeet, Census 2011) predate many new
+  districts and renamings, so matching complaint districts to them would be unreliable.
+
+**Z-score**: the state × category group count of the last 30 days against the weekly mean of the 90 days before.
+
+- **Floor**: the weekly standard deviation is floored at `z_sd_floor` 1.0, so an all-zero baseline gives a finite
+  score (tested).
+- **Signal**: z ≥ 3.0 and at least 5 complaints.
+
+**Ratio**: the rule used before A4 (≥ 5 complaints and ≥ 3 × the baseline scaled to 30 days).
+
+**Calibrated on the seed** (`scripts/calibrate_warning.py`, a grid over km per unit 400 to 800, days per unit 5 to
+14 and min_samples 4 to 8; the Z-score over thresholds 2 to 3.5 and floors 0.5 to 1.5):
+
+| Method | Uttar Pradesh / Fee refund (planted spike) | Karnataka + Tamil Nadu / Scholarship delay (planted, 4 + 4) | Anything else |
+|---|---|---|---|
+| DBSCAN | found (10 complaints, score 4.9) | found (8, score 16) | nothing |
+| Z-score | found (z = 3.45) | not found (4 per state, under the minimum of 5) | nothing |
+| Ratio | found (3.75 × baseline) | not found | nothing |
+
+- **Why 500 km**: it is the scale where exactly the planted signals appear across min_samples 5 to 8. At 600 km the
+  seed's own Ragging complaints in Karnataka and Tamil Nadu form a cluster, and Maharashtra joins the Scholarship
+  cluster. At 800 km Rajasthan joins Uttar Pradesh.
+- **Z-score settings**: floor 1.0 and threshold 3.0 keep the spike (3.45). A floor of 1.5 loses it.
+- **Signals**:
+  - **Stable ids**: a detection matching a known signal (same group, a state in common, overlapping windows)
+    updates it, keeping its id, and a dismissed one stays dismissed (tested).
+  - **Alerts**: a new signal puts one alert per bureau involved in the outbox, held for approval.
+  - **Decisions**: acknowledge, link to action, or dismiss with a reason, by oversight or the heads of the bureaus
+    involved. Each is audited and written to the append-only `ai_feedback` (kind `signal`).
+
+**What the synthetic data cannot prove**:
+
+- **Scale and thresholds**: the scale and thresholds fit 318 template complaints with two planted patterns. On the
+  10,000 to 100,000 volume data (uniform by construction), DBSCAN found 1 signal at 10k and none at 50k and 100k;
+  the ratio rule found 1 at 10k. That only shows that uniform noise does not trigger it, not that real outbreaks
+  will.
+- **No real patterns**: seasonality (admissions, results), reporting lags and bureau intake differences are absent.
+  Expect to re-calibrate on the first months of real data.
+- **Coarse places**: state centroids are coarse. Two complaints at opposite ends of Uttar Pradesh are "at the same
+  place". A cluster that crosses a border is found only between states whose centroids are close.
+
+### Measured time and memory
+
+`scripts/measure_a4.py` measured these inside the backend image (Linux, peak = VmHWM), against a throwaway
+PostgreSQL 16, with the data made by `seed/volume.py` (2,000 added institutions).
+
+| Complaints | 10,000 | 50,000 | 100,000 |
+|---|---|---|---|
+| Graph nodes / edges built (cap 60,000) | 11,447 / 25,208 (whole graph) | 51,447 / 105,736 (whole graph) | 1,447 / 5,774 (capped: institutions and bureaus) |
+| Communities | 280 | 624 | 4 |
+| `graph.build` incl. edge sync, first run (edges written) | 22.4 s (after ANALYZE) | 27.7 s (120,000 edges) | 31.3 s (150,000 edges) |
+| Unchanged rebuild, forced | 9.0 s | – | – |
+| Whole graph above the cap (forced, what the cap avoids) | – | – | 39.7 s, 101,447 nodes, peak 499 MB |
+| Ego graph, 2 hops, the busiest institution | 0.08 s (82 nodes) | 2.0 s (361) | 6.4 s (710) |
+| Bottleneck: load actions / workflow graph | 0.56 s / 0.18 s (10,703 actions) | 3.6 s / 1.1 s | 9.8 s / 2.1 s (100,703 actions) |
+| Early warning: load / DBSCAN / Z-score / ratio | 0.13 / 0.55 / 0.00 / 0.00 s (1,817 recent and baseline complaints) | 0.32 / 0.16 / 0.01 / 0.01 s | 0.49 / 0.26 / 0.02 / 0.02 s (16,612) |
+| Worker process peak | 141 MB | 310 MB | 310 MB capped; 499 MB uncapped |
+
+- **First 10k run**: just after a bulk load, with no planner statistics yet, the first 10k build took 96 s (176 s
+  before the policy change below). After `ANALYZE` (what autovacuum does on a running system) it took 22 s.
+- **Policy change**: the edge read policy now lets the roles that see everything skip its per-row checks. Same rows,
+  much faster for the worker.
+- **8 GB**: the worker's peak stays under 0.5 GB even uncapped at 100k. The cap keeps a normal build at 310 MB.
+
+### The India map
+
+- **Boundaries**: DataMeet India community, `maps` repository, `States/Admin2` at commit `2c0c306a0c78` (2021:
+  "Updated Ladhak & J&K boundry as per latest SOI Map"). The repository's data licence is **CC BY 4.0**, with the
+  attribution "India state boundaries by DataMeet India community". (An older DataMeet page lists CC BY 2.5 India
+  for its earlier state file.)
+- **Conversion**: `scripts/make_india_map.py` writes `web/public/maps/india-states.json` with 36 states and union
+  territories, 653,732 points and 10.3 MB.
+  - It only rounds coordinates to 3 decimals (about 110 m) and drops repeated points.
+  - Any islet too small for that grid keeps full precision: no feature dropped.
+  - No line is drawn, moved or simplified by us.
+  - The source and licence are inside the file and shown under the map.
+- **A person must check this file against the Survey of India's official depiction of India's boundaries
+  (including Jammu and Kashmir and Ladakh) before any public use** (SECURITY row 53, readiness row 69).
+- **Offline**: rendered with ECharts from the app's own server. In a throwaway page on the Vite dev server, all 36
+  features drew and every request (the module chunks, the JSON) went to localhost. `web/scripts/check-offline.mjs`
+  runs with every `npm run build` and fails it on any absolute-URL load. It was proven to fail on a planted tile
+  URL and a planted fetch.
+- **Screen**: "Map and signals" shows state density and red outlines for signals. A state leads to its
+  institutions (to their profiles) and to its signals (to their member cases, with restricted ones marked). A table
+  alternative is reachable by keyboard.
+
+### Not verified in A4
+
+- **The full stack on 8 GB**: not booted fresh with A4. The backend image was measured as above, and the user's
+  running stack has the A3 images.
+- **The browser end-to-end and axe runs on the new map page**: the page is added to the accessibility test list.
+  The map itself was checked only in a throwaway page, not in the signed-in app.
+- **The boundary file against the Survey of India**: needs a person.
+- **Real data** (above).

@@ -47,7 +47,7 @@ test.describe.configure({ mode: "serial" });
 test.beforeAll(() => expect(PASSWORD, "set DEMO_USER_PASSWORD (the stack's .env)").not.toBe(""));
 
 const SCREENS_BY_USER: Record<string, string[]> = {
-  admin: ["/", "/institutions", "/cases", "/graph", "/overlaps", "/alerts", "/findings", "/queue", "/reports",
+  admin: ["/", "/institutions", "/cases", "/graph", "/map", "/overlaps", "/alerts", "/findings", "/queue", "/reports",
           "/intake", "/admin", "/ai", "/audit"],
   rao: ["/mine"],
   fernandes: ["/workload"],

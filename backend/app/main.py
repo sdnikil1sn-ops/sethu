@@ -26,6 +26,7 @@ from app.modules.overlaps.api import router as overlaps
 from app.modules.reports.api import router as reports
 from app.modules.search.api import router as search
 from app.modules.semantic.api import router as semantic
+from app.modules.signals.api import router as signals
 from app.modules.users.api import router as users
 
 log = logging.getLogger("sethu.http")
@@ -87,6 +88,7 @@ def create_app() -> FastAPI:
     app.include_router(enrichment)
     app.include_router(glossary)
     app.include_router(semantic)
+    app.include_router(signals)
     return app
 
 

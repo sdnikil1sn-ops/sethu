@@ -26,6 +26,18 @@ def transfer_histories(session: Session) -> list[dict]:
          ORDER BY a.complaint_id, a.created_at, a.id""")
 
 
+def workflow_actions(session: Session) -> list[dict]:
+    """Every case's actions, oldest first per case: the workflow graph's input (no notes, no text)."""
+    return _all(session, """
+        SELECT a.complaint_id, a.action, a.from_bureau_id, a.to_bureau_id, a.acknowledged_at, a.created_at
+          FROM sethu.case_actions a
+         ORDER BY a.complaint_id, a.created_at, a.id""")
+
+
+def workflow_cases(session: Session) -> list[dict]:
+    return _all(session, "SELECT id, bureau_id, due_at, status FROM sethu.complaint_summaries")
+
+
 # Open cases with their bureau's median days to close (over its closed cases) and whether each is overdue.
 QUEUE = """
     WITH median AS (

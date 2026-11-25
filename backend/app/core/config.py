@@ -110,6 +110,9 @@ class Settings(BaseSettings):
         "match.complaints": ["e5-match", "text-match"],
         "institution.resolve": ["institution-e5", "institution-fuzzy"],
         "classify.category": ["category-e5", "category-rules"],
+        "graph.build": ["graph-networkx", "graph-cte", "graph-direct"],
+        "bottleneck.detect": ["workflow-graph", "bottleneck-rules"],
+        "warning.detect": ["warning-dbscan", "warning-zscore", "warning-ratio"],
     }
     ai_endpoints: dict[str, str] = {}              # provider: URL of a model server inside the `ai` zone
     # The libraries' own offline switches; production refuses to start unless both are "1".
