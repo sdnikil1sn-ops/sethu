@@ -49,20 +49,23 @@ def attempt_keys(session: Session, kind: str, complaint_ids: list[UUID]) -> dict
         {"k": kind, "ids": complaint_ids})}
 
 
-def record(session: Session, principal: Principal, kind: str, complaint_id: UUID, decision: str, *,
+def record(session: Session, principal: Principal, kind: str, complaint_id: UUID | None, decision: str, *,
            actor_id: UUID | None, suggested: str | None = None, suggested_path: str | None = None,
-           old: str | None = None, new: str | None = None, overlap_link_id: UUID | None = None) -> int:
+           old: str | None = None, new: str | None = None, overlap_link_id: UUID | None = None,
+           signal_id: UUID | None = None, reason: str | None = None) -> int:
     """One append-only feedback row and its audit entry."""
     row_id = session.execute(text("""
-        INSERT INTO sethu.ai_feedback (kind, complaint_id, overlap_link_id, decision, suggested, suggested_path,
-                                       old_value, new_value, decided_by)
-        VALUES (:kind, :c, :link, :decision, :suggested, :path, :old, :new, :by) RETURNING id"""),
-        {"kind": kind, "c": complaint_id, "link": overlap_link_id, "decision": decision, "suggested": suggested,
-         "path": suggested_path, "old": old, "new": new, "by": actor_id}).scalar_one()
+        INSERT INTO sethu.ai_feedback (kind, complaint_id, overlap_link_id, signal_id, decision, suggested,
+                                       suggested_path, old_value, new_value, reason, decided_by)
+        VALUES (:kind, :c, :link, :signal, :decision, :suggested, :path, :old, :new, :reason, :by) RETURNING id"""),
+        {"kind": kind, "c": complaint_id, "link": overlap_link_id, "signal": signal_id, "decision": decision,
+         "suggested": suggested, "path": suggested_path, "old": old, "new": new, "reason": reason,
+         "by": actor_id}).scalar_one()
     audit.record(session, principal, "ai.feedback", entity_type="ai_feedback", entity_id=str(row_id),
-                 payload={"kind": kind, "decision": decision, "complaint_id": str(complaint_id),
-                          "overlap_link_id": overlap_link_id and str(overlap_link_id), "suggested": suggested,
-                          "suggested_path": suggested_path, "old": old, "new": new})
+                 payload={"kind": kind, "decision": decision, "complaint_id": complaint_id and str(complaint_id),
+                          "overlap_link_id": overlap_link_id and str(overlap_link_id),
+                          "signal_id": signal_id and str(signal_id), "suggested": suggested,
+                          "suggested_path": suggested_path, "old": old, "new": new, "reason": reason})
     return row_id
 
 

@@ -80,6 +80,15 @@ Sees every bureau's summaries and every bureau's work.
   approval and open findings. It refreshes every 30 seconds, and **Refresh now** refreshes at once.
 - **Graph**: bureaus, institutions and their links; filter by state, category, bureau, dates or finding; click an
   institution and **Show its complaints**. **The graph as tables** gives the same facts as tables.
+  - **Colour: by community** shows groups of bureaus and institutions linked more to each other than to the rest.
+  - **Overlaps shown** hides suggested overlaps below a confidence.
+  - Click a link (or **Explain** in the table) to see why two things are linked: method, confidence, model version
+    and the cases behind it. A case you may not open is marked **restricted record** instead of showing its details.
+- **Map and signals** (everyone; oversight and bureau heads decide): a map of India shaded by complaints, outlined
+  in red where there is an **Emerging signal: requires verification**. Choose a state (on the map or in the table)
+  to see its institutions (to their profiles) and its signals (to their cases). Each signal says how it was found
+  (clustering in place and time, or a comparison with the recent past), its window, score and parameters.
+  **Acknowledge**, **Linked to action**, or **Dismiss** with a reason; each choice is recorded.
 - **Alerts** and **Findings**: decide, like a bureau head, for any bureau.
 - **Reports**: complaints by institution, bureau performance and overlap outcomes, for a date range. **Export CSV**
   (the export is recorded in the audit log; complaint text is never exported).

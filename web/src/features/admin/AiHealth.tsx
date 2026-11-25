@@ -3,7 +3,12 @@ import { api, useLoad } from "../../api";
 
 // Mirrors backend/app/modules/ai_health/schemas.py
 type Provider = { name: string; path: string; model: string | null; healthy: boolean | null; circuit: string | null };
-type Task = { task: string; providers: Provider[]; last_24h: Record<string, number> };
+type Task = {
+  task: string;
+  providers: Provider[];
+  last_24h: Record<string, number>;
+  last_run?: { at: string; path: string; provider: string | null; status: string } | null;
+};
 type Metrics = {
   holdout_accuracy: number | null;
   holdout_size: number;
@@ -25,6 +30,10 @@ type Health = {
     complaints: number;
     vectors: { model: string; version: string; complaints: number }[];
     active: { model: string; version: string } | null;
+  } | null;
+  graph?: {
+    version: number; method: string; path: string | null; nodes: number; edges: number; communities: number | null;
+    modularity: number | null; capped: boolean; created_at: string;
   } | null;
 };
 type Version = {
@@ -157,6 +166,17 @@ export function AiHealthPage({ isAdmin }: { isAdmin: boolean }) {
 
       <Classifier data={data} isAdmin={isAdmin} onChanged={reload} />
 
+      <h2>Relationship graph</h2>
+      <p>
+        {data.graph
+          ? `Build ${data.graph.version} at ${new Date(data.graph.created_at).toLocaleString("en-IN")}: ` +
+            `${data.graph.method === "louvain" ? "NetworkX with Louvain communities" : data.graph.method === "cte" ? "no communities (CTE fallback)" : "direct links only"}` +
+            `${data.graph.nodes ? `, ${data.graph.nodes} nodes and ${data.graph.edges} edges` : ""}` +
+            `${data.graph.communities !== null ? `, ${data.graph.communities} communities` : ""}` +
+            `${data.graph.capped ? " (above the node cap: institutions and bureaus only)" : ""}.`
+          : "Not built yet."}
+      </p>
+
       <h2>Models</h2>
       {Object.keys(data.models).length === 0 ? (
         <p>No report yet.</p>
@@ -205,7 +225,12 @@ export function AiHealthPage({ isAdmin }: { isAdmin: boolean }) {
             </tbody>
           </table>
           <p>
-            Last 24 hours:{" "}
+            Last run:{" "}
+            {t.last_run
+              ? `${new Date(t.last_run.at).toLocaleString("en-IN")}, ${words(t.last_run.path)}` +
+                `${t.last_run.provider ? ` (${t.last_run.provider})` : ""}`
+              : "never"}
+            . Last 24 hours:{" "}
             {PATHS.map((path) => `${words(path)} ${t.last_24h[path] ?? 0}`).join(", ")}.
           </p>
         </div>

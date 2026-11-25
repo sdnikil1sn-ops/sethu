@@ -66,6 +66,7 @@ h1 small { font-size: 0.9rem; font-weight: 400; border: 1px solid var(--line); b
 .evidence { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 0.75rem; margin: 0.4rem 0 0.8rem; font-size: 0.92rem; }
 .evidence dt { font-weight: 600; }
 .evidence dd { margin: 0; }
+.india-map { width: 100%; height: 620px; max-width: 760px; }
 .pair div { background: var(--soft); border-radius: 0.5rem; padding: 0.6rem; }
 .banner { border-left: 4px solid var(--danger); font-weight: 600; }
 @media (max-width: 40rem) { .pair { grid-template-columns: 1fr; } }

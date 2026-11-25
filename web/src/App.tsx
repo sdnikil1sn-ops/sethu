@@ -12,6 +12,7 @@ import { MyCases, Workload } from "./features/cases/Queues";
 import { Dashboard } from "./features/dashboard/Dashboard";
 import { FindingsPage } from "./features/findings/Findings";
 import { GraphPage } from "./features/graph/GraphPage";
+import { MapPage } from "./features/map/MapPage";
 import { InstitutionList } from "./features/institutions/InstitutionList";
 import { IntakePage } from "./features/intake/Intake";
 import { InstitutionProfile } from "./features/institutions/InstitutionProfile";
@@ -82,6 +83,9 @@ export function App() {
           )}
           <a href="#/graph" aria-current={route === "/graph" ? "page" : undefined}>
             Graph
+          </a>
+          <a href="#/map" aria-current={route === "/map" ? "page" : undefined}>
+            Map and signals
           </a>
           <a href="#/overlaps" aria-current={route === "/overlaps" ? "page" : undefined}>
             Overlaps
@@ -159,6 +163,8 @@ export function App() {
           <ReviewPage canDecide={!!me && DECIDES_REVIEW.includes(me.role)} />
         ) : route === "/graph" ? (
           <GraphPage />
+        ) : route === "/map" ? (
+          <MapPage canDecide={!!me && CAN_DECIDE.includes(me.role)} />
         ) : route === "/mine" ? (
           <MyCases />
         ) : route === "/workload" ? (

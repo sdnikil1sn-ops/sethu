@@ -99,7 +99,7 @@ def test_files_are_what_the_generator_produces():
 
 def test_volume():
     assert len(INSTITUTIONS) == 43 and len(set(STATE.values())) == 6
-    assert len(COMPLAINTS) == 310 == len({c["ref"] for c in COMPLAINTS})
+    assert len(COMPLAINTS) == 318 == len({c["ref"] for c in COMPLAINTS})
     assert all(1 <= int(c["filed_days_ago"]) <= 180 for c in COMPLAINTS)
     assert {c["bureau"] for c in COMPLAINTS} == {b["code"] for b in BUREAUS} == {"PGRC", "RB", "NRB", "AB"}
     assert Counter(u["role"] for u in USERS) == {
@@ -183,14 +183,14 @@ def test_negative_cases_raise_nothing():
 @requires_db
 def test_loader_writes_actions_and_audit(app_engine):
     counts = load.load(app_engine)
-    assert counts["complaints"] == 310 and counts["case_actions"] == len(ACTIONS) and counts["bureaus"] == 4
+    assert counts["complaints"] == 318 and counts["case_actions"] == len(ACTIONS) and counts["bureaus"] == 4
 
     with session_for(SYSTEM, app_engine) as s:
         def scalar(sql):
             return s.execute(text(sql)).scalar_one()
 
         assert scalar("SELECT count(*) FROM sethu.case_actions") == len(ACTIONS)
-        assert scalar("SELECT count(*) FROM sethu.audit_log WHERE action = 'complaint.created'") == 310
+        assert scalar("SELECT count(*) FROM sethu.audit_log WHERE action = 'complaint.created'") == 318
         assert scalar("SELECT count(*) FROM sethu.audit_log WHERE action LIKE 'case.%'") == len(ACTIONS)
         assert scalar("SELECT count(*) FROM sethu.audit_log WHERE payload::text LIKE '%sanctioned%'") == 0
         chain = verify(s)

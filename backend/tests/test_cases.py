@@ -163,8 +163,8 @@ def test_list_filters_search_and_institution_timeline(world):
             return service.search(s, filters, 200, 0)["total"]
 
         started = time.perf_counter()
-        assert total() == 310 and total(overdue=True) == 25 and total(status="transferred") == 1
-        assert sum(total(bureau=b) for b in ("PGRC", "RB", "NRB", "AB")) == 310
+        assert total() == 318 and total(overdue=True) == 25 and total(status="transferred") == 1
+        assert sum(total(bureau=b) for b in ("PGRC", "RB", "NRB", "AB")) == 318
         assert total(state="Uttar Pradesh", category="Fee refund") == 24  # the seeded spike and its baseline
         assert total(q="GREENFIELD") == 3 and total(q="100%_") == 0  # case-blind; wildcards are literal
         assert total(q=C101_PHRASE) == 1
@@ -173,7 +173,7 @@ def test_list_filters_search_and_institution_timeline(world):
         greenfield = service.search(s, {"q": "C-101"}, 5, 0)["items"][0]["institution_id"]
         assert total(institution_id=greenfield) == 3 and total(institution_id=greenfield, bureau="RB") == 1
         newest = service.search(s, {}, 1, 0)["items"][0]["filed_at"].date()
-        assert 0 < total(filed_from=newest) < 310 and total(filed_to=newest) == 310
+        assert 0 < total(filed_from=newest) < 318 and total(filed_to=newest) == 318
         assert total(filed_from=newest, filed_to=newest) == total(filed_from=newest)
         page = service.search(s, {"overdue": True}, 10, 20)
         assert len(page["items"]) == 5 and all(c["overdue"] and c["days_remaining"] < 0 for c in page["items"])

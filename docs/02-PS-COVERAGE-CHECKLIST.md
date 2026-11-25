@@ -83,6 +83,14 @@ section 3), browser tests in `web/e2e/` (run against a freshly seeded dev stack)
 - [x] Language detection covers the 22 scheduled languages by script; fastText correct on the samples. Evidence: `test_ai_lid.py`; `test_ai_models.py` in the ai-worker image (docs/AI-PIPELINE.md).
 - [ ] Machine translation with IndicTrans2. Not proven: the model is gated and was not installed (docs/AI-PIPELINE.md).
 
+## AI layer, Phase A4 (relationship intelligence, bottlenecks, national early warning, India map)
+- [x] Relationship graph: edge table fed by complaint-institution, complaint-bureau, institution-bureau, transfers and A3 overlaps (with method, confidence, model version); Louvain communities with a fixed seed; CTE fallback; node cap. Evidence: `test_a4.py::test_graph_build_stores_communities_and_rebuilds_only_on_change`, `test_louvain_is_reproducible_with_the_fixed_seed`, `test_cte_fallback_agrees_with_networkx_on_direct_links`, `test_node_cap_builds_the_institution_bureau_graph`, `test_graph_falls_back_to_cte_when_networkx_is_unavailable`.
+- [x] Graph screen: colour by community, filter by minimum confidence, an explanation of every link with a restricted-record marker. Evidence: `test_a4.py::test_graph_explanations_mark_restricted_records_and_hide_others_links`; web build.
+- [x] Bottlenecks from a workflow graph (dwell, SLA breach, queue, betweenness; repeated handoff loops), the rules as fallback, findings kept when nothing can judge. Evidence: `test_a4.py::test_bottlenecks_come_from_the_workflow_graph_with_explanations`, `test_bottleneck_fallback_and_findings_kept_when_nothing_can_judge`; `test_findings.py` unchanged and passing.
+- [x] National early warning: DBSCAN, Z-score and ratio each find the seeded spike; only DBSCAN finds the cross-state cluster; stable ids, lifecycle, feedback, alerts held for approval. Evidence: `test_a4.py::test_each_method_finds_the_seeded_spike_and_only_dbscan_the_cross_state_cluster`, `test_warning_falls_through_dbscan_then_zscore_then_ratio`, `test_zscore_floors_a_quiet_baseline`, `test_dbscan_finds_hand_made_clusters_and_leaves_noise`, `test_signals_keep_their_ids_flow_to_the_outbox_and_are_decided_with_feedback`.
+- [x] India map, offline: bundled ECharts and boundary file, state to institution to evidence, table alternative; bureau isolation on signals and map data. Evidence: `test_a4.py::test_signals_and_map_respect_bureau_isolation`, `test_the_built_web_bundle_loads_nothing_from_outside` (`web/scripts/check-offline.mjs`, run by `npm run build`); `test_rls.py::test_a4_tables_are_read_and_written_only_as_migration_0017_says`.
+- [ ] Boundary file checked against the Survey of India's official depiction. Not proven: a person must do it (docs/SECURITY.md, row 53).
+
 ## Counts (2026-11-24)
 
-54 lines: 51 ticked with evidence, 3 not proven ("Updates within 5 seconds", "Runs with Wi-Fi off", "Machine translation with IndicTrans2").
+60 lines: 56 ticked with evidence, 4 not proven ("Updates within 5 seconds", "Runs with Wi-Fi off", "Machine translation with IndicTrans2", "Boundary file checked against the Survey of India").

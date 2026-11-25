@@ -23,9 +23,29 @@ export type GraphNode = {
   category?: string | null;
   bureau?: string | null;
   filed_at?: string | null;
+  community?: number | null;
 };
-export type GraphEdge = { id: string; source: string; target: string; kind: string; count: number };
-export type Graph = { nodes: GraphNode[]; edges: GraphEdge[]; expanded_limit: number };
+export type GraphEdge = {
+  id: string;
+  source: string;
+  target: string;
+  kind: string;
+  count: number;
+  confidence?: number | null;
+  method?: string | null;
+  model_version?: string | null;
+};
+export type Graph = {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  expanded_limit: number;
+  build?: { version: number; method: string; communities: number | null; created_at: string } | null;
+};
+
+// Community colours: distinct in light and dark mode; the community number is also in the table and the panel.
+export const COMMUNITY = ["#4f7ccf", "#e0a030", "#6cae75", "#c05fb0", "#3aa6a6", "#d9734f", "#8f7fd6", "#a3a13a"];
+export const communityColour = (c: number | null | undefined) =>
+  c === null || c === undefined ? "#8a8f98" : COMMUNITY[c % COMMUNITY.length];
 
 export const COLOURS = {
   bureau: "#4f7ccf",
@@ -40,11 +60,13 @@ export const COLOURS = {
   holds: "#5c6066",
 };
 
-function elements(g: Graph): ElementDefinition[] {
+function elements(g: Graph, byCommunity: boolean): ElementDefinition[] {
   return [
     ...g.nodes.map((n) => ({
       data: {
         ...n,
+        colour: byCommunity && n.kind !== "complaint" ? communityColour(n.community)
+          : n.kind === "bureau" ? COLOURS.bureau : n.kind === "complaint" ? COLOURS.complaint : COLOURS.institution,
         size: n.kind === "bureau" ? 46 : n.kind === "complaint" ? 14 : 16 + Math.min(34, Math.sqrt(n.cases ?? 1) * 5),
         flagged: n.findings.length > 0 ? 1 : 0,
         multi: n.multi_bureau ? 1 : 0,
@@ -58,11 +80,11 @@ function elements(g: Graph): ElementDefinition[] {
 /** The page's own text colour, so labels read in light and dark mode. */
 const style = (text: string): cytoscape.Stylesheet[] => [
   { selector: "node", style: { label: "data(label)", "font-size": 9, color: text, "text-valign": "bottom",
-      "text-margin-y": 3, width: "data(size)", height: "data(size)", "background-color": COLOURS.institution,
+      "text-margin-y": 3, width: "data(size)", height: "data(size)", "background-color": "data(colour)",
       "text-wrap": "ellipsis", "text-max-width": "110px" } },
-  { selector: "node[kind = 'bureau']", style: { shape: "round-rectangle", "background-color": COLOURS.bureau,
+  { selector: "node[kind = 'bureau']", style: { shape: "round-rectangle",
       "font-size": 12, "font-weight": "bold", "text-valign": "center", color: "#fff" } },
-  { selector: "node[kind = 'complaint']", style: { "background-color": COLOURS.complaint, "font-size": 7 } },
+  { selector: "node[kind = 'complaint']", style: { "font-size": 7 } },
   { selector: "node[closed = 1]", style: { "background-color": COLOURS.closed } },
   { selector: "node[multi = 1]", style: { "border-width": 4, "border-color": COLOURS.multiBureau } },
   // A halo behind the node (Cytoscape 3.18+; the bundled typings predate these properties).
@@ -80,9 +102,11 @@ const style = (text: string): cytoscape.Stylesheet[] => [
 ];
 
 /** Cytoscape.js, bundled with the app (no CDN). Redraws when the data changes; reports the node clicked. */
-export function GraphView({ graph, onSelect, height = 520, label }: {
+export function GraphView({ graph, onSelect, onSelectEdge, byCommunity = false, height = 520, label }: {
   graph: Graph;
   onSelect: (n: GraphNode | null) => void;
+  onSelectEdge?: (e: GraphEdge) => void;
+  byCommunity?: boolean;
   height?: number;
   label: string;
 }) {
@@ -90,6 +114,8 @@ export function GraphView({ graph, onSelect, height = 520, label }: {
   const cy = useRef<Core | null>(null);
   const select = useRef(onSelect);
   select.current = onSelect;
+  const selectEdge = useRef(onSelectEdge);
+  selectEdge.current = onSelectEdge;
 
   useEffect(() => {
     if (!box.current) return;
@@ -98,12 +124,13 @@ export function GraphView({ graph, onSelect, height = 520, label }: {
     // Loaded on demand (its own bundle chunk, served by this app): only the graph screens pay for it.
     import("cytoscape").then(({ default: cytoscape }) => {
       if (gone || !box.current) return;
-      instance = cytoscape({ container: box.current, elements: elements(graph),
+      instance = cytoscape({ container: box.current, elements: elements(graph, byCommunity),
       style: style(getComputedStyle(box.current).color),
       layout: { name: "cose", animate: false, nodeRepulsion: () => 9000, idealEdgeLength: () => 90, randomize: true,
         fit: true, padding: 30 },
       wheelSensitivity: 0.3, minZoom: 0.1, maxZoom: 4 });
       instance.on("tap", "node", (e) => select.current(e.target.data() as GraphNode));
+      instance.on("tap", "edge", (e) => selectEdge.current?.(e.target.data() as GraphEdge));
       instance.on("tap", (e) => e.target === instance && select.current(null));
       cy.current = instance;
       instance.one("layoutstop", () => instance?.fit(undefined, 30));
@@ -113,7 +140,7 @@ export function GraphView({ graph, onSelect, height = 520, label }: {
       gone = true;
       instance?.destroy();
     };
-  }, [graph]);
+  }, [graph, byCommunity]);
 
   return <div ref={box} className="cy" style={{ height }} role="img" aria-label={label} />;
 }

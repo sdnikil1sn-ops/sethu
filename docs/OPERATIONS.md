@@ -113,6 +113,29 @@ The jobs:
 - **Without E5**: everything keeps working. Matching is trigram only, institutions use the spelling cascade, and
   categories use the keyword and glossary rules or an officer.
 
+### Graph, bottlenecks and early warning (A4)
+
+- **Jobs** (backend worker, no model): `sethu.graph.build` every 5 minutes syncs the edge table and rebuilds
+  communities only when it changed (`POST /api/v1/graph/build`, admin, to run it at once); `sethu.findings.detect` (every 5 min) runs `bottleneck.detect`; `sethu.signals.detect` (every 5 min) runs
+  `warning.detect`. Each writes an `ai_runs` row; AI health shows each task's last run, path and provider, and the
+  latest graph build.
+- **Size**: `ai.graph.node_cap` (60,000 nodes) decides whether the build includes complaints; above it Louvain runs
+  on the institution-bureau graph and the screen explores large data by ego graphs (recursive CTE). Measured time
+  and memory at 10k, 50k and 100k complaints: docs/AI-PIPELINE.md, A4. `ai.warning.max_points` (30,000 recent
+  complaints) bounds DBSCAN; above it the Z-score answers.
+- **Tuning**: every threshold is a row in `sethu.app_settings` (`ai.graph.*`, `ai.bottleneck.*`, `ai.warning.*`),
+  calibrated on the seed (`scripts/calibrate_warning.py`). Re-run that script, or `scripts/measure_a4.py` on a
+  throwaway database, after changing them. `ai.warning.category_groups` (JSON, group: [categories]) merges
+  categories into one group; empty means each category is its own group.
+- **Signals**: an alert per bureau involved is held in the outbox (kind `early_warning`) until a person approves it.
+  Oversight and the heads of the bureaus involved acknowledge, link to action or dismiss with a reason (audited,
+  and in `ai_feedback`).
+- **The map**: `web/public/maps/india-states.json` is served by the app's own nginx. To update it, run
+  `scripts/make_india_map.py` on a connected machine against a newer DataMeet commit, and have a person check the
+  result against the Survey of India's depiction before it is used (SECURITY row 53).
+- **Without NetworkX** (or if it fails): the graph has no communities (CTE fallback) and bottlenecks come from the
+  rules; nothing else changes. With no data the early-warning chain ends at the ratio rule, which finds nothing.
+
 ## 4. First-time setup (after the first start)
 
 1. **Keycloak administrators**: through the SSH tunnel (RUNBOOK, "Keycloak administration"), create a named

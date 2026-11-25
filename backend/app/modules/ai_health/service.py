@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.ai import QUEUE, STATE_KEY
 from app.core.config import get_settings
 from app.modules.ai_health import repo
+from app.modules.graph import service as graph
 from app.modules.semantic import service as semantic
 
 
@@ -24,15 +25,18 @@ def health(session: Session) -> dict:
     for row in repo.counts_last_day(session):
         counts.setdefault(row["task"], {})[row["path"]] = row["runs"]
     tasks = []
+    last = repo.last_runs(session)
     for task, names in settings.ai_routes.items():
         reported = {p["name"]: p for p in (state or {}).get("tasks", {}).get(task, [])}
         providers = [reported.get(name) or {"name": name, "path": ("primary", "fallback", "last_resort")[min(i, 2)]}
                      for i, name in enumerate(names)]
-        tasks.append({"task": task, "providers": providers, "last_24h": counts.get(task, {})})
+        tasks.append({"task": task, "providers": providers, "last_24h": counts.get(task, {}),
+                      "last_run": last.get(task)})
     versions = semantic.classifiers(session)
     active = next((v for v in versions if v["status"] == "active"), None)
     return {"reporting": state is not None, "reported_at": state and state["at"], "queue_depth": depth,
             "memory": state and state["memory"], "models": (state or {}).get("models", {}), "tasks": tasks,
             "classifier": active and {"version": active["version"], "created_at": active["created_at"],
                                       "embedding_version": active["embedding_version"], **active["metrics"]},
-            "classifier_versions": len(versions), "embeddings": semantic.coverage(session)}
+            "classifier_versions": len(versions), "embeddings": semantic.coverage(session),
+            "graph": graph.meta(session)}

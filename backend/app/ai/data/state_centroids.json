@@ -1,0 +1,156 @@
+{
+ "source": {
+  "dataset": "DataMeet India community, maps repository, States/Admin2",
+  "url": "https://github.com/datameet/maps/tree/2c0c306a0c786a83876065a62b7b82646d8a639d/States",
+  "commit": "2c0c306a0c786a83876065a62b7b82646d8a639d",
+  "licence": "CC BY 4.0",
+  "attribution": "India state boundaries by DataMeet India community (CC BY 4.0)",
+  "note": "Boundaries as published, J&K and Ladakh updated per the Survey of India map (2021). Coordinates rounded to 3 decimals; nothing simplified. Verify against Survey of India before public use."
+ },
+ "centroids": {
+  "Andaman & Nicobar": [
+   11.1993,
+   92.9595
+  ],
+  "Andhra Pradesh": [
+   15.7564,
+   79.966
+  ],
+  "Arunachal Pradesh": [
+   28.036,
+   94.6752
+  ],
+  "Assam": [
+   26.3547,
+   92.8256
+  ],
+  "Bihar": [
+   25.6795,
+   85.6099
+  ],
+  "Chandigarh": [
+   30.7293,
+   76.7805
+  ],
+  "Chhattisgarh": [
+   21.2665,
+   82.0411
+  ],
+  "Dadra and Nagar Haveli and Daman and Diu": [
+   20.245,
+   72.9287
+  ],
+  "Delhi": [
+   28.6434,
+   77.1155
+  ],
+  "Goa": [
+   15.3638,
+   74.054
+  ],
+  "Gujarat": [
+   22.6984,
+   71.5725
+  ],
+  "Haryana": [
+   29.1982,
+   76.3402
+  ],
+  "Himachal Pradesh": [
+   31.9261,
+   77.2446
+  ],
+  "Jammu & Kashmir": [
+   33.6725,
+   74.8573
+  ],
+  "Jharkhand": [
+   23.6563,
+   85.5641
+  ],
+  "Karnataka": [
+   14.7103,
+   76.1674
+  ],
+  "Kerala": [
+   10.4507,
+   76.4085
+  ],
+  "Ladakh": [
+   34.9439,
+   76.7965
+  ],
+  "Lakshadweep": [
+   10.4367,
+   72.956
+  ],
+  "Madhya Pradesh": [
+   23.5382,
+   78.289
+  ],
+  "Maharashtra": [
+   19.4515,
+   76.1076
+  ],
+  "Manipur": [
+   24.735,
+   93.8787
+  ],
+  "Meghalaya": [
+   25.5356,
+   91.2773
+  ],
+  "Mizoram": [
+   23.3077,
+   92.8318
+  ],
+  "Nagaland": [
+   26.0629,
+   94.4668
+  ],
+  "Odisha": [
+   20.5139,
+   84.4303
+  ],
+  "Puducherry": [
+   11.9115,
+   79.8472
+  ],
+  "Punjab": [
+   30.8425,
+   75.4154
+  ],
+  "Rajasthan": [
+   26.5844,
+   73.8497
+  ],
+  "Sikkim": [
+   27.5699,
+   88.4734
+  ],
+  "Tamil Nadu": [
+   11.0143,
+   78.4092
+  ],
+  "Telangana": [
+   17.8008,
+   79.0084
+  ],
+  "Tripura": [
+   23.745,
+   91.7392
+  ],
+  "Uttar Pradesh": [
+   26.923,
+   80.566
+  ],
+  "Uttarakhand": [
+   30.1565,
+   79.2067
+  ],
+  "West Bengal": [
+   23.8105,
+   87.984
+  ]
+ }
+}

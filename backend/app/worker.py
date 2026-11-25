@@ -68,6 +68,10 @@ celery.conf.update(
         "resolve-institutions": {"task": "sethu.institutions.resolve_pending", "schedule": 300.0},
         "detect-overlaps": {"task": "sethu.overlaps.detect", "schedule": 300.0},
         "detect-findings": {"task": "sethu.findings.detect", "schedule": 300.0},
+        # The edge sync is set-based but scans every complaint (seconds at 10k to 100k): every 5 minutes, and
+        # communities are recomputed only when the edges changed.
+        "graph-build": {"task": "sethu.graph.build", "schedule": 300.0},
+        "detect-signals": {"task": "sethu.signals.detect", "schedule": 300.0},
         # The AI pipeline: run by the ai-worker (its own queue), never by this worker.
         "ai-enrich": {"task": "sethu.ai.enrich_pending", "schedule": 10.0, "options": {"queue": "ai"}},
         "ai-maintain": {"task": "sethu.ai.maintain", "schedule": 30.0, "options": {"queue": "ai"}},
@@ -140,6 +144,27 @@ def detect_overlaps() -> dict:
         total += done["suggested"]
         if not done.get("more"):
             return {"suggested": total}
+
+
+@celery.task(name="sethu.graph.build")
+def graph_build(force: bool = False) -> dict:
+    """Keep the relationship graph's edges in step and recompute communities when they changed (task graph.build:
+    NetworkX and Louvain, else the CTE fallback)."""
+    from app.modules.graph import service as graph
+    with session_for(SYSTEM) as session:
+        if not _only_run(session, "sethu.graph.build"):
+            return {"skipped": 1}
+        return {k: v for k, v in graph.build_task(session, SYSTEM, force).items() if k != "rss_mb"}
+
+
+@celery.task(name="sethu.signals.detect")
+def detect_signals() -> dict:
+    """National early warning (task warning.detect: DBSCAN, else Z-score, else the baseline ratio)."""
+    from app.modules.signals import service as signals
+    with session_for(SYSTEM) as session:
+        if not _only_run(session, "sethu.signals.detect"):
+            return {"skipped": 1}
+        return signals.detect(session, SYSTEM)
 
 
 def _only_run(session, job: str) -> bool:

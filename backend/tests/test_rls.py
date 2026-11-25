@@ -268,3 +268,58 @@ def test_a3_tables_are_read_and_written_only_as_migration_0016_says(app_engine, 
             s.execute(text(sql))
     with session_for(rb, app_engine) as s:
         assert s.execute(text("SELECT count(*) FROM sethu.ai_feedback")).scalar() == 0
+
+
+def test_a4_tables_are_read_and_written_only_as_migration_0017_says(app_engine, world):
+    """graph_edges: summary edges for every signed-in role, overlap edges for the bureaus party to the link;
+    graph_runs and graph_communities: read by every signed-in role; warning_signals: the bureaus whose cases are in
+    it and the roles that see everything, decided by oversight and those bureaus' heads; all written by the worker."""
+    with session_for(SYSTEM, app_engine) as s:
+        c101, c102 = (s.execute(text("SELECT id FROM sethu.complaints WHERE ref = :r"), {"r": r}).scalar_one()
+                      for r in ("C-101", "C-102"))
+        inst = s.execute(text("SELECT id FROM sethu.institutions")).scalar_one()
+        a, b = sorted([c101, c102], key=str)
+        link = s.execute(text("INSERT INTO sethu.overlap_links (complaint_a, complaint_b, tier) VALUES (:a, :b, 2)"
+                              " RETURNING id"), {"a": a, "b": b}).scalar_one()
+        s.execute(text("""INSERT INTO sethu.graph_edges (edge_key, edge_type, source_type, source_id, target_type,
+                              target_id, complaint_id, method) VALUES ('about:1', 'about', 'complaint', :c,
+                              'institution', :i, :c, 'register')"""), {"c": c101, "i": inst})
+        s.execute(text("""INSERT INTO sethu.graph_edges (edge_key, edge_type, source_type, source_id, target_type,
+                              target_id, complaint_id, overlap_link_id, method) VALUES ('overlap:1', 'overlap',
+                              'complaint', :a, 'complaint', :b, :a, :l, 'text')"""), {"a": a, "b": b, "l": link})
+        version = s.execute(text("INSERT INTO sethu.graph_runs (method) VALUES ('louvain') RETURNING version"))\
+            .scalar_one()
+        s.execute(text("INSERT INTO sethu.graph_communities VALUES (:v, 'institution', :i, 0)"),
+                  {"v": version, "i": inst})
+        signal = s.execute(text("""INSERT INTO sethu.warning_signals (category_group, categories, states,
+                              window_start, window_end, method, path, members, complaint_ids, bureau_ids,
+                              explanation, parameters) VALUES ('Fee refund', '{Fee refund}', '{MH}', current_date,
+                              current_date, 'ratio', 'last_resort', 1, ARRAY[CAST(:c AS uuid)], ARRAY[CAST(:b AS uuid)],
+                              '{}', '{}') RETURNING id"""), {"c": c101, "b": world["pgrc"]}).scalar_one()
+    rb = Principal("u2", "x", "officer", world["rb"])
+    other = Principal("u4", "x", "officer", uuid4())
+    for who, edges, signals in ((Principal("u1", "rao", "officer", world["pgrc"]), 2, 1), (rb, 2, 0),
+                                (other, 1, 0), (Principal("o", "m", "oversight", None), 2, 1)):
+        with session_for(who, app_engine) as s:
+            got = [s.execute(text(f"SELECT count(*) FROM sethu.{t}")).scalar() for t in (  # noqa: S608
+                "graph_edges", "warning_signals", "graph_runs", "graph_communities")]
+        assert got == [edges, signals, 1, 1], (who.role, got)
+    with Session(app_engine) as s:                      # no request context: nothing
+        assert s.execute(text("SELECT count(*) FROM sethu.graph_edges")).scalar() == 0
+    for sql in ("INSERT INTO sethu.graph_runs (method) VALUES ('cte')",
+                "UPDATE sethu.graph_edges SET weight = 9"):
+        with session_for(Principal("o", "m", "oversight", None), app_engine) as s:
+            try:
+                assert s.execute(text(sql)).rowcount == 0
+            except DBAPIError as e:
+                assert "row-level security" in str(e)
+    rb_head = Principal("h2", "x", "bureau_head", world["rb"])
+    with session_for(rb_head, app_engine) as s:          # not a bureau in the signal: cannot decide it
+        assert s.execute(text("UPDATE sethu.warning_signals SET status = 'acknowledged' WHERE id = :i"),
+                         {"i": signal}).rowcount == 0
+    pgrc_head = Principal("h1", "x", "bureau_head", world["pgrc"])
+    with session_for(pgrc_head, app_engine) as s:
+        assert s.execute(text("UPDATE sethu.warning_signals SET status = 'acknowledged' WHERE id = :i"),
+                         {"i": signal}).rowcount == 1
+    with pytest.raises(DBAPIError, match="only the status"), session_for(pgrc_head, app_engine) as s:
+        s.execute(text("UPDATE sethu.warning_signals SET members = 5 WHERE id = :i"), {"i": signal})

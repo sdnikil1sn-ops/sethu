@@ -28,6 +28,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
+from app.ai import router
 from app.audit import service as audit
 from app.core.auth import Principal
 from app.core.config import get_settings
@@ -120,6 +121,18 @@ def deadline_findings(rows: list[dict], now: datetime) -> list[dict]:
     } for r in rows]
 
 
+def hold_alert(session: Session, recipients: list[str], missing: list[str], subject: str, body: str, *, kind: str,
+               bureau_id: UUID) -> UUID:
+    """An alert in the outbox held for a person's approval (used by early-warning signals too)."""
+    return repo.insert_alert(session, None, recipients, missing, subject, body, kind=kind, bureau_id=bureau_id)
+
+
+def bottleneck_settings(session: Session) -> dict:
+    return {key: type(default)(router.setting(session, f"ai.bottleneck.{key}", default)) for key, default in (
+        ("min_dwell_days", 10.0), ("min_breach_rate", 0.6), ("min_betweenness", 0.1), ("min_cases", 3),
+        ("loop_min_cases", 2))}
+
+
 def _digest(session: Session, bureau_id: UUID, new: list[dict], code: str) -> UUID:
     """One alert for a bureau's heads: the cases that passed their deadline since the last digest, and how many
     of its open cases are late in all. References and counts only."""
@@ -156,18 +169,28 @@ def detect(session: Session, principal: Principal) -> dict[str, int]:
     by_case: dict[UUID, list[dict]] = {}
     for a in repo.transfer_histories(session):
         by_case.setdefault(a["complaint_id"], []).append(a)
-    current = [f for h in by_case.values() if (f := transfer_finding(h, now, settings.stalled_transfer_days))]
+    rules = [f for h in by_case.values() if (f := transfer_finding(h, now, settings.stalled_transfer_days))]
     for scope, rows in (("bureau", repo.bureau_queues(session)), ("institution", repo.institution_queues(session))):
-        current += queue_findings(scope, rows, settings.bottleneck_min_open, settings.bottleneck_share)
+        rules += queue_findings(scope, rows, settings.bottleneck_min_open, settings.bottleneck_share)
+    codes = repo.bureau_codes(session)
+    # A4: loops, stalls and bottlenecks through the router (task bottleneck.detect): the workflow graph, else the
+    # rules above; with neither, the deadline findings (the overdue list) below still stand.
+    r = router.run(session, principal, "bottleneck.detect",
+                   {"actions": repo.workflow_actions(session),
+                    "cases": {c["id"]: c for c in repo.workflow_cases(session)}, "codes": codes,
+                    "rule_findings": rules, "settings": bottleneck_settings(session), "now": now},
+                   subject_type="findings", subject_id=now.date().isoformat())
+    current = r["output"]["findings"] if r["status"] == "ok" else []
     current += spike_findings(repo.category_cells(session, SPIKE_RECENT_DAYS, SPIKE_BASELINE_DAYS),
                               settings.spike_min_count, settings.spike_ratio, now.date().isoformat())
     current += deadline_findings(repo.overdue_cases(session), now)
 
     known = {r["key"]: r for r in repo.existing(session)}
     held = {f["key"] for f in current}   # everything that holds now, including new ones left for the next batch
+    if r["status"] != "ok":              # nothing could judge loops and bottlenecks: do not resolve them blindly
+        held |= {k for k in known if k.split(":")[0] in ("transfer_loop", "stalled_transfer", "bottleneck")}
     fresh = [f for f in current if f["key"] not in known][:settings.detect_batch]
     current = fresh + [f for f in current if f["key"] in known]
-    codes = repo.bureau_codes(session)
     counts = {"created": 0, "reopened": 0, "resolved": 0, "digests": 0}
     # Missed deadlines: one digest per bureau for this run's new ones, not one alert per case.
     late: dict[UUID, list[dict]] = {}

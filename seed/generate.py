@@ -422,6 +422,19 @@ def build() -> dict[str, list[dict]]:
         flow="misrouted", sent_from="NRB", ref=next(extra_refs))
     add(ab_home, quiet(ab_home), rng.randint(1, 4), "open", "", bureau="AB", ref=next(extra_refs))
 
+    # A4 (early warning): a cluster across two neighbouring states. Four complaints in Karnataka and four in Tamil
+    # Nadu within six days, in a category neither state saw in the last 30 days. Each state stays under the
+    # per-state rules' minimum of 5 (no category spike, no Z-score signal); in place and time together they are one
+    # dense cluster, which DBSCAN finds. Ordinary institutions, held by their home bureau: no new overlap pair.
+    busy = Counter((state_of[c["institution_pid"]], c["category"]) for c in complaints
+                   if int(c["filed_days_ago"]) <= 30)
+    pair_states = ("Karnataka", "Tamil Nadu")
+    cluster_category = next(c for c in CATEGORIES
+                            if c != SPIKE_CATEGORY and all(busy[s, c] == 0 for s in pair_states))
+    for n in range(8):
+        add(pick(ordinary, state=pair_states[n % 2]), cluster_category, 2 + n % 6, "open", "cluster:2",
+            ref=next(extra_refs))
+
     # Complainant details: invented, from their own random stream so nothing above changes. The CSV
     # holds them in the clear (mock data); the loader stores them only encrypted (app/core/crypto.py).
     crng = random.Random(SEED + 1)  # noqa: S311 - reproducible test data

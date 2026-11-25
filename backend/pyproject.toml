@@ -15,6 +15,7 @@ dependencies = [
     "openpyxl>=3.1,<4",  # reading XLSX intake files; no network use
     "fastembed==0.9.1",  # semantic overlap signal; runs a local ONNX model baked into the image
     "pillow>=13.0",      # via fastembed; older Pillow has known vulnerabilities (pip-audit)
+    "networkx==3.7",     # A4 relationship graph (Louvain, betweenness); pure Python, 19 MB installed
     "onnxruntime==1.19.2",  # via fastembed; later builds bundle a telemetry client (it could not send: no route out)
 ]
 
